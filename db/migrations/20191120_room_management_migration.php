@@ -1382,109 +1382,111 @@ class RoomManagementMigration extends Migration
 
     public function fillResourceBookingIntervals(PDO $db)
     {
+        $chunk_size = 100;
+
         //Delete everything from resource booking intervals first:
         $db->exec('DELETE FROM resource_booking_intervals;');
 
-        $bookings = $db->query(
-            'SELECT id, resource_id, range_id, begin, end, booking_type,
-            preparation_time, repeat_end, repeat_quantity, repetition_interval
-            FROM resource_bookings'
-        );
+        $query = "SELECT COUNT(*)
+                  FROM resource_bookings";
+        $booking_count = $db->query($query)->fetchColumn();
 
-        $add_interval_stmt = $db->prepare(
-            "INSERT INTO resource_booking_intervals
-            (interval_id, booking_id, resource_id, begin, end, takes_place,
-            mkdate, chdate)
-            VALUES
-            (:interval_id, :booking_id, :resource_id, :begin, :end, '1',
-            UNIX_TIMESTAMP(), UNIX_TIMESTAMP());"
-        );
+        for ($loop = 0; $loop < $booking_count; $loop += $chunk_size) {
+            $query = "SELECT id, resource_id, range_id, begin, end, booking_type
+                             preparation_time, repeat_end, repeat_quantity, repetition_interval
+                      FROM resource_bookings
+                      LIMIT {$loop}, {$chunk_size}";
+            $bookings = $db->query($query);
 
-        $bookings->setFetchMode(PDO::FETCH_ASSOC);
+            $add_interval_stmt = $db->prepare(
+                "INSERT INTO resource_booking_intervals
+                (interval_id, booking_id, resource_id, begin, end, takes_place,
+                mkdate, chdate)
+                VALUES
+                (:interval_id, :booking_id, :resource_id, :begin, :end, 1,
+                UNIX_TIMESTAMP(), UNIX_TIMESTAMP());"
+            );
 
-        foreach ($bookings as $booking) {
-            //Calculate the time intervals the same way as in
-            //ResourceBooking::calculateTimeIntervals:
-            $interval_data = [];
-            $booking_begin = new DateTime();
-            $booking_begin->setTimestamp($booking['begin']);
-            if ($booking['preparation_time']) {
-                $booking_begin->setTimestamp(
-                    $booking['begin'] - $booking['preparation_time']
-                );
-            }
-            $booking_end = new DateTime();
-            $booking_end->setTimestamp($booking['end']);
+            $bookings->setFetchMode(PDO::FETCH_ASSOC);
+            foreach ($bookings as $booking) {
+                //Calculate the time intervals the same way as in
+                //ResourceBooking::calculateTimeIntervals:
+                $add_interval = function ($begin, $end) use ($booking, $add_interval_stmt) {
+                    $interval_id = md5(
+                        'ResourceBookingInterval' .
+                        $booking['booking_id'] .
+                        $booking['begin'] .
+                        $booking['end'] .
+                        uniqid()
+                    );
+                    $add_interval_stmt->execute([
+                        ':interval_id' => $interval_id,
+                        ':booking_id'  => $booking['id'],
+                        ':resource_id' => $booking['resource_id'],
+                        ':begin'       => $begin,
+                        ':end'         => $end,
+                    ]);
+                };
 
-            //use begin and end to create the first interval:
-            $interval_data[] = [
-                'begin' => $booking_begin->getTimestamp(),
-                'end' => $booking_end->getTimestamp()
-            ];
-
-            if (($booking['repeat_quantity'] > 0) || $booking['repeat_end']) {
-                //Repetition: we must check which repetition interval has been
-                //selected and then create entries for each repetition.
-                //Repetition starts with the begin date and ends with the
-                //"repeat_end" date.
-
-                $repetition_end = new DateTime();
-                $repetition_end->setTimestamp($booking['repeat_end']);
-                //The DateInterval constructor will throw an exception,
-                //if it cannot parse the string stored in $this->repetition_interval.
-                $repetition_interval = null;
-                if ($booking['repetition_interval']) {
-                    try {
-                        $repetition_interval = new DateInterval($booking['repetition_interval']);
-                    } catch (Exception $e) {
-                        //Invalid repetition interval string.
-                        //Skip this booking since its repetition interval is invalid.
-                        continue;
-                    }
+                $booking_begin = new DateTime();
+                $booking_begin->setTimestamp($booking['begin']);
+                if ($booking['preparation_time']) {
+                    $booking_begin->setTimestamp(
+                        $booking['begin'] - $booking['preparation_time']
+                    );
                 }
+                $booking_end = new DateTime();
+                $booking_end->setTimestamp($booking['end']);
 
-                if ($repetition_interval instanceof DateInterval) {
-                    $duration = $booking_begin->diff($booking_end);
+                //use begin and end to create the first interval:
+                $add_interval(
+                    $booking_begin->getTimestamp(),
+                    $booking_end->getTimestamp()
+                );
 
-                    //Check if end is later than begin to avoid
-                    //infinite loops.
-                    if ($repetition_end > $booking_begin) {
-                        $current_begin = clone $booking_begin;
-                        $current_begin->add($repetition_interval);
-                        while ($current_begin < $repetition_end) {
-                            $current_end = clone $current_begin;
-                            $current_end->add($duration);
-                            $interval_data[] = [
-                                'begin' => $current_begin->getTimestamp(),
-                                'end' => $current_end->getTimestamp()
-                            ];
+                if (($booking['repeat_quantity'] > 0) || $booking['repeat_end']) {
+                    //Repetition: we must check which repetition interval has been
+                    //selected and then create entries for each repetition.
+                    //Repetition starts with the begin date and ends with the
+                    //"repeat_end" date.
+
+                    $repetition_end = new DateTime();
+                    $repetition_end->setTimestamp($booking['repeat_end']);
+                    //The DateInterval constructor will throw an exception,
+                    //if it cannot parse the string stored in $this->repetition_interval.
+                    $repetition_interval = null;
+                    if ($booking['repetition_interval']) {
+                        try {
+                            $repetition_interval = new DateInterval($booking['repetition_interval']);
+                        } catch (Exception $e) {
+                            //Invalid repetition interval string.
+                            //Skip this booking since its repetition interval is invalid.
+                            continue;
+                        }
+                    }
+
+                    if ($repetition_interval instanceof DateInterval) {
+                        $duration = $booking_begin->diff($booking_end);
+
+                        //Check if end is later than begin to avoid
+                        //infinite loops.
+                        if ($repetition_end > $booking_begin) {
+                            $current_begin = clone $booking_begin;
                             $current_begin->add($repetition_interval);
+                            while ($current_begin < $repetition_end) {
+                                $current_end = clone $current_begin;
+                                $current_end->add($duration);
+
+                                $add_interval(
+                                    $current_begin->getTimestamp(),
+                                    $current_end->getTimestamp()
+                                );
+
+                                $current_begin->add($repetition_interval);
+                            }
                         }
                     }
                 }
-            }
-
-            //At this point, we have all time intervals of the booking
-            //and can create entries in the resource_booking_interval
-            //table.
-
-            foreach ($interval_data as $interval) {
-                $interval_id = md5(
-                    'ResourceBookingInterval' .
-                    $booking['booking_id'] .
-                    $booking['begin'] .
-                    $booking['end'] .
-                    uniqid()
-                );
-                $add_interval_stmt->execute(
-                    [
-                        'interval_id' => $interval_id,
-                        'booking_id' => $booking['id'],
-                        'resource_id' => $booking['resource_id'],
-                        'begin' => $interval['begin'],
-                        'end' => $interval['end']
-                    ]
-                );
             }
         }
     }
