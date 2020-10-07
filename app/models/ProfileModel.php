@@ -104,6 +104,9 @@ class ProfileModel
         $allcourses = new SimpleCollection(Course::findBySQL("INNER JOIN seminar_user USING(Seminar_id) WHERE user_id=? AND seminar_user.status='dozent' AND seminare.visible=1", [$this->current_user->id]));
         foreach (array_filter($semester) as $one) {
             $courses[(string) $one->name] = $allcourses->filter(function ($c) use ($one) {
+                if (Config::get()->HIDE_STUDYGROUPS_FROM_PROFILE && $c->status == 99) {
+                    return false;
+                }
                 if ($c->duration_time != -1) {
                     return $c->start_time <= $one->beginn
                         && $one->beginn <= $c->start_time + $c->duration_time;
