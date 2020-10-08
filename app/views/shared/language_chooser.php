@@ -1,6 +1,6 @@
 <div class="mvv-widget-right">
     <div class="mvv-inst-chooser">
-        <select id="mvv-language-chooser-select" name="<?= $chooser_id ?>">
+        <select id="mvv-language-chooser-select" style="display: inline;" name="<?= $chooser_id ?>">
             <option class="mvv-inst-chooser-level" value="">-- <?= _('Bitte wählen') ?> --</option>
         <? foreach ($chooser_languages as $key => $language) : ?>
             <option class="" data-fb="<?= $key ?>" value="<?= $key ?>">
@@ -8,7 +8,7 @@
             </option>
         <? endforeach; ?>
         </select>
+        <span class="mvv-inst-add-button"><?= Icon::create('arr_2up', 'clickable', ['title' => _('Sprache zuordnen')])->asImg(); ?></span>
     </div>
-    <span class="mvv-inst-add-button"><?= Icon::create('arr_2up', 'clickable', ['title' => _('Sprache zuordnen')])->asImg(); ?></span>
     <?= $addition ?>
 </div>
