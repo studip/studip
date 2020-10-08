@@ -815,7 +815,7 @@ class Course_StatusgroupsController extends AuthenticatedController
                         // Get name of most used room and append to group title.
                         if ($rooms = $cd->getPredominantRoom()) {
                             $room_name = DBManager::get()->fetchOne(
-                                "SELECT `name` FROM `resources_objects` WHERE `resource_id` = ?",
+                                "SELECT `name` FROM `resources` WHERE `id` = ?",
                                 [array_pop(array_keys($rooms))]);
                             $name .= ' (' . $room_name['name'] . ')';
                         } else {
