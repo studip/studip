@@ -307,12 +307,12 @@ class StudipLog
     {
         $result = [];
 
-        $query = "SELECT resource_id, name FROM resources_objects WHERE name LIKE CONCAT('%', ?, '%') ORDER by name";
+        $query = "SELECT id, name FROM resources WHERE name LIKE CONCAT('%', ?, '%') ORDER by name";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$needle]);
 
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $result[] = [$row['resource_id'], my_substr($row['name'], 0, 30)];
+            $result[] = [$row['id'], my_substr($row['name'], 0, 30)];
         }
 
         return $result;
