@@ -750,7 +750,7 @@ class RoomManager
             "INNER JOIN resources
                 ON resource_bookings.resource_id = resources.id
                 INNER JOIN resource_categories
-                ON resources_objects.category_id = resource_categories.id
+                ON resources.category_id = resource_categories.id
                 INNER JOIN resource_properties
                 ON resources.id = resource_properties.resource_id
                 INNER JOIN resource_property_definitions rpd

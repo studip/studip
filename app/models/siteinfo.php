@@ -515,7 +515,7 @@ class SiteinfoMarkupEngine {
                                          "title" => _("Wiki-Seiten"),
                                          "detail" => "",
                                          "constraint" => get_config('WIKI_ENABLE')];
-        $indicator['resource'] = ["count" => ['count_table_rows','resources_objects'],
+        $indicator['resource'] = ["count" => ['count_table_rows','resources'],
                                        "title" => _("Ressourcen-Objekte"),
                                        "detail" => _("von Stud.IP verwaltete Ressourcen wie Räume oder Geräte"),
                                        "constraint" => Config::get()->RESOURCES_ENABLE];

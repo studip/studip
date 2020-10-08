@@ -49,7 +49,7 @@ class ClipBoard {
                 "user" => "SELECT user_id, CONCAT(Nachname, ', ', Vorname) AS name FROM auth_user_md5 WHERE user_id  IN (?) ORDER BY name",
                 "inst" => "SELECT Institut_id, Name  FROM Institute WHERE Institut_id  IN (?) ORDER BY Name",
                 "date" => "SELECT termin_id, content  FROM termine WHERE termin_id IN (?) ORDER BY content",
-                "res" => "SELECT resource_id, name  FROM resources_objects WHERE resource_id  IN (?) ORDER BY name"
+                "res" => "SELECT id, name  FROM resources WHERE id  IN (?) ORDER BY name"
                 ];
     var $object_types_short = [
                 "sem" => "S",
