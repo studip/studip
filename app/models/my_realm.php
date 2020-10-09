@@ -399,8 +399,8 @@ class MyRealmModel
         if ($my_obj['modules']['wiki']) {
             if ($priviledged) {
                 $sql = "SELECT COUNT(DISTINCT keyword) AS count_d,
-                               COUNT(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue,
-                               MAX(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id !=:user_id), chdate, 0)) AS last_modified,
+                               COUNT(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue,
+                               MAX(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id !=:user_id), wiki.chdate, 0)) AS last_modified,
                                COUNT(keyword) AS count
                         FROM wiki
                         LEFT JOIN object_user_visits AS ouv ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.type = 'wiki')
@@ -408,8 +408,8 @@ class MyRealmModel
                         GROUP BY wiki.range_id";
             } else {
                 $sql = "SELECT COUNT(DISTINCT keyword) AS count_d,
-                               COUNT(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue,
-                               MAX(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id !=:user_id), chdate, 0)) AS last_modified,
+                               COUNT(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue,
+                               MAX(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id !=:user_id), wiki.chdate, 0)) AS last_modified,
                                COUNT(keyword) AS count
                         FROM wiki
                         LEFT JOIN wiki_page_config USING (range_id, keyword)
