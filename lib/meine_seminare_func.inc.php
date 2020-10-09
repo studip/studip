@@ -321,7 +321,7 @@ function get_my_obj_values (&$my_obj, $user_id)
     }
 
     //Ankündigungen
-    $db2->query(get_obj_clause('news_range a {ON_CLAUSE} LEFT JOIN news nw ON(a.news_id=nw.news_id AND UNIX_TIMESTAMP() BETWEEN date AND (date+expire))','range_id','nw.news_id',"(chdate > IFNULL(b.visitdate, $threshold) AND nw.user_id !='$user_id')",'news',false,false,'a.news_id', $user_id));
+    $db2->query(get_obj_clause('news_range a {ON_CLAUSE} LEFT JOIN news nw ON(a.news_id=nw.news_id AND UNIX_TIMESTAMP() BETWEEN date AND (date+expire))','range_id','nw.news_id',"(nw.chdate > IFNULL(b.visitdate, $threshold) AND nw.user_id !='$user_id')",'news',false,false,'a.news_id', $user_id));
     while($db2->next_record()) {
         $object_id = $db2->f('object_id');
         $my_obj[$object_id]["neuenews"] = $db2->f("neue");
