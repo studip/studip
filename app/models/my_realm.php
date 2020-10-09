@@ -138,12 +138,12 @@ class MyRealmModel
     {
         $sql = "SELECT
             COUNT(nw.news_id) as count,
-            MAX(IF ((chdate > IFNULL(b.visitdate, :threshold) AND nw.user_id !=:user_id), chdate, 0)) AS last_modified,
-            COUNT(IF((chdate > IFNULL(b.visitdate, :threshold) AND nw.user_id !=:user_id), nw.news_id, NULL)) AS neue
+            MAX(IF ((nw.chdate > IFNULL(b.visitdate, :threshold) AND nw.user_id !=:user_id), nw.chdate, 0)) AS last_modified,
+            COUNT(IF((nw.chdate > IFNULL(b.visitdate, :threshold) AND nw.user_id !=:user_id), nw.news_id, NULL)) AS neue
             FROM news_range a
             LEFT JOIN news nw ON(a . news_id = nw . news_id AND UNIX_TIMESTAMP() BETWEEN date AND (date + expire))
-            LEFT JOIN object_user_visits b ON(b . object_id = a . news_id AND b . user_id = :user_id AND b . type = 'news')
-            WHERE a . range_id = :course_id
+            LEFT JOIN object_user_visits b ON (b.object_id = a.news_id AND b.user_id = :user_id AND b.type = 'news')
+            WHERE a.range_id = :course_id
             GROUP BY a.range_id";
 
         $statement = DBManager::get()->prepare($sql);
