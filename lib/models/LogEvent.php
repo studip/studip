@@ -67,10 +67,12 @@ class LogEvent extends SimpleORMap implements PrivacyObject
      */
     public static function deleteExpired()
     {
-        $db = DBManager::get();
-        $sql = 'DELETE log_events FROM log_events JOIN log_actions USING(action_id)
-            WHERE expires > 0 AND mkdate + expires < UNIX_TIMESTAMP()';
-        return $db->exec($sql);
+        $sql = "DELETE log_events
+                FROM log_events
+                JOIN log_actions USING(action_id)
+                WHERE log_actions.expires > 0
+                  AND log_events.mkdate + log_actions.expires < UNIX_TIMESTAMP()";
+        return DBManager::get()->exec($sql);
     }
 
     /**
