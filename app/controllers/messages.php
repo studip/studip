@@ -166,13 +166,11 @@ class MessagesController extends AuthenticatedController {
 
         PageLayout::setTitle(_('Neue Nachricht schreiben'));
 
-        //the message-ID for the new message:
-        $this->message_id = Request::option('message_id') ?: md5(uniqid('neWMesSagE'));
-
-
         $this->to = [];
         $this->default_message = new Message();
-        $this->default_message->setId($this->default_message->getNewId());
+
+        //the message-ID for the new message:
+        $this->default_message->setId(Request::option('message_id', $this->default_message->getNewId()));
 
         //flag to determine if the message is forwarded or not:
         $forward_message = false;
