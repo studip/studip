@@ -34,7 +34,7 @@ class AbstractAPI
         // Normalize parameters
         if (Array.isArray(url)) {
             // Remove empty trailing chunks
-            while (url[url.lenth - 1] === '') {
+            while (url[url.length - 1] === '') {
                 delete url[url.length - 1];
             }
             // Convert array to string

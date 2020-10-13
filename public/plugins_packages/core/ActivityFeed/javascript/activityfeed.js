@@ -50,8 +50,10 @@
             STUDIP.ActivityFeed.polling = true;
 
             STUDIP.api.GET(['user', STUDIP.ActivityFeed.user_id, 'activitystream'], {
-                filtertype: filtertype,
-                scrollfrom: STUDIP.ActivityFeed.scrolledfrom
+                data: {
+                    filtertype: filtertype,
+                    scrollfrom: STUDIP.ActivityFeed.scrolledfrom
+                }
             }).done(function (activities) {
                 var stream        = STUDIP.ActivityFeed.getTemplate('activity_stream');
                 var activity      = STUDIP.ActivityFeed.getTemplate('activity');
