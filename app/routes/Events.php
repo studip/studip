@@ -153,13 +153,15 @@ class Events extends \RESTAPI\RouteMap
         if (\Config::get()->RESOURCES_ENABLE) {
 
             if ($val->getResourceID()) {
-                $resObj = \ResourceObject::Factory($val->getResourceID());
-                $room = _("Raum: ");
-                $room .= $resObj->getFormattedLink(TRUE, TRUE, TRUE, 'view_schedule', 'no_nav', $val->getStartTime());
-            }
-
-            else {
-
+                $resObj = Resource::find($val->getResourceID());
+                if ($resObj) {
+                    $room_object = $resObj->getDerivedClassInstance();
+                    if ($room_object instanceof Room) {
+                        $room = _("Raum: ");
+                        $room .= $room_object->getActionURL('booking_plan');
+                    }
+                }
+            } else {
                 if (\Config::get()->RESOURCES_SHOW_ROOM_NOT_BOOKED_HINT) {
                     $room = '('._("kein gebuchter Raum").')';
                 } else {

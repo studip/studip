@@ -468,11 +468,17 @@ class Course_DatesController extends AuthenticatedController
 
             $row[] = trim($related_groups);
 
+            $room = null;
             if ($date->resource_id) {
-                $resource_object = ResourceObject::Factory($date->resource_id);
-                $row[] = $resource_object->getName();
-                $row[] = $resource_object->getDescription();
-                $row[] = $resource_object->getSeats();
+                $resource_object = Resource::find($date->resource_id);
+                if ($resource_object) {
+                    $room = $resource_object->getDerivedClassInstance();
+                }
+            }
+            if ($room instanceof Room) {
+                $row[] = $room->name;
+                $row[] = $room->description;
+                $row[] = $room->seats;
             } else {
                 $row[] = $date->raum;
                 $row[] = '';
