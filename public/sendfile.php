@@ -44,7 +44,12 @@ page_open(["sess" => "Seminar_Session",
                 "perm" => "Seminar_Perm",
                 "user" => "Seminar_User"]);
 
-include 'lib/seminar_open.php';
+//Load plugins, unless they are disabled via an URL parameter.
+if (Request::int('disable_plugins') !== null && ($user->id === 'nobody' || $perm->have_perm('root'))) {
+    // deactivate non-core plugins
+    PluginManager::getInstance()->setPluginsDisabled(Request::int('disable_plugins'));
+}
+PluginEngine::loadPlugins();
 
 //basename() needs setlocale()
 init_i18n($_SESSION['_language']);
