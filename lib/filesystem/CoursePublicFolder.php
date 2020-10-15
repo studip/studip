@@ -17,6 +17,7 @@ class CoursePublicFolder extends StandardFolder
 
     public static $sorter = 7;
 
+
     /**
      * Returns a localised name of the CoursePublicFolder type.
      *
@@ -24,7 +25,7 @@ class CoursePublicFolder extends StandardFolder
      */
     static public function getTypeName()
     {
-        return _('Ordner für öffentlich zugängliche Daten');
+        return _('Ordner für öffentlich zugängliche Dateien');
     }
 
     /**
@@ -49,8 +50,26 @@ class CoursePublicFolder extends StandardFolder
         return Icon::create($shape, $role);
     }
 
+
+    /**
+     * Determines, if the folder is accessible worldwide.
+     *
+     * @returns bool True, if the folder is accessible worldwide,
+     *     false otherwise.
+     */
+    public function hasWorldwideAccess()
+    {
+        return $this->folderdata['data_content']['worldwide_access']
+             ? true
+             : false;
+    }
+
+
     /**
      * CoursePublicFolders are visible for all logged in users.
+     * If ENABLE_FREE_ACCESS is set to 'courses_only' or '1', the folder is
+     * visible for everyone. In case, the worldwide access option for the
+     * folder is set, the folder is visible worldwide.
      *
      * @param string $user_id The user who wishes to see the folder.
      *
@@ -59,6 +78,9 @@ class CoursePublicFolder extends StandardFolder
     public function isVisible($user_id)
     {
         if ($user_id === null || $user_id === 'nobody') {
+            if ($this->hasWorldwideAccess()) {
+                return true;
+            }
             $range = $this->getRangeObject();
             return Config::get()->ENABLE_FREE_ACCESS && isset($range) && $range->lesezugriff == 0;
         }
@@ -87,6 +109,33 @@ class CoursePublicFolder extends StandardFolder
     {
         return _('Dateien aus diesem Ordner werden auf der Detailseite der Veranstaltung zum Download angeboten.');
     }
+
+
+    /**
+     * Returns the edit template for this folder type.
+     *
+     * @return Flexi_Template
+     */
+    public function getEditTemplate()
+    {
+        $template = $GLOBALS['template_factory']->open('filesystem/course_public_folder/edit.php');
+        $template->worldwide_access = $this->folderdata['data_content']['worldwide_access'];
+        return $template;
+    }
+
+    /**
+     * Sets the data from a submitted edit template.
+     *
+     * @param array $request The data from the edit template.
+     *
+     * @return FolderType
+     */
+    public function setDataFromEditTemplate($request)
+    {
+        $this->folderdata['data_content']['worldwide_access'] = $request['course_public_folder_worldwide_access'];
+        return parent::setDataFromEditTemplate($request);
+    }
+
 
     /**
      * Files in CoursePublicFolders are downloadable for all logged in users.
