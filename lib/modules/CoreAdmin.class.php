@@ -1,5 +1,4 @@
 <?php
-
 /*
  *  Copyright (c) 2012  Rasmus Fuhse <fuhse@data-quest.de>
  *
@@ -8,17 +7,17 @@
  *  published by the Free Software Foundation; either version 2 of
  *  the License, or (at your option) any later version.
  */
-
-class CoreAdmin implements StudipModule {
-
-    function getIconNavigation($course_id, $last_visit, $user_id) {
+class CoreAdmin implements StudipModule
+{
+    public function getIconNavigation($course_id, $last_visit, $user_id)
+    {
         $navigation = new Navigation(_('Verwaltung'), 'dispatch.php/course/management');
         $navigation->setImage(Icon::create('admin', Icon::ROLE_INACTIVE, ['title' => _('Verwaltung')]));
         return $navigation;
     }
 
-    function getTabNavigation($course_id) {
-
+    public function getTabNavigation($course_id)
+    {
         $sem_create_perm = in_array(Config::get()->SEM_CREATE_PERM, ['root','admin','dozent']) ? Config::get()->SEM_CREATE_PERM : 'dozent';
 
         if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id)) {
@@ -143,7 +142,7 @@ class CoreAdmin implements StudipModule {
     /**
      * @see StudipModule::getMetadata()
      */
-    function getMetadata()
+    public function getMetadata()
     {
         return [];
     }

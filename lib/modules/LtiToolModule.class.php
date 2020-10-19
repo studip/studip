@@ -39,7 +39,10 @@ class LtiToolModule extends StudIPPlugin implements StandardPlugin, SystemPlugin
     {
         $title = CourseConfig::get($course_id)->LTI_TOOL_TITLE;
         $changed = LtiData::countBySQL('course_id = ? AND chdate > ?', [$course_id, $last_visit]);
-        $icon = Icon::create('link-extern', $changed ? Icon::ROLE_NEW : Icon::ROLE_INACTIVE);
+
+        $icon = $changed
+              ? Icon::create('link-extern+new', Icon::ROLE_NEW)
+              : Icon::create('link-extern', Icon::ROLE_INACTIVE);
 
         $navigation = new Navigation($title, 'dispatch.php/course/lti');
         $navigation->setImage($icon, ['title' => $title]);

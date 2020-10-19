@@ -9,13 +9,63 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreOverview implements StudipModule {
+class CoreOverview implements StudipModule
+{
+    public function getIconNavigation($course_id, $last_visit, $user_id)
+    {
+        $sql = "SELECT COUNT(nw.news_id) AS count,
+                       COUNT(IF((nw.chdate > :threshold AND nw.user_id !=:user_id), nw.news_id, NULL)) AS neue
+                FROM news_range AS a
+                LEFT JOIN news AS nw
+                  ON (a.news_id = nw.news_id AND UNIX_TIMESTAMP() BETWEEN date AND (date + expire))
+                LEFT JOIN object_user_visits AS b
+                  ON (b.object_id = a.news_id AND b.user_id = :user_id AND b.type = 'news')
+                WHERE a.range_id = :course_id
+                GROUP BY a.range_id";
 
-    function getIconNavigation($course_id, $last_visit, $user_id) {
-        return null;
+        $statement = DBManager::get()->prepare($sql);
+        $statement->bindValue(':user_id', $user_id);
+        $statement->bindValue(':course_id', $course_id);
+        $statement->bindValue(':threshold', $last_visit);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            return null;
+        }
+
+        $nav = new Navigation('news', '');
+        if ($result['neue']) {
+            $nav->setURL('?new_news=true');
+            $nav->setImage(Icon::create('news+new', Icon::ROLE_ATTENTION), [
+                'title' => sprintf(
+                    ngettext(
+                        '%1$d Ankündigung, %2$d neue',
+                        '%1$d Ankündigungen, %2$d neue',
+                        $result['count']
+                    ),
+                    $result['count'],
+                    $result['neue']
+                )
+            ]);
+            $nav->setBadgeNumber($result['neue']);
+        } elseif ($result['count']) {
+            $nav->setImage(Icon::create('news', Icon::ROLE_INACTIVE), [
+                'title' => sprintf(
+                    ngettext(
+                        '%d Ankündigung',
+                        '%d Ankündigungen',
+                        $result['count']
+                    ),
+                    $result['count']
+                )
+            ]);
+        }
+        return $nav;
     }
 
-    function getTabNavigation($course_id) {
+    public function getTabNavigation($course_id)
+    {
         $object_type = get_object_type($course_id, ['sem', 'inst']);
         if ($object_type === 'sem') {
             $course = Course::find($course_id);
@@ -26,8 +76,8 @@ class CoreOverview implements StudipModule {
         }
 
         $navigation = new Navigation(_('Übersicht'));
-        $navigation->setImage(Icon::create('seminar', 'info_alt'));
-        $navigation->setActiveImage(Icon::create('seminar', 'info'));
+        $navigation->setImage(Icon::create('seminar', Icon::ROLE_INFO_ALT));
+        $navigation->setActiveImage(Icon::create('seminar', Icon::ROLE_INFO));
         if ($object_type !== 'sem') {
             $navigation->addSubNavigation('info', new Navigation(_('Kurzinfo'), 'dispatch.php/institute/overview'));
             $navigation->addSubNavigation('courses', new Navigation(_('Veranstaltungen'), 'show_bereich.php?level=s&id='.$course_id));
@@ -48,7 +98,8 @@ class CoreOverview implements StudipModule {
     /**
      * @see StudipModule::getMetadata()
      */
-    function getMetadata() {
-         return [];
-     }
+    public function getMetadata()
+    {
+        return [];
+    }
 }

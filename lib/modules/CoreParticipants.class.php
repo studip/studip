@@ -14,9 +14,9 @@ class CoreParticipants implements StudipModule
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         $navigation = new Navigation(_('Teilnehmende'), 'dispatch.php/course/members');
-        $navigation->setImage(Icon::create('persons', 'inactive'));
+        $navigation->setImage(Icon::create('persons', Icon::ROLE_INACTIVE));
         if ($last_visit && CourseMember::countBySQL("seminar_id = :course_id AND mkdate >= :last_visit", ['last_visit' => $last_visit, 'course_id' => $course_id]) > 0) {
-            $navigation->setImage(Icon::create('persons', 'attention'));
+            $navigation->setImage(Icon::create('persons+new', Icon::ROLE_ATTENTION));
         }
         return $navigation;
     }
@@ -25,10 +25,10 @@ class CoreParticipants implements StudipModule
     {
         #$navigation = new AutoNavigation(_('Teilnehmende'));
         $navigation = new Navigation(_('Teilnehmende'));
-        $navigation->setImage(Icon::create('persons', 'info_alt'));
-        $navigation->setActiveImage(Icon::create('persons', 'info'));
+        $navigation->setImage(Icon::create('persons', Icon::ROLE_INFO_ALT));
+        $navigation->setActiveImage(Icon::create('persons', Icon::ROLE_INFO));
 
-        $course  = Course::find($course_id);
+        $course = Course::find($course_id);
 
         // Only courses without children have a regular member list and statusgroups.
         if (!$course->getSemClass()->isGroup()) {
@@ -78,7 +78,7 @@ class CoreParticipants implements StudipModule
                                    'es die Möglichkeiten für Lehrende, allen eine Rundmail zukommen zu lassen '.
                                    'bzw. einzelne Teilnehmende separat anzuschreiben.'),
             'category' => _('Lehr- und Lernorganisation'),
-            'icon' => Icon::create('persons', 'info'),
+            'icon' => Icon::create('persons', Icon::ROLE_INFO),
             'screenshots' => [
                 'path' => 'plus/screenshots/TeilnehmerInnen',
                 'pictures' => [

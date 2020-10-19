@@ -60,7 +60,9 @@ class GradebookModule extends StudIPPlugin implements SystemPlugin, StandardPlug
             );
         }
 
-        $icon = Icon::create('assessment', $changed ? Icon::ROLE_NEW : Icon::ROLE_INACTIVE);
+        $icon = $changed
+              ? Icon::create('assessment+new', Icon::ROLE_NEW)
+              : Icon::create('assessment', Icon::ROLE_INACTIVE);
 
         $navigation = new Navigation($title, 'dispatch.php/course/gradebook/overview');
         $navigation->setImage($icon, ['title' => $title]);
@@ -144,7 +146,7 @@ class GradebookModule extends StudIPPlugin implements SystemPlugin, StandardPlug
             'description' => _('Dieses Modul ermöglicht die manuelle und automatische Erfassung von Noten und Leistungen.'),
             'category' => _('Lehr- und Lernorganisation'),
             'keywords' => _('automatische und manuelle Erfassung von gewichteten Leistungen;Export von Leistungen;persönliche Fortschrittskontrolle'),
-            'icon' => Icon::create('assessment', 'info'),
+            'icon' => Icon::create('assessment', Icon::ROLE_INFO),
             'screenshots' => [
                 'path' => '../../assets/images/plus/screenshots/Gradebook',
                 'pictures' => [

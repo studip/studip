@@ -11,17 +11,16 @@
 
 class CoreDocuments implements StudipModule
 {
-
-    function getIconNavigation($course_id, $last_visit, $user_id)
+    public function getIconNavigation($course_id, $last_visit, $user_id)
     {
-        $range_type = get_object_type($course_id, ['sem', 'inst']) == 'sem' ? 'course' : 'institute';
+        $range_type = get_object_type($course_id, ['sem', 'inst']) === 'sem' ? 'course' : 'institute';
         $navigation = new Navigation(
             _('Dateibereich'),
-            "dispatch.php/".$range_type."/files"
+            "dispatch.php/{$range_type}/files"
         );
-        $navigation->setImage(Icon::create('files', 'inactive'));
+        $navigation->setImage(Icon::create('files', Icon::ROLE_INACTIVE));
         $file_refs = FileRef::findBySQL("INNER JOIN folders ON (folders.id = file_refs.folder_id) WHERE folders.range_type = :range_type AND folders.range_id = :context_id AND file_refs.mkdate >= :last_visit AND file_refs.user_id != :me", [
-            'me' => $user_id,
+            'me'         => $user_id,
             'last_visit' => $last_visit,
             'context_id' => $course_id,
             'range_type' => $range_type
@@ -29,9 +28,10 @@ class CoreDocuments implements StudipModule
         foreach ($file_refs as $fileref) {
             $foldertype = $fileref->folder->getTypedFolder();
             if ($foldertype->isFileDownloadable($fileref->getId(), $user_id)) {
-                $navigation->setImage(Icon::create('files', 'attention'));
-                $navigation->setTitle(_("Es gibt neue Dateien."));
-                $navigation->setURL("dispatch.php/".$range_type."/files/flat?select=new");
+                $navigation->setImage(Icon::create('files+new', Icon::ROLE_ATTENTION), [
+                    'title' => _('Es gibt neue Dateien.'),
+                ]);
+                $navigation->setURL("dispatch.php/{$range_type}/files/flat", ['select' => 'new']);
                 break;
             }
         }
@@ -39,19 +39,19 @@ class CoreDocuments implements StudipModule
         return $navigation;
     }
 
-    function getTabNavigation($course_id)
+    public function getTabNavigation($course_id)
     {
-        $range_type = get_object_type($course_id, ['sem', 'inst']) == 'sem' ? 'course' : 'institute';
-        $newFilesNavigation = new Navigation(_('Dateien'), 'dispatch.php/' . $range_type . '/files');
-        $newFilesNavigation->setImage(Icon::create('files', 'info_alt'));
-        $newFilesNavigation->setActiveImage(Icon::create('files', 'info'));
+        $range_type = get_object_type($course_id, ['sem', 'inst']) === 'sem' ? 'course' : 'institute';
+        $newFilesNavigation = new Navigation(_('Dateien'), "dispatch.php/{$range_type}/files");
+        $newFilesNavigation->setImage(Icon::create('files', Icon::ROLE_INFO_ALT));
+        $newFilesNavigation->setActiveImage(Icon::create('files', Icon::ROLE_INFO));
         return ['files' => $newFilesNavigation];
     }
 
     /**
      * @see StudipModule::getMetadata()
      */
-    function getMetadata()
+    public function getMetadata()
     {
         return [
             'summary'          => _('Austausch von Dateien'),
@@ -82,7 +82,7 @@ class CoreDocuments implements StudipModule
                 'sofort angezeigt bzw. abspielbar dargestellt. Über das PlugIn "Dateiordnerberechtigungen" ' .
                 'können Im Dateibereich bestimmte Rechte (r, w, x, f) für Studierende, wie z.B. das ' .
                 'Leserecht (r), festgelegt werden.'),
-            'icon'             => Icon::create('files', 'info'),
+            'icon'             => Icon::create('files', Icon::ROLE_INFO),
             'screenshots'      => [
                 'path'     => 'plus/screenshots/Dateibereich_-_Dateiordnerberechtigung',
                 'pictures' => [

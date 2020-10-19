@@ -36,43 +36,45 @@ class CoreScm implements StudipModule
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if ($result) {
-            $scm = StudipScmEntry::find($result['scm_id']);
-
-            $nav = new Navigation('scm', 'dispatch.php/course/scm');
-
-            if ($result['count']) {
-                if ($result['neue']) {
-                    $image = Icon::create('infopage+new', Icon::ROLE_NEW);
-                    $nav->setBadgeNumber($result['neue']);
-                    if ($result['count'] == 1) {
-                        $title = $scm->tab_name . _(' (geändert)');
-                    } else {
-                        $title = sprintf(
-                            _('%1$d Einträge insgesamt, %2$d neue'),
-                            $result['count'],
-                            $result['neue']
-                        );
-                    }
-                } else {
-                    $image = Icon::create('infopage', Icon::ROLE_INACTIVE);
-                    if ($result['count'] == 1) {
-                        $title = $scm->tab_name;
-                    } else {
-                        $title = sprintf(
-                            ngettext(
-                                '%d Eintrag',
-                                '%d Einträge',
-                                $result['count']
-                            ),
-                            $result['count']
-                        );
-                    }
-                }
-                $nav->setImage($image, ['title' => $title]);
-            }
-            return $nav;
+        if (!$result) {
+            return null;
         }
+
+        $scm = StudipScmEntry::find($result['scm_id']);
+
+        $nav = new Navigation('scm', 'dispatch.php/course/scm');
+
+        if ($result['count']) {
+            if ($result['neue']) {
+                $image = Icon::create('infopage+new', Icon::ROLE_NEW);
+                $nav->setBadgeNumber($result['neue']);
+                if ($result['count'] == 1) {
+                    $title = $scm->tab_name . _(' (geändert)');
+                } else {
+                    $title = sprintf(
+                        _('%1$d Einträge insgesamt, %2$d neue'),
+                        $result['count'],
+                        $result['neue']
+                    );
+                }
+            } else {
+                $image = Icon::create('infopage', Icon::ROLE_INACTIVE);
+                if ($result['count'] == 1) {
+                    $title = $scm->tab_name;
+                } else {
+                    $title = sprintf(
+                        ngettext(
+                            '%d Eintrag',
+                            '%d Einträge',
+                            $result['count']
+                        ),
+                        $result['count']
+                    );
+                }
+            }
+            $nav->setImage($image, ['title' => $title]);
+        }
+        return $nav;
     }
 
     public function getTabNavigation($course_id)
@@ -130,7 +132,7 @@ class CoreScm implements StudipModule
                                     'Oft wird die Seite für die Angabe von Literatur genutzt als Alternative zur Funktion '.
                                     'Literatur. Sie kann aber auch für andere beliebige Zusatzinformationen (Links, Protokolle '.
                                     'etc.) verwendet werden.'),
-            'icon' => Icon::create('infopage', 'info'),
+            'icon' => Icon::create('infopage', Icon::ROLE_INFO),
             'screenshots' => [
                 'path' => 'plus/screenshots/Freie_Informationsseite',
                 'pictures' => [

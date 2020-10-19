@@ -48,7 +48,7 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
                 LEFT JOIN object_user_visits b ON (b.object_id = a.object_id AND b.user_id = :user_id AND b.type ='ilias_interface')
                 WHERE a.object_id = :course_id
                 GROUP BY a.object_id";
-        
+
         $statement = DBManager::get()->prepare($sql);
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $course_id);
@@ -56,93 +56,77 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if (!empty($result)) {
-            $title = CourseConfig::get($course_id)->getValue('ILIAS_INTERFACE_MODULETITLE');
-            $nav = new Navigation($title, 'dispatch.php/course/ilias_interface/index');
-            if ((int)$result['neue']) {
-                $nav->setImage(
-                    Icon::create(
-                        'learnmodule+new',
-                        'attention',
-                        [
-                            'title' => sprintf(
-                                ngettext(
-                                    '%1$d Lernobjekt, %2$d neues',
-                                    '%1$d Lernobjekte, %2$d neue',
-                                    $result['count_modules']
-                                ),
-                                $result['count_modules'],
-                                $result['neue']
-                            )
-                        ]
-                    )
-                );
-            } elseif ((int)$result['count_modules']) {
-                $nav->setImage(
-                    Icon::create(
-                        'learnmodule',
-                        'inactive',
-                        [
-                            'title' => sprintf(
-                                ngettext(
-                                    '%d Lernobjekt',
-                                    '%d Lernobjekte',
-                                    $result['count_modules']
-                                ),
-                                $result['count_modules']
-                            )
-                        ]
-                    )
-                );
-            } elseif ((int)$result['count_courses']) {
-                $nav->setImage(
-                    Icon::create(
-                        'learnmodule',
-                        'inactive',
-                        [
-                            'title' => sprintf(
-                                ngettext(
-                                    '%d ILIAS-Kurs',
-                                    '%d ILIAS-Kurse',
-                                    $result['count_courses']
-                                ),
-                                $result['count_courses']
-                            )
-                        ]
-                    )
-                );
-            }
-            return $nav;
+        if (!$result) {
+            return null;
         }
+
+        $title = CourseConfig::get($course_id)->getValue('ILIAS_INTERFACE_MODULETITLE');
+        $nav = new Navigation($title, 'dispatch.php/course/ilias_interface/index');
+        if ((int)$result['neue']) {
+            $nav->setImage(Icon::create('learnmodule+new', Icon::ROLE_ATTENTION), [
+                'title' => sprintf(
+                    ngettext(
+                        '%1$d Lernobjekt, %2$d neues',
+                        '%1$d Lernobjekte, %2$d neue',
+                        $result['count_modules']
+                    ),
+                    $result['count_modules'],
+                    $result['neue']
+                )
+            ]);
+        } elseif ((int)$result['count_modules']) {
+            $nav->setImage(Icon::create('learnmodule', Icon::ROLE_INACTIVE), [
+                'title' => sprintf(
+                    ngettext(
+                        '%d Lernobjekt',
+                        '%d Lernobjekte',
+                        $result['count_modules']
+                    ),
+                    $result['count_modules']
+                )
+            ]);
+        } elseif ((int)$result['count_courses']) {
+            $nav->setImage(Icon::create('learnmodule', Icon::ROLE_INACTIVE), [
+                'title' => sprintf(
+                    ngettext(
+                        '%d ILIAS-Kurs',
+                        '%d ILIAS-Kurse',
+                        $result['count_courses']
+                    ),
+                    $result['count_courses']
+                )
+            ]);
+        }
+        return $nav;
     }
 
     public function getTabNavigation($course_id)
     {
         if (!Config::get()->ILIAS_INTERFACE_ENABLE) {
-            return;
-        }
-        $ilias_interface_config = Config::get()->ILIAS_INTERFACE_BASIC_SETTINGS;
-        if (count($ilias_interface_config)) {
-            $moduletitle = Config::get()->getValue('ILIAS_INTERFACE_MODULETITLE');
-            if ($ilias_interface_config['edit_moduletitle']) {
-                $moduletitle = CourseConfig::get($course_id)->getValue('ILIAS_INTERFACE_MODULETITLE');
-            }
-
-            $navigation = new Navigation($moduletitle);
-            $navigation->setImage(Icon::create('learnmodule', 'info_alt'));
-            $navigation->setActiveImage(Icon::create('learnmodule', 'info'));
-            if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id) || ($GLOBALS['perm']->have_studip_perm('autor', $course_id) && IliasObjectConnections::isCourseConnected($course_id))) {
-                if (get_object_type($course_id, ['inst'])) {
-                    $navigation->addSubNavigation('view', new Navigation(_('Lernobjekte dieser Einrichtung'), 'dispatch.php/course/ilias_interface/index/' . $course_id));
-                } else {
-                    $navigation->addSubNavigation('view', new Navigation(_('Lernobjekte dieser Veranstaltung'), 'dispatch.php/course/ilias_interface/index/' . $course_id));
-                }
-            }
-
-            return ['ilias_interface' => $navigation];
-        } else {
             return null;
         }
+        $ilias_interface_config = Config::get()->ILIAS_INTERFACE_BASIC_SETTINGS;
+        if (count($ilias_interface_config) === 0) {
+            return null;
+        }
+
+        $moduletitle = Config::get()->ILIAS_INTERFACE_MODULETITLE;
+        if ($ilias_interface_config['edit_moduletitle']) {
+            $moduletitle = CourseConfig::get($course_id)->ILIAS_INTERFACE_MODULETITLE;
+        }
+
+        $navigation = new Navigation($moduletitle);
+        $navigation->setImage(Icon::create('learnmodule', Icon::ROLE_INFO_ALT));
+        $navigation->setActiveImage(Icon::create('learnmodule', Icon::ROLE_INFO));
+        if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id) || ($GLOBALS['perm']->have_studip_perm('autor', $course_id) && IliasObjectConnections::isCourseConnected($course_id))) {
+            if (get_object_type($course_id, ['inst'])) {
+                $navigation->addSubNavigation('view', new Navigation(_('Lernobjekte dieser Einrichtung'), 'dispatch.php/course/ilias_interface/index/' . $course_id));
+            } else {
+                $navigation->addSubNavigation('view', new Navigation(_('Lernobjekte dieser Veranstaltung'), 'dispatch.php/course/ilias_interface/index/' . $course_id));
+            }
+        }
+
+        return ['ilias_interface' => $navigation];
     }
 
     /**
@@ -161,7 +145,7 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
             'keywords'         => _('Einbindung von ILIAS-Lernobjekten;
                             Zugang zu ILIAS;
                             Aufgaben- und Test-Erstellung'),
-            'icon'             => Icon::create('learnmodule', 'info'),
+            'icon'             => Icon::create('learnmodule', Icon::ROLE_INFO),
             'descriptionshort' => _('Zugang zu extern erstellten ILIAS-Lernobjekten'),
             'descriptionlong'  => _('Über diese Schnittstelle ist es möglich, Lernobjekte aus ' .
                 'einer ILIAS-Installation (> 5.3.8) in Stud.IP zur Verfügung ' .

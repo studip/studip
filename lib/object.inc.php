@@ -142,6 +142,61 @@ function object_get_visit($object_id, $type, $mode = "last", $open_object_id = '
 }
 
 /**
+ * This function gets the (last) visit time for an array of objects.
+ * If no information is found, the last visit of the open-object can bes used
+ *
+ * @param  array   $object_ids The ids of the objects (i.e. seminar_id, news_id, vote_id)
+ * @param  string  $type       The type of visited objects or module (i.e. news, documents, wiki)
+ * @param  string  $mode       The return-mode: 'last' for the last visit, other for actual-visit;
+ *                             pass null to get an array of visit date and last visit date
+ * @param  mixed   $user_id    User id to gather the data for, pass null for current user
+ * @return array   associate array with the object id as key and the according data as value
+ *
+ * @note This function will respect the visit threshold defined in NEW_INDICATOR_THRESHOLD config.
+ */
+function get_objects_visits(array $object_ids, $type, $mode = 'last', $user_id = null)
+{
+    $threshold  = object_get_visit_threshold();
+    $thresholds = array_fill(
+        0,
+        count($object_ids),
+        $mode === null ? ['last_visitdate' => $threshold, 'visitdate' => $threshold] : $threshold
+    );
+    $result = array_combine(
+        $object_ids,
+        $thresholds
+    );
+
+    $query = "SELECT object_id, visitdate, last_visitdate
+              FROM object_user_visits
+              WHERE object_id IN (:ids)
+                AND type = :type
+                AND user_id = :user_id";
+    $statement = DBManager::get()->prepare($query);
+    $statement->bindValue(':ids', $object_ids);
+    $statement->bindValue(':type', $type);
+    $statement->bindValue(':user_id', $user_id ?? $GLOBALS['user']->id);
+    $statement->execute();
+    $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+    foreach ($statement as $row) {
+        if ($mode === null) {
+            $return = [
+                'visitdate'      => max($threshold, (int) $row['visitdate']),
+                'last_visitdate' => max($threshold, (int) $row['last_visitdate']),
+            ];
+        } elseif ($mode === 'last') {
+            $return = max($threshold, (int) $row['last_visitdate']);
+        } else {
+            $return = max($threshold, (int) $row['visitdate']);
+        }
+        $result[$row['object_id']] = $return;
+    }
+
+    return $result;
+}
+
+/**
  * This function gets the cutoff value for object visit dates as defined by the NEW_INDICATOR_THRESHOLD setting.
  *
  * @return   int the timestamp of the oldest possible visit or 0

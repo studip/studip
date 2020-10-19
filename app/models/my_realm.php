@@ -29,517 +29,6 @@ require_once 'lib/object.inc.php';
 class MyRealmModel
 {
     /**
-     * Checks for changes in folders for a course.
-     * @param mixed $my_obj
-     * @param string $user_id
-     * @param string $object_id
-     */
-    public static function checkDocuments(&$my_obj, $user_id, $object_id)
-    {
-        if ($my_obj["modules"]["documents"]) {
-            $db = DBManager::get();
-
-            if (!$GLOBALS['perm']->have_studip_perm('tutor', $object_id, $user_id)) {
-                $readable_folders = array_keys(
-                    FileManager::getReadableFolders(
-                        Folder::findTopFolder($object_id)->getTypedFolder(), $user_id)
-                );
-
-                if (empty($readable_folders)) {
-                    return null;
-                }
-            }
-
-            $query = "SELECT COUNT(fr.id) as count,
-                    COUNT(IF((fr.chdate > IFNULL(ouv.visitdate, :threshold)
-                    AND fr.user_id != :user_id), fr.id, NULL)) AS neue,
-                    MAX(IF((fr.chdate > IFNULL(ouv.visitdate, :threshold)
-                    AND fr.user_id != :user_id), fr.chdate, 0)) AS last_modified
-                FROM folders a
-                INNER JOIN file_refs fr ON (fr.folder_id=a.id)
-                LEFT JOIN object_user_visits ouv ON (ouv.object_id = a.range_id AND ouv.user_id = :user_id AND ouv.type ='documents')
-                WHERE a.range_id = :object_id " . ($readable_folders ? "AND a.id IN (:readable_folders)" : "");
-
-            $result = $db->fetchOne($query, [
-                ':user_id'            => $user_id,
-                ':threshold'          => object_get_visit_threshold(),
-                ':object_id'          => $object_id,
-                ':readable_folders' => $readable_folders
-            ]);
-
-            if (!empty($result)) {
-                if (!is_null($result['last_modified']) && (int)$result['last_modified'] != 0) {
-                    if ($my_obj['last_modified'] < $result['last_modified']) {
-                        $my_obj['last_modified'] = $result['last_modified'];
-                    }
-                }
-
-
-                $navigation = new Navigation('files');
-                if ($result['neue'] > 0) {
-                    $navigation->setURL(
-                        URLHelper::getURL(
-                            'dispatch.php/' . ($my_obj["obj_type"] == 'sem' ? 'course' : 'institute') . '/files/flat',
-                            [
-                                'select' => 'new'
-                            ]
-                        )
-                    );
-
-                    $navigation->setImage(
-                        Icon::create(
-                            'files+new',
-                            'attention',
-                            [
-                                'title' => sprintf(
-                                    _('%s Datei(en), %s neue'),
-                                    $result['count'],
-                                    $result['neue']
-                                )
-                            ]
-                        )
-                    );
-
-                    $navigation->setBadgeNumber($result['neue']);
-                } elseif ($result['count']) {
-                    $navigation->setURL(
-                        URLHelper::getURL(
-                            'dispatch.php/' . ($my_obj["obj_type"] == 'sem' ? 'course' : 'institute') . '/files/index'
-                        )
-                    );
-                    $navigation->setImage(
-                        Icon::create(
-                            'files',
-                            'inactive',
-                            [
-                                'title' => sprintf(
-                                    _('%s Datei(en)'),
-                                    $result['count']
-                                )
-                            ]
-                        )
-                    );
-                }
-                return $navigation;
-            }
-        }
-
-        return null;
-    }
-
-
-    /**
-     * Check for new news
-     * @param      $my_obj
-     * @param      $user_id
-     * @param null $modules
-     */
-    public static function checkOverview(&$my_obj, $user_id, $object_id)
-    {
-        $sql = "SELECT
-            COUNT(nw.news_id) as count,
-            MAX(IF ((nw.chdate > IFNULL(b.visitdate, :threshold) AND nw.user_id !=:user_id), nw.chdate, 0)) AS last_modified,
-            COUNT(IF((nw.chdate > IFNULL(b.visitdate, :threshold) AND nw.user_id !=:user_id), nw.news_id, NULL)) AS neue
-            FROM news_range a
-            LEFT JOIN news nw ON(a . news_id = nw . news_id AND UNIX_TIMESTAMP() BETWEEN date AND (date + expire))
-            LEFT JOIN object_user_visits b ON (b.object_id = a.news_id AND b.user_id = :user_id AND b.type = 'news')
-            WHERE a.range_id = :course_id
-            GROUP BY a.range_id";
-
-        $statement = DBManager::get()->prepare($sql);
-        $statement->bindValue(':user_id', $user_id);
-        $statement->bindValue(':course_id', $object_id);
-        $statement->bindValue(':threshold', object_get_visit_threshold());
-        $statement->execute();
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-        if (!empty($result)) {
-            if ($my_obj['last_modified'] < $result['last_modified']) {
-                $my_obj['last_modified'] = $result['last_modified'];
-            }
-            $nav = new Navigation('news', '');
-            if ($result['neue']) {
-                $nav->setURL('?new_news=true');
-                $nav->setImage(
-                    Icon::create(
-                        'news+new',
-                        'attention',
-                        [
-                            'title' => sprintf(
-                                ngettext(
-                                    '%1$d Ankündigung, %2$d neue',
-                                    '%1$d Ankündigungen, %2$d neue',
-                                    $result['count']
-                                ),
-                                $result['count'],
-                                $result['neue']
-                            )
-                        ]
-                    )
-                );
-                $nav->setBadgeNumber($result['neue']);
-            } elseif ($result['count']) {
-                $nav->setImage(
-                    Icon::create(
-                        'news',
-                        'inactive',
-                        [
-                            'title' => sprintf(
-                                ngettext(
-                                    '%d Ankündigung',
-                                    '%d Ankündigungen',
-                                    $result['count']
-                                ),
-                                $result['count']
-                            )
-                        ]
-                    )
-                );
-            }
-            return $nav;
-        }
-        return null;
-    }
-
-
-    /**
-     * Check SCM for news
-     * @param      $my_obj
-     * @param      $user_id
-     * @param null $modules
-     */
-    public static function checkScm(&$my_obj, $user_id, $object_id)
-    {
-        if ($my_obj["modules"]["scm"]) {
-            $sql = "SELECT scm_id,
-                           SUM(IF(content != '', 1, 0)) AS count,
-                           SUM(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id != :user_id), IF(content !='', 1, 0), NULL)) AS neue,
-                           MAX(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id != :user_id), chdate, 0)) AS last_modified
-                    FROM scm
-                    LEFT JOIN object_user_visits AS ouv
-                      ON ouv.object_id = scm.range_id
-                         AND ouv.user_id = :user_id
-                         AND ouv.type = 'scm'
-                    WHERE scm.range_id = :course_id
-                    GROUP BY scm.range_id";
-
-            $statement = DBManager::get()->prepare($sql);
-            $statement->bindValue(':user_id', $user_id);
-            $statement->bindValue(':course_id', $object_id);
-            $statement->bindValue(':threshold', object_get_visit_threshold());
-            $statement->execute();
-            $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-
-            if ($result) {
-                $scm = StudipScmEntry::find($result['scm_id']);
-
-                if ($my_obj['last_modified'] < $result['last_modified']) {
-                    $my_obj['last_modified'] = $result['last_modified'];
-                }
-
-                $nav = new Navigation('scm', 'dispatch.php/course/scm');
-
-                if ($result['count']) {
-                    if ($result['neue']) {
-                        $image = Icon::create('infopage+new', Icon::ROLE_NEW);
-                        $nav->setBadgeNumber($result['neue']);
-                        if ($result['count'] == 1) {
-                            $title = $scm->tab_name . _(' (geändert)');
-                        } else {
-                            $title = sprintf(
-                                _('%1$d Einträge insgesamt, %2$d neue'),
-                                $result['count'],
-                                $result['neue']
-                            );
-                        }
-                    } else {
-                        $image = Icon::create('infopage', Icon::ROLE_INACTIVE);
-                        if ($result['count'] == 1) {
-                            $title = $scm->tab_name . _(' (geändert)');
-                        } else {
-                            $title = sprintf(
-                                ngettext(
-                                    '%d Eintrag',
-                                    '%d Einträge',
-                                    $result['count']
-                                ),
-                                $result['count']
-                            );
-                        }
-                    }
-                    $nav->setImage($image, ['title' => $title]);
-                }
-
-                return $nav;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Check for new dates
-     * @param      $my_obj
-     * @param      $user_id
-     * @param null $modules
-     */
-    public static function checkSchedule(&$my_obj, $user_id, $object_id)
-    {
-
-        if ($my_obj["modules"]["schedule"]) {
-            $count = 0;
-            $neue  = 0;
-            // check for extern dates
-            $sql       = "SELECT  COUNT(term.termin_id) as count,
-                  MAX(IF ((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id != :user_id), term.chdate, 0)) AS last_modified,
-                  COUNT(IF((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id !=:user_id), term.termin_id, NULL)) AS neue
-                FROM
-                  ex_termine term
-                LEFT JOIN
-                  object_user_visits ouv ON(ouv . object_id = term . range_id AND ouv . user_id = :user_id AND ouv . type = 'schedule')
-                WHERE term . range_id = :course_id
-                GROUP BY term.range_id";
-            $statement = DBManager::get()->prepare($sql);
-            $statement->bindValue(':user_id', $user_id);
-            $statement->bindValue(':course_id', $object_id);
-            $statement->bindValue(':threshold', object_get_visit_threshold());
-            $statement->execute();
-            $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-            if (!empty($result)) {
-                $count = $result['count'];
-                $neue  = $result['neue'];
-                if ($my_obj['last_modified'] < $result['last_modified'] && (int)$result['last_modified'] != 0) {
-                    $my_obj['last_modified'] = $result['last_modified'];
-                }
-            }
-
-
-            // check for normal dates
-            $sql = "SELECT  COUNT(term.termin_id) as count,
-                  COUNT(term.termin_id) as count, COUNT(IF((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id !=:user_id), term.termin_id, NULL)) AS neue,
-                  MAX(IF ((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id != :user_id), term . chdate, 0)) AS last_modified
-                FROM
-                  termine term
-                LEFT JOIN
-                  object_user_visits ouv ON(ouv . object_id = term . range_id AND ouv . user_id = :user_id AND ouv . type = 'schedule')
-                WHERE term . range_id = :course_id
-                GROUP BY term.range_id";
-
-            $statement = DBManager::get()->prepare($sql);
-            $statement->bindValue(':user_id', $user_id);
-            $statement->bindValue(':course_id', $object_id);
-            $statement->bindValue(':threshold', object_get_visit_threshold());
-            $statement->execute();
-            $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-            if (!empty($result)) {
-                $count += $result['count'];
-                $neue += $result['neue'];
-                if ($my_obj['last_modified'] < $result['last_modified'] && (int)$result['last_modified'] != 0) {
-                    $my_obj['last_modified'] = $result['last_modified'];
-                }
-            }
-
-            if ($neue || (int)$count > 0) {
-                $nav = new Navigation('schedule', 'dispatch.php/course/dates');
-                if ($neue) {
-                    $nav->setImage(
-                        Icon::create(
-                            'schedule+new',
-                            'attention',
-                            [
-                                'title' => sprintf(
-                                    ngettext(
-                                        '%1$d Termin, %2$d neuer',
-                                        '%1$d Termine, %2$d neue',
-                                        $count
-                                    ),
-                                    $count,
-                                    $neue
-                                )
-                            ]
-                        )
-                    );
-                    $nav->setBadgeNumber($neue);
-                } elseif ($count) {
-                    $nav->setImage(
-                        Icon::create(
-                            'schedule',
-                            'inactive',
-                            [
-                                'title' => sprintf(
-                                    ngettext(
-                                        '%d Termin',
-                                        '%d Termine',
-                                        $count
-                                    ),
-                                    $count
-                                )
-                            ]
-                        )
-                    );
-                }
-                return $nav;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Check for new entries in wiki
-     * @param $my_obj
-     * @param $user_id
-     * @param $modules
-     */
-    public static function checkWiki(&$my_obj, $user_id, $object_id)
-    {
-        $priviledged = $GLOBALS['perm']->have_studip_perm('tutor', $object_id, $user_id);
-
-        if ($my_obj['modules']['wiki']) {
-            if ($priviledged) {
-                $sql = "SELECT COUNT(DISTINCT keyword) AS count_d,
-                               COUNT(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue,
-                               MAX(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id !=:user_id), wiki.chdate, 0)) AS last_modified,
-                               COUNT(keyword) AS count
-                        FROM wiki
-                        LEFT JOIN object_user_visits AS ouv ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.type = 'wiki')
-                        WHERE wiki.range_id = :course_id
-                        GROUP BY wiki.range_id";
-            } else {
-                $sql = "SELECT COUNT(DISTINCT keyword) AS count_d,
-                               COUNT(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue,
-                               MAX(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id !=:user_id), wiki.chdate, 0)) AS last_modified,
-                               COUNT(keyword) AS count
-                        FROM wiki
-                        LEFT JOIN wiki_page_config USING (range_id, keyword)
-                        LEFT JOIN object_user_visits AS ouv ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.type = 'wiki')
-                        WHERE wiki.range_id = :course_id
-                          AND (
-                              wiki_page_config.range_id IS NULL
-                              OR wiki_page_config.read_restricted = 0
-                          )
-                        GROUP BY wiki.range_id";
-            }
-            $statement = DBManager::get()->prepare($sql);
-            $statement->bindValue(':user_id', $user_id);
-            $statement->bindValue(':course_id', $object_id);
-            $statement->bindValue(':threshold', object_get_visit_threshold());
-            $statement->execute();
-            $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-            if (!empty($result)) {
-                if ($result['last_modified'] && $my_obj['last_modified'] < $result['last_modified']) {
-                    $my_obj['last_modified'] = $result['last_modified'];
-                }
-                $nav = new Navigation('wiki');
-                if ($result['neue']) {
-                    $nav->setURL('wiki.php?view=listnew');
-                    $nav->setImage(Icon::create('wiki+new', Icon::ROLE_ATTENTION, [
-                        'title' => sprintf(
-                            ngettext(
-                                '%1$d Wiki-Seite, %2$d Änderung(en)',
-                                '%1$d Wiki-Seiten, %2$d Änderung(en)',
-                                $result['count_d']
-                            ),
-                            $result['count_d'],
-                            $result['neue']
-                        )
-                    ]));
-                    $nav->setBadgeNumber($result['neue']);
-                } elseif ($result['count']) {
-                    $nav->setURL('wiki.php');
-                    $nav->setImage(Icon::create('wiki', Icon::ROLE_INACTIVE, [
-                        'title' => sprintf(
-                            ngettext(
-                                '%d Wiki-Seite',
-                                '%d Wiki-Seiten',
-                                $result['count_d']
-                            ),
-                            $result['count_d']
-                        )
-                    ]));
-                }
-                return $nav;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param      $my_obj
-     * @param      $user_id
-     * @param null $modules
-     */
-    public static function checkElearning_interface(&$my_obj, $user_id, $object_id)
-    {
-        if ($my_obj["modules"]["elearning_interface"]) {
-            $sql = "SELECT a.object_id, COUNT(module_id) as count,
-                COUNT(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), module_id, NULL)) AS neue,
-                MAX(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), chdate, 0)) AS last_modified
-                FROM
-                object_contentmodules a
-                LEFT JOIN object_user_visits b ON (b.object_id = a.object_id AND b.user_id = :user_id AND b.type ='elearning_interface')
-                WHERE a.object_id = :course_id  AND a.module_type != 'crs'
-                GROUP BY a.object_id";
-
-            $statement = DBManager::get()->prepare($sql);
-            $statement->bindValue(':user_id', $user_id);
-            $statement->bindValue(':course_id', $object_id);
-            $statement->bindValue(':threshold', object_get_visit_threshold());
-            $statement->execute();
-            $result = $statement->fetch(PDO::FETCH_ASSOC);
-            if (!empty($result)) {
-                if (!is_null($result['last_modified']) && (int)$result['last_modified'] != 0) {
-                    if ($my_obj['last_modified'] < $result['last_modified']) {
-                        $my_obj['last_modified'] = $result['last_modified'];
-                    }
-                }
-                $nav = new Navigation('elearning', 'dispatch.php/course/elearning/show');
-                if ((int)$result['neue']) {
-                    $nav->setImage(
-                            Icon::create(
-                                    'learnmodule+new',
-                                    'attention',
-                                    [
-                                                    'title' => sprintf(
-                                                            ngettext(
-                                                                    '%1$d Lernmodul, %2$d neues',
-                                                                    '%1$d Lernmodule, %2$d neue',
-                                                                    $result['count']
-                                                                    ),
-                                                            $result['count'],
-                                                            $result['neue']
-                                                            )
-                                    ]
-                                    )
-                            );
-                } elseif ((int)$result['count']) {
-                    $nav->setImage(
-                            Icon::create(
-                                    'learnmodule',
-                                    'inactive',
-                                    [
-                                                    'title' => sprintf(
-                                                            ngettext(
-                                                                    '%d Lernmodul',
-                                                                    '%d Lernmodule',
-                                                                    $result['count']
-                                                                    ),
-                                                            $result['count']
-                                                            )
-                                    ]
-                                    )
-                            );
-                }
-                return $nav;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Check the voting system
      * @param      $my_obj
      * @param      $user_id
@@ -663,7 +152,9 @@ class MyRealmModel
         foreach ($plugins as $plugin) {
             if (!$sem_class->isSlotModule(get_class($plugin))) {
                 $nav = $plugin->getIconNavigation($seminar_id, $visitdate, $user_id);
-                if ($nav instanceof Navigation) $plugin_navigation[get_class($plugin)] = $nav;
+                if ($nav instanceof Navigation) {
+                    $plugin_navigation[get_class($plugin)] = $nav;
+                }
             }
         }
         return $plugin_navigation;
@@ -804,7 +295,7 @@ class MyRealmModel
         return $semesters;
     }
 
-    public static function getPreparedCourses($sem = "all", $params = [])
+    public static function getPreparedCourses($sem = 'all', $params = [])
     {
         $semesters   = self::getSelectedSemesters($sem);
         $current_semester_nr = Semester::getIndexById(@Semester::findCurrent()->id);
@@ -818,93 +309,93 @@ class MyRealmModel
         $param_array = 'name seminar_id visible veranstaltungsnummer start_time duration_time status visible ';
         $param_array .= 'chdate admission_binding modules admission_prelim';
 
-        if (!empty($courses)) {
-            // filtering courses
-            $modules = new Modules();
-            $member_ships = User::findCurrent()->course_memberships->toGroupedArray('seminar_id', 'status gruppe');
-            $children = [];
-            $semester_assign = [];
-            foreach ($courses as $index => $course) {
-                // export object to array for simple handling
-                $_course = $course->toArray($param_array);
-                $_course['start_semester'] = $course->start_semester->name;
-                $_course['end_semester']   = $course->end_semester->name;
-                $_course['sem_class']      = $course->getSemClass();
-                $_course['obj_type']       = 'sem';
-
-                if ($group_field === 'sem_tree_id') {
-                    $_course['sem_tree'] = $course->study_areas->toArray();
-                }
-
-                $user_status = @$member_ships[$course->id]['status'];
-                if(!$user_status && Config::get()->DEPUTIES_ENABLE && isDeputy($GLOBALS['user']->id, $course->id)) {
-                    $user_status = 'dozent';
-                    $is_deputy = true;
-                } else {
-                    $is_deputy = false;
-                }
-
-                // get teachers only if grouping selected (for better performance)
-                if ($group_field === 'dozent_id') {
-                    $teachers = new SimpleCollection($course->getMembersWithStatus('dozent'));
-                    $teachers->filter(function ($a) use (&$_course) {
-                        return $_course['teachers'][] = $a->user->getFullName('no_title_rev');
-                    });
-                }
-
-                $_course['last_visitdate'] = object_get_visit($course->id, 'sem', 'last');
-                $_course['visitdate']      = object_get_visit($course->id, 'sem', '');
-                $_course['user_status']    = $user_status;
-                $_course['gruppe']         = !$is_deputy ? @$member_ships[$course->id]['gruppe'] : self::getDeputieGroup($course->id);
-                $_course['sem_number_end'] = $course->duration_time == -1 ? $max_sem_key : Semester::getIndexById($course->end_semester->id);
-                $_course['sem_number']     = Semester::getIndexById($course->start_semester->id);
-                $_course['modules']        = $modules->getLocalModules($course->id, 'sem', $course->modules, $course->status);
-                $_course['name']           = $course->name;
-                $_course['temp_name']      = $course->name;
-                $_course['number']         = $course->veranstaltungsnummer;
-                $_course['is_deputy']      = $is_deputy;
-                if ($show_semester_name && $course->duration_time != 0 && !$course->getSemClass()->offsetGet('studygroup_mode')) {
-                    $_course['name'] .= ' (' . $course->getFullname('sem-duration-name') . ')';
-                }
-                if ($course->parent_course) {
-                    $_course['parent_course'] = $course->parent_course;
-                }
-                $_course['is_group']       = $course->getSemClass()->isGroup();
-                // add the the course to the correct semester
-                self::getObjectValues($_course);
-
-                if (!$_course['parent_course']) {
-                    if ($course->duration_time == -1) {
-                        if ($current_semester_nr >= $min_sem_key && $current_semester_nr <= $max_sem_key) {
-                            $sem_courses[$current_semester_nr][$course->id] = $_course;
-                            $semester_assign[$course->id] = $current_semester_nr;
-                        } else {
-                            $sem_courses[$max_sem_key][$course->id] = $_course;
-                            $semester_assign[$course->id] = $max_sem_key;
-                        }
-                    } else {
-                        for ($i = $min_sem_key; $i <= $max_sem_key; $i += 1) {
-                            if ($i >= $_course['sem_number'] && $i <= $_course['sem_number_end']) {
-                                $sem_courses[$i][$course->id] = $_course;
-                                $semester_assign[$course->id] = $i;
-                            }
-                        }
-                    }
-                } else {
-                    $children[$_course['parent_course']][] = $_course;
-                }
-            }
-
-            // Now sort children directly under their parent.
-            foreach ($children as $parent => $kids) {
-                $sem_courses[$semester_assign[$parent]][$parent]['children'] = $kids;
-            }
-
-        } else {
+        if (!$courses) {
             return null;
         }
 
-        if (empty($sem_courses)) {
+        // filtering courses
+        $modules = new Modules();
+        $member_ships = User::findCurrent()->course_memberships->toGroupedArray('seminar_id', 'status gruppe');
+        $visits = get_objects_visits($courses->pluck('id'), 'sem', null);
+        $children = [];
+        $semester_assign = [];
+        foreach ($courses as $index => $course) {
+            // export object to array for simple handling
+            $_course = $course->toArray($param_array);
+            $_course['start_semester'] = $course->start_semester->name;
+            $_course['end_semester']   = $course->end_semester->name;
+            $_course['sem_class']      = $course->getSemClass();
+            $_course['obj_type']       = 'sem';
+
+            if ($group_field === 'sem_tree_id') {
+                $_course['sem_tree'] = $course->study_areas->toArray();
+            }
+
+            $user_status = @$member_ships[$course->id]['status'];
+            if (!$user_status && Config::get()->DEPUTIES_ENABLE && isDeputy($GLOBALS['user']->id, $course->id)) {
+                $user_status = 'dozent';
+                $is_deputy = true;
+            } else {
+                $is_deputy = false;
+            }
+
+            // get teachers only if grouping selected (for better performance)
+            if ($group_field === 'dozent_id') {
+                $teachers = new SimpleCollection($course->getMembersWithStatus('dozent'));
+                $teachers->filter(function ($a) use (&$_course) {
+                    return $_course['teachers'][] = $a->user->getFullName('no_title_rev');
+                });
+            }
+
+            $_course['last_visitdate'] = $visits[$course->id]['last_visitdate'];
+            $_course['visitdate']      = $visits[$course->id]['visitdate'];
+            $_course['user_status']    = $user_status;
+            $_course['gruppe']         = !$is_deputy ? @$member_ships[$course->id]['gruppe'] : self::getDeputieGroup($course->id);
+            $_course['sem_number_end'] = $course->duration_time == -1 ? $max_sem_key : Semester::getIndexById($course->end_semester->id);
+            $_course['sem_number']     = Semester::getIndexById($course->start_semester->id);
+            $_course['modules']        = $modules->getLocalModules($course->id, 'sem', $course->modules, $course->status);
+            $_course['name']           = $course->name;
+            $_course['temp_name']      = $course->name;
+            $_course['number']         = $course->veranstaltungsnummer;
+            $_course['is_deputy']      = $is_deputy;
+            if ($show_semester_name && $course->duration_time != 0 && !$course->getSemClass()->offsetGet('studygroup_mode')) {
+                $_course['name'] .= ' (' . $course->getFullname('sem-duration-name') . ')';
+            }
+            if ($course->parent_course) {
+                $_course['parent_course'] = $course->parent_course;
+            }
+            $_course['is_group'] = $course->getSemClass()->isGroup();
+            // add the the course to the correct semester
+            self::getObjectValues($_course);
+
+            if (!$_course['parent_course']) {
+                if ($course->duration_time == -1) {
+                    if ($current_semester_nr >= $min_sem_key && $current_semester_nr <= $max_sem_key) {
+                        $sem_courses[$current_semester_nr][$course->id] = $_course;
+                        $semester_assign[$course->id] = $current_semester_nr;
+                    } else {
+                        $sem_courses[$max_sem_key][$course->id] = $_course;
+                        $semester_assign[$course->id] = $max_sem_key;
+                    }
+                } else {
+                    for ($i = $min_sem_key; $i <= $max_sem_key; $i += 1) {
+                        if ($i >= $_course['sem_number'] && $i <= $_course['sem_number_end']) {
+                            $sem_courses[$i][$course->id] = $_course;
+                            $semester_assign[$course->id] = $i;
+                        }
+                    }
+                }
+            } else {
+                $children[$_course['parent_course']][] = $_course;
+            }
+        }
+
+        // Now sort children directly under their parent.
+        foreach ($children as $parent => $kids) {
+            $sem_courses[$semester_assign[$parent]][$parent]['children'] = $kids;
+        }
+
+        if (!$sem_courses) {
             return null;
         }
 
@@ -915,7 +406,7 @@ class MyRealmModel
         krsort($sem_courses);
 
         // grouping
-        if ($group_field == 'sem_number' && !$params['order_by']) {
+        if ($group_field === 'sem_number' && !$params['order_by']) {
             foreach ($sem_courses as $index => $courses) {
                 uasort($courses, function ($a, $b) {
                     $extra_condition = 0;
@@ -931,26 +422,26 @@ class MyRealmModel
             }
         }
         // Group by teacher
-        if ($group_field == 'dozent_id') {
+        if ($group_field === 'dozent_id') {
             self::groupByTeacher($sem_courses);
         }
 
         // Group by Sem Status
-        if ($group_field == 'sem_status') {
+        if ($group_field === 'sem_status') {
             self::groupBySemStatus($sem_courses);
         }
 
         // Group by colors
-        if ($group_field == 'gruppe') {
+        if ($group_field === 'gruppe') {
             self::groupByGruppe($sem_courses);
         }
 
         // Group by sem_tree
-        if ($group_field == 'sem_tree_id') {
+        if ($group_field === 'sem_tree_id') {
             self::groupBySemTree($sem_courses);
         }
 
-        return !empty($sem_courses) ? $sem_courses : false;
+        return $sem_courses ?: false;
     }
 
     public static function  checkParticipants(&$my_obj, $user_id, $object_id, $is_admission)
@@ -1095,50 +586,49 @@ class MyRealmModel
             $my_obj_values['visitdate'] = max($my_obj_values['visitdate'], $threshold);
         }
 
-        $plugin_navigation = MyRealmModel::getPluginNavigationForSeminar($object_id, $sem_class, $user_id, $my_obj_values['visitdate']);
+        $plugin_navigation = self::getPluginNavigationForSeminar($object_id, $sem_class, $user_id, $my_obj_values['visitdate']);
         $available_modules = 'forum participants documents overview scm schedule wiki vote elearning_interface resources';
 
         foreach (words($available_modules) as $key) {
 
             // Go to next module if current module is not available and not voting-module
-            if (!$my_obj_values['modules'][$key] && strcmp('vote', $key) !== 0) {
+            if (!$my_obj_values['modules'][$key] && $key !== 'vote') {
                 $navigation[$key] = null;
                 continue;
             }
-            if (!Config::get()->VOTE_ENABLE && strcmp($key, 'vote') === 0) {
+
+            if (!Config::get()->VOTE_ENABLE && $key === 'vote') {
                 continue;
             }
 
-            if (!Config::get()->WIKI_ENABLE && strcmp($key, 'wiki') === 0) {
-                continue;
-            }
-
-            if (!Config::get()->ELEARNING_INTERFACE_ENABLE && strcmp($key, 'elearning_interface') === 0) {
-                continue;
-            }
-
-            $function = 'check' . ucfirst($key);
-
-            if (method_exists(__CLASS__, $function)) {
-                $params = [&$my_obj_values,
-                                $user_id,
-                                $object_id];
-                if (strcmp($key, 'participants') === 0) {
-                    array_push($params, false);
-                }
-                $nav = call_user_func_array(['self', $function], $params);
-
-            }
+            $nav = false;
 
             if ($sem_class) {
                 $module = $sem_class->getModule($key);
-                if ($module instanceof StandardPlugin) {
-                    $nav = $module->getIconNavigation($object_id, $my_obj_values['visitdate'], $user_id);
+                if ($module instanceof StudipModule) {
+                    $nav = $module->getIconNavigation($object_id, $my_obj_values['visitdate'], $user_id) ?: false;
+                }
+            }
+
+            if ($nav === false) {
+                $function = 'check' . ucfirst($key);
+
+                if (method_exists(__CLASS__, $function)) {
+                    $params = [
+                        &$my_obj_values,
+                        $user_id,
+                        $object_id,
+                    ];
+                    if ($key === 'participants') {
+                        $params[] = false;
+                    }
+                    $nav = call_user_func_array(['self', $function], $params);
+
                 }
             }
 
             // add the main navigation item to resultset
-            $navigation[$key] = $nav;
+            $navigation[$key] = $nav ?: null;
             unset($nav);
         }
 
@@ -1306,26 +796,27 @@ class MyRealmModel
         if (empty($memberShips)) {
             return null;
         }
-        $insts      = new SimpleCollection($memberShips);
-        $institutes = [];
-        $insts->filter(function ($a) use (&$institutes) {
-            $array                   = $a->institute->toArray();
-            $array['perms']          = $a->inst_perms;
-            $array['visitdate']      = object_get_visit($a->institut_id, 'inst', '');
-            $array['last_visitdate'] = object_get_visit($a->institut_id, 'inst', 'last');
 
-            $institutes[] = $array;
+        $insts = new SimpleCollection($memberShips);
+        $ids = $insts->pluck('institut_id');
+        $visits = get_objects_visits($ids, 'inst', null);
 
-            return true;
+        $institutes = $insts->map(function ($a) use ($visits) {
+            $inst                   = $a->institute->toArray();
+            $inst['perms']          = $a->inst_perms;
+            $inst['visitdate']      = $visits[$a->institut_id]['visitdate'];
+            $inst['last_visitdate'] = $visits[$a->institut_id]['last_visitdate'];
+
+            return $inst;
         });
 
 
-        if (!empty($institutes)) {
+        if ($institutes) {
             $Modules = new Modules();
             foreach ($institutes as $index => $inst) {
                 $institutes[$index]['modules']    = $Modules->getLocalModules($inst['institut_id'], 'inst', $inst['modules'], $inst['type'] ? : 1);
                 $institutes[$index]['obj_type']   = 'inst';
-                $institutes[$index]['navigation'] = MyRealmModel::getAdditionalNavigations($inst['institut_id'], $institutes[$index], SemClass::getDefaultInstituteClass($inst['type']), $GLOBALS['user']->id);
+                $institutes[$index]['navigation'] = self::getAdditionalNavigations($inst['institut_id'], $institutes[$index], SemClass::getDefaultInstituteClass($inst['type']), $GLOBALS['user']->id);
             }
             unset($Modules);
         }
@@ -1469,22 +960,22 @@ class MyRealmModel
             'studygroup_semtypes' => $studygroup_sem_types
         ]);
         $studygroups = SimpleCollection::createFromArray($studygroups)->toGroupedArray('seminar_id');
-
+        $visits = get_objects_visits(array_keys($studygroups), 'sem', null);
 
         $param_array = 'name seminar_id visible veranstaltungsnummer start_time duration_time status visible ';
         $param_array .= 'chdate admission_binding modules admission_prelim';
-        $courses = Course::findAndMapMany(function ($course) use ($param_array, $studygroups, $modules) {
+        $courses = Course::findAndMapMany(function ($course) use ($param_array, $studygroups, $modules, $visits) {
             $ret                   = $course->toArray($param_array);
             $ret['sem_class']      = $course->getSemClass();
             $ret['start_semester'] = $course->start_semester->name;
             $ret['end_semester']   = $course->end_semester->name;
             $ret['obj_type']       = 'sem';
-            $ret['last_visitdate'] = object_get_visit($course->id, 'sem', 'last');
-            $ret['visitdate']      = object_get_visit($course->id, 'sem', '');
+            $ret['last_visitdate'] = $visits[$course->id]['last_visitdate'];
+            $ret['visitdate']      = $visits[$course->id]['visitdate'];
             $ret['user_status']    = $studygroups[$course->id]['status'];
             $ret['gruppe']         = $studygroups[$course->id]['gruppe'];
             $ret['modules']        = $modules->getLocalModules($course->id, 'sem', $course->modules, $course->status);
-            MyRealmModel::getObjectValues($ret);
+            self::getObjectValues($ret);
 
             return $ret;
         }, array_keys($studygroups));

@@ -9,99 +9,103 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreWiki implements StudipModule {
+class CoreWiki implements StudipModule
+{
+    public function getIconNavigation($course_id, $last_visit, $user_id)
+    {
+        if (!Config::get()->WIKI_ENABLE) {
+            return null;
+        }
 
-    function getIconNavigation($course_id, $last_visit, $user_id) {
-        if (get_config('WIKI_ENABLE')) {
-            $priviledged = $GLOBALS['perm']->have_studip_perm('tutor', $object_id, $user_id);
+        $priviledged = $GLOBALS['perm']->have_studip_perm('tutor', $object_id, $user_id);
 
-            if ($priviledged) {
-                $sql = "SELECT COUNT(DISTINCT keyword) AS count_d,
-                           COUNT(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue,
-                           MAX(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id !=:user_id), wiki.chdate, 0)) AS last_modified,
-                           COUNT(keyword) AS count
+        if ($priviledged) {
+            $sql = "SELECT COUNT(DISTINCT keyword) AS count_d,
+                           COUNT(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue
                     FROM wiki
-                    LEFT JOIN object_user_visits AS ouv ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.type = 'wiki')
+                    LEFT JOIN object_user_visits AS ouv
+                      ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.type = 'wiki')
                     WHERE wiki.range_id = :course_id
                     GROUP BY wiki.range_id";
-            } else {
-                $sql = "SELECT COUNT(DISTINCT keyword) AS count_d,
-                           COUNT(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue,
-                           MAX(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id !=:user_id), wiki.chdate, 0)) AS last_modified,
-                           COUNT(keyword) AS count
+        } else {
+            $sql = "SELECT COUNT(DISTINCT keyword) AS count_d,
+                           COUNT(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue
                     FROM wiki
                     LEFT JOIN wiki_page_config USING (range_id, keyword)
-                    LEFT JOIN object_user_visits AS ouv ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.type = 'wiki')
+                    LEFT JOIN object_user_visits AS ouv
+                      ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.type = 'wiki')
                     WHERE wiki.range_id = :course_id
                       AND (
                           wiki_page_config.range_id IS NULL
                           OR wiki_page_config.read_restricted = 0
                       )
                     GROUP BY wiki.range_id";
-            }
-            $statement = DBManager::get()->prepare($sql);
-            $statement->bindValue(':user_id', $user_id);
-            $statement->bindValue(':course_id', $course_id);
-            $statement->bindValue(':threshold', $last_visit);
-            $statement->execute();
-            $result = $statement->fetch(PDO::FETCH_ASSOC);
+        }
+        $statement = DBManager::get()->prepare($sql);
+        $statement->bindValue(':user_id', $user_id);
+        $statement->bindValue(':course_id', $course_id);
+        $statement->bindValue(':threshold', $last_visit);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-            if (!empty($result)) {
-                $nav = new Navigation('wiki');
-                if ($result['neue']) {
-                    $nav->setURL('wiki.php?view=listnew');
-                    $nav->setImage(Icon::create('wiki+new', Icon::ROLE_ATTENTION, [
-                        'title' => sprintf(
-                            ngettext(
-                                '%1$d Wiki-Seite, %2$d Änderung(en)',
-                                '%1$d Wiki-Seiten, %2$d Änderung(en)',
-                                $result['count_d']
-                            ),
-                            $result['count_d'],
-                            $result['neue']
-                        )
-                    ]));
-                    $nav->setBadgeNumber($result['neue']);
-                } elseif ($result['count']) {
-                    $nav->setURL('wiki.php');
-                    $nav->setImage(Icon::create('wiki', Icon::ROLE_INACTIVE, [
-                        'title' => sprintf(
-                            ngettext(
-                                '%d Wiki-Seite',
-                                '%d Wiki-Seiten',
-                                $result['count_d']
-                            ),
-                            $result['count_d']
-                        )
-                    ]));
-                }
-                return $nav;
-            }
-        } else {
+        if (!$result || (!$result['neue'] && !$result['count_d'])) {
             return null;
         }
+
+        $nav = new Navigation('wiki');
+        if ($result['neue']) {
+            $nav->setURL('wiki.php', ['view' => 'listnew']);
+            $nav->setImage(Icon::create('wiki+new', Icon::ROLE_ATTENTION, [
+                'title' => sprintf(
+                    ngettext(
+                        '%1$d Wiki-Seite, %2$d Änderung(en)',
+                        '%1$d Wiki-Seiten, %2$d Änderung(en)',
+                        $result['count_d']
+                    ),
+                    $result['count_d'],
+                    $result['neue']
+                )
+            ]));
+            $nav->setBadgeNumber($result['neue']);
+        } else {
+            $nav->setURL('wiki.php');
+            $nav->setImage(Icon::create('wiki', Icon::ROLE_INACTIVE, [
+                'title' => sprintf(
+                    ngettext(
+                        '%d Wiki-Seite',
+                        '%d Wiki-Seiten',
+                        $result['count_d']
+                    ),
+                    $result['count_d']
+                )
+            ]));
+        }
+        return $nav;
     }
 
-    function getTabNavigation($course_id) {
-        if (get_config('WIKI_ENABLE')) {
-            $navigation = new Navigation(_('Wiki'));
-            $navigation->setImage(Icon::create('wiki', 'info_alt'));
-            $navigation->setActiveImage(Icon::create('wiki', 'info'));
-
-            $keyword = Request::get('keyword');
-            if ($keyword != 'WikiWikiWeb') {
-                $navigation->addSubNavigation('start', new Navigation(_('Wiki-Startseite'), 'wiki.php?view=show'));
-            }
- 		    if ($keyword) {
-                ($keyword == 'WikiWikiWeb') ? $keyword = _('Wiki-Startseite') : '';
-                $navigation->addSubNavigation('show', new Navigation(my_substr($keyword, 0, 35), 'wiki.php?view=show', compact('keyword')));
-            }
-            $navigation->addSubNavigation('listnew', new Navigation(_('Neue Seiten'), 'wiki.php?view=listnew'));
-            $navigation->addSubNavigation('listall', new Navigation(_('Alle Seiten'), 'wiki.php?view=listall'));
-            return ['wiki' => $navigation];
-        } else {
+    public function getTabNavigation($course_id)
+    {
+        if (!Config::get()->WIKI_ENABLE) {
             return null;
         }
+
+        $navigation = new Navigation(_('Wiki'));
+        $navigation->setImage(Icon::create('wiki', Icon::ROLE_INFO_ALT));
+        $navigation->setActiveImage(Icon::create('wiki', Icon::ROLE_INFO));
+
+        $keyword = Request::get('keyword');
+        if ($keyword != 'WikiWikiWeb') {
+            $navigation->addSubNavigation('start', new Navigation(_('Wiki-Startseite'), 'wiki.php?view=show'));
+        }
+	    if ($keyword) {
+             if ($keyword === 'WikiWikiWeb') {
+                 $keyword = _('Wiki-Startseite');
+             }
+            $navigation->addSubNavigation('show', new Navigation(my_substr($keyword, 0, 35), 'wiki.php?view=show', compact('keyword')));
+        }
+        $navigation->addSubNavigation('listnew', new Navigation(_('Neue Seiten'), 'wiki.php?view=listnew'));
+        $navigation->addSubNavigation('listall', new Navigation(_('Alle Seiten'), 'wiki.php?view=listall'));
+        return ['wiki' => $navigation];
     }
 
     /**
@@ -141,7 +145,7 @@ class CoreWiki implements StudipModule {
                                     'gelöscht werden (nur Lehrende). Eine Druckansicht und eine Exportmöglichkeit als '.
                                     'PDF-Datei ist integriert.'),
             'category' => _('Kommunikation und Zusammenarbeit'),
-            'icon' => Icon::create('wiki', 'info'),
+            'icon' => Icon::create('wiki', Icon::ROLE_INFO),
             'screenshots' => [
                 'path' => 'plus/screenshots/Wiki-Web',
                 'pictures' => [
