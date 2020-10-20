@@ -51,7 +51,7 @@ class InstituteContext extends Context
             $standard_plugins = \PluginManager::getInstance()->getPlugins("StandardPlugin", $institute->id);
             foreach ($standard_plugins as $plugin) {
                 if (!$sem_class->isSlotModule(get_class($plugin))) {
-                    if ($plugin instanceof \Studip\ActivityProvider) {
+                    if ($plugin instanceof ActivityProvider) {
                         $this->provider[$plugin->getPluginName()] = $plugin;
                     }
                 }

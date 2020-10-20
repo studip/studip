@@ -47,7 +47,7 @@ class UserContext extends Context
             $homepage_plugins = \PluginEngine::getPlugins('HomepagePlugin');
             foreach ($homepage_plugins as $plugin) {
                 if ($plugin->isActivated($this->user->id, 'user')) {
-                    if ($plugin instanceof \Studip\ActivityProvider) {
+                    if ($plugin instanceof ActivityProvider) {
                         $this->provider[] = $plugin;
                     }
                 }

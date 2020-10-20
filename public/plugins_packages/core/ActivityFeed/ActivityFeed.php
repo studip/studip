@@ -1,4 +1,6 @@
 <?php
+use \Studip\Activity\ActivityProvider;
+
 /**
  * @author      André Klaßen <klassen@elan-ev.de>
  * @author      Till Glöggler <tgloeggl@uos.de>
@@ -122,7 +124,7 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
 
         $standard_plugins = \PluginManager::getInstance()->getPlugins("StandardPlugin");
         foreach ($standard_plugins as $plugin) {
-            if ($plugin instanceof \Studip\Activity\ActivityProvider) {
+            if ($plugin instanceof ActivityProvider) {
                 $modules[\Context::COURSE][$plugin->getPluginName()] = $plugin->getPluginName();
                 $modules[\Context::INSTITUTE][$plugin->getPluginName()] = $plugin->getPluginName();
             }
@@ -137,7 +139,7 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
         $homepage_plugins = \PluginEngine::getPlugins('HomepagePlugin');
         foreach ($homepage_plugins as $plugin) {
             if ($plugin->isActivated($GLOBALS['user']->id, 'user')) {
-                if ($plugin instanceof \Studip\ActivityProvider) {
+                if ($plugin instanceof ActivityProvider) {
                     $modules[\Context::USER][] = $plugin;
                 }
             }
