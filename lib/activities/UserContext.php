@@ -44,12 +44,11 @@ class UserContext extends Context
                 $this->addProvider('Studip\Activity\MessageProvider');
             }
 
-            $homepage_plugins = \PluginEngine::getPlugins('HomepagePlugin');
-            foreach ($homepage_plugins as $plugin) {
-                if ($plugin->isActivated($this->user->id, 'user')) {
-                    if ($plugin instanceof ActivityProvider) {
-                        $this->provider[] = $plugin;
-                    }
+            foreach (\PluginManager::getInstance()->getPlugins(ActivityProvider::class) as $plugin) {
+                if ($plugin instanceof \HomepagePlugin
+                    && $plugin->isActivated($this->user->id, 'user')
+                ) {
+                    $this->provider[] = $plugin;
                 }
             }
         }

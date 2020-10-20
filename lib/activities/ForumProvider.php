@@ -9,6 +9,8 @@
 
 namespace Studip\Activity;
 
+require_once 'public/plugins_packages/core/Forum/models/ForumEntry.php';
+
 class ForumProvider implements ActivityProvider
 {
     /**

@@ -48,12 +48,12 @@ class InstituteContext extends Context
             $sem_class = \SemClass::getDefaultInstituteClass($institute->type ?: 1);
 
             //plugins
-            $standard_plugins = \PluginManager::getInstance()->getPlugins("StandardPlugin", $institute->id);
-            foreach ($standard_plugins as $plugin) {
-                if (!$sem_class->isSlotModule(get_class($plugin))) {
-                    if ($plugin instanceof ActivityProvider) {
-                        $this->provider[$plugin->getPluginName()] = $plugin;
-                    }
+            foreach (\PluginManager::getInstance()->getPlugins(ActivityProvider::class) as $plugin) {
+                if ($plugin instanceof \StandardPlugin
+                    && $plugin->isActivated($institute->id)
+                    && !$sem_class->isSlotModule(get_class($plugin))
+                ) {
+                    $this->provider[$plugin->getPluginName()] = $plugin;
                 }
             }
         }

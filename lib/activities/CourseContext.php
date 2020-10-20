@@ -48,12 +48,12 @@ class CourseContext extends Context
             $this->addProvider('Studip\Activity\NewsProvider');
 
             //plugins
-            $standard_plugins = \PluginManager::getInstance()->getPlugins("StandardPlugin", $course->id);
-            foreach ($standard_plugins as $plugin) {
-                if (!$course->getSemClass()->isSlotModule(get_class($plugin))) {
-                    if ($plugin instanceof ActivityProvider) {
-                        $this->provider[$plugin->getPluginName()] = $plugin;
-                    }
+            foreach (\PluginManager::getInstance()->getPlugins(ActivityProvider::class) as $plugin) {
+                if ($plugin instanceof \StandardPlugin
+                    && $plugin->isActivated($course->id)
+                    && !$course->getSemClass()->isSlotModule(get_class($plugin))
+                ) {
+                    $this->provider[$plugin->getPluginName()] = $plugin;
                 }
             }
         }
