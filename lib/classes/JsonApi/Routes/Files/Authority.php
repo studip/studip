@@ -65,22 +65,25 @@ class Authority
 
     public static function canUpdateFileRef(User $user, \FileRef $fileRef)
     {
-        return $fileRef->isWritable($user->id);
+        return $fileRef->getFileType()->isWritable($user->id);
     }
 
     public static function canDeleteFileRef(User $user, \FileRef $fileRef)
     {
-        return $fileRef->isWritable($user->id);
+        return $fileRef->getFileType()->isWritable($user->id);
     }
 
     public static function canDownloadFileRef(User $user, \FileRef $fileRef)
     {
-        return $fileRef->isDownloadable($user->id);
+        return $fileRef->getFileType()->isDownloadable($user->id);
     }
 
     public static function canShowFile(User $user, \File $file)
     {
-        return 0 < count(
+        return
+            $file['user_id'] === $user->id
+            ||
+            0 < count(
             $file->refs->filter(
                 function (\FileRef $ref) use ($user) {
                     $folder = $ref->foldertype;

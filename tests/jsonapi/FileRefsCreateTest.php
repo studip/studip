@@ -1,14 +1,17 @@
 <?php
 
-
 use JsonApi\Errors\RecordNotFoundException;
 use JsonApi\Errors\UnprocessableEntityException;
 use JsonApi\Routes\Files\FileRefsCreate;
 use JsonApi\Schemas\ContentTermsOfUse;
 use JsonApi\Schemas\FileRef;
 
+require_once 'FilesTestHelper.php';
+
 class FileRefsCreateTest extends \Codeception\Test\Unit
 {
+    use FilesTestHelper;
+
     /**
      * @var \UnitTester
      */
@@ -23,63 +26,32 @@ class FileRefsCreateTest extends \Codeception\Test\Unit
     {
     }
 
-    protected function createTopFolder($credentials, $course)
-    {
-        $oldUser = $GLOBALS['user'];
-        $GLOBALS['user'] = new \Seminar_User($credentials['id']);
-
-        $rootFolder = Folder::createTopFolder($course->id, 'course');
-
-        $GLOBALS['user'] = $oldUser;
-
-        return $rootFolder;
-    }
-
     public function testShouldCreateFileRefInFolder()
     {
         $credentials = $this->tester->getCredentialsForTestDozent();
         $courseId = 'a07535cf2f8a72df33c12ddfa4b53dde';
-
-        $course = \Course::find($courseId);
-        $this->assertNotNull($course);
-
-        $folder = $this->createTopFolder($credentials, $course);
-        $this->assertNotNull($folder);
-
-        $this->assertTrue(\ContentTermsOfUse::countBySql('1') > 0);
-        $license = \ContentTermsOfUse::findOneBySql('1');
+        $folder = $this->prepareTopFolder($credentials, $courseId);
+        $license = $this->getSampleLicense();
 
         $name = 'filename.jpg';
         $description = 'a description';
 
-        $response = $this->createFileRefInFolder(
+        $response = $this->sendCreateFileRefInFolder(
             $credentials,
             $folder,
             $name,
             $description,
             $license
         );
-        $this->tester->assertTrue($response->isSuccessfulDocument([201]));
 
-        $document = $response->document();
-        $this->tester->assertTrue($document->isSingleResourceDocument());
-
-        $resource = $document->primaryResource();
-        $this->tester->assertNotEmpty($resource->id());
-        $this->tester->assertSame(FileRef::TYPE, $resource->type());
-
-        $this->tester->assertSame($name, $resource->attribute('name'));
-        $this->tester->assertSame($description, $resource->attribute('description'));
-
-        $resourceLink = $resource->relationship('terms-of-use')->firstResourceLink();
-        $this->tester->assertSame($license->id, $resourceLink['id']);
+        $this->assertFileRefCreated($response, $name, $description, $license);
     }
 
     public function testShouldFailOnMissingFolder()
     {
         $credentials = $this->tester->getCredentialsForTestDozent();
         $missingFolder = \Folder::buildExisting(['id' => 'foo']);
-        $license = \ContentTermsOfUse::findOneBySql('1');
+        $license = $this->getSampleLicense();
 
         $name = 'filename.jpg';
         $description = 'a description';
@@ -87,7 +59,7 @@ class FileRefsCreateTest extends \Codeception\Test\Unit
         $this->tester->expectThrowable(
             RecordNotFoundException::class,
             function () use ($credentials, $missingFolder, $name, $description, $license) {
-                $this->createFileRefInFolder(
+                $this->sendCreateFileRefInFolder(
                     $credentials,
                     $missingFolder,
                     $name,
@@ -102,9 +74,8 @@ class FileRefsCreateTest extends \Codeception\Test\Unit
     {
         $credentials = $this->tester->getCredentialsForTestDozent();
         $courseId = 'a07535cf2f8a72df33c12ddfa4b53dde';
-        $course = \Course::find($courseId);
-        $folder = $this->createTopFolder($credentials, $course);
-        $license = \ContentTermsOfUse::findOneBySql('1');
+        $folder = $this->prepareTopFolder($credentials, $courseId);
+        $license = $this->getSampleLicense();
 
         $name = '';
         $description = 'a description';
@@ -112,7 +83,7 @@ class FileRefsCreateTest extends \Codeception\Test\Unit
         $this->tester->expectThrowable(
             UnprocessableEntityException::class,
             function () use ($credentials, $folder, $name, $description, $license) {
-                $this->createFileRefInFolder(
+                $this->sendCreateFileRefInFolder(
                     $credentials,
                     $folder,
                     $name,
@@ -127,8 +98,7 @@ class FileRefsCreateTest extends \Codeception\Test\Unit
     {
         $credentials = $this->tester->getCredentialsForTestDozent();
         $courseId = 'a07535cf2f8a72df33c12ddfa4b53dde';
-        $course = \Course::find($courseId);
-        $folder = $this->createTopFolder($credentials, $course);
+        $folder = $this->prepareTopFolder($credentials, $courseId);
 
         $name = 'a-real-filename.gif';
         $description = 'a description';
@@ -136,7 +106,7 @@ class FileRefsCreateTest extends \Codeception\Test\Unit
         $this->tester->expectThrowable(
             UnprocessableEntityException::class,
             function () use ($credentials, $folder, $name, $description) {
-                $this->createFileRefInFolder(
+                $this->sendCreateFileRefInFolder(
                     $credentials,
                     $folder,
                     $name,
@@ -147,8 +117,65 @@ class FileRefsCreateTest extends \Codeception\Test\Unit
         );
     }
 
+    public function testShouldCreateLinkIfSameUser()
+    {
+        $credentials = $this->tester->getCredentialsForTestDozent();
+        $courseId = 'a07535cf2f8a72df33c12ddfa4b53dde';
+        $folder = $this->prepareTopFolder($credentials, $courseId);
+        $license = $this->getSampleLicense();
+
+        $file = $this->createFileInFolder($credentials, $folder, 'name.jpg', 'some description');
+
+        $numFiles = \File::countBySQL('1');
+        $numFileRefs = \FileRef::countBySQL('1');
+
+        $response = $this->sendCopyFileInFolder(
+            $credentials,
+            $folder,
+            $file,
+            $name = "another-name.jpg",
+            $description = "another description",
+            $license
+        );
+
+        // same number of Files and one more FileRef
+        $this->assertSame($numFiles + 0, \File::countBySQL('1'));
+        $this->assertSame($numFileRefs + 1, \FileRef::countBySQL('1'));
+
+        $this->assertFileRefCreated($response, $name, $description, $license);
+    }
+
+    public function testShouldCreateCopyUnlessSameUser()
+    {
+        $credentials = $this->tester->getCredentialsForTestDozent();
+        $credentialsAutor = $this->tester->getCredentialsForTestAutor();
+        $courseId = 'a07535cf2f8a72df33c12ddfa4b53dde';
+        $folder = $this->prepareTopFolder($credentials, $courseId);
+        $license = $this->getSampleLicense();
+
+        $file = $this->createFileInFolder($credentials, $folder, 'name.jpg', 'some description');
+
+        $numFiles = \File::countBySQL('1');
+        $numFileRefs = \FileRef::countBySQL('1');
+
+        $response = $this->sendCopyFileInFolder(
+            $credentialsAutor,
+            $folder,
+            $file,
+            $name = "another-name.jpg",
+            $description = "another description",
+            $license
+        );
+
+        // one more File and one more FileRef
+        $this->assertSame($numFiles + 1, \File::countBySQL('1'));
+        $this->assertSame($numFileRefs + 1, \FileRef::countBySQL('1'));
+
+        $this->assertFileRefCreated($response, $name, $description, $license);
+    }
+
     // **** helper functions ****
-    private function createFileRefInFolder($user, $folder, $name, $description, $license)
+    private function sendCreateFileRefInFolder($user, $folder, $name, $description, $license)
     {
         $app = $this->tester->createApp(
             $user,
@@ -159,36 +186,53 @@ class FileRefsCreateTest extends \Codeception\Test\Unit
 
         $requestBuilder = $this->tester->createRequestBuilder($user);
         $requestBuilder
-            ->setJsonApiBody($this->prepareValidBody($name, $description, $license))
+            ->setJsonApiBody($this->prepareValidFileRefBody($name, $description, $license))
             ->setUri('/folders/'.($folder->id).'/file-refs')
             ->create();
 
         return $this->tester->sendMockRequest($app, $requestBuilder->getRequest());
     }
 
-    private function prepareValidBody($name, $description, $license)
+    private function sendCopyFileInFolder($credentials, $folder, $file, $name, $description, $license)
     {
-        $json = [
-            'data' => [
-                'type' => FileRef::TYPE,
-                'attributes' => [
-                    'name' => $name,
-                    'description' => $description,
-                ],
-                'relationships' => [
-                ],
-            ],
-        ];
+        $app = $this->tester->createApp(
+            $credentials,
+            'POST',
+            '/folders/{id}/file-refs',
+            FileRefsCreate::class
+        );
 
-        if ($license) {
-            $json['data']['relationships']['terms-of-use'] = [
-                'data' => [
-                    'type' => ContentTermsOfUse::TYPE,
-                    'id' => (string) $license->id,
-                ],
-            ];
-        }
+        $requestBuilder = $this->tester->createRequestBuilder($credentials);
+        $requestBuilder
+            ->setJsonApiBody(
+                $this->prepareValidFileRefBody(
+                    $name,
+                    $description,
+                    $license,
+                    $file
+                )
+            )
+            ->setUri('/folders/'.($folder->id).'/file-refs')
+            ->create();
 
-        return $json;
+        return $this->tester->sendMockRequest($app, $requestBuilder->getRequest());
+    }
+
+    private function assertFileRefCreated($response, $name, $description, $license)
+    {
+        $this->tester->assertTrue($response->isSuccessfulDocument([201]));
+
+        $document = $response->document();
+        $this->tester->assertTrue($document->isSingleResourceDocument());
+
+        $resource = $document->primaryResource();
+        $this->tester->assertNotEmpty($resource->id());
+        $this->tester->assertSame(FileRef::TYPE, $resource->type());
+
+        $this->tester->assertSame($name, $resource->attribute('name'));
+        $this->tester->assertSame($description, $resource->attribute('description'));
+
+        $resourceLink = $resource->relationship('terms-of-use')->firstResourceLink();
+        $this->tester->assertSame($license->id, $resourceLink['id']);
     }
 }

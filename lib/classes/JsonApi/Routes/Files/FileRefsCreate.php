@@ -99,6 +99,7 @@ class FileRefsCreate extends JsonApiController
         }
 
         $fileRef = new \FileRef();
+        $fileRef->name = $name;
         $fileRef->description = $description;
         $fileRef->content_terms_of_use_id = $licenseId;
 
