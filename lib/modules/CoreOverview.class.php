@@ -17,9 +17,12 @@ class CoreOverview implements StudipModule
                        COUNT(IF((nw.chdate > :threshold AND nw.user_id !=:user_id), nw.news_id, NULL)) AS neue
                 FROM news_range AS a
                 LEFT JOIN news AS nw
-                  ON (a.news_id = nw.news_id AND UNIX_TIMESTAMP() BETWEEN date AND (date + expire))
+                  ON a.news_id = nw.news_id
+                     AND UNIX_TIMESTAMP() BETWEEN date AND date + expire
                 LEFT JOIN object_user_visits AS b
-                  ON (b.object_id = a.news_id AND b.user_id = :user_id AND b.type = 'news')
+                  ON b.object_id = a.news_id
+                     AND b.user_id = :user_id
+                     AND b.type = 'news'
                 WHERE a.range_id = :course_id
                 GROUP BY a.range_id";
 

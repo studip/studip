@@ -40,19 +40,22 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
         if (!Config::get()->ILIAS_INTERFACE_ENABLE) {
             return;
         }
-        $sql = "SELECT a.object_id, COUNT(IF(a.module_type != 'crs', module_id, NULL)) as count_modules, COUNT(IF(a.module_type = 'crs', module_id, NULL)) as count_courses,
-                COUNT(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), module_id, NULL)) AS neue,
-                MAX(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), chdate, 0)) AS last_modified
-                FROM
-                object_contentmodules a
-                LEFT JOIN object_user_visits b ON (b.object_id = a.object_id AND b.user_id = :user_id AND b.type ='ilias_interface')
+
+        $sql = "SELECT COUNT(IF(a.module_type != 'crs', module_id, NULL)) AS count_modules,
+                       COUNT(IF(a.module_type = 'crs', module_id, NULL)) AS count_courses,
+                       COUNT(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), module_id, NULL)) AS neue
+                FROM object_contentmodules AS a
+                LEFT JOIN object_user_visits AS b
+                  ON b.object_id = a.object_id
+                     AND b.user_id = :user_id
+                     AND b.type = 'ilias_interface'
                 WHERE a.object_id = :course_id
                 GROUP BY a.object_id";
 
         $statement = DBManager::get()->prepare($sql);
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $course_id);
-        $statement->bindValue(':threshold', object_get_visit_threshold());
+        $statement->bindValue(':threshold', $last_visit);
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
@@ -62,7 +65,7 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
 
         $title = CourseConfig::get($course_id)->getValue('ILIAS_INTERFACE_MODULETITLE');
         $nav = new Navigation($title, 'dispatch.php/course/ilias_interface/index');
-        if ((int)$result['neue']) {
+        if ($result['neue']) {
             $nav->setImage(Icon::create('learnmodule+new', Icon::ROLE_ATTENTION), [
                 'title' => sprintf(
                     ngettext(
@@ -74,7 +77,7 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
                     $result['neue']
                 )
             ]);
-        } elseif ((int)$result['count_modules']) {
+        } elseif ($result['count_modules']) {
             $nav->setImage(Icon::create('learnmodule', Icon::ROLE_INACTIVE), [
                 'title' => sprintf(
                     ngettext(
@@ -85,7 +88,7 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
                     $result['count_modules']
                 )
             ]);
-        } elseif ((int)$result['count_courses']) {
+        } elseif ($result['count_courses']) {
             $nav->setImage(Icon::create('learnmodule', Icon::ROLE_INACTIVE), [
                 'title' => sprintf(
                     ngettext(

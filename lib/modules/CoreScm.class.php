@@ -19,8 +19,7 @@ class CoreScm implements StudipModule
 
         $sql = "SELECT scm_id,
                        SUM(IF(content != '', 1, 0)) AS count,
-                       SUM(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id !=:user_id), IF(content != '', 1, 0), NULL)) AS neue,
-                       MAX(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id !=:user_id), chdate, 0)) AS last_modified
+                       SUM(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND scm.user_id !=:user_id), IF(content != '', 1, 0), NULL)) AS neue
                 FROM scm
                 LEFT JOIN object_user_visits AS ouv
                   ON ouv.object_id = scm.range_id

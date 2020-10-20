@@ -13,77 +13,57 @@ class CoreSchedule implements StudipModule
 {
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
-        $count = 0;
-        $neue  = 0;
-        // check for extern dates
-        $sql = "SELECT COUNT(term.termin_id) as count,
-                       MAX(IF((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id != :user_id), term.chdate, 0)) AS last_modified,
-                       COUNT(IF((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id != :user_id), term.termin_id, NULL)) AS neue
-                FROM ex_termine AS term
-                LEFT JOIN object_user_visits AS ouv
-                  ON (ouv.object_id = term.range_id AND ouv.user_id = :user_id AND ouv.type = 'schedule')
-                WHERE term.range_id = :course_id
-                GROUP BY term.range_id";
-        $statement = DBManager::get()->prepare($sql);
+        $query = "SELECT COUNT(termin_id) AS count,
+                         COUNT(IF((chdate > IFNULL(ouv.visitdate, :threshold) AND autor_id != :user_id), termin_id, NULL)) AS neue
+                  FROM (
+                      SELECT termin_id, chdate, autor_id
+                      FROM termine
+                      WHERE range_id = :course_id
+
+                      UNION
+
+                      SELECT termin_id, chdate, autor_id
+                      FROM ex_termine
+                      WHERE range_id = :course_id
+                  ) AS tmp
+                  LEFT JOIN object_user_visits AS ouv
+                    ON ouv.object_id = :course_id
+                       AND ouv.user_id = :user_id
+                       AND ouv.type = 'schedule'";
+        $statement = DBManager::get()->prepare($query);
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $course_id);
         $statement->bindValue(':threshold', $last_visit);
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if ($result) {
-            $count = $result['count'];
-            $neue  = $result['neue'];
-        }
-
-        // check for normal dates
-        $sql = "SELECT COUNT(term.termin_id) as count,
-                       COUNT(term.termin_id) as count, COUNT(IF((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id != :user_id), term.termin_id, NULL)) AS neue,
-                       MAX(IF((term.chdate > IFNULL(ouv.visitdate, :threshold) AND term.autor_id != :user_id), term . chdate, 0)) AS last_modified
-                FROM termine AS term
-                LEFT JOIN object_user_visits AS ouv
-                  ON (ouv.object_id = term.range_id AND ouv.user_id = :user_id AND ouv.type = 'schedule')
-                WHERE term.range_id = :course_id
-                GROUP BY term.range_id";
-        $statement = DBManager::get()->prepare($sql);
-        $statement->bindValue(':user_id', $user_id);
-        $statement->bindValue(':course_id', $course_id);
-        $statement->bindValue(':threshold', $last_visit);
-        $statement->execute();
-        $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-        if ($result) {
-            $count += $result['count'];
-            $neue += $result['neue'];
-        }
-
-        if (!$neue && !$count) {
+        if (!$result || (!$result['neue'] && !$result['count'])) {
             return null;
         }
 
         $nav = new Navigation('schedule', 'dispatch.php/course/dates');
-        if ($neue) {
+        if ($result['neue']) {
             $nav->setImage(Icon::create('schedule+new', Icon::ROLE_ATTENTION), [
                 'title' => sprintf(
                     ngettext(
                         '%1$d Termin, %2$d neuer',
                         '%1$d Termine, %2$d neue',
-                        $count
+                        $result['count']
                     ),
-                    $count,
-                    $neue
+                    $result['count'],
+                    $result['neue']
                 )
             ]);
-            $nav->setBadgeNumber($neue);
+            $nav->setBadgeNumber($result['neue']);
         } else {
             $nav->setImage(Icon::create('schedule', Icon::ROLE_INACTIVE), [
                 'title' => sprintf(
                     ngettext(
                         '%d Termin',
                         '%d Termine',
-                        $count
+                        $result['count']
                     ),
-                    $count
+                    $result['count']
                 )
             ]);
         }
@@ -92,13 +72,6 @@ class CoreSchedule implements StudipModule
 
     public function getTabNavigation($course_id)
     {
-        // cmd und open_close_id mit durchziehen, damit geöffnete Termine geöffnet bleiben
-        $req = Request::getInstance();
-        $openItem = '';
-        if (isset($req['cmd']) && isset($req['open_close_id'])) {
-            $openItem = '&cmd='.$req['cmd'].'&open_close_id='.$req['open_close_id'];
-        }
-
         $navigation = new Navigation(_('Ablaufplan'));
         $navigation->setImage(Icon::create('schedule', Icon::ROLE_INFO_ALT));
         $navigation->setActiveImage(Icon::create('schedule', Icon::ROLE_INFO));

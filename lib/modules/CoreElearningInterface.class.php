@@ -17,13 +17,13 @@ class CoreElearningInterface implements StudipModule
             return null;
         }
 
-        $sql = "SELECT a.object_id,
-                      COUNT(module_id) AS count,
-                      COUNT(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), module_id, NULL)) AS neue,
-                      MAX(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), chdate, 0)) AS last_modified
+        $sql = "SELECT COUNT(module_id) AS count,
+                       COUNT(IF((chdate > IFNULL(b.visitdate, :threshold) AND a.module_type != 'crs'), module_id, NULL)) AS neue
                 FROM object_contentmodules AS a
                 LEFT JOIN object_user_visits AS b
-                  ON (b.object_id = a.object_id AND b.user_id = :user_id AND b.type ='elearning_interface')
+                  ON b.object_id = a.object_id
+                     AND b.user_id = :user_id
+                     AND b.type = 'elearning_interface'
                 WHERE a.object_id = :course_id
                   AND a.module_type != 'crs'
                 GROUP BY a.object_id";
@@ -36,7 +36,7 @@ class CoreElearningInterface implements StudipModule
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         if (!empty($result)) {
             $nav = new Navigation('elearning', 'dispatch.php/course/elearning/show');
-            if ((int) $result['neue']) {
+            if ($result['neue']) {
                 $nav->setImage(Icon::create('learnmodule+new', Icon::ROLE_ATTENTION), [
                     'title' => sprintf(
                         ngettext(
@@ -48,7 +48,7 @@ class CoreElearningInterface implements StudipModule
                         $result['neue']
                     )
                 ]);
-            } elseif ((int) $result['count']) {
+            } elseif ($result['count']) {
                 $nav->setImage(Icon::create('learnmodule', Icon::ROLE_INACTIVE), [
                     'title' => sprintf(
                         ngettext(

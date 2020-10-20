@@ -444,134 +444,6 @@ class MyRealmModel
         return $sem_courses ?: false;
     }
 
-    public static function  checkParticipants(&$my_obj, $user_id, $object_id, $is_admission)
-    {
-        if ($my_obj["modules"]["participants"]) {
-            if (SeminarCategories::GetByTypeId($my_obj['status'])->studygroup_mode) {
-                $nav = new Navigation('participants', 'dispatch.php/course/studygroup/members/?cid=' . $object_id);
-            } else {
-                if (!$my_obj['sem_class']->isGroup()) {
-                    $nav = new Navigation('participants', 'dispatch.php/course/members/index');
-                } else {
-                    if (!$GLOBALS['perm']->have_studip_perm('tutor', $object_id)) {
-                        return null;
-                    }
-                    $nav = new Navigation('participants', 'dispatch.php/course/grouping/members');
-                }
-            }
-
-
-            if ($GLOBALS['perm']->have_perm('admin', $user_id) || in_array($my_obj['user_status'], words('dozent tutor'))) {
-                $count            = 0;
-                $neue             = 0;
-                $all_auto_inserts = AutoInsert::getAllSeminars(true);
-                $auto_insert_perm = Config::get()->AUTO_INSERT_SEM_PARTICIPANTS_VIEW_PERM;
-
-                $sql       = "SELECT
-                        COUNT(a.user_id) as count,
-                        COUNT(IF((mkdate > IFNULL(b.visitdate, :threshold) AND a.user_id !=:user_id), a.user_id, NULL)) AS neue,
-                        MAX(IF((mkdate > IFNULL(b.visitdate, :threshold) AND a.user_id != :user_id), mkdate, 0)) AS last_modified
-                    FROM admission_seminar_user a
-                    LEFT JOIN object_user_visits b ON (b.object_id = a.seminar_id AND b.user_id = :user_id AND b.type ='participants')
-                    WHERE a.seminar_id = :course_id";
-                $statement = DBManager::get()->prepare($sql);
-                $statement->bindValue(':user_id', $user_id);
-                $statement->bindValue(':course_id', $object_id);
-                $statement->bindValue(':threshold', object_get_visit_threshold());
-                $statement->execute();
-                $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-                if (!empty($result)) {
-                    if ($GLOBALS['perm']->have_perm('admin', $user_id) || in_array($my_obj['user_status'], words('dozent tutor'))) {
-                        $count = $result['count'];
-                        $neue  = $result['neue'];
-                        if ($my_obj['last_modified'] < $result['last_modified']) {
-                            $my_obj['last_modified'] = $result['last_modified'];
-                        }
-                    }
-                }
-
-                $sql       = "SELECT
-                    COUNT(a . user_id) as count,
-                    COUNT(IF((mkdate > IFNULL(b.visitdate, :threshold) AND a.user_id !=:user_id), a.user_id, NULL)) AS neue,
-                    MAX(IF ((mkdate > IFNULL(b.visitdate, :threshold) AND a.user_id != :user_id), mkdate, 0)) AS last_modified
-                    FROM seminar_user a
-                    LEFT JOIN object_user_visits b ON(b . object_id = a . seminar_id AND b . user_id = :user_id AND b . type = 'participants')
-                    WHERE seminar_id = :course_id";
-                $statement = DBManager::get()->prepare($sql);
-                $statement->bindValue(':user_id', $user_id);
-                $statement->bindValue(':course_id', $object_id);
-                $statement->bindValue(':threshold', object_get_visit_threshold());
-                $statement->execute();
-                $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-
-                if (!empty($result)) {
-                    // show the participants-icon only if the module is activated and it is not an auto-insert-sem
-                    if (in_array($object_id, $all_auto_inserts)) {
-                        if ($GLOBALS['perm']->have_perm('admin', $user_id) && !$GLOBALS['perm']->have_perm($auto_insert_perm, $user_id)) {
-                            return null;
-                        } else if ($GLOBALS['perm']->permissions[$auto_insert_perm] > $GLOBALS['perm']->permissions[$my_obj['user_status']]) {
-                            return null;
-                        }
-                    }
-                    $count += $result['count'];
-                    $neue += $result['neue'];
-
-                    if ($GLOBALS['perm']->have_perm('admin', $user_id) || in_array($my_obj['user_status'], words('dozent tutor'))) {
-                        if ($my_obj['last_modified'] < $result['last_modified']) {
-                            $my_obj['last_modified'] = $result['last_modified'];
-                        }
-                    }
-                }
-
-                if ($neue) {
-                    $nav->setImage(
-                        Icon::create(
-                            'persons+new',
-                            'attention',
-                            [
-                                'title' => sprintf(
-                                    ngettext(
-                                        '%1$d Teilnehmende/r, %2$d neue/r',
-                                        '%1$d Teilnehmende, %2$d neue',
-                                        $count
-                                    ),
-                                    $count,
-                                    $neue
-                                )
-                            ]
-                        )
-                    );
-                    $nav->setBadgeNumber($neue);
-                } else if ($count) {
-                    $nav->setImage(
-                        Icon::create(
-                            'persons',
-                            'inactive',
-                            [
-                                'title' => sprintf(
-                                    ngettext(
-                                        '%d Teilnehmende/r',
-                                        '%d Teilnehmende',
-                                        $count
-                                    ),
-                                    $count
-                                )
-                            ]
-                        )
-                    );
-                }
-            } else {
-                $nav->setImage(
-                    Icon::create('persons', 'inactive', ["title" => _('Teilnehmende')]));
-            }
-            return $nav;
-        }
-        return null;
-    }
-
-
     /**
      * Get the whole icon-navigation for a given course
      * @param $object_id
@@ -636,42 +508,6 @@ class MyRealmModel
         unset($plugin_navigation);
         return $navigation;
     }
-
-
-    /**
-     * @param $course_id
-     * @return array
-     */
-    public static function getSemTree($course_id, $depth = false)
-    {
-        $the_tree        = TreeAbstract::GetInstance("StudipSemTree");
-        $view            = DbView::getView('sem_tree');
-        $ret             = null;
-        $view->params[0] = $course_id;
-        $rs              = $view->get_query("view:SEMINAR_SEM_TREE_GET_IDS");
-        while ($rs->next_record()) {
-            $ret[$rs->f('sem_tree_id')]['name'] = $the_tree->getShortPath($rs->f('sem_tree_id'), null, ">", $depth ? $depth - 1 : 0);
-            $ret[$rs->f('sem_tree_id')]['info'] = $the_tree->getValue($rs->f('sem_tree_id'), 'info');
-        }
-
-        return $ret;
-    }
-
-
-    /**
-     * Returns the id for the studygroup name
-     * @return Interger
-     */
-    public static function getStudygroupId()
-    {
-        $statement = DBManager::get()->prepare(
-            "SELECT id FROM sem_classes WHERE name = :name"
-        );
-        $statement->execute(['name' => 'Studiengruppen']);
-        $result = $statement->fetch(PDO::FETCH_COLUMN);
-        return $result;
-    }
-
 
     /**
      * This function reset all visits on every available modules
@@ -872,24 +708,12 @@ class MyRealmModel
                 //We must sort all courses by their group and their name:
                 uasort($collection, function ($a, $b) {
                     if (Config::get()->IMPORTANT_SEMNUMBER) {
-                        if ($a['gruppe'] == $b['gruppe']) {
-                            if ($a['number'] == $b['number']) {
-                                if ($a['temp_name'] == $b['temp_name']) {
-                                    return 0;
-                                }
-                                return ($a['temp_name'] < $b['temp_name']) ? -1 : 1;
-                            }
-                            return ($a['number'] < $b['number']) ? -1 : 1;
-                        }
-                        return ($a['gruppe'] < $b['gruppe']) ? -1 : 1;
+                        return strnatcasecmp($a['gruppe'], $b['gruppe'])
+                            ?: strnatcasecmp($a['number'], $b['number'])
+                            ?: strnatcasecmp($a['temp_name'], $b['temp_name']);
                     } else {
-                        if ($a['gruppe'] == $b['gruppe']) {
-                            if ($a['temp_name'] == $b['temp_name']) {
-                                return 0;
-                            }
-                            return ($a['temp_name'] < $b['temp_name']) ? -1 : 1;
-                        }
-                        return ($a['gruppe'] < $b['gruppe']) ? -1 : 1;
+                        return strnatcasecmp($a['gruppe'], $b['gruppe'])
+                            ?: strnatcasecmp($a['temp_name'], $b['temp_name']);
                     }
                 });
                 $_tmp_courses[$sem_key][$sem_tree_name] = $collection;
@@ -983,16 +807,6 @@ class MyRealmModel
         return $courses;
     }
 
-
-    public static function checkAdmissionParticipation($course_id)
-    {
-        $query     = "SELECT 1 FROM admission_seminar_user WHERE user_id = ? AND seminar_id = ?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$GLOBALS['user']->id,
-                                  $course_id]);
-        $present = $statement->fetchColumn();
-        return $present;
-    }
 
     /**
      * Calc nav elements to get the table-column-width

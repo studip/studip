@@ -13,11 +13,85 @@ class CoreParticipants implements StudipModule
 {
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
-        $navigation = new Navigation(_('Teilnehmende'), 'dispatch.php/course/members');
-        $navigation->setImage(Icon::create('persons', Icon::ROLE_INACTIVE));
-        if ($last_visit && CourseMember::countBySQL("seminar_id = :course_id AND mkdate >= :last_visit", ['last_visit' => $last_visit, 'course_id' => $course_id]) > 0) {
-            $navigation->setImage(Icon::create('persons+new', Icon::ROLE_ATTENTION));
+        // show the participants-icon only if the course is not an auto-insert-sem
+        if (
+            AutoInsert::checkSeminar($course_id)
+            && (
+                ($GLOBALS['perm']->have_perm('admin', $user_id) && !$GLOBALS['perm']->have_perm($auto_insert_perm, $user_id))
+                || !$GLOBALS['perm']->have_studip_perm($auto_insert_perm, $course_id, $user_id)
+            )
+        ) {
+            return null;
         }
+
+        // Determine url to redirect to
+        $course = Course::find($course_id);
+        if (!$course->getSemClass()->isGroup()) {
+            $url = 'dispatch.php/course/members/index';
+        } elseif (!$GLOBALS['perm']->have_studip_perm('tutor', $course_id, $user_id)) {
+            return null;
+        } else {
+            $url = 'dispatch.php/course/grouping/members';
+        }
+
+        $navigation = new Navigation(_('Teilnehmende'), $url);
+        $navigation->setImage(Icon::create('persons', Icon::ROLE_INACTIVE));
+
+        // Check permission, show no indicator if not at least tutor
+        if (!$GLOBALS['perm']->have_studip_perm('tutor', $course_id, $user_id)) {
+            return $navigation;
+        }
+
+        $query = "SELECT COUNT(tmp.user_id) as count,
+                         COUNT(IF((tmp.mkdate > IFNULL(b.visitdate, :threshold) AND tmp.user_id != :user_id), tmp.user_id, NULL)) AS neue
+                  FROM (
+                      SELECT user_id, mkdate
+                      FROM admission_seminar_user
+                      WHERE seminar_id = :course_id
+
+                      UNION
+
+                      SELECT user_id, mkdate
+                      FROM seminar_user
+                      WHERE seminar_id = :course_id
+                  ) AS tmp
+                  LEFT JOIN object_user_visits AS b
+                    ON b.object_id = :course_id
+                       AND b.user_id = :user_id
+                       AND b.type = 'participants'";
+        $statement = DBManager::get()->prepare($query);
+        $statement->bindValue(':user_id', $user_id);
+        $statement->bindValue(':course_id', $course_id);
+        $statement->bindValue(':threshold', $last_visit);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if ($result['neue']) {
+            $navigation->setImage(Icon::create('persons+new', Icon::ROLE_ATTENTION), [
+                'title' => sprintf(
+                    ngettext(
+                        '%1$d Teilnehmende/r, %2$d neue/r',
+                        '%1$d Teilnehmende, %2$d neue',
+                        $result['count']
+                    ),
+                    $result['count'],
+                    $result['neue']
+                )
+            ]);
+            $navigation->setBadgeNumber($result['neue']);
+        } elseif ($result['count']) {
+            $navigation->setLinkAttributes([
+                'title' => sprintf(
+                    ngettext(
+                        '%d Teilnehmende/r',
+                        '%d Teilnehmende',
+                        $result['count']
+                    ),
+                    $result['count']
+                )
+            ]);
+        }
+
         return $navigation;
     }
 
@@ -87,5 +161,19 @@ class CoreParticipants implements StudipModule
                 ]
             ],
         ];
+    }
+
+    protected function getCourseStatus(Course $course, $user_id)
+    {
+        $member = CourseMember::find([$course->id, $user_id]);
+        if ($member) {
+            return $member->status;
+        }
+
+        if (Config::get()->DEPUTIES_ENABLE && isDeputy($user_id, $course->id)) {
+            return 'dozent';
+        }
+
+        return false;
     }
 }
