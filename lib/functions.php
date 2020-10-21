@@ -191,8 +191,6 @@ function closeObject()
  */
 function get_object_type($id, $check_only = [])
 {
-    static $object_type_cache = [];
-
     // Nothing to check
     if (!$id) {
         return false;
@@ -203,9 +201,12 @@ function get_object_type($id, $check_only = [])
         return 'global';
     }
 
+    // Initialize cache array (cache partioned by first character of id)
+    $cached = new StudipCachedArray("/ObjectTypes/{$id[0]}");
+
     // Read from cache if available
-    if (isset($object_type_cache[$id]) && is_string($object_type_cache[$id])) {
-        return $object_type_cache[$id];
+    if (isset($cached[$id]) && is_string($cached[$id])) {
+        return $cached[$id];
     }
 
     // Tests for specific types
@@ -225,38 +226,32 @@ function get_object_type($id, $check_only = [])
     foreach ($tests as $key => $query) {
         if ($check_all || in_array($key, $check_only)) {
             if (!$check_all
-                && isset($object_type_cache[$id])
-                && is_array($object_type_cache[$id])
-                && in_array($key, $object_type_cache[$id])
+                && isset($cached[$id])
+                && is_array($cached[$id])
+                && in_array($key, $cached[$id])
             ) {
                 return false;
             }
 
-            $statement = DBManager::get()->prepare($query);
-            $statement->execute([$id]);
-
-            if ($statement->fetchColumn()) {
-                return $object_type_cache[$id] = $key;
+            $present = DBManager::get()->fetchColumn($query, [$id]);
+            if ($present) {
+                return $cached[$id] = $key;
             }
         }
     }
 
     // Institute or faculty?
     if ($check_all || in_array('inst', $check_only) || in_array('fak', $check_only)) {
-        $query = "SELECT Institut_id = fakultaets_id FROM Institute WHERE Institut_id = ?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$id]);
-
-        $is_fak = $statement->fetchColumn();
+        $is_fak = DBManager::get()->fetchColumn($query, [$id]);
         if ($is_fak !== false) {
-            return $object_type_cache[$id] = $is_fak ? 'fak' : 'inst';
+            return $cached[$id] = $is_fak ? 'fak' : 'inst';
         }
     }
     if ($check_all) {
         // None of the above
-        return $object_type_cache[$id] = false;
+        return $cached[$id] = false;
     } else {
-        $object_type_cache[$id] = $check_only;
+        $cached[$id] = $check_only;
         return false;
     }
 }
