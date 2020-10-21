@@ -3,6 +3,6 @@
         $list->getName()
     ),
     $controller->deleteURL($userlist->getId(), ['really' => true]),
-    $controller->deleteURL($userlist->getId(), ['cancel' => true]),
+    $controller->deleteURL($userlist->getId(), ['cancel' => true])
 )
 ?>
