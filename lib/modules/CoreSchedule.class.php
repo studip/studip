@@ -20,7 +20,7 @@ class CoreSchedule implements StudipModule
                       FROM termine
                       WHERE range_id = :course_id
 
-                      UNION
+                      UNION ALL
 
                       SELECT termin_id, chdate, autor_id
                       FROM ex_termine

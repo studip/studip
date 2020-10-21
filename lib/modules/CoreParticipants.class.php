@@ -49,7 +49,7 @@ class CoreParticipants implements StudipModule
                       FROM admission_seminar_user
                       WHERE seminar_id = :course_id
 
-                      UNION
+                      UNION ALL
 
                       SELECT user_id, mkdate
                       FROM seminar_user
