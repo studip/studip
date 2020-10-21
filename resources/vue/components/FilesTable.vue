@@ -313,9 +313,9 @@
                 }
                 if (["size", "downloads", "chdate"].indexOf(this.sortedBy) !== -1) {
                     if (this.sortDirection === "asc") {
-                        return this.files.sort((a, b) => parseInt(a[this.sortedBy], 10) <= parseInt(b[this.sortedBy], 10));
+                        return this.files.sort((a, b) => parseInt(b[this.sortedBy], 10) - parseInt(a[this.sortedBy], 10));
                     } else {
-                        return this.files.sort((a, b) => parseInt(a[this.sortedBy], 10) > parseInt(b[this.sortedBy], 10));
+                        return this.files.sort((a, b) => parseInt(a[this.sortedBy], 10) - parseInt(b[this.sortedBy], 10));
                     }
                 }
                 if (typeof this.topfolder.additionalColumns[this.sortedBy] !== "undefined") {
@@ -334,9 +334,9 @@
                         }
                     } else {
                         if (this.sortDirection === "asc") {
-                            return this.files.sort((a, b) => a.additionalColumns[this.sortedBy].order <= b.additionalColumns[this.sortedBy].order);
+                            return this.files.sort((a, b) => b.additionalColumns[this.sortedBy].order - a.additionalColumns[this.sortedBy].order);
                         } else {
-                            return this.files.sort((a, b) => a.additionalColumns[this.sortedBy].order > b.additionalColumns[this.sortedBy].order);
+                            return this.files.sort((a, b) => a.additionalColumns[this.sortedBy].order - b.additionalColumns[this.sortedBy].order);
                         }
                     }
                 }
@@ -354,9 +354,9 @@
                 }
                 if (["chdate"].indexOf(this.sortedBy) !== -1) {
                     if (this.sortDirection === "asc") {
-                        return this.folders.sort((a, b) => a[this.sortedBy] <= b[this.sortedBy]);
+                        return this.folders.sort((a, b) => b[this.sortedBy] - a[this.sortedBy]);
                     } else {
-                        return this.folders.sort((a, b) => a[this.sortedBy] > b[this.sortedBy]);
+                        return this.folders.sort((a, b) => a[this.sortedBy] - b[this.sortedBy]);
                     }
                 }
                 if (typeof this.topfolder.additionalColumns[this.sortedBy] !== "undefined") {
@@ -375,9 +375,9 @@
                         }
                     } else {
                         if (this.sortDirection === "asc") {
-                            return this.folders.sort((a, b) => parseInt(a.additionalColumns[this.sortedBy].order, 10) <= parseInt(b.additionalColumns[this.sortedBy].order, 10));
+                            return this.folders.sort((a, b) => parseInt(b.additionalColumns[this.sortedBy].order, 10) - parseInt(a.additionalColumns[this.sortedBy].order, 10));
                         } else {
-                            return this.folders.sort((a, b) => parseInt(a.additionalColumns[this.sortedBy].order, 10) > parseInt(b.additionalColumns[this.sortedBy].order, 10));
+                            return this.folders.sort((a, b) => parseInt(a.additionalColumns[this.sortedBy].order, 10) - parseInt(b.additionalColumns[this.sortedBy].order, 10));
                         }
                     }
                 }
