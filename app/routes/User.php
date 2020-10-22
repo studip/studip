@@ -46,6 +46,33 @@ class User extends \RESTAPI\RouteMap
     /* ROUTES                                         */
     /**************************************************/
 
+    /**
+     * Searches for users by a given keyword.
+     *
+     * @get /users
+     */
+    public function searchUsers()
+    {
+        $needle = \Request::get('q') ?? \Request::get('needle');
+        if (!$needle) {
+            $this->halt(400, 'Missing search paramter ?q=');
+        }
+
+        $query  = \GlobalSearchUsers::getSQL($needle, [], $this->offset + $this->limit);
+        $result = \DBManager::get()->fetchAll($query);
+        $total = (int) \DBManager::get()->fetchColumn('SELECT FOUND_ROWS() as found_rows');
+
+        $user_ids = array_column($result, 'user_id');
+        $users    = \User::findMany($user_ids);
+
+        return $this->paginated(
+            array_map(function ($user) {
+                return self::getMiniUser($this, $user);
+            }, $users),
+            $total
+        );
+    }
+
 
     /**
      * getUser - retrieves data of a user
