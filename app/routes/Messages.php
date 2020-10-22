@@ -26,7 +26,14 @@ class Messages extends \RESTAPI\RouteMap
             $this->error(401);
         }
 
-        return $this->countMessages($user_id, $box);
+        $count = $this->countMessages($user_id, $box);
+
+        $this->headers([
+            'X-Messages-Total'  => $count['total'],
+            'X-Messages-Unread' => $count['unread'],
+        ]);
+
+        return null;
     }
 
     /**
