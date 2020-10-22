@@ -955,6 +955,11 @@ abstract class ModuleManagementModel extends SimpleORMap
      */
     protected static function fromCache($index, $id, Callable $finder)
     {
+        // Leave immeditately if $id cannot be used as array index
+        if (!is_string($id) && !is_int($id)) {
+            return $finder();
+        }
+
         if (!isset(static::$object_cache[$index])) {
             static::$object_cache[$index] = [];
         }
