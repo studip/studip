@@ -9,9 +9,20 @@
         <?= strftime('%x, %X') ?>
     <? if (Studip\ENV === 'development'): ?>
         [
-            <?= sprintf('%u db queries', DBManager::get()->query_count) ?>
+        <? if (DBManager::get('studip') === DBManager::get('studip-slave')): ?>
+            <?= sprintf('%u db queries', DBManager::get('studip')->query_count) ?>
+        <? else: ?>
+            <?= sprintf(
+                'M%u/S%u = %u db queries',
+                DBManager::get('studip')->query_count,
+                DBManager::get('studip-slave')->query_count,
+                DBManager::get('studip')->query_count + DBManager::get('studip-slave')->query_count
+            ) ?>
+        <? endif; ?>
             /
             <?= relsize(memory_get_peak_usage(true), false) ?> mem
+            /
+            <?= sprintf('%.5f sec', microtime(true) - $GLOBALS['STUDIP_STARTUP_TIME']) ?>
         ]
         <? if ($GLOBALS['DEBUG_ALL_DB_QUERIES']) : ?>
             <a href="" onClick="jQuery('#all_db_queries').toggle(); return false;">
