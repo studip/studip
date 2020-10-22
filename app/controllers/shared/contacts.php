@@ -559,7 +559,7 @@ class Shared_ContactsController extends MVVController
     public function sort_action($range_id = null)
     {
         if (Request::submitted('order')) {
-            $ordered = json_decode(Request::get('ordering'));
+            $ordered = json_decode(Request::get('ordering'), true);
             if (is_array($ordered)) {
                 $ok = false;
                 foreach ($ordered as $p => $user_kat_id) {
