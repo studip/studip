@@ -307,6 +307,10 @@ function isURL($url) {
 function isLinkIntern($url) {
     $pum = @parse_url(TransformInternalLinks($url));
 
+    if (!$pum) {
+        return false;
+    }
+
     // If given $url is pointing to an anchor, it should be internal
     if (count($pum) === 1 && isset($pum['fragment'])) {
         return true;
