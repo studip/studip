@@ -30,7 +30,8 @@
 
 <label class="col-3">
     <?= _('Beschreibung') ?>
-    <textarea name="description" id="wizard-description" rows="4"></textarea>
+    <textarea name="description" id="wizard-description"
+              rows="4"><?= htmlReady($values['description'])?></textarea>
 </label>
 
 
@@ -38,10 +39,19 @@
     <span class="required"><?= _('Zugang') ?></span>
 
     <select name="access" id="wizard-access">
-        <option value="all"><?= _('offen für alle') ?></option>
-        <option value="invite"><?= _('auf Anfrage') ?></option>
+        <option value="all"
+                <?= $values['access'] == 'all' ? 'selected' : ''?>>
+            <?= _('offen für alle') ?>
+        </option>
+        <option value="invite"
+                <?= $values['access'] == 'invite' ? 'selected' : ''?>>
+            <?= _('auf Anfrage') ?>
+        </option>
         <?php if (Config::get()->STUDYGROUPS_INVISIBLE_ALLOWED) : ?>
-            <option value="invisible"><?= _('unsichtbar') ?></option>
+            <option value="invisible"
+                    <?= $values['access'] == 'invisible' ? 'selected' : ''?>>
+                <?= _('unsichtbar') ?>
+            </option>
         <?php endif ?>
     </select>
 </label>
