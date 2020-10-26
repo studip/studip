@@ -156,10 +156,10 @@ class RoomManagement_OverviewController extends StudipController
         if (!$tree_selected_resource && $this->room_requests_activated ) {
             if (Config::get()->RESOURCES_DISPLAY_CURRENT_REQUESTS_IN_OVERVIEW) {
                 $this->display_current_requests = true;
-                $current_user = User::findCurrent();
+                $this->current_user = User::findCurrent();
 
                 //Load a list with the current room requests:
-                if (ResourceManager::userHasGlobalPermission($current_user, 'admin')) {
+                if (ResourceManager::userHasGlobalPermission($this->current_user, 'admin')) {
                     //Global resource admins can see all room requests.
                     //Get the 10 latest requests:
                     $this->room_requests = RoomRequest::findBySql(
