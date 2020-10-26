@@ -780,7 +780,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             $homepage_elements['privadr'] = [
                 'name'         => _('Private Adresse'),
                 'visibility'   => $homepage_visibility['privadr'] ?: get_default_homepage_visibility($this->id),
-                'identifier'   => 'privatedata',
+                'identifier'   => 'privatedata'
             ];
         }
         if ($this->info->home && !$GLOBALS['NOT_HIDEABLE_FIELDS'][$this->perms]['homepage']) {
@@ -788,7 +788,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 'name'        => _('Homepage-Adresse'),
                 'visibility'  => $homepage_visibility['homepage'] ?: get_default_homepage_visibility($this->id),
                 'extern'      => true,
-                'identifier'  => 'privatedata',
+                'identifier'  => 'privatedata'
             ];
         }
         if ($news && !$GLOBALS['NOT_HIDEABLE_FIELDS'][$this->perms]['news']) {
