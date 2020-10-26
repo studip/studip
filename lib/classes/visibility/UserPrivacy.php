@@ -61,7 +61,7 @@ class UserPrivacy
 
             foreach ($elements as $key => $element) {
                 foreach ($this->profileSettings as $vis) {
-                    if ($vis->name === $element['category']) {
+                    if ($vis->identifier === $element['identifier']) {
                         foreach ($vis->children as $child) {
                             if ($child->identifier === $key) {
                                 $child->setDisplayed();
