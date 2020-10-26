@@ -42,7 +42,7 @@
            title="<?= _('Kriterium ausgewählt'); ?>" id="cb_<?= htmlReady($criteria['name']); ?>"
            name="<?= htmlReady($criteria['name'] . '_enabled')?>"
            <?= $criteria['enabled'] ? 'checked="checked"' : ''?>>
-    <label class="undecorated">
+    <label class="undecorated" for="cb_<?= htmlReady($criteria['name']) ?>">
         <span><?= htmlReady($criteria['title']) ?></span>
         <? if ($criteria['semester']): ?>
             <div><?= _('Semester') ?></div>
