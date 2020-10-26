@@ -495,9 +495,9 @@ class MessagesController extends AuthenticatedController {
         }
         $settings = UserConfig::get($GLOBALS['user']->id)->MESSAGING_SETTINGS;
         $this->mailforwarding = Request::get('emailrequest') ? true : $settings['request_mail_forward'];
-        $this->show_adressees = true;
-        if (Request::get('inst_id') || Request::get('course_id') || Request::option('group_id')) {
-            $this->show_adressees = false;
+        $this->show_adressees = Request::get('show_adressees') ? true : $settings['show_adressees'];;
+        if (Request::get('inst_id') || Request::get('course_id') || Request::option('group_id') || !Config::get()->SHOW_ADRESSEES_LIMIT) {
+            $this->show_adressees = null;
         }
         if (trim($settings['sms_sig'])) {
             if (Studip\Markup::editorEnabled()) {

@@ -155,10 +155,12 @@
             <?= _("Immer per E-Mail weiterleiten") ?>
         </label>
 
-        <label for="show_adressees">
-            <input type="checkbox" name="show_adressees" id="show_adressees" value="1"<?= $show_adressees ? " checked" : "" ?>>
-            <?= _("Sollen die Adressaten für die Empfänger sichtbar sein?") ?>
-        </label>
+        <? if (isset($show_adressees)) : ?>
+            <label for="show_adressees">
+                <input type="checkbox" name="show_adressees" id="show_adressees" value="1"<?= $show_adressees ? " checked" : "" ?>>
+                <?= _("Sollen die Adressaten für die Empfänger sichtbar sein?") ?>
+            </label>
+        <? endif ?>
     </div>
     </fieldset>
 

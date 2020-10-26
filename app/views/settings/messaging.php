@@ -35,6 +35,14 @@
             </label>
         <? endif ?>
 
+        <? if (Config::get()->SHOW_ADRESSEES_LIMIT): ?>
+            <label>
+                <input type="checkbox" value="1" name="show_adressees" id="show_adressees"
+                    <? if ($settings['show_adressees'] == 1) echo 'checked'; ?>>
+                <?= _('Adressaten für die Empfänger sichtbar machen') ?>
+            </label>
+        <? endif ?>
+
         <label>
             <input type="checkbox" value="1" name="logout_markreaded" id="logout_markreaded"
                 <? if ($settings['logout_markreaded'] == 1) echo 'checked'; ?>>
