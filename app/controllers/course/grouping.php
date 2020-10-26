@@ -91,28 +91,33 @@ class Course_GroupingController extends AuthenticatedController
 
         $this->children = $this->course->children;
 
+        $excluded_course_ids = array_merge(
+            [$this->course->id],
+            $this->children->pluck('id')
+        );
+
         // Prepare context for MyCoursesSearch...
         if ($GLOBALS['perm']->have_perm('root')) {
             $parameters = [
-                'semtypes'  => array_merge(studygroup_sem_types(), SemType::getGroupingSemTypes()),
-                'exclude'   => count($this->children) > 0 ? $this->children->pluck('seminar_id') : [],
+                'semtypes'  => array_merge(studygroup_sem_types(), SemType::getNonGroupingSemTypes()),
+                'exclude'   => $excluded_course_ids,
                 'semesters' => [$this->course->start_semester->id],
             ];
         } else if ($GLOBALS['perm']->have_perm('admin')) {
             $parameters = [
-                'semtypes'   => array_merge(studygroup_sem_types(), SemType::getGroupingSemTypes()),
+                'semtypes'   => array_merge(studygroup_sem_types(), SemType::getNonGroupingSemTypes()),
                 'institutes' => array_map(function ($i) {
                     return $i['Institut_id'];
                 }, Institute::getMyInstitutes()),
-                'exclude'    => count($this->children) > 0 ? $this->children->pluck('seminar_id') : [],
+                'exclude'    => $excluded_course_ids,
                 'semesters'  => [$this->course->start_semester->id],
             ];
 
         } else {
             $parameters = [
                 'userid'    => $GLOBALS['user']->id,
-                'semtypes'  => array_merge(studygroup_sem_types(), SemType::getGroupingSemTypes()),
-                'exclude'   => count($this->children) > 0 ? $this->children->pluck('seminar_id') : [],
+                'semtypes'  => array_merge(studygroup_sem_types(), SemType::getNonGroupingSemTypes()),
+                'exclude'   => $excluded_course_ids,
                 'semesters' => [$this->course->start_semester->id]
             ];
         }
