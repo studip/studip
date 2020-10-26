@@ -25,12 +25,6 @@ class Visibilityapi extends Migration {
         $stmt = $db->prepare($sql);
         $stmt->execute();
 
-        $category = ['Studien-/Einrichtungsdaten' => 'studdata',
-            'Private Daten' => 'privatedata',
-            'Zusätzliche Datenfelder' => 'additionaldata',
-            'Eigene Kategorien' => 'owncategory',
-            'Allgemeine Daten' => 'commondata'];
-
         $result = $db->query("SELECT value FROM config WHERE field = 'HOMEPAGE_VISIBILITY_DEFAULT' ORDER BY is_default LIMIT 1");
         $default_visibility = constant($result->fetchColumn());
 
@@ -46,7 +40,7 @@ class Visibilityapi extends Migration {
             if (is_array($elements)) {
                 foreach ($elements as $key => $state) {
                     if ($state['visibility'] != $default_visibility) {
-                        Visibility::addPrivacySetting($state['name'], $key, $category[$state['category']], 1, $about->auth_user['user_id'], $state['visibility']);
+                        Visibility::addPrivacySetting($state['name'], $key, $state['identifier'], 1, $about->auth_user['user_id'], $state['visibility']);
                     }
                 }
             }

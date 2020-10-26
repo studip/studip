@@ -742,8 +742,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 'name'        => _('Eigenes Bild'),
                 'visibility'  => $homepage_visibility['picture'] ?: get_default_homepage_visibility($this->id),
                 'extern'      => true,
-                'category'    => 'Allgemeine Daten',
-                'identifier' => 'commondata'
+                'identifier'  => 'commondata'
             ];
         }
 
@@ -751,7 +750,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             $homepage_elements['motto'] = [
                 'name'       => _('Motto'),
                 'visibility' => $homepage_visibility['motto'] ?: get_default_homepage_visibility($this->id),
-                'category'   => 'Private Daten',
                 'identifier' => 'privatedata'
             ];
         }
@@ -760,7 +758,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 $homepage_elements['skype_name'] = [
                     'name'       => _('Skype Name'),
                     'visibility' => $homepage_visibility['skype_name'] ?: get_default_homepage_visibility($this->id),
-                    'category'   => 'Private Daten',
                     'identifier' => 'privatedata'
                 ];
             }
@@ -769,7 +766,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             $homepage_elements['private_phone'] = [
                 'name'       => _('Private Telefonnummer'),
                 'visibility' => $homepage_visibility['private_phone'] ?: get_default_homepage_visibility($this->id),
-                'category'   => 'Private Daten',
                 'identifier' => 'privatedata'
             ];
         }
@@ -777,7 +773,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             $homepage_elements['private_cell'] = [
                 'name'       => _('Private Handynummer'),
                 'visibility' => $homepage_visibility['private_cell'] ?: get_default_homepage_visibility($this->id),
-                'category'   => 'Private Daten',
                 'identifier' => 'privatedata'
             ];
         }
@@ -785,8 +780,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             $homepage_elements['privadr'] = [
                 'name'         => _('Private Adresse'),
                 'visibility'   => $homepage_visibility['privadr'] ?: get_default_homepage_visibility($this->id),
-                'category'     => 'Private Daten',
-                'identifier' => 'privatedata'
+                'identifier'   => 'privatedata',
             ];
         }
         if ($this->info->home && !$GLOBALS['NOT_HIDEABLE_FIELDS'][$this->perms]['homepage']) {
@@ -794,8 +788,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 'name'        => _('Homepage-Adresse'),
                 'visibility'  => $homepage_visibility['homepage'] ?: get_default_homepage_visibility($this->id),
                 'extern'      => true,
-                'category'    => 'Private Daten',
-                'identifier' => 'privatedata'
+                'identifier'  => 'privatedata',
             ];
         }
         if ($news && !$GLOBALS['NOT_HIDEABLE_FIELDS'][$this->perms]['news']) {
@@ -803,7 +796,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 'name'       => _('Ankündigungen'),
                 'visibility' => $homepage_visibility['news'] ?: get_default_homepage_visibility($this->id),
                 'extern'     => true,
-                'category'   => 'Allgemeine Daten',
                 'identifier' => 'commondata'
             ];
         }
@@ -812,7 +804,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 'name'       => _('Termine'),
                 'visibility' => $homepage_visibility['termine'] ?: get_default_homepage_visibility($this->id),
                 'extern'     => true,
-                'category'   => 'Allgemeine Daten',
                 'identifier' => 'commondata'
             ];
         }
@@ -820,7 +811,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             $homepage_elements['votes'] = [
                 'name'       => _('Fragebögen'),
                 'visibility' => $homepage_visibility['votes'] ?: get_default_homepage_visibility($this->id),
-                'category'   => 'Allgemeine Daten',
                 'identifier' => 'commondata'
             ];
         }
@@ -835,7 +825,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             $homepage_elements['studying'] = [
                 'name'       => _('Wo ich studiere'),
                 'visibility' => $homepage_visibility['studying'] ?: get_default_homepage_visibility($this->id),
-                'category'   => 'Studien-/Einrichtungsdaten',
                 'identifier' => 'studdata'
             ];
         }
@@ -844,7 +833,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 'name'       => _('Lebenslauf'),
                 'visibility' => $homepage_visibility['lebenslauf'] ?: get_default_homepage_visibility($this->id),
                 'extern'     => true,
-                'category'   => 'Private Daten',
                 'identifier' => 'privatedata'
             ];
         }
@@ -852,7 +840,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             $homepage_elements['hobby'] = [
                 'name'       => _('Hobbys'),
                 'visibility' => $homepage_visibility['hobby'] ?: get_default_homepage_visibility($this->id),
-                'category'   => 'Private Daten',
                 'identifier' => 'privatedata'
             ];
         }
@@ -861,7 +848,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 'name'       => _('Publikationen'),
                 'visibility' => $homepage_visibility['publi'] ?: get_default_homepage_visibility($this->id),
                 'extern'     => true,
-                'category'   => 'Private Daten',
                 'identifier' => 'privatedata'
             ];
         }
@@ -870,7 +856,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 'name'       => _('Arbeitsschwerpunkte'),
                 'visibility' => $homepage_visibility['schwerp'] ?: get_default_homepage_visibility($this->id),
                 'extern'     => true,
-                'category'   => 'Private Daten',
                 'identifier' => 'privatedata'
             ];
         }
@@ -882,7 +867,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                         'name'       => $field->getName(),
                         'visibility' => $homepage_visibility[$key] ?: get_default_homepage_visibility($this->id),
                         'extern'     => true,
-                        'category'   => 'Zusätzliche Datenfelder',
                         'identifier' => 'additionaldata'
                     ];
                 }
@@ -894,7 +878,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 'name'       => $category->name,
                 'visibility' => $homepage_visibility['kat_' . $category->id] ?: get_default_homepage_visibility($this->id),
                 'extern'     => true,
-                'category'   => 'Eigene Kategorien',
                 'identifier' => 'owncategory'
             ];
         }
@@ -904,7 +887,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
                 $homepage_elements['plugin_' . $plugin->getPluginId()] = [
                     'name'       => $plugin->getPluginName(),
                     'visibility' => $homepage_visibility['plugin_'.$plugin->getPluginId()] ?: get_default_homepage_visibility($this->id),
-                    'category'   => 'Plugins',
+                    'identifier' => 'plugins'
                 ];
             }
         }
