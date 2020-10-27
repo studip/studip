@@ -88,7 +88,8 @@
 
         // Without this, buttons or message boxes would appear on top of the list
         z-index: 2;
-        &::before, &::after {
+        &::before,
+        &::after {
             left: (@list-width - 20px);
         }
 
@@ -118,9 +119,11 @@
             padding: @padding;
             white-space: normal;
 
-            &:hover { background-color: fadeout(@light-gray-color, 80%);}
+            &:hover {
+                background-color: fadeout(@light-gray-color, 80%);
+            }
 
-            &:first-child:hover {
+            &:only-child:hover {
                 #arrow > .top(10px, fadeout(@light-gray-color, 80%));
                 margin-top: 0;
                 &::before {
@@ -129,7 +132,7 @@
                 }
             }
 
-            // First child: no top-border and but rounded corners
+            // First child: no top-border
             &:first-child {
                 border-top: 0;
             }
@@ -172,27 +175,36 @@
         .item:hover .options.hidden { visibility: visible; }
     }
 
+    a.mark-all-as-read,
+    a.enable-desktop-notifications {
+        background-color: @dark-gray-color-15;
+        border-bottom: thin solid @dark-gray-color-45;
+        max-height: 31px;
+        padding: 5px 5px 5px 14px;
+        z-index: 3;
+    }
+
     a.mark-all-as-read {
         // Creates an arrow pointing from the list to the triggering element
         #arrow > .top-border(10px, @light-gray-color-20, 1px, @light-gray-color-80);
-        &::before, &::after {
+        &::before,
+        &::after {
             left: (@list-width - 20px);
             z-index: 2;
         }
 
         .background-icon('accept', 'clickable');
-        background-color: @light-gray-color-20;
         background-repeat: no-repeat;
         background-position: right 8px center;
 
-        border-bottom: thin solid @light-gray-color-60;
+        &:hover {
+            .background-icon('accept', 'attention');
+        }
+
         margin: 0;
-        padding: 5px 5px 5px 14px;
-        z-index: 3;
 
         // Create blind effect to hide/display this links smoothly
         transition: all 300ms;
-        max-height: 31px;
 
         &.notification_hidden {
             border-bottom-width: 0;
@@ -201,6 +213,26 @@
             padding-bottom: 0;
             padding-top: 0;
             pointer-events: none;
+
+            + .enable-desktop-notifications {
+                // Creates an arrow pointing from the list to the triggering element
+                #arrow > .top-border(10px, @light-gray-color-20, 1px, @light-gray-color-80);
+                &::before,
+                &::after {
+                    left: (@list-width - 20px);
+                    z-index: 2;
+                }
+                margin: 0;
+            }
+        }
+    }
+    a.enable-desktop-notifications {
+        .background-icon('notification', 'clickable');
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+
+        &:hover {
+            .background-icon('notification', 'attention');
         }
     }
 }

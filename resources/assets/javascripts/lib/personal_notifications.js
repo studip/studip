@@ -2,10 +2,10 @@ import Favico from 'favico.js';
 import Cache from './cache.js';
 import PageLayout from './page_layout.js';
 
-var stack = {},
-    audio_notification = false,
-    directlydeleted = [],
-    favicon = null;
+var stack = {};
+var audio_notification = false;
+var directlydeleted = [];
+var favicon = null;
 
 function updateFavicon(text) {
     if (favicon === null) {
@@ -36,65 +36,61 @@ function create_desktop_notification(data) {
         icon: data.avatar,
         tag: data.id
     });
-    notification.addEventListener('click', function() {
-        location.href = STUDIP.URLHelper.getURL('dispatch.php/jsupdater/mark_notification_read/' + this.tag);
+    notification.addEventListener('click', () => {
+        location.href = STUDIP.URLHelper.getURL(`dispatch.php/jsupdater/mark_notification_read/${notification.tag}`);
     });
 }
 
 // Handler for all notifications received by an ajax request
 function process_notifications(notifications) {
-    var cache = Cache.getInstance('desktop.notifications'),
-        ul = $('<ul/>'),
-        changed = false,
-        new_stack = {};
+    var cache = Cache.getInstance('desktop.notifications');
+    var ul = $('<ul/>');
+    var changed = false;
+    var new_stack = {};
 
-    $.each(notifications, function(index, notification) {
-        if ($.inArray(notification.personal_notification_id, directlydeleted) === -1) {
-            ul.append(notification.html);
-
-            var id = $('.notification:last', ul).data().id;
-            new_stack[id] = notification;
-            if (notification.html_id) {
-                $('#' + notification.html_id).on('mouseenter', PersonalNotifications.isVisited);
-            }
-
-            changed = changed || !stack.hasOwnProperty(id);
-
-            // Check if notifications should be sent (depends on the
-            // Notification itself and session storage)
-            if (
-                !window.hasOwnProperty('Notification') ||
-                Notification.permission === 'denied' ||
-                cache.has(notification.id)
-            ) {
-                return;
-            }
-
-            // If it's okay let's create a notification
-            if (Notification.permission === 'granted') {
-                create_desktop_notification(notification);
-            } else {
-                Notification.requestPermission(function(permission) {
-                    if (permission === 'granted') {
-                        create_desktop_notification(notification);
-                    }
-                });
-            }
-
-            cache.set(id, true);
+    notifications.forEach(notification => {
+        if (directlydeleted.indexOf(notification.personal_notification_id) !== -1) {
+            return;
         }
+
+        ul.append(notification.html);
+
+        var id = $('.notification:last', ul).data().id;
+        new_stack[id] = notification;
+        if (notification.html_id) {
+            $(`#${notification.html_id}`).on('mouseenter', PersonalNotifications.isVisited);
+        }
+
+        changed = changed || !stack.hasOwnProperty(id);
+
+        // Check if notifications should be sent (depends on the
+        // Notification itself and session storage)
+        if (
+            !window.hasOwnProperty('Notification')
+            || Notification.permission !== 'granted'
+            || cache.has(notification.id)
+        ) {
+            return;
+        }
+
+        // If it's okay let's create a notification
+        create_desktop_notification(notification);
+
+        cache.set(id, true);
     });
 
-    if (changed || _.values(stack).length !== _.values(new_stack).length) {
+    // Anything changed? Replace stack and display
+    if (changed || Object.keys(stack).length !== Object.keys(new_stack).length) {
         stack = new_stack;
         $('#notification_list > ul').replaceWith(ul);
     }
+
     PersonalNotifications.update();
     directlydeleted = [];
 }
 
 const PersonalNotifications = {
-    initialize: function() {
+    initialize () {
         if ($('#notification_marker').length > 0) {
             $('#notification_list .notification').map(function() {
                 var data = $(this).data();
@@ -107,24 +103,36 @@ const PersonalNotifications = {
                 audio_notification = $('#audio_notification').get(0);
                 audio_notification.load();
             }
+
+            if ('Notification' in window) {
+                $('#notification_list .enable-desktop-notifications')
+                    .toggle(Notification.permission === 'default')
+                    .click(STUDIP.PersonalNotifications.activate);
+            }
         }
     },
-    newNotifications: function() {},
-    markAsRead: function(event) {
+    activate () {
+        Promise.resolve(Notification.requestPermission()).then(permission => {
+            $('#notification_list .enable-desktop-notifications')
+                .toggle(permission === 'default');
+        });
+    },
+    newNotifications () {},
+    markAsRead (event) {
         var notification = $(this).closest('.notification'),
             id = notification.data().id;
         PersonalNotifications.sendReadInfo(id, notification);
         return false;
     },
-    markAllAsRead: function(event) {
+    markAllAsRead (event) {
         var notifications = $(this)
             .parent()
             .find('.notification');
         PersonalNotifications.sendReadInfo('all', notifications);
         return false;
     },
-    sendReadInfo: function(id, notification) {
-        $.get(STUDIP.URLHelper.getURL('dispatch.php/jsupdater/mark_notification_read/' + id)).done(function() {
+    sendReadInfo (id, notification) {
+        $.get(STUDIP.URLHelper.getURL(`dispatch.php/jsupdater/mark_notification_read/${id}`)).done(() => {
             if (notification) {
                 var count = notification.length;
                 notification.toggle('blind', 'fast', function() {
@@ -140,10 +148,10 @@ const PersonalNotifications = {
             }
         });
     },
-    update: function() {
-        var count = _.values(stack).length,
-            old_count = parseInt($('#notification_marker').text(), 10),
-            really_new = 0;
+    update () {
+        var count = _.values(stack).length;
+        var old_count = parseInt($('#notification_marker').text(), 10);
+        var really_new = 0;
         $('#notification_list > ul > li').each(function() {
             if (parseInt($(this).data('timestamp'), 10) > parseInt($('#notification_marker').data('lastvisit'), 10)) {
                 really_new += 1;
@@ -172,27 +180,31 @@ const PersonalNotifications = {
             $('#notification_container .mark-all-as-read').toggleClass('notification_hidden', count < 2);
         }
     },
-    isVisited: function() {
-        var id = this.id;
-        $.each(stack, function(index, notification) {
+    isVisited () {
+        const id = this.id;
+        $.each(stack, (index, notification) => {
             if (notification.html_id === id) {
                 PersonalNotifications.sendReadInfo(notification.personal_notification_id);
+
                 delete stack[index];
-                jQuery('.notification[data-id=' + notification.personal_notification_id + ']').fadeOut(function() {
-                    jQuery(this).remove();
+
+                $(`.notification[data-id=${notification.personal_notification_id}]`).fadeOut(function () {
+                    $(this).remove();
                 });
+
                 directlydeleted.push(notification.personal_notification_id);
+
                 PersonalNotifications.update();
             }
         });
     },
-    setSeen: function() {
+    setSeen () {
         if ($('#notification_marker').data('seen')) {
             return;
         }
         $('#notification_marker').data('seen', true);
 
-        $.get(STUDIP.URLHelper.getURL('dispatch.php/jsupdater/notifications_seen')).then(function(time) {
+        $.get(STUDIP.URLHelper.getURL('dispatch.php/jsupdater/notifications_seen')).then(time => {
             $('#notification_marker')
                 .removeClass('alert')
                 .data('lastvisit', time);
