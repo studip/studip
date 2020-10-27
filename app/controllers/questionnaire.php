@@ -215,6 +215,13 @@ class QuestionnaireController extends AuthenticatedController
             $new_question->setId($new_question->getNewId());
             $new_question['questionnaire_id'] = $this->questionnaire->getid();
             $new_question['mkdate'] = time();
+
+            $etask = new \eTask\Task();
+            $etask->setData($question->etask->toRawArray());
+            $etask->setId(null); //to get a new integer id
+            $etask->store();
+            $new_question['etask_task_id'] = $etask->getId();
+
             $new_question->store();
         }
         PageLayout::postSuccess(_('Der Fragebogen wurde kopiert. Wo soll er angezeigt werden?'));
