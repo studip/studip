@@ -2,9 +2,11 @@
 
     <label>
     <? if ($range_type == 'Studiengang'): ?>
-        <select id="search-contact-studiengang-select" class="nested-select"  multiple name="ranges[]"></select>
+        <select id="search-contact-select" data-search_type="studiengang" data-placeholder="<?= _('Studiengang suchen') ?>" class="nested-select"  multiple name="ranges[]"></select>
     <? elseif ($range_type == 'Modul'): ?>
-        <select id="search-contact-modul-select" class="nested-select"  multiple name="ranges[]"></select>
+        <select id="search-contact-select" data-search_type="modul" data-placeholder="<?= _('Modul suchen') ?>" class="nested-select" multiple name="ranges[]"></select>
+    <? elseif ($range_type == 'StudiengangTeil'): ?>
+        <select id="search-contact-select" data-search_type="stgteil" data-placeholder="<?= _('Studiengangteil suchen') ?>" class="nested-select" multiple name="ranges[]"></select>
     <? endif; ?>
     </label>
 

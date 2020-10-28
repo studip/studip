@@ -1,11 +1,13 @@
-<form class="default" action="<?= $controller->link_for('/select_range', $range_type) ?>" method="post" data-dialog="size=auto">
+<form class="default" action="<?= $controller->url_for('/select_range', $range_type) ?>" method="post" data-dialog="size=auto">
     <?= CSRFProtection::tokenTag(); ?>
 
     <label>
     <? if ($range_type == 'Studiengang'): ?>
-        <select id="search-contact-studiengang-select" class="nested-select" multiple name="range_id[]"></select>
+        <select id="search-contact-select" data-search_type="studiengang" data-placeholder="<?= _('Studiengang suchen') ?>" class="nested-select" multiple name="range_id[]"></select>
     <? elseif ($range_type == 'Modul'): ?>
-        <select id="search-contact-modul-select" class="nested-select" multiple name="range_id[]"></select>
+        <select id="search-contact-select" data-search_type="modul" data-placeholder="<?= _('Modul suchen') ?>" class="nested-select" multiple name="range_id[]"></select>
+    <? else : ?>
+        <select id="search-contact-select" data-search_type="stgteil" data-placeholder="<?= _('Studiengangteil suchen') ?>" class="nested-select" multiple name="range_id[]"></select>
     <? endif; ?>
     </label>
 

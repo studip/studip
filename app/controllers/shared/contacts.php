@@ -129,8 +129,7 @@ class Shared_ContactsController extends MVVController
         $this->allowed_object_types = [
             'Modul',
             'Studiengang',
-            // 'StudiengangTeil',
-            // Disabled for now, see BIEST #10331
+            'StudiengangTeil'
         ];
         if (Request::submitted('store')) {
             $this->redirect($this->url_for('shared/contacts/select_range', Request::get('range_type')));
@@ -635,8 +634,7 @@ class Shared_ContactsController extends MVVController
         $this->allowed_object_types = [
             'Studiengang',
             'Modul',
-            // 'StudiengangTeil',
-            // Disabled for now, see Biest #10331
+            'StudiengangTeil'
         ];
         $this->mvvcontact_id = $user_id;
         if (Request::submitted('store')) {
@@ -682,6 +680,52 @@ class Shared_ContactsController extends MVVController
             $res['results'][] = [
                 'id' => $studycourse->id,
                 'text' => $studycourse->getDisplayName()
+            ];
+        }
+
+        $this->render_json($res);
+    }
+    
+    
+    /**
+     * Search for Studiengangteil by given search term.
+     */
+    public function search_stgteil_action()
+    {
+        $term = str_replace('%', '', Request::get('term'));
+        if (!trim($term)) {
+            return [];
+        }
+        $stat = array_keys(array_filter(
+            $GLOBALS['MVV_STUDIENGANG']['STATUS']['values'],
+            function ($v) {
+                return $v['visible'];
+            }
+        ));
+        $filter = [
+            'mvv_studiengang.institut_id' => $this->filter['mvv_modul_inst.institut_id'],
+            'start_sem.beginn'            => $this->filter['start_sem.beginn'],
+            'end_sem.ende'                => $this->filter['end_sem.ende']
+        ];
+
+        $term = '%' . $term . '%';
+        $stgteile = StudiengangTeil::getEnrichedByQuery('
+            SELECT `mvv_stgteil`.*
+            FROM `mvv_stgteil`
+                LEFT JOIN `mvv_stg_stgteil` USING (`stgteil_id`)
+                LEFT JOIN `mvv_studiengang` USING (`studiengang_id`)
+                LEFT JOIN `fach` USING (`fach_id`)
+                LEFT JOIN `semester_data` `start_sem` ON (`mvv_studiengang`.`start` = `start_sem`.`semester_id`)
+                LEFT JOIN `semester_data` `end_sem` ON (`mvv_studiengang`.`end` = `end_sem`.`semester_id`)
+            WHERE (`fach`.`name` LIKE :term)
+                ' . StudiengangTeil::getFilterSql($filter) . '
+            ORDER BY `fach`.`name` ASC LIMIT 10', [':term' => $term]);
+
+        $res = [];
+        foreach ($stgteile as $stgteil) {
+            $res['results'][] = [
+                'id' => $stgteil->id,
+                'text' => $stgteil->getDisplayName()
             ];
         }
 

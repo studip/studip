@@ -73,29 +73,14 @@ jQuery(function ($) {
         function() {
 
             var contactSearchParams = $('#search-contact-params');
+            var contactSearchSelect = $('#search-contact-select');
             if (contactSearchParams) {
-                $('#search-contact-studiengang-select').select2({
-                    placeholder: 'Studiengang suchen'.toLocaleString(),
+                contactSearchSelect.select2({
+                    placeholder: contactSearchSelect.data('placeholder'),
                     minimumInputLength: 3,
                     ajax: {
-                        url: STUDIP.URLHelper.getURL('dispatch.php/shared/contacts/search_studiengang'),
-                        data: function (params) {
-                            var query = {
-                                term: params.term,
-                                _type: params._type,
-                                contact_id: contactSearchParams.data('contact')
-                            }
-                            return query;
-                        },
-                        dataType: 'json'
-                    }
-                });
-                $('#search-contact-modul-select').select2({
-                    placeholder: 'Modul suchen'.toLocaleString(),
-                    minimumInputLength: 3,
-                    ajax: {
-                        url: STUDIP.URLHelper.getURL('dispatch.php/shared/contacts/search_modul'),
-
+                        url: STUDIP.URLHelper.getURL('dispatch.php/shared/contacts/search_'
+                                + contactSearchSelect.data('search_type')),
                         data: function (params) {
                             var query = {
                                 term: params.term,
