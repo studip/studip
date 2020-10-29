@@ -530,6 +530,17 @@ function check_and_set_date($tag, $monat, $jahr, $stunde, $minute, &$arr, $field
  */
 function get_config($key)
 {
+    if (Studip\ENV === 'development') {
+        $trace  = debug_backtrace();
+        $caller = array_shift($trace);
+
+        $file = str_replace("{$GLOBALS['STUDIP_BASE_PATH']}/", '', $caller['file']);
+        trigger_error(
+            "{$file}:{$caller['line']}: Use of deprecated function get_config('{$key}'), use Config::get()->{$key} instead",
+            E_USER_DEPRECATED
+        );
+    }
+
     return Config::get()->$key;
 }
 
