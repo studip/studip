@@ -32,12 +32,17 @@
  */
 class AutoInsert
 {
+    private static $instance = null;
+    protected static $seminar_cache = null;
 
     private $settings = [];
 
-    public function instance()
+    public static function instance()
     {
-        return new AutoInsert();
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
     public function __construct()
@@ -153,7 +158,6 @@ class AutoInsert
         if ($rows > 0) return true;
 
         return false;
-
     }
 
     private function removeUser($user_id, $seminar)
@@ -183,7 +187,6 @@ class AutoInsert
         $db->exec("DELETE FROM seminar_user " . "WHERE user_id = " . $db->quote($user_id));
     }
 
-
     /**
      * Tests if a seminar already has an autoinsert record
      * @param  string $seminar_id Id of the seminar
@@ -191,20 +194,24 @@ class AutoInsert
      */
     public static function checkSeminar($seminar_id, $domain_id = false)
     {
-        if (!$domain_id) {
-            $query     = "SELECT 1 FROM auto_insert_sem WHERE seminar_id = ?  LIMIT 1";
-            $statement = DBManager::get()->prepare($query);
-            $statement->execute([$seminar_id]);
-        } else {
-            $query     = "SELECT 1 FROM auto_insert_sem WHERE seminar_id = ? AND domain_id = ? LIMIT 1";
-            $statement = DBManager::get()->prepare($query);
-            $statement->execute([$seminar_id, $domain_id]);
+        $cached = self::getSeminarCache();
+
+        if (!isset($cached[$seminar_id])) {
+            $query = "SELECT domain_id, 1
+                      FROM auto_insert_sem
+                      WHERE seminar_id = ?";
+            $cached[$seminar_id] = DBManager::get()->fetchGroupedPairs(
+                $query,
+                [$seminar_id],
+                function ($value) {
+                    return (bool) $value;
+                }
+            );
         }
 
-
-        $result = $statement->fetchColumn();
-
-        return (bool)$result;
+        return array_key_exists($domain_id ?: '', $cached[$seminar_id])
+             ? $cached[$seminar_id][$domain_id ?: '']
+             : false;
     }
 
     /**
@@ -238,6 +245,10 @@ class AutoInsert
         $query     = $remove ? "DELETE FROM auto_insert_sem WHERE seminar_id = ? AND status= ? AND domain_id = ?" : "INSERT IGNORE INTO auto_insert_sem (seminar_id, status,domain_id) VALUES (?, ?, ?)";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$seminar_id, $status, $domain]);
+
+        if ($remove) {
+            unset(self::getSeminarCache()[$seminar_id]);
+        }
     }
 
     /**
@@ -249,6 +260,8 @@ class AutoInsert
         $query     = "DELETE FROM auto_insert_sem WHERE seminar_id = ?";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$seminar_id]);
+
+        unset(self::getSeminarCache()[$seminar_id]);
     }
 
     /**
@@ -296,7 +309,6 @@ class AutoInsert
         $query .= "JOIN seminare AS s USING (Seminar_id) ";
         $query .= "WHERE a.seminar_id = ? ";
         $query .= "GROUP BY s.seminar_id";
-
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$seminar_id]);
 
@@ -339,5 +351,15 @@ class AutoInsert
         return $result > 0;
     }
 
-
+    /**
+     * Returns the cache for seminars.
+     * @return StudipCachedArray
+     */
+    protected static function getSeminarCache()
+    {
+        if (self::$seminar_cache === null) {
+            self::$seminar_cache = new StudipCachedArray('/AutoInsertSeminars');
+        }
+        return self::$seminar_cache;
+    }
 }

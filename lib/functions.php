@@ -202,7 +202,7 @@ function get_object_type($id, $check_only = [])
     }
 
     // Initialize cache array (cache partioned by first character of id)
-    $cached = new StudipCachedArray("/ObjectTypes/{$id[0]}");
+    $cached = new StudipCachedArray('/StudipObjectTypes');
 
     // Read from cache if available
     if (isset($cached[$id]) && is_string($cached[$id])) {
