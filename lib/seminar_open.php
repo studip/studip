@@ -90,7 +90,7 @@ if ($auth->is_authenticated() && is_object($user) && $user->id != "nobody") {
         UserConfig::get($user->id)->store('LAST_LOGIN_TIMESTAMP', UserConfig::get($user->id)->CURRENT_LOGIN_TIMESTAMP);
         UserConfig::get($user->id)->store('CURRENT_LOGIN_TIMESTAMP', $_SESSION['SessionStart']);
         //find current semester and store it in $_SESSION['_default_sem']
-        $current_sem = Semester::findByTimestamp(time() + get_config('SEMESTER_TIME_SWITCH') * 7 * 24 * 60 * 60);
+        $current_sem = Semester::findByTimestamp(time() + Config::get()->SEMESTER_TIME_SWITCH * 7 * 24 * 60 * 60);
         if (!$current_sem ) $current_sem = Semester::findCurrent();
         $_SESSION['_default_sem'] = $current_sem->semester_id;
         //redirect user to another page if he want to, redirect is deferred to allow plugins to catch the UserDidLogin notification

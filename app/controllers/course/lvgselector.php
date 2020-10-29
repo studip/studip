@@ -22,7 +22,7 @@ class Course_LvgselectorController extends AuthenticatedController
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
-        
+
         $this->course = Course::findCurrent();
         if (!$this->course) {
             throw new Trails_Exception(404, _('Es wurde keine Veranstaltung ausgewählt!'));
@@ -238,7 +238,7 @@ class Course_LvgselectorController extends AuthenticatedController
         global $perm;
 
         // Has user access to this function? Access state is configured in global config.
-        $access_right = get_config('MVV_ACCESS_ASSIGN_LVGRUPPEN');
+        $access_right = Config::get()->MVV_ACCESS_ASSIGN_LVGRUPPEN;
         if ($perm->have_perm('root')) {
             return false;
         } else if (LockRules::Check($course_id, 'mvv_lvgruppe')) {

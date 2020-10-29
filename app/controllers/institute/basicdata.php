@@ -128,7 +128,7 @@ class Institute_BasicdataController extends AuthenticatedController
         $this->may_delete = $i_view !== 'new'
                          && !(count($institute->home_courses) || count($institute->sub_institutes))
                          && ($GLOBALS['perm']->have_perm('root')
-                             || ($GLOBALS['perm']->is_fak_admin() && get_config('INST_FAK_ADMIN_PERMS') == 'all'));
+                             || ($GLOBALS['perm']->is_fak_admin() && Config::get()->INST_FAK_ADMIN_PERMS == 'all'));
         if (!$this->may_delete) {
             //Set infotext for disabled delete-button
             $reason_txt = _('Löschen nicht möglich.');
@@ -204,7 +204,7 @@ class Institute_BasicdataController extends AuthenticatedController
             }
 
             // Is the user allowed to create new institutes
-            if (!$GLOBALS['perm']->have_perm('root') && !($GLOBALS['perm']->is_fak_admin() && get_config('INST_FAK_ADMIN_PERMS') !== 'none'))  {
+            if (!$GLOBALS['perm']->have_perm('root') && !($GLOBALS['perm']->is_fak_admin() && Config::get()->INST_FAK_ADMIN_PERMS !== 'none'))  {
                 PageLayout::postError(_('Sie haben nicht die Berechtigung, um neue Einrichtungen zu erstellen!'));
                 return $this->redirect('institute/basicdata/index/new');
             }

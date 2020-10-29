@@ -1011,7 +1011,7 @@ class Admin_CoursesController extends AuthenticatedController
 
         if (!$GLOBALS['perm']->have_perm('admin')) {
             unset($actions[8]);
-            if (!get_config('ALLOW_DOZENT_DELETE')) {
+            if (!Config::get()->ALLOW_DOZENT_DELETE) {
                 unset($actions[16]);
             }
         }

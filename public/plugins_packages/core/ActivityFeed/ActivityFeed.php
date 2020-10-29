@@ -76,7 +76,7 @@ class ActivityFeed extends StudIPPlugin implements PortalPlugin
 
     public function save_action()
     {
-        if (get_config('ACTIVITY_FEED') === NULL) {
+        if (Config::get()->ACTIVITY_FEED === NULL) {
             Config::get()->create('ACTIVITY_FEED', [
                 'range' => 'user',
                 'type' => 'array',

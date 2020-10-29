@@ -35,7 +35,7 @@ class Calendar_SingleController extends Calendar_CalendarController
                         Icon::create('add', 'clickable'),
                         ['data-dialog' => 'size=auto']);
             if ($calendar->havePermission(Calendar::PERMISSION_OWN)) {
-                if (get_config('CALENDAR_GROUP_ENABLE')) {
+                if (Config::get()->CALENDAR_GROUP_ENABLE) {
                     $actions->addLink(_('Kalender freigeben'),
                             $this->url_for('calendar/single/manage_access'),
                             Icon::create('community', 'clickable'),

@@ -58,7 +58,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
     */
     public function __construct ($range_id, $module_name, $config_id = NULL, $set_config = NULL, $global_id = NULL) {
         $this->data_fields = [];
-        if (get_config('CALENDAR_ENABLE')) {
+        if (Config::get()->CALENDAR_ENABLE) {
             $this->registered_elements = [
                 'PersondetailsLectures' => 'PersondetailsLecturesTemplate',
                 'LinkInternLecturedetails' => 'LinkInternTemplate',
@@ -97,7 +97,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
         $this->elements['TemplateMain']->real_name = _("Haupttemplate");
         $this->elements['TemplateLectures']->real_name = _("Template für Lehrveranstaltungen");
         $this->elements['TemplateNews']->real_name = _("Template für News");
-        if (get_config('CALENDAR_ENABLE')) {
+        if (Config::get()->CALENDAR_ENABLE) {
             $this->elements['TemplateAppointments']->real_name = _("Template für Termine");
         }
         $this->elements['TemplateOwnCategories']->real_name = _("Template für eigene Kategorien");
@@ -113,7 +113,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
         $this->updateGenericDatafields('TemplateMain', 'userinstrole');
         $this->elements['TemplateMain']->markers = $this->getMarkerDescription('TemplateMain');
         $this->elements['TemplateLectures']->markers = $this->getMarkerDescription('TemplateLectures');
-        if (get_config('CALENDAR_ENABLE')) {
+        if (Config::get()->CALENDAR_ENABLE) {
             $this->elements['TemplateAppointments']->markers = $this->getMarkerDescription('TemplateAppointments');
         }
         $this->elements['TemplateNews']->markers = $this->getMarkerDescription('TemplateNews');
@@ -210,7 +210,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
         $markers['TemplateNews'][] = ['<!-- END ALL-NEWS -->', ''];
         $markers['TemplateNews'][] = ['<!-- END NEWS -->', ''];
 
-        if (get_config('CALENDAR_ENABLE')) {
+        if (Config::get()->CALENDAR_ENABLE) {
             $markers['TemplateAppointments'][] = ['<!-- BEGIN APPOINTMENTS -->', ''];
             $markers['TemplateAppointments'][] = ['###LIST-START###', _("Startdatum der Terminliste")];
             $markers['TemplateAppointments'][] = ['###LIST-END###', _("Enddatum der Terminliste")];
@@ -606,7 +606,7 @@ class ExternModuleTemplatePersondetails extends ExternModule {
     }
 
     private function getContentAppointments () {
-        if (get_config('CALENDAR_ENABLE')) {
+        if (Config::get()->CALENDAR_ENABLE) {
             $events = SingleCalendar::getEventList($this->user_id, time(), time() + 60 * 60 * 24 * 7, null, ['class' => 'PUBLIC'], ['CalendarEvent']);
             $content['APPOINTMENTS']['LIST-START'] = ExternModule::ExtHtmlReady(strftime($this->config->getValue('Main', 'dateformat') . ' %X', time()));
             $content['APPOINTMENTS']['LIST-END'] = ExternModule::ExtHtmlReady(strftime($this->config->getValue('Main', 'dateformat') . ' %X', time() + 60 * 60 * 24 * 7));

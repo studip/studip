@@ -259,7 +259,7 @@ class ExportPDF extends TCPDF implements ExportDocument {
      * @param string $hs string to print on document header
      */
     public function setHeaderData($ln = '', $lw = 0, $ht = '', $hs = '', $tc = [], $lc = []) {
-        $logo_path = get_config("PDF_LOGO");
+        $logo_path = Config::get()->PDF_LOGO;
         if (!$ln) {
             $ln = $logo_path ? $logo_path : '../../../../public/assets/images/logos/logoklein.png';
         }

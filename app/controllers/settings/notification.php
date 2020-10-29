@@ -73,7 +73,7 @@ class Settings_NotificationController extends Settings_SettingsController
                   LEFT JOIN seminare  USING (Seminar_id)
                   {$add_query}
                   WHERE seminar_user.user_id = ?";
-        if (get_config('DEPUTIES_ENABLE')) {
+        if (Config::get()->DEPUTIES_ENABLE) {
             $query .= " UNION " . getMyDeputySeminarsQuery('notification', $dbv->sem_number_sql, $dbv->sem_number_end_sql, $add_fields, $add_query);
         }
         $query .= " ORDER BY sem_nr ASC";

@@ -45,7 +45,7 @@
     <? endif; ?>
     <? if ($event->havePermission(Event::PERMISSION_READABLE)) : ?>
         <? if ($event instanceof CalendarEvent
-                && get_config('CALENDAR_GROUP_ENABLE')
+                && Config::get()->CALENDAR_GROUP_ENABLE
                 && $calendar->getRange() == Calendar::RANGE_USER) : ?>
             <? $group_status = [
                     CalendarEvent::PARTSTAT_TENTATIVE => _('Abwartend'),

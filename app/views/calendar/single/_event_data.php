@@ -51,7 +51,7 @@
             </div>
         <? endif; ?>
         <? if ($event instanceof CalendarEvent) : ?>
-            <? if (get_config('CALENDAR_GROUP_ENABLE')) : ?>
+            <? if (Config::get()->CALENDAR_GROUP_ENABLE) : ?>
                 <?= $this->render_partial('calendar/single/_attendees.php') ?>
                 <? if ($calendar->havePermission(Calendar::PERMISSION_OWN)
                         && $event->toStringGroupStatus()) : ?>

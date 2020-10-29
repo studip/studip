@@ -78,7 +78,7 @@ class AdminModules extends ModulesNotification {
         $this->registered_modules["elearning_interface"]["msg_activate"] = _("Die Schnittstelle für die Integration von Content-Modulen kann jederzeit aktiviert werden.");
         $this->registered_modules["elearning_interface"]["msg_deactivate"] = _("Die Schnittstelle für die Integration von Content-Modulen kann jederzeit deaktiviert werden.");
 
-        if (get_config('CALENDAR_GROUP_ENABLE')) {
+        if (Config::get()->CALENDAR_GROUP_ENABLE) {
             $this->registered_modules["calendar"]["name"] = _("Kalender");
             $this->registered_modules["calendar"]["msg_activate"] = _("Der Kalender kann jederzeit aktiviert werden.");
             $this->registered_modules["calendar"]["msg_warning"] = _("Wollen Sie wirklich den Kalender deaktivieren?");

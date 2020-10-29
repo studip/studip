@@ -32,7 +32,7 @@ class EvaluationsWidget extends StudIPPlugin implements PortalPlugin
     public function getPortalTemplate()
     {
         // include and show votes and tests
-        if (get_config('VOTE_ENABLE')) {
+        if (Config::get()->VOTE_ENABLE) {
             $controller = new PluginController(new StudipDispatcher());
             $controller->suppress_empty_output = true;
 

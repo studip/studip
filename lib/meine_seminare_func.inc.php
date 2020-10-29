@@ -461,7 +461,7 @@ function get_my_obj_values (&$my_obj, $user_id)
     }
 
     //Lernmodule?
-    if (get_config('ELEARNING_INTERFACE_ENABLE')) {
+    if (Config::get()->ELEARNING_INTERFACE_ENABLE) {
         $db2->query(get_obj_clause('object_contentmodules a','object_id','module_id',"(chdate > IFNULL(b.visitdate, $threshold) AND a.module_type != 'crs')",
                                     'elearning_interface', false , " AND a.module_type != 'crs'", false, $user_id));
 //      $db2->query(get_obj_clause('object_contentmodules a','object_id','module_id',"(chdate > IFNULL(b.visitdate, $threshold))", 'elearning_interface'));
@@ -489,7 +489,7 @@ function get_my_obj_values (&$my_obj, $user_id)
     }
 
     //Umfragen
-    if (get_config('VOTE_ENABLE')) {
+    if (Config::get()->VOTE_ENABLE) {
         $statement = DBManager::get()->prepare("
             SELECT my.object_id,
                    COUNT(questionnaires.questionnaire_id) as count,

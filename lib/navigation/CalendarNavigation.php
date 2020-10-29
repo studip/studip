@@ -21,10 +21,10 @@ class CalendarNavigation extends Navigation
     public function __construct()
     {
         global $perm;
-        
+
         parent::__construct(_('Planer'));
 
-        if (!$perm->have_perm('admin') && get_config('SCHEDULE_ENABLE')) {
+        if (!$perm->have_perm('admin') && Config::get()->SCHEDULE_ENABLE) {
             $planerinfo = _('Stundenplan');
         } else {
             $planerinfo = _('Termine');
@@ -44,14 +44,14 @@ class CalendarNavigation extends Navigation
         parent::initSubNavigation();
 
         // schedule
-        if (!$perm->have_perm('admin') && get_config('SCHEDULE_ENABLE')) {
+        if (!$perm->have_perm('admin') && Config::get()->SCHEDULE_ENABLE) {
             $navigation = new Navigation(_('Stundenplan'), 'dispatch.php/calendar/schedule');
             $this->addSubNavigation('schedule', $navigation);
         }
 
         // calendar
         $atime = $atime ? intval($atime) : Request::int($atime);
-        if (get_config('CALENDAR_ENABLE')) {
+        if (Config::get()->CALENDAR_ENABLE) {
             $navigation = new Navigation(_('Terminkalender'), 'dispatch.php/calendar/single', ['self' => 1]);
             $this->addSubNavigation('calendar', $navigation);
         }

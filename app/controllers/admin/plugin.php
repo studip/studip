@@ -105,7 +105,7 @@ class Admin_PluginController extends AuthenticatedController
             $update_info = [];
             $plugin_manager = PluginManager::getInstance();
             foreach ($plugins as $plugin) {
-                $plugin_path = get_config('PLUGINS_PATH') . '/' . $plugin['path'];
+                $plugin_path = Config::get()->PLUGINS_PATH . '/' . $plugin['path'];
                 $manifest    = $plugin_manager->getPluginManifest($plugin_path);
                 $update_info[$plugin['id']] = ['version' => $manifest['version']];
             }
@@ -299,7 +299,7 @@ class Admin_PluginController extends AuthenticatedController
         $this->flash['plugin_url'] = Request::get('plugin_url');
 
         if (isset($_FILES['upload_file'])) {
-            $upload_file = tempnam(get_config('TMP_PATH'), 'plugin');
+            $upload_file = tempnam(Config::get()->TMP_PATH, 'plugin');
 
             if (move_uploaded_file($_FILES['upload_file']['tmp_name'], $upload_file)) {
                 $this->flash['upload_file'] = $upload_file;
@@ -325,7 +325,7 @@ class Admin_PluginController extends AuthenticatedController
         try {
             if (isset($plugin_url)) {
                 $this->plugin_admin->installPluginFromURL($plugin_url);
-            } else if (get_config('PLUGINS_UPLOAD_ENABLE')) {
+            } else if (Config::get()->PLUGINS_UPLOAD_ENABLE) {
                 // process the upload and register plugin in the database
                 $upload_file = $this->flash['upload_file'];
                 $this->plugin_admin->installPlugin($upload_file);
@@ -400,10 +400,10 @@ class Admin_PluginController extends AuthenticatedController
         $plugin = $plugin_manager->getPluginInfoById($plugin_id);
 
         // prepare file name for download
-        $pluginpath = get_config('PLUGINS_PATH') . '/' . $plugin['path'];
+        $pluginpath = Config::get()->PLUGINS_PATH . '/' . $plugin['path'];
         $manifest = $plugin_manager->getPluginManifest($pluginpath);
         $filename = $plugin['class'] . '-' . $manifest['version'] . '.zip';
-        $filepath = get_config('TMP_PATH') . '/' . $filename;
+        $filepath = Config::get()->TMP_PATH . '/' . $filename;
 
         FileArchiveManager::createArchiveFromPhysicalFolder(
             $pluginpath,

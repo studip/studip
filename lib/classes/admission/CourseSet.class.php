@@ -1015,7 +1015,7 @@ class CourseSet
     {
         global $perm;
         $is_dozent = $perm->have_studip_perm('tutor', $course_id, $user_id);
-        $is_admin = $perm->have_perm('admin', $user_id) || ($perm->have_perm('dozent', $user_id) && get_config('ALLOW_DOZENT_COURSESET_ADMIN'));
+        $is_admin = $perm->have_perm('admin', $user_id) || ($perm->have_perm('dozent', $user_id) && Config::get()->ALLOW_DOZENT_COURSESET_ADMIN);
         $is_private = $this->getPrivate();
         $is_my_own = $this->getUserId() == $user_id;
         $is_correct_institute = $this->isGlobal() || isset($this->institutes[Course::find($course_id)->institut_id]);
@@ -1041,7 +1041,7 @@ class CourseSet
         if (count($this->institutes) == 0 && count($this->courses) == 1 && $perm->have_studip_perm('tutor', current($this->getCourses()), $user_id)) {
             return true;
         }
-        if ($perm->have_perm('admin', $user_id) || ($perm->have_perm('dozent', $user_id) && get_config('ALLOW_DOZENT_COURSESET_ADMIN'))) {
+        if ($perm->have_perm('admin', $user_id) || ($perm->have_perm('dozent', $user_id) && Config::get()->ALLOW_DOZENT_COURSESET_ADMIN)) {
             foreach (array_keys($this->getInstituteIds()) as $one) {
                 if ($perm->have_studip_perm('dozent', $one, $user_id)) {
                     return true;
@@ -1134,4 +1134,3 @@ class CourseSet
     }
 
 } /* end of class CourseSet */
-

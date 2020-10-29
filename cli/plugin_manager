@@ -87,7 +87,7 @@ if ($args) {
             }
 
             // determine the plugin path
-            $basepath = get_config('PLUGINS_PATH');
+            $basepath = Config::get()->PLUGINS_PATH;
             $pluginpath = $origin . '/' . $pluginclass;
 
             $plugin_manager = PluginManager::getInstance();
@@ -207,7 +207,7 @@ if ($args) {
             $plugins = $plugin_manager->getPluginInfos();
             foreach ($plugins as $plugin) {
                 if (mb_strtolower($pluginname) == mb_strtolower($plugin['name'])) {
-                    $plugindir = get_config('PLUGINS_PATH') .'/'. $plugin['path'];
+                    $plugindir = Config::get()->PLUGINS_PATH .'/'. $plugin['path'];
 
                     $plugin_manager->unregisterPlugin($plugin['id']);
 
@@ -260,7 +260,7 @@ if ($args) {
             if ($pluginname) {
                 $plugins = array_filter($plugins, function($p) use ($pluginname) {return mb_stripos($p['name'], $pluginname) !== false;});
             }
-            $basepath = get_config('PLUGINS_PATH');
+            $basepath = Config::get()->PLUGINS_PATH;
             foreach ($plugins as $plugin) {
                 $plugindir = $basepath . '/' . $plugin['path'] . '/';
                 $plugin['class_exists'] = 0;

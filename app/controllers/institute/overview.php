@@ -68,7 +68,7 @@ class Institute_OverviewController extends AuthenticatedController
     {
         $this->sidebar = Sidebar::get();
 
-        if (get_config('NEWS_RSS_EXPORT_ENABLE') && $this->institute_id){
+        if (Config::get()->NEWS_RSS_EXPORT_ENABLE && $this->institute_id){
             $rss_id = StudipNews::GetRssIdFromRangeId($this->institute_id);
             if ($rss_id) {
                 PageLayout::addHeadElement('link', ['rel'   => 'alternate',
@@ -136,7 +136,7 @@ class Institute_OverviewController extends AuthenticatedController
         $this->news = $response->body;
 
         // Fetch  votes
-        if (get_config('VOTE_ENABLE')) {
+        if (Config::get()->VOTE_ENABLE) {
             $response = $this->relay('evaluation/display/' . $this->institute_id . '/institute');
             $this->evaluations = $response->body;
 

@@ -335,7 +335,7 @@ class MyCoursesController extends AuthenticatedController
         if ($studygroups) {
             $query .= " AND seminare.status = 99";
         }
-        if (get_config('DEPUTIES_ENABLE')) {
+        if (Config::get()->DEPUTIES_ENABLE) {
             $query .= " UNION "
                 . getMyDeputySeminarsQuery('gruppe', $dbv->sem_number_sql, $dbv->sem_number_end_sql, $add_fields, $add_query);
         }

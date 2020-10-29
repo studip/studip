@@ -64,7 +64,7 @@ class Visibility
         }
 
         // if db query fails something went wrong anyway so we use the default setting
-        return self::$verified[$visibilityid][$ownerid][$userid] = $vs->verify($userid, $ownerid, constant(get_config('HOMEPAGE_VISIBILITY_DEFAULT')));
+        return self::$verified[$visibilityid][$ownerid][$userid] = $vs->verify($userid, $ownerid, constant(Config::get()->HOMEPAGE_VISIBILITY_DEFAULT));
     }
 
     /**

@@ -263,7 +263,7 @@ class Course_BasicdataController extends AuthenticatedController
     {
         global $user, $perm, $_fullname_sql;
 
-        $deputies_enabled = get_config('DEPUTIES_ENABLE');
+        $deputies_enabled = Config::get()->DEPUTIES_ENABLE;
 
         //damit QuickSearch funktioniert:
         Request::set('new_doz_parameter', $this->flash['new_doz_parameter']);

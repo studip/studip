@@ -125,7 +125,7 @@ class ModulesNotification extends Modules {
             }
             if ($range == 'sem') {
                 $update_seminar_user->execute([$sum, $range_id, $user_id]);
-                if (get_config('DEPUTIES_ENABLE') && !$update_seminar_user->rowCount()) {
+                if (Config::get()->DEPUTIES_ENABLE && !$update_seminar_user->rowCount()) {
                     $update_deputies->execute([$sum, $range_id, $user_id]);
                 }
             } else {
@@ -154,7 +154,7 @@ class ModulesNotification extends Modules {
             $settings[$row['Seminar_id']] = $row['notification'];
         }
 
-        if (get_config('DEPUTIES_ENABLE')) {
+        if (Config::get()->DEPUTIES_ENABLE) {
             $query = "SELECT d.range_id, d.notification "
                    . "FROM deputies d "
                    . "JOIN seminare s ON (d.range_id=s.Seminar_id) "
@@ -182,7 +182,7 @@ class ModulesNotification extends Modules {
                . "LEFT JOIN seminare s USING (Seminar_id) "
                . "LEFT JOIN object_user_visits ouv ON (ouv.object_id = su.Seminar_id AND ouv.user_id = :user_id AND ouv.type = 'sem') "
                . "WHERE su.user_id = :user_id AND su.status != 'user' AND su.notification <> 0";
-        if (get_config('DEPUTIES_ENABLE')) {
+        if (Config::get()->DEPUTIES_ENABLE) {
             $query .= " UNION SELECT s.Seminar_id, CONCAT(s.Name, ' [Vertretung]') as Name, s.chdate, s.start_time, s.modules, s.status as sem_status, 'dozent' as status, s.admission_prelim, d.notification, IFNULL(visitdate, :threshold) AS visitdate "
                . "FROM deputies d "
                . "LEFT JOIN seminare s ON (d.range_id = s.Seminar_id) "
@@ -356,7 +356,7 @@ class ModulesNotification extends Modules {
                 $icon = Icon::create("date", "clickable");
                 break;
             case 'elearning_interface' :
-                if (get_config('ELEARNING_INTERFACE_ENABLE')) {
+                if (Config::get()->ELEARNING_INTERFACE_ENABLE) {
                     if ($r_data['neuecontentmodule'] > 1) {
                         $text = sprintf(_("%s neue Content-Module angelegt"), $r_data['neuecontentmodule']);
                     } else if ($r_data['neuecontentmodule'] > 0) {
@@ -383,7 +383,7 @@ class ModulesNotification extends Modules {
                 $icon = Icon::create("infopage", "clickable");
                 break;
             case 'votes' :
-                if (get_config('VOTE_ENABLE')) {
+                if (Config::get()->VOTE_ENABLE) {
                     if ($r_data['neuevotes'] > 1) {
                         $text = sprintf(_("%s neue Umfragen oder Evaluationen wurden angelegt:"), $r_data['neuevotes']);
                     } else if ($r_data['neuevotes'] > 0) {

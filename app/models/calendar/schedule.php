@@ -371,7 +371,7 @@ class CalendarScheduleModel
         $ret = [];
 
         // fetch seminar-entries
-        $visibility_perms = $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'));
+        $visibility_perms = $GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM);
         $stmt = DBManager::get()->prepare("SELECT * FROM seminare
             WHERE Institut_id = :institute AND (start_time = :begin
                 OR (start_time < :begin AND duration_time = -1)

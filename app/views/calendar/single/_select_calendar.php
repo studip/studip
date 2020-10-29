@@ -50,7 +50,7 @@
                 <? endforeach ?>
                 </optgroup>
             <? endif ?>
-            <? if (get_config('COURSE_CALENDAR_ENABLE')) : ?>
+            <? if (Config::get()->COURSE_CALENDAR_ENABLE) : ?>
                 <? $courses = Calendar::GetCoursesActivatedCalendar($GLOBALS['user']->id); ?>
                 <? if (count($courses)) : ?>
                     <optgroup style="font-weight:bold;" label="<?= _('Veranstaltungskalender:') ?>">

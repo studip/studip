@@ -89,7 +89,7 @@ class CalendarInstscheduleModel
     static function getInstituteEntries($user_id, $semester, $start_hour, $end_hour, $institute_id, $days)
     {
         // fetch seminar-entries, show invisible seminars if the user has enough perms
-        $visibility_perms = $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'));
+        $visibility_perms = $GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM);
 
         $inst_ids = [];
         $institut = new Institute($institute_id);

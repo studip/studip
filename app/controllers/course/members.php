@@ -189,7 +189,7 @@ class Course_MembersController extends AuthenticatedController
      */
     public function getEmailLinkByStatus($status, $members)
     {
-        if (!get_config('ENABLE_EMAIL_TO_STATUSGROUP')) {
+        if (!Config::get()->ENABLE_EMAIL_TO_STATUSGROUP) {
             return;
         }
 

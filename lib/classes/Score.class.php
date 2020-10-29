@@ -48,7 +48,7 @@ class Score
         }
 
         // Votes
-        if (get_config('VOTE_ENABLE')){
+        if (Config::get()->VOTE_ENABLE){
             $query = "SELECT questionnaire_assignments.range_id as user_id, COUNT(*) AS votecount
                       FROM questionnaire_assignments
                       WHERE questionnaire_assignments.range_id IN (?)

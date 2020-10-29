@@ -67,7 +67,7 @@ class SemBrowse {
         }
         $this->search_obj = new StudipSemSearch('search_sem',
                 false, !(is_object($GLOBALS['perm'])
-                    && $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'))),
+                    && $GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM)),
                 $this->sem_browse_data['show_class']);
 
 
@@ -115,7 +115,7 @@ class SemBrowse {
                     $this->sem_browse_data['start_item_id'],
                     $this->sem_number, $sem_status,
                     !(is_object($GLOBALS['perm'])
-                            && $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'))));
+                            && $GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM)));
             if (Request::option('cmd') != 'show_sem_range'
                     && $level_change
                     && !$this->search_obj->search_button_clicked ) {
@@ -140,7 +140,7 @@ class SemBrowse {
                     $this->sem_number,
                     $sem_status,
                     !(is_object($GLOBALS['perm'])
-                            && $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'))));
+                            && $GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM)));
             if (Request::option('cmd') != 'show_sem_range_tree'
                     && $level_change
                     && !$this->search_obj->search_button_clicked ) {
@@ -260,7 +260,7 @@ class SemBrowse {
                     $this->sem_number,
                     $sem_status,
                     !(is_object($GLOBALS['perm'])
-                            && $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'))));
+                            && $GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM)));
         }
         $sem_ids = $this->sem_tree->tree->getSemIds($item_id,$with_kids);
         if (is_array($sem_ids)) {
@@ -279,7 +279,7 @@ class SemBrowse {
         $inst_ids[] = $range_object->item_data['studip_object_id'];
         $db_view = DbView::getView('sem_tree');
         $db_view->params[0] = $inst_ids;
-        $db_view->params[1] = (is_object($GLOBALS['perm']) && $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'))) ? '' : ' AND c.visible=1';
+        $db_view->params[1] = (is_object($GLOBALS['perm']) && $GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM)) ? '' : ' AND c.visible=1';
         $db_view->params[1] .= is_array($this->sem_browse_data['sem_status'])
                 ? " AND c.status IN('" . join("','", $this->sem_browse_data['sem_status']) ."')"
                 : '';
@@ -408,7 +408,7 @@ class SemBrowse {
                         $this->sem_number,
                         is_array($this->sem_browse_data['sem_status'])
                             ? $this->sem_browse_data['sem_status'] : false,
-                        !(is_object($GLOBALS['perm']) && $GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'))));
+                        !(is_object($GLOBALS['perm']) && $GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM)));
             }
             $the_tree = $this->sem_tree->tree;
 

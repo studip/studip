@@ -63,7 +63,7 @@ class ScoreController extends AuthenticatedController
         $vis_query = get_vis_query('b');
 
         // Calculate offsets
-        $max_per_page = get_config('ENTRIES_PER_PAGE');
+        $max_per_page = Config::get()->ENTRIES_PER_PAGE;
 
         if ($page < 1) {
             $page = 1;

@@ -104,7 +104,7 @@ class Calendar_GroupController extends Calendar_CalendarController
             }
         }
 
-        if (get_config('CALENDAR_GROUP_ENABLE')
+        if (Config::get()->CALENDAR_GROUP_ENABLE
                 && $this->calendar->getRange() == Calendar::RANGE_USER) {
             $search_obj = new SQLSearch("SELECT auth_user_md5.user_id, {$GLOBALS['_fullname_sql']['full_rev']} as fullname, username, perms "
                 . "FROM calendar_user "

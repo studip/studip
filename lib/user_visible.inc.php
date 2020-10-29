@@ -116,7 +116,7 @@ function get_vis_query($table_alias = 'auth_user_md5', $context = '') {
      *  should be used.
      */
     if ($context) {
-        $context_default = (int) get_config(mb_strtoupper($context) . '_VISIBILITY_DEFAULT');
+        $context_default = (int) Config::get()->getValue(mb_strtoupper($context) . '_VISIBILITY_DEFAULT');
         $contextQuery = " AND (IFNULL(user_visibility.{$context}, {$context_default}) = 1
                                OR {$table_alias}.visible = 'always')";
     }
@@ -290,7 +290,7 @@ function get_local_visibility_by_id($user_id, $context, $return_user_perm=false)
         $user_perm = $data['perm'];
         $data['perms'] = $user_perm;
 
-        $data[$context] = get_config(mb_strtoupper($context) . '_VISIBILITY_DEFAULT');
+        $data[$context] = Config::get()->getValue(mb_strtoupper($context) . '_VISIBILITY_DEFAULT');
     }
     // Valid context given.
     if (isset($data[$context])) {
@@ -336,7 +336,7 @@ function is_element_visible_for_user($user_id, $owner_id, $element_visibility) {
     if ($user_id == $owner_id) {
         $is_visible = true;
     // Deputies with homepage editing rights see the same as the owner
-    } else if (get_config('DEPUTIES_ENABLE') && get_config('DEPUTIES_DEFAULTENTRY_ENABLE') && get_config('DEPUTIES_EDIT_ABOUT_ENABLE') && isDeputy($user_id, $owner_id, true)) {
+    } else if (Config::get()->DEPUTIES_ENABLE && Config::get()->DEPUTIES_DEFAULTENTRY_ENABLE && Config::get()->DEPUTIES_EDIT_ABOUT_ENABLE && isDeputy($user_id, $owner_id, true)) {
         $is_visible = true;
     } else {
         // No element visibility given (user has not configured this element yet)
@@ -422,7 +422,7 @@ function get_default_homepage_visibility($user_id)
     if (intval($visibility) != 0) {
         $result = $visibility;
     } else {
-        $result = @constant(Config::getInstance()->getValue('HOMEPAGE_VISIBILITY_DEFAULT'));
+        $result = @constant(Config::get()->HOMEPAGE_VISIBILITY_DEFAULT);
         if (!$result) {
             $result = VISIBILITY_STUDIP;
         }

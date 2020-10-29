@@ -159,7 +159,7 @@
             </select>
         </label>
 
-        <? if (!$event->isNew() && get_config('CALENDAR_GROUP_ENABLE')) : ?>
+        <? if (!$event->isNew() && Config::get()->CALENDAR_GROUP_ENABLE) : ?>
             <section>
                 <? $author = $event->getAuthor() ?>
                 <? if ($author) : ?>
@@ -420,7 +420,7 @@
         </div>
     </fieldset>
 
-    <? if (get_config('CALENDAR_GROUP_ENABLE') && $calendar->getRange() == Calendar::RANGE_USER) : ?>
+    <? if (Config::get()->CALENDAR_GROUP_ENABLE && $calendar->getRange() == Calendar::RANGE_USER) : ?>
         <?= $this->render_partial('calendar/group/_attendees') ?>
     <? endif; ?>
 

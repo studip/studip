@@ -506,15 +506,15 @@ class SiteinfoMarkupEngine {
         $indicator['vote'] = ["count" => ['count_table_rows', 'questionnaires'],
                                    "title" => _("Fragebögen"),
                                    "detail" => "",
-                                   "constraint" => get_config('VOTE_ENABLE')];
+                                   "constraint" => Config::get()->VOTE_ENABLE];
         $indicator['evaluation'] = ["count" => ['count_table_rows','eval'],
                                          "title" => _("Evaluationen"),
                                          "detail" => "",
-                                         "constraint" => get_config('VOTE_ENABLE')];
+                                         "constraint" => Config::get()->VOTE_ENABLE];
         $indicator['wiki_pages'] = ["query" => "SELECT COUNT(DISTINCT keyword) AS count FROM wiki",
                                          "title" => _("Wiki-Seiten"),
                                          "detail" => "",
-                                         "constraint" => get_config('WIKI_ENABLE')];
+                                         "constraint" => Config::get()->WIKI_ENABLE];
         $indicator['resource'] = ["count" => ['count_table_rows','resources'],
                                        "title" => _("Ressourcen-Objekte"),
                                        "detail" => _("von Stud.IP verwaltete Ressourcen wie Räume oder Geräte"),

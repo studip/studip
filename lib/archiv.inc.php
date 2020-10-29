@@ -57,12 +57,12 @@ function lastActivity ($sem_id)
         ];
 
         // Votes
-        if (get_config('VOTE_ENABLE')) {
+        if (Config::get()->VOTE_ENABLE) {
             $queries[] = "SELECT MAX(questionnaires.chdate) AS chdate FROM questionnaires INNER JOIN questionnaire_assignments ON (questionnaire_assignments.questionnaire_id = questionnaires.questionnaire_id) WHERE questionnaire_assignments.range_id = :id";
         }
 
         // Wiki
-        if (get_config('WIKI_ENABLE')) {
+        if (Config::get()->WIKI_ENABLE) {
             $queries[] = "SELECT MAX(chdate) AS chdate FROM wiki WHERE range_id = :id";
         }
 
@@ -646,7 +646,7 @@ function in_archiv ($sem_id)
     $statement->execute([$seminar_id]);
 
     // Eventuelle Vertretungen in der Veranstaltung haben weiterhin Zugriff mit Lehrendenrechten
-    if (get_config('DEPUTIES_ENABLE')) {
+    if (Config::get()->DEPUTIES_ENABLE) {
         $deputies = getDeputies($seminar_id);
         // Eintragen ins Archiv mit Zugriffsberechtigung "dozent"
         $query = "INSERT IGNORE INTO archiv_user SET seminar_id = ?, user_id = ?, status = 'dozent'";

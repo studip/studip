@@ -5,8 +5,8 @@
 # Lifter010: TODO
 /**
 * Extern-Pages-mainfile. Calls the submodules.
-* 
-* 
+*
+*
 *
 * @author       Peter Thienel <pthienel@data.quest.de>
 * @access       public
@@ -19,7 +19,7 @@
 // This file is part of Stud.IP
 // extern.php
 //
-// Copyright (c) 2003 Peter Tienel <pthienel@data-quest.de> 
+// Copyright (c) 2003 Peter Tienel <pthienel@data-quest.de>
 // Suchi & Berg GmbH <info@data-quest.de>
 // +---------------------------------------------------------------------------+
 // This program is free software; you can redistribute it and/or
@@ -39,11 +39,10 @@
 
 require '../lib/bootstrap.php';
 
-if (!get_config('EXTERN_ENABLE')) {
+if (!Config::get()->EXTERN_ENABLE) {
     echo "<br><br><br><blockquote><b>This page is not available!<br>The module \"extern\"";
     echo " is not enabled in this Stud.IP-installation.</b></blockquote>";
     exit;
 }
 
 include "lib/extern/extern.inc.php";
-

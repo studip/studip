@@ -64,7 +64,7 @@ global $range_id, $ex_type, $xml_file_id, $o_mode, $export_error, $export_error_
     if ($ex_person_details && $ex_tstamp && !$perm->have_perm('admin')){
         list($y,$M,$d,$h,$m) = explode('-', $ex_tstamp);
         $tstamp = mktime($h,$m,0,$M,$d,$y);
-        $hash = md5(get_config('UNIZENSUSPLUGIN_SHARED_SECRET1') . $ex_tstamp . get_config('UNIZENSUSPLUGIN_SHARED_SECRET2'));
+        $hash = md5(Config::get()->UNIZENSUSPLUGIN_SHARED_SECRET1 . $ex_tstamp . Config::get()->UNIZENSUSPLUGIN_SHARED_SECRET2);
         if ($ex_hash != $hash || $tstamp < (time() - 600)) $ex_person_details = null;
     }
 

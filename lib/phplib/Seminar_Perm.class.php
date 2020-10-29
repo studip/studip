@@ -179,7 +179,7 @@ class Seminar_Perm
             return $status;
         }
 
-        if (get_config('DEPUTIES_ENABLE') && isDeputy($user_id, $range_id)) {
+        if (Config::get()->DEPUTIES_ENABLE && isDeputy($user_id, $range_id)) {
             if ($_SESSION['seminar_change_view_' . $range_id]) {
                 $status = $_SESSION['seminar_change_view_' . $range_id];
             } else {

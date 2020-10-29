@@ -28,7 +28,7 @@ class PluginAdministration
     {
         global $SOFTWARE_VERSION;
 
-        $packagedir = get_config('PLUGINS_PATH') . '/tmp_' . md5($filename);
+        $packagedir = Config::get()->PLUGINS_PATH . '/tmp_' . md5($filename);
 
         // extract plugin files
         if (!file_exists($packagedir) && mkdir($packagedir) === false) {
@@ -80,7 +80,7 @@ class PluginAdministration
         }
 
         // determine the plugin path
-        $basepath = get_config('PLUGINS_PATH');
+        $basepath = Config::get()->PLUGINS_PATH;
         $pluginpath = $origin . '/' . $pluginclass;
         $plugindir = $basepath . '/' . $pluginpath;
 
@@ -149,7 +149,7 @@ class PluginAdministration
      */
     public function installPluginFromURL($plugin_url)
     {
-        $temp_name = tempnam(get_config('TMP_PATH'), 'plugin');
+        $temp_name = tempnam(Config::get()->TMP_PATH, 'plugin');
 
         if (!@copy($plugin_url, $temp_name, get_default_http_stream_context($plugin_url))) {
             throw new PluginInstallationException(_('Das Herunterladen des Plugins ist fehlgeschlagen.'));
@@ -196,7 +196,7 @@ class PluginAdministration
         }
 
         $plugin_manager->unregisterPlugin($plugin['id']);
-        $plugindir = get_config('PLUGINS_PATH') . '/' . $plugin['path'];
+        $plugindir = Config::get()->PLUGINS_PATH . '/' . $plugin['path'];
         $manifest = $plugin_manager->getPluginManifest($plugindir);
 
         // delete database if needed
@@ -346,7 +346,7 @@ class PluginAdministration
 
         foreach ($plugins as $plugin) {
             $repository = $default_repository;
-            $plugindir = get_config('PLUGINS_PATH') . '/' . $plugin['path'];
+            $plugindir = Config::get()->PLUGINS_PATH . '/' . $plugin['path'];
             $manifest = $plugin_manager->getPluginManifest($plugindir);
 
             if (isset($manifest['updateURL'])) {
@@ -378,7 +378,7 @@ class PluginAdministration
         $info = [];
         $plugin_manager = PluginManager::getInstance();
         $plugins = $plugin_manager->getPluginInfos();
-        $basepath = get_config('PLUGINS_PATH');
+        $basepath = Config::get()->PLUGINS_PATH;
         foreach ($plugins as $id => $plugin) {
             $plugindir = $basepath . '/' . $plugin['path'] . '/';
             if (is_dir($plugindir . '/migrations')) {
@@ -401,7 +401,7 @@ class PluginAdministration
     {
         $plugin_manager = PluginManager::getInstance();
         $plugin = $plugin_manager->getPluginInfoById($plugin_id);
-        $basepath = get_config('PLUGINS_PATH');
+        $basepath = Config::get()->PLUGINS_PATH;
         $plugindir = $basepath . '/' . $plugin['path'] . '/';
         if (is_dir($plugindir . '/migrations')) {
             $schema_version = new DBSchemaVersion($plugin['name']);
@@ -422,7 +422,7 @@ class PluginAdministration
     public function scanPluginDirectory()
     {
         $found = [];
-        $basepath = get_config('PLUGINS_PATH');
+        $basepath = Config::get()->PLUGINS_PATH;
         $plugin_manager = PluginManager::getInstance();
         $iterator = new RegexIterator(
                         new RecursiveIteratorIterator(
@@ -467,7 +467,7 @@ class PluginAdministration
         }
 
         // determine the plugin path
-        $basepath = get_config('PLUGINS_PATH');
+        $basepath = Config::get()->PLUGINS_PATH;
         $pluginpath = $origin . '/' . $pluginclass;
 
         $pluginregistered = $plugin_manager->getPluginInfo($pluginclass);

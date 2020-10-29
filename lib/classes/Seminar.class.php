@@ -1646,7 +1646,7 @@ class Seminar
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$s_id]);
 
-        if(get_config('ELEARNING_INTERFACE_ENABLE')){
+        if(Config::get()->ELEARNING_INTERFACE_ENABLE){
             global $connected_cms;
             $del_cms = 0;
             $cms_types = ObjectConnections::GetConnectedSystems($s_id);
@@ -2128,7 +2128,7 @@ class Seminar
             $info['description'] = _("Dies ist eine Veranstaltungsgruppe. Sie können sich nur in deren Unterveranstaltungen eintragen.");
             return $info;
         }
-        if ($this->read_level == 0 && get_config('ENABLE_FREE_ACCESS') && !$GLOBALS['perm']->get_studip_perm($this->getId(), $user_id)) {
+        if ($this->read_level == 0 && Config::get()->ENABLE_FREE_ACCESS && !$GLOBALS['perm']->get_studip_perm($this->getId(), $user_id)) {
             $info['enrolment_allowed'] = true;
             $info['cause'] = 'free_access';
             $info['description'] = _("Für die Veranstaltung ist keine Anmeldung erforderlich.");
@@ -2206,7 +2206,7 @@ class Seminar
             return $info;
         }
         //Veranstaltung unsichtbar für aktuellen Nutzer
-        if (!$this->visible && !$this->isStudygroup() && !$GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'), $user_id)) {
+        if (!$this->visible && !$this->isStudygroup() && !$GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM, $user_id)) {
             $info['enrolment_allowed'] = false;
             $info['cause'] = 'invisible';
             $info['description'] = _("Die Veranstaltung ist gesperrt, Sie können sich nicht eintragen!");

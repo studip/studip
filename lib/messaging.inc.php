@@ -247,7 +247,7 @@ class messaging
                 $mail->addStudipAttachment($attachment);
             }
         }
-        if (!get_config("MAILQUEUE_ENABLE")) {
+        if (!Config::get()->MAILQUEUE_ENABLE) {
             $mail->send();
         } else {
             MailQueueEntry::add($mail, $message_id, $rec_user_id);

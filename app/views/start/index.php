@@ -12,7 +12,7 @@
 
 <?php
 // display a random banner if the module is enabled
-if (get_config('BANNER_ADS_ENABLE')) {
+if (Config::get()->BANNER_ADS_ENABLE) {
     echo Banner::getRandomBanner()->toHTML();
 }
 ?>

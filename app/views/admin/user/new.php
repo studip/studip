@@ -103,7 +103,7 @@ use Studip\Button, Studip\LinkButton;
 
             <div class="hgroup">
                 <select name="title_front_chooser" onchange="jQuery('input[name=title_front]').val( jQuery(this).val() );" class="size-s">
-                <? foreach(get_config('TITLE_FRONT_TEMPLATE') as $title) : ?>
+                <? foreach(Config::get()->TITLE_FRONT_TEMPLATE as $title) : ?>
                     <option value="<?= $title ?>" <?= ($title == $user['title_front']) ? 'selected' : '' ?>><?= $title ?></option>
                 <? endforeach ?>
                 </select>
@@ -116,7 +116,7 @@ use Studip\Button, Studip\LinkButton;
 
             <div class="hgroup">
                 <select name="title_rear_chooser" onchange="jQuery('input[name=title_rear]').val( jQuery(this).val() );" class="size-s">
-                <? foreach(get_config('TITLE_REAR_TEMPLATE') as $rtitle) : ?>
+                <? foreach(Config::get()->TITLE_REAR_TEMPLATE as $rtitle) : ?>
                     <option value="<?= $rtitle ?>" <?= ($rtitle == $user['title_rear']) ? 'selected' : '' ?>><?= $rtitle ?></option>
                 <? endforeach ?>
                 </select>

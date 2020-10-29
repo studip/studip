@@ -592,7 +592,7 @@ class Search_ModuleController extends MVVController
             $this->sessSet('selected_semester', Request::option('sem_select'));
         }
         if (!$this->sessGet('selected_semester')) {
-            $semester_switch = intval(get_config('SEMESTER_TIME_SWITCH'));
+            $semester_switch = (int) Config::get()->SEMESTER_TIME_SWITCH;
             $current_semester = Semester::findByTimestamp(time() + $semester_switch * 7 * 24 * 60 * 60);
             $this->sessSet('selected_semester', $current_semester['semester_id']);
         }

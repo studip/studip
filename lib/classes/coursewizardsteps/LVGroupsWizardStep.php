@@ -481,7 +481,7 @@ class LVGroupsWizardStep implements CourseWizardStep
         global $perm;
 
         // Has user access to this function? Access state is configured in global config.
-        $access_right = get_config('MVV_ACCESS_ASSIGN_LVGRUPPEN');
+        $access_right = Config::get()->MVV_ACCESS_ASSIGN_LVGRUPPEN;
 
         // the id of the home institute
         // get the institute from the first step (normally "BasicDataWizardStep")

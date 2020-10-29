@@ -118,7 +118,7 @@ $cal_step_weeks = [
 
     </fieldset>
 
-    <? if (get_config('CALENDAR_GROUP_ENABLE')): ?>
+    <? if (Config::get()->CALENDAR_GROUP_ENABLE): ?>
         <fieldset>
             <legend>
                 <?= _('Gruppenterminkalender') ?>

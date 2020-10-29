@@ -77,7 +77,7 @@ if (Config::get()->EXPORT_ENABLE)
         {
             if ($page == 4)
             {
-                if (get_config('skip_page_3'))
+                if (Config::get()->skip_page_3)
                     $page = 1;
                 else
                     $page = 2;
@@ -99,7 +99,7 @@ if (Config::get()->EXPORT_ENABLE)
         $start_done = true;
     }
 
-    if (($page==2) AND Config::get()->XSLT_ENABLE AND get_config('skip_page_3'))
+    if (($page==2) AND Config::get()->XSLT_ENABLE AND Config::get()->skip_page_3)
         $page=3;
 
     //Exportmodul einbinden
@@ -139,7 +139,7 @@ if (Config::get()->EXPORT_ENABLE)
 }
 else
 {
-    PageLayout::postError(_("Das Exportmodul ist nicht eingebunden. Damit Daten im XML-Format exportiert werden können, muss das Exportmodul in den Systemeinstellungen freigeschaltet werden. 
+    PageLayout::postError(_("Das Exportmodul ist nicht eingebunden. Damit Daten im XML-Format exportiert werden können, muss das Exportmodul in den Systemeinstellungen freigeschaltet werden.
     Wenden Sie sich bitte an die Administratoren."), [_("Exportmodul nicht eingebunden")]);
 
 }

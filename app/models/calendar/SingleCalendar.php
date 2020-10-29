@@ -523,7 +523,7 @@ class SingleCalendar
         if ($event_data = $event->toStringRecurrence()) {
             $msg_text .= '**' . _('Wiederholung') . ":** $event_data\n";
         }
-        if (get_config('CALENDAR_GROUP_ENABLE') && $event->attendees->count()) {
+        if (Config::get()->CALENDAR_GROUP_ENABLE && $event->attendees->count()) {
             $msg_text .= '**' . _("Teilnehmende") . ':** ';
             $msg_text .= implode(', ', $event->attendees->map(
                 function ($att) use ($event) {

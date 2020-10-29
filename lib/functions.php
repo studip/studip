@@ -525,9 +525,8 @@ function check_and_set_date($tag, $monat, $jahr, $stunde, $minute, &$arr, $field
  * gets an entry from the studip configuration table
  *
  * @param string $key the key for the config entry
- *
  * @return string  the value
- *
+ * @deprecated since Stud.IP 5.0
  */
 function get_config($key)
 {
@@ -971,7 +970,7 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
         }
     }
 
-    if (get_config('DEPUTIES_ENABLE')) {
+    if (Config::get()->DEPUTIES_ENABLE) {
         $_hidden = _('(versteckt)');
         $_deputy = _('Vertretung');
         $query = "SELECT s.Seminar_id,

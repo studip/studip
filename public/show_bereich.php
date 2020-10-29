@@ -100,7 +100,7 @@ case "s":
                   LEFT JOIN seminare AS s ON (seminar_inst.seminar_id = s.Seminar_id)
                   WHERE seminar_inst.Institut_id = ?";
     }
-    if (!$GLOBALS['perm']->have_perm(get_config('SEM_VISIBILITY_PERM'))) {
+    if (!$GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM)) {
         $query .= " AND s.visible = 1";
     }
     $statement = DBManager::get()->prepare($query);
@@ -144,7 +144,7 @@ foreach ($sem_browse_obj->group_by_fields as $i => $field){
 }
 $sidebar->addWidget($grouping);
 
-if (get_config('EXPORT_ENABLE') && $perm->have_perm("tutor")) {
+if (Config::get()->EXPORT_ENABLE && $perm->have_perm("tutor")) {
     $export = new LinksWidget();
     $export->setTitle(_("Daten ausgeben:"));
     if ($level == "s") {

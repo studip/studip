@@ -30,7 +30,7 @@ class Admission_CoursesetController extends AuthenticatedController
             PageLayout::setTitle(_('Anmeldesets'));
             // Get only own courses if user doesn't have permission to edit institute-wide coursesets.
             $this->onlyOwnCourses = true;
-            if ($GLOBALS['perm']->have_perm('admin') || ($GLOBALS['perm']->have_perm('dozent') && get_config('ALLOW_DOZENT_COURSESET_ADMIN'))) {
+            if ($GLOBALS['perm']->have_perm('admin') || ($GLOBALS['perm']->have_perm('dozent') && Config::get()->ALLOW_DOZENT_COURSESET_ADMIN)) {
                 // We have access to institute-wide course sets, so all courses may be assigned.
                 $this->onlyOwnCourses = false;
                 Navigation::activateItem('/tools/coursesets/sets');
@@ -243,7 +243,7 @@ class Admission_CoursesetController extends AuthenticatedController
         $tpl->set_attribute('selectedInstitutes', $this->selectedInstitutes);
         $tpl->set_attribute('myInstitutes', $this->myInstitutes);
         $tpl->set_attribute('controller', $this);
-        if ($GLOBALS['perm']->have_perm('admin') || ($GLOBALS['perm']->have_perm('dozent') && get_config('ALLOW_DOZENT_COURSESET_ADMIN'))) {
+        if ($GLOBALS['perm']->have_perm('admin') || ($GLOBALS['perm']->have_perm('dozent') && Config::get()->ALLOW_DOZENT_COURSESET_ADMIN)) {
             $tpl->set_attribute('rights', true);
         } else {
             $tpl->set_attribute('rights', false);

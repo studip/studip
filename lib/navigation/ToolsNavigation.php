@@ -48,7 +48,7 @@ class ToolsNavigation extends Navigation
         $this->addSubNavigation('news', $navigation);
 
         // votes and tests, evaluations
-        if (get_config('VOTE_ENABLE')) {
+        if (Config::get()->VOTE_ENABLE) {
             $navigation = new Navigation(_('Fragebögen'), 'dispatch.php/questionnaire/overview');
             $this->addSubNavigation('questionnaire', $navigation);
 
@@ -71,18 +71,18 @@ class ToolsNavigation extends Navigation
         }
 
         // elearning
-        if (get_config('ELEARNING_INTERFACE_ENABLE')) {
+        if (Config::get()->ELEARNING_INTERFACE_ENABLE) {
             $navigation = new Navigation(_('Lernmodule'), 'dispatch.php/elearning/my_accounts');
             $this->addSubNavigation('my_elearning', $navigation);
         }
 
         // export
-        if (get_config('EXPORT_ENABLE') && $perm->have_perm('tutor')) {
+        if (Config::get()->EXPORT_ENABLE && $perm->have_perm('tutor')) {
             $navigation = new Navigation(_('Export'), 'export.php');
             $this->addSubNavigation('export', $navigation);
         }
 
-        if ($perm->have_perm('admin') || ($perm->have_perm('dozent') && get_config('ALLOW_DOZENT_COURSESET_ADMIN'))) {
+        if ($perm->have_perm('admin') || ($perm->have_perm('dozent') && Config::get()->ALLOW_DOZENT_COURSESET_ADMIN)) {
             $navigation = new Navigation(_('Anmeldesets'), 'dispatch.php/admission/courseset/index');
             $this->addSubNavigation('coursesets', $navigation);
             $navigation->addSubNavigation('sets', new Navigation(_('Anmeldesets verwalten'), 'dispatch.php/admission/courseset/index'));
