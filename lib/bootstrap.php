@@ -13,7 +13,7 @@
 const DEFAULT_ENV = 'production';
 
 //software version - please leave it as it is!
-$SOFTWARE_VERSION = '5.0.alpha-svn';
+$SOFTWARE_VERSION = explode(' ', file_get_contents(__DIR__ . '/../VERSION'), 2)[1];
 
 // Store startup time
 $STUDIP_STARTUP_TIME = microtime(true);

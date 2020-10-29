@@ -23,19 +23,13 @@ test-unit:
 	composer/bin/codecept run unit
 
 webpack-dev: force_update
-	cli/cleanup-assets.php --before
 	npm run webpack-dev
-	cli/cleanup-assets.php --after
 
 webpack-prod: force_update
-	cli/cleanup-assets.php --before
 	npm run webpack-prod
-	cli/cleanup-assets.php --after
 
 webpack-watch: force_update
-	cli/cleanup-assets.php --before
 	npm run webpack-watch
-	cli/cleanup-assets.php --after
 
 wds: force_update
 	npm run wds

@@ -5,6 +5,13 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const assetsPath = path.resolve(__dirname, "resources/assets/javascripts");
 
+const fs = require('fs');
+const version = fs.readFileSync(path.resolve(__dirname, 'VERSION'), 'utf-8')
+    .trim()
+    .split(' ')
+    .slice(1)
+    .join(' ');
+
 module.exports = {
     entry: {
         "studip-base": assetsPath + "/entry-base.js",
@@ -16,7 +23,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, "public/assets"),
-        chunkFilename: "javascripts/[name]-[contenthash].chunk.js",
+        chunkFilename: `javascripts/[name]-${version.replace(/\W/g, '-')}.chunk.js`,
         filename: "javascripts/[name].js"
     },
     module: {
@@ -101,7 +108,7 @@ module.exports = {
         new VueLoaderPlugin(),
         new MiniCssExtractPlugin({
             filename: "stylesheets/[name].css",
-            chunkFilename: "stylesheets/[name]-[contentHash].css"
+            chunkFilename: `stylesheets/[name]-${version.replace(/\W/g, '-')}.css`
         }),
     ],
     resolve: {
