@@ -3,9 +3,10 @@ $show_downloads = in_array(Config::get()->DISPLAY_DOWNLOAD_COUNTER, ['always', '
 $vue_files = [];
 foreach ($files as $file) {
     if ($file->isVisible($GLOBALS['user']->id)) {
-        $vue_files[] = FilesystemVueDataManager::getFileVueData($file, $file->getFolderType());
+        $vue_files[] = FilesystemVueDataManager::getFileVueData($file, $file->getFolderType(), $last_visitdate);
     }
 }
+$vue_files = SimpleCollection::createFromArray($vue_files)->orderBy('chdate desc')->toArray();
 $topFolder = new StandardFolder();
 $vue_topFolder = [
     'description' => $topFolder->getDescriptionTemplate(),
@@ -56,6 +57,7 @@ foreach ($topFolder->getAdditionalActionButtons() as $button) {
                  enable_table_filter="<?= $enable_table_filter ? 'true' : 'false' ?>"
                  table_title="<?= htmlReady($table_title) ?>"
                  pagination="<?= htmlReady($pagination_html) ?>"
+                 :initial_sort="{sortedBy:'chdate',sortDirection:'asc'}"
     ></files-table>
 </form>
 

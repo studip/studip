@@ -29,12 +29,12 @@ if (is_a($vue_topFolder['description'], "Flexi_Template")) {
 $vue_files = [];
 foreach ($topFolder->getFiles() as $file) {
     if ($file->isVisible($GLOBALS['user']->id)) {
-        $vue_files[] = FilesystemVueDataManager::getFileVueData($file, $topFolder);
+        $vue_files[] = FilesystemVueDataManager::getFileVueData($file, $topFolder, $last_visitdate);
     }
 }
 $vue_folders = [];
 foreach ($topFolder->getSubfolders() as $folder) {
-    $vue_folders[] = FilesystemVueDataManager::getFolderVueData($folder, $topFolder);
+    $vue_folders[] = FilesystemVueDataManager::getFolderVueData($folder, $topFolder, $last_visitdate);
 }
 
 $vue_topFolder['buttons'] = '<span class="multibuttons">';

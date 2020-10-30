@@ -138,6 +138,8 @@ class Institute_FilesController extends AuthenticatedController
         list($this->files, $this->folders) = array_values(FileManager::getFolderFilesRecursive($this->topFolder, $GLOBALS['user']->id));
 
         $this->range_type = 'institute';
+        $this->show_default_sidebar = true;
+        $this->form_action = $this->url_for('file/bulk/' . $folder->getId());
         $this->render_template('files/flat.php', $this->layout);
     }
 }

@@ -14,7 +14,7 @@ class FilesystemVueDataManager
      * @param FolderType $topFolder : The top-folder of that file
      * @return array of data
      */
-    public static function getFileVueData(FileType $file, FolderType $topFolder)
+    public static function getFileVueData(FileType $file, FolderType $topFolder, $last_visitdate = null)
     {
         $isDownloadable = $file->isDownloadable($GLOBALS['user']->id);
         $terms = $file->getTermsOfUse();
@@ -39,7 +39,8 @@ class FilesystemVueDataManager
             'additionalColumns' => $additionalColumns,
             'details_url' => URLhelper::getURL("dispatch.php/file/details/{$file->getId()}", ['file_navigation' => '1']),
             'restrictedTermsOfUse' => $terms && !$terms->isDownloadable($topFolder->range_id, $topFolder->range_type, false),
-            'actions' => $actionMenu ? (is_string($actionMenu) ? $actionMenu : $actionMenu->render()) : ""
+            'actions' => $actionMenu ? (is_string($actionMenu) ? $actionMenu : $actionMenu->render()) : "",
+            'new' => isset($last_visitdate) && $file->getLastChangeDate() > $last_visitdate && $file->getUserId() !== $GLOBALS['user']->id
         ];
     }
 

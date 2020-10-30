@@ -263,12 +263,17 @@
                 type: String,
                 required: false,
                 default: ''
+            },
+            initial_sort: {
+                type: Object,
+                required: false,
+                default: {sortedBy: 'name', sortDirection: 'asc'}
             }
         },
         data: function () {
             return {
-                sortedBy: "name",
-                sortDirection: "asc"
+                sortedBy: this.initial_sort.sortedBy,
+                sortDirection: this.initial_sort.sortDirection
             };
         },
         methods: {
