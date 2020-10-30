@@ -14,21 +14,10 @@ class BlubberGlobalThread extends BlubberThread
 
     public function getContextTemplate()
     {
-        $statement = DBManager::get()->prepare("
-            SELECT 1
-            FROM blubber_threads_unfollow
-            WHERE thread_id = :thread_id
-                AND user_id = :me
-        ");
-        $statement->execute([
-            'me' => $GLOBALS['user']->id,
-            'thread_id' => $this->getId()
-        ]);
-
         $template = $GLOBALS['template_factory']->open('blubber/global_context');
         $template->thread = $this;
         $template->hashtags = $this->getHashtags(time() - 86400 * 365);
-        $template->unfollowed = $statement->fetch(PDO::FETCH_COLUMN, 0);
+        $template->unfollowed = $this->isUnfollowed();
         return $template;
     }
 

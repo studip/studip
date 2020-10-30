@@ -491,6 +491,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             $template->tutors         = $tutors;
             $template->students_count = $students_count;
             $template->hashtags       = $this->getHashtags();
+            $template->unfollowed     = $this->isUnfollowed();
             return $template;
         }
 
@@ -526,6 +527,22 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             $template->institute = Institute::find($this['context_id']);
             return $template;
         }
+    }
+
+    public function isUnfollowed($user_id = null)
+    {
+        $user_id || $user_id = $GLOBALS['user']->id;
+        $is_unfollowed = \DBManager::get()->prepare("
+                SELECT 1
+                FROM blubber_threads_unfollow
+                WHERE user_id = :me
+                    AND thread_id = :thread_id
+            ");
+        $is_unfollowed->execute([
+            'me'        => $user_id,
+            'thread_id' => $this->getId()
+        ]);
+        return (bool) $is_unfollowed->fetch();
     }
 
     public function getOpenGraphURLs()
