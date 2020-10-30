@@ -48,6 +48,11 @@ class StudipCachedArray implements ArrayAccess, Countable
         $this->setCache($cache ?? StudipCacheFactory::getCache());
     }
 
+    /**
+     * Sets the cache for this array and resets internal states.
+     *
+     * @param StudipCache $cache
+     */
     public function setCache(StudipCache $cache)
     {
         $this->cache = $cache;
