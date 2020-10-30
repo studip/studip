@@ -191,6 +191,8 @@ function closeObject()
  */
 function get_object_type($id, $check_only = [])
 {
+    static $cache = null;
+
     // Nothing to check
     if (!$id) {
         return false;
@@ -201,12 +203,14 @@ function get_object_type($id, $check_only = [])
         return 'global';
     }
 
-    // Initialize cache array (cache partioned by first character of id)
-    $cached = new StudipCachedArray('/StudipObjectTypes');
+    // Initialize cache array
+    if ($cache === null) {
+        $cache = new StudipCachedArray('/StudipObjectTypes');
+    }
 
     // Read from cache if available
-    if (isset($cached[$id]) && is_string($cached[$id])) {
-        return $cached[$id];
+    if (isset($cache[$id]) && is_string($cache[$id])) {
+        return $cache[$id];
     }
 
     // Tests for specific types
@@ -226,16 +230,16 @@ function get_object_type($id, $check_only = [])
     foreach ($tests as $key => $query) {
         if ($check_all || in_array($key, $check_only)) {
             if (!$check_all
-                && isset($cached[$id])
-                && is_array($cached[$id])
-                && in_array($key, $cached[$id])
+                && isset($cache[$id])
+                && is_array($cache[$id])
+                && in_array($key, $cache[$id])
             ) {
                 return false;
             }
 
             $present = DBManager::get()->fetchColumn($query, [$id]);
             if ($present) {
-                return $cached[$id] = $key;
+                return $cache[$id] = $key;
             }
         }
     }
@@ -244,14 +248,14 @@ function get_object_type($id, $check_only = [])
     if ($check_all || in_array('inst', $check_only) || in_array('fak', $check_only)) {
         $is_fak = DBManager::get()->fetchColumn($query, [$id]);
         if ($is_fak !== false) {
-            return $cached[$id] = $is_fak ? 'fak' : 'inst';
+            return $cache[$id] = $is_fak ? 'fak' : 'inst';
         }
     }
     if ($check_all) {
         // None of the above
-        return $cached[$id] = false;
+        return $cache[$id] = false;
     } else {
-        $cached[$id] = $check_only;
+        $cache[$id] = $check_only;
         return false;
     }
 }
