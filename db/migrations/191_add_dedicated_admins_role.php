@@ -9,12 +9,12 @@ class AddDedicatedAdminsRole extends Migration
     }
 
     public function up()
-    {        
+    {
         DBManager::get()->exec("
             INSERT INTO `roles` (`rolename`, `system`)
             VALUES ('DedicatedAdmin', 'n');
         ");
-        StudipCacheFactory::getCache()->expire(RolePersistence::ROLES_CACHE_KEY);
+        RolePersistence::expireCaches();
     }
 
     public function down()
@@ -22,7 +22,7 @@ class AddDedicatedAdminsRole extends Migration
         DBManager::get()->execute("
             DELETE FROM `roles` WHERE `rolename` = 'DedicatedAdmin' AND `system` = 'n'
         ");
-        StudipCacheFactory::getCache()->expire(RolePersistence::ROLES_CACHE_KEY);
+        RolePersistence::expireCaches();
     }
 
 }

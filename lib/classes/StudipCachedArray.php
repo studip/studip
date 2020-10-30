@@ -11,12 +11,16 @@
  *
  * @todo Automagic partition size?
  */
-class StudipCachedArray implements ArrayAccess
+class StudipCachedArray implements ArrayAccess, Countable
 {
+    const ENCODE_JSON = 0;
+    const ENCODE_SERIALIZE = 1;
+
     protected $key;
     protected $cache;
     protected $partitions;
     protected $partition_by;
+    protected $encoding;
 
     protected $data = [];
 
@@ -29,7 +33,7 @@ class StudipCachedArray implements ArrayAccess
      *                             of the given chache offset or a callable which
      *                             will return the partition key.
      */
-    public function __construct($key, $partition_by = 1)
+    public function __construct($key, $partition_by = 1, $encoding = self::ENCODE_JSON)
     {
         if (!is_callable($partition_by) && !is_int($partition_by)) {
             throw new Exception('Parameter $partition_by may only be a number or a callable if set');
@@ -40,12 +44,13 @@ class StudipCachedArray implements ArrayAccess
 
         $this->key          = $key;
         $this->partition_by = $partition_by;
+        $this->encoding     = $encoding;
 
         $this->cache = StudipCacheFactory::getCache();
 
         $cached = $this->cache->read($key);
         if ($cached) {
-            $this->partitions = json_decode($cached, true);
+            $this->partitions = $this->decode($cached);
         } else {
             $this->partitions = [];
         }
@@ -105,6 +110,15 @@ class StudipCachedArray implements ArrayAccess
     }
 
     /**
+     * Counts all values in chache.
+     * @return int
+     */
+    public function count()
+    {
+        return array_sum($this->partitions);
+    }
+
+    /**
      * Clears all data.
      */
     public function clear()
@@ -120,6 +134,22 @@ class StudipCachedArray implements ArrayAccess
     }
 
     /**
+     * Returns all items in cache as an array.
+     * @return array
+     */
+    public function getArrayCopy()
+    {
+        $result = [];
+        foreach (array_keys($this->partitions) as $partition) {
+            $result = array_merge(
+                $result,
+                $this->loadData($partition)
+            );
+        }
+        return $result;
+    }
+
+    /**
      * Loads the data from cache.
      */
     protected function &loadData($offset)
@@ -128,7 +158,7 @@ class StudipCachedArray implements ArrayAccess
         if (!isset($this->data[$partition])) {
             $cached = $this->cache->read($this->getPartitionKey($offset));
             if ($cached) {
-                $this->data[$partition] = json_decode($cached, true);
+                $this->data[$partition] = $this->decode($cached);
             } else {
                 $this->data[$partition] = [];
             }
@@ -160,7 +190,7 @@ class StudipCachedArray implements ArrayAccess
                 if (count($data) === 0) {
                     $this->cache->expire($key);
                 } else {
-                    $this->cache->write($key, json_encode($data));
+                    $this->cache->write($key, $this->encode($data));
                 }
             }
         }
@@ -168,8 +198,44 @@ class StudipCachedArray implements ArrayAccess
         if (count($this->partitions) === 0) {
             $this->cache->expire($this->key);
         } else {
-            $this->cache->write($this->key, json_encode($this->partitions));
+            $this->cache->write($this->key, $this->encode($this->partitions));
         }
+    }
+
+    /**
+     * Encodes the given data based on the set encoding mechanism.
+     * @param  mixed $data
+     * @return string
+     */
+    protected function encode($data)
+    {
+        if ($this->encoding === self::ENCODE_JSON) {
+            return json_encode($data);
+        }
+
+        if ($this->encoding === self::ENCODE_SERIALIZE) {
+            return serialize($data);
+        }
+
+        throw new Exception('Unknown encoding type');
+    }
+
+    /**
+     * Decodes the given data based on the set encoding mechanism.
+     * @param  string $data
+     * @return mixed
+     */
+    protected function decode($data)
+    {
+        if ($this->encoding === self::ENCODE_JSON) {
+            return json_decode($data, true);
+        }
+
+        if ($this->encoding === self::ENCODE_SERIALIZE) {
+            return unserialize($data);
+        }
+
+        throw new Exception('Unknown decoding type');
     }
 
     /**

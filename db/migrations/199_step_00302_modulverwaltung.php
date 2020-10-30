@@ -553,7 +553,7 @@ class Step00302Modulverwaltung extends Migration
             RolePersistence::assignPluginRoles($plugin_id, $role_ids);
         }
 
-        StudipCacheFactory::getCache()->expire(RolePersistence::ROLES_CACHE_KEY);
+        RolePersistence::expireCaches();
 
         /**
          * Logging

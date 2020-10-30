@@ -13,11 +13,6 @@
  */
 class RolePersistence
 {
-    const ROLES_CACHE_KEY = 'plugins/rolepersistence/roles';
-    const ROLES_PLUGINS_CACHE_KEY = 'plugins/rolepersistence/roles_plugins/';
-
-    private static $user_roles = [];
-
     /**
      * Returns all available roles.
      *
@@ -26,28 +21,34 @@ class RolePersistence
     public static function getAllRoles()
     {
         // read cache
-        $roles = self::readCache(null);
+        $cache = self::getRolesCache();
 
         // cache miss, retrieve from database
-        if (!$roles) {
+        if (count($cache) === 0) {
             $query = "SELECT `roleid`, `rolename`, `system` = 'y' AS `is_system`
                       FROM `roles`
                       ORDER BY `rolename`";
             $statement = DBManager::get()->query($query);
             $statement->setFetchMode(PDO::FETCH_ASSOC);
 
-            $roles = [];
             foreach ($statement as $row) {
                 extract($row);
 
-                $roles[$roleid] = new Role($roleid, $rolename, $is_system);
+                $cache[$roleid] = new Role($roleid, $rolename, $is_system);
             }
-
-            // write to cache
-            self::writeCache(null, $roles);
         }
 
-        return $roles;
+        return $cache->getArrayCopy();
+    }
+
+    public static function getRoleIdByName($name)
+    {
+        foreach (self::getAllRoles() as $id => $role) {
+            if ($role->getRolename() === $name) {
+                return $id;
+            }
+        }
+        return false;
     }
 
     /**
@@ -60,7 +61,7 @@ class RolePersistence
     {
         // sweep roles cache, see #getAllRoles
         self::expireCache(null);
-        self::$user_roles = [];
+        self::getUserRolesCache()->clear();
 
         // role is not in database
         $query = "INSERT INTO `roles` (`roleid`, `rolename`, `system`)
@@ -99,7 +100,7 @@ class RolePersistence
 
         // sweep roles cache
         self::expireCache(null);
-        self::$user_roles = [];
+        self::getUserRolesCache()->clear();
 
         $query = "SELECT `pluginid` FROM `roles_plugins` WHERE `roleid` = ?";
         $statement = DBManager::get()->prepare($query);
@@ -107,7 +108,7 @@ class RolePersistence
         $statement->setFetchMode(PDO::FETCH_COLUMN, 0);
 
         foreach ($statement as $plugin_id) {
-            self::expireCache($plugin_id);
+            unset(self::getPluginRolesCache()[$plugin_id]);
         }
 
         DBManager::get()->execute(
@@ -145,14 +146,14 @@ class RolePersistence
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$roleid, $user->id, $institut_id]);
 
+        unset(self::getUserRolesCache()[$user->id]);
+
         NotificationCenter::postNotification(
             'RoleAssignmentDidCreate',
             $roleid,
             $user->id,
             $institut_id
         );
-
-        self::$user_roles = [];
     }
 
     /**
@@ -164,32 +165,10 @@ class RolePersistence
      */
     public static function getAssignedRoles($user_id, $implicit = false)
     {
-        $key = $user_id . '/' . (int) $implicit;
-        if (!array_key_exists($key, self::$user_roles)) {
-            if ($implicit && is_object($GLOBALS['perm'])) {
-                $global_perm = $GLOBALS['perm']->get_perm($user_id);
-
-                $query = "SELECT DISTINCT `roleid`
-                          FROM `roles_user`
-                          WHERE `userid` = ?
-
-                          UNION
-
-                          SELECT `roleid`
-                          FROM `roles_studipperms`
-                          WHERE `permname` = ?";
-                $statement = DBManager::get()->prepare($query);
-                $statement->execute([$user_id, $global_perm]);
-            } else {
-                $query = "SELECT DISTINCT `roleid`
-                          FROM `roles_user`
-                          WHERE `userid` = ?";
-                $statement = DBManager::get()->prepare($query);
-                $statement->execute([$user_id]);
-            }
-            self::$user_roles[$key] = $statement->fetchAll(PDO::FETCH_COLUMN);
-        }
-        return array_intersect_key(self::getAllRoles(), array_flip(self::$user_roles[$key]));
+        return array_intersect_key(
+            self::getAllRoles(),
+            self::loadUserRoles($user_id, $implicit)
+        );
     }
 
     /**
@@ -200,10 +179,10 @@ class RolePersistence
      */
     public static function getAssignedRoleInstitutes($user_id, $role_id)
     {
-        return DBManager::get()->fetchFirst(
-            "SELECT `institut_id` FROM `roles_user` WHERE `userid` = ? AND `roleid` = ?",
-            [$user_id, $role_id]
-        );
+        $roles = self::loadUserRoles($user_id);
+        return isset($roles[$role_id])
+             ? $roles[$role_id]['institutes']
+             : [];
     }
 
     /**
@@ -221,23 +200,67 @@ class RolePersistence
                     ? Institute::find($institut_id)->fakultaets_id
                     : null;
 
-        $query = "SELECT u.`userid` IS NOT NULL OR rsp.`roleid` IS NOT NULL
-                  FROM `roles` AS r
-                  -- Explicit assignment
-                  LEFT JOIN `roles_user` AS u
-                    ON r.`roleid` = u.`roleid`
-                      AND u.`userid` = :user_id
-                      AND u.`institut_id` IN (:institutes)
-                  -- Implicit assignment
-                  JOIN `auth_user_md5` AS a ON a.`user_id` = :user_id
-                  LEFT JOIN `roles_studipperms` AS rsp
-                    ON r.`roleid` = rsp.`roleid` AND a.`perms` = rsp.`permname`
-                  WHERE r.`rolename` = :rolename";
-        return (bool) DBManager::get()->fetchColumn($query, [
-            ':user_id'    => $userid,
-            ':rolename'   => $assignedrole,
-            ':institutes' => [(string) $institut_id, (string) $faculty_id],
-        ]);
+        $role_id = self::getRoleIdByName($assignedrole);
+        $user_roles = self::loadUserRoles($userid, true);
+
+        return isset($user_roles[$role_id])
+             ? (
+                 in_array($institut_id, $user_roles[$role_id]['institutes'])
+                 || in_array($faculty_id, $user_roles[$role_id]['institutes'])
+               )
+             : false;
+    }
+
+    private static function loadUserRoles($user_id, $implicit = false)
+    {
+        $cache = self::getUserRolesCache();
+
+        if (!isset($cache[$user_id])) {
+            $query = "SELECT DISTINCT *
+                      FROM (
+                          SELECT `roleid`, `institut_id`, 1 AS explicit
+                          FROM `roles_user`
+                          WHERE `userid` = :user_id
+
+                          UNION
+
+                          SELECT `roleid`, `fakultaets_id` AS `institut_id`, 1 AS explicit
+                          FROM `roles_user`
+                          JOIN `Institute` USING (`institut_id`)
+                          WHERE `userid` = :user_id
+
+                          UNION
+
+                          SELECT `roleid`, '' AS institut_id, 0 AS explicit
+                          FROM `auth_user_md5` AS aum
+                          JOIN `roles_studipperms` AS rsp
+                            ON aum.`perms` = rsp.`permname`
+                            WHERE aum.`user_id` = :user_id
+                      ) AS tmp";
+            $statement = DBManager::get()->prepare($query);
+            $statement->bindValue(':user_id', $user_id);
+            $statement->execute();
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+            $roles = [];
+            foreach ($statement as $row) {
+                if (!isset($roles[$row['roleid']])) {
+                    $roles[$row['roleid']] = [
+                        'institutes' => [],
+                        'explicit'   => (bool) $row['explicit'],
+                    ];
+                }
+                $roles[$row['roleid']]['institutes'][] = $row['institut_id'];
+            }
+
+            $cache[$user_id] = $roles;
+        }
+        return array_filter(
+            $cache[$user_id],
+            function ($role) use ($implicit) {
+                return $implicit || $role['explicit'];
+            }
+        );
     }
 
     /**
@@ -258,14 +281,14 @@ class RolePersistence
             [$role->getRoleid(), $user->id, $institut_id]
         );
 
+        unset(self::getUserRolesCache()[$user->id]);
+
         NotificationCenter::postNotification(
             'RoleAssignmentDidDelete',
             $role->getRoleid(),
             $user->id,
             $institut_id
         );
-
-        self::$user_roles = [];
     }
 
     /**
@@ -294,7 +317,7 @@ class RolePersistence
     {
         $plugin_id = (int) $plugin_id;
 
-        self::expireCache($plugin_id);
+        unset(self::getPluginRolesCache()[$plugin_id]);
 
         $query = "REPLACE INTO `roles_plugins` (`roleid`, `pluginid`)
                   VALUES (:role_id, :plugin_id)";
@@ -324,7 +347,7 @@ class RolePersistence
     {
         $plugin_id = (int) $plugin_id;
 
-        self::expireCache($plugin_id);
+        unset(self::getPluginRolesCache()[$plugin_id]);
 
         $query = "DELETE FROM `roles_plugins`
                   WHERE `pluginid` = :plugin_id
@@ -356,29 +379,29 @@ class RolePersistence
         $plugin_id = (int) $plugin_id;
 
         // read plugin roles from cache
-        $result = self::readCache($plugin_id);
+        $cache = self::getPluginRolesCache();
 
         // cache miss, retrieve roles from database
-        if (!$result) {
-            $result = [];
-            $roles = self::getAllRoles();
-
+        if (!isset($cache[$plugin_id])) {
             $query = "SELECT `roleid` FROM `roles_plugins` WHERE `pluginid` = ?";
             $statement = DBManager::get()->prepare($query);
             $statement->execute([$plugin_id]);
-            $statement->setFetchMode(PDO::FETCH_COLUMN, 0);
-
-            foreach ($statement as $role_id) {
-                if (isset($roles[$role_id])) {
-                    $result[] = $roles[$role_id];
-                }
-            }
+            $role_ids = $statement->fetchAll(PDO::FETCH_COLUMN);
 
             // write to cache
-            self::writeCache($plugin_id, $result);
+            $cache[$plugin_id] = $role_ids;
         }
 
-        return $result;
+        $roles = self::getAllRoles();
+        return array_filter(array_map(
+            function ($role_id) use ($roles) {
+                if (!isset($roles[$role_id])) {
+                    return false;
+                }
+                return $roles[$role_id];
+            },
+            $cache[$plugin_id]
+        ));
     }
 
     /**
@@ -449,39 +472,44 @@ class RolePersistence
     }
 
     // Cache operations
-    private static $cache = null;
+    private static $roles_cache = null;
+    private static $user_roles_cache = null;
+    private static $plugin_roles_cache = null;
 
-    private static function getCache()
+    private static function getRolesCache()
     {
-        if (self::$cache === null) {
-            self::$cache = StudipCacheFactory::getCache();
+        if (self::$roles_cache === null) {
+            self::$roles_cache = new StudipCachedArray(
+                '/Roles',
+                function () {
+                    return 'All';
+                },
+                StudipCachedArray::ENCODE_SERIALIZE
+            );
         }
-        return self::$cache;
+        return self::$roles_cache;
     }
 
-    private static function getCacheKey($key = null)
+    private static function getUserRolesCache()
     {
-        return $key === null
-             ? self::ROLES_CACHE_KEY
-             : self::ROLES_PLUGINS_CACHE_KEY . $key;
+        if (self::$user_roles_cache === null) {
+            self::$user_roles_cache = new StudipCachedArray('/UserRoles');
+        }
+        return self::$user_roles_cache;
     }
 
-    private static function readCache($index = null)
+    private static function getPluginRolesCache()
     {
-        $key = self::getCacheKey($index);
-        $cached = self::getCache()->read($key);
-        return $cached ? unserialize($cached) : false;
+        if (self::$plugin_roles_cache === null) {
+            self::$plugin_roles_cache = new StudipCachedArray('/PluginRoles');
+        }
+        return self::$plugin_roles_cache;
     }
 
-    private static function writeCache($index = null, $value)
+    public static function expireCaches()
     {
-        $key = self::getCacheKey($index);
-        self::getCache()->write($key, serialize($value));
-    }
-
-    private static function expireCache($index = null)
-    {
-        $key = self::getCacheKey($index);
-        self::getCache()->expire($key);
+        self::getRolesCache()->clear();
+        self::getUserRolesCache()->clear();
+        self::getPluginRolesCache()->clear();
     }
 }

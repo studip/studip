@@ -24,11 +24,6 @@ class PluginManager
     private $plugin_cache;
 
     /**
-     * RolePersistence object
-     */
-    private $rolemgmt;
-
-    /**
      * cache of activated plugins by context
      */
     private $plugins_activated_cache;
@@ -59,7 +54,6 @@ class PluginManager
     {
         $this->readPluginInfos();
         $this->plugin_cache = [];
-        $this->rolemgmt = new RolePersistence();
 
         $this->plugins_activated_cache = new StudipCachedArray('/PluginActivations');
         $this->plugins_default_activations_cache = new StudipCachedArray('/PluginDefaultActivations');
@@ -580,8 +574,8 @@ class PluginManager
             return false;
         }
 
-        $plugin_roles = $this->rolemgmt->getAssignedPluginRoles($plugin['id']);
-        $user_roles = $this->rolemgmt->getAssignedRoles($user, true);
+        $plugin_roles = RolePersistence::getAssignedPluginRoles($plugin['id']);
+        $user_roles = RolePersistence::getAssignedRoles($user, true);
 
         foreach ($plugin_roles as $plugin_role) {
             foreach ($user_roles as $user_role) {
