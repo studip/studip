@@ -6,7 +6,8 @@ foreach ($files as $file) {
         $vue_files[] = FilesystemVueDataManager::getFileVueData($file, $file->getFolderType(), $last_visitdate);
     }
 }
-$vue_files = SimpleCollection::createFromArray($vue_files)->orderBy('chdate desc')->toArray();
+$vue_files = array_values(SimpleCollection::createFromArray($vue_files)->orderBy('chdate desc')->toArray());
+
 $topFolder = new StandardFolder();
 $vue_topFolder = [
     'description' => $topFolder->getDescriptionTemplate(),
