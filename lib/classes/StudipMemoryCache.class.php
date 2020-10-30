@@ -8,7 +8,7 @@
  */
 class StudipMemoryCache implements StudipCache
 {
-    private $memory_cache = [];
+    protected $memory_cache = [];
 
     /**
      * Expires just a single key.

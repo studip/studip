@@ -33,7 +33,7 @@ class StudipCachedArray implements ArrayAccess, Countable
      *                             of the given chache offset or a callable which
      *                             will return the partition key.
      */
-    public function __construct($key, $partition_by = 1, $encoding = self::ENCODE_JSON)
+    public function __construct($key, $partition_by = 1, $encoding = self::ENCODE_JSON, StudipCache $cache = null)
     {
         if (!is_callable($partition_by) && !is_int($partition_by)) {
             throw new Exception('Parameter $partition_by may only be a number or a callable if set');
@@ -45,15 +45,13 @@ class StudipCachedArray implements ArrayAccess, Countable
         $this->key          = $key;
         $this->partition_by = $partition_by;
         $this->encoding     = $encoding;
+        $this->setCache($cache ?? StudipCacheFactory::getCache());
+    }
 
-        $this->cache = StudipCacheFactory::getCache();
-
-        $cached = $this->cache->read($key);
-        if ($cached) {
-            $this->partitions = $this->decode($cached);
-        } else {
-            $this->partitions = [];
-        }
+    public function setCache(StudipCache $cache)
+    {
+        $this->cache = $cache;
+        $this->reset();
     }
 
     /**
@@ -101,7 +99,7 @@ class StudipCachedArray implements ArrayAccess, Countable
      */
     public function offsetUnset($offset)
     {
-        $data = $this->loadData($offset);
+        $data = &$this->loadData($offset);
 
         if (array_key_exists($offset, $data)) {
             unset($data[$offset]);
@@ -150,6 +148,21 @@ class StudipCachedArray implements ArrayAccess, Countable
     }
 
     /**
+     * Loads all partitions of this cache and resets the data array
+     * @return array
+     */
+    public function reset()
+    {
+        $this->data = [];
+        $this->partitions = [];
+
+        $cached = $this->cache->read($this->key);
+        if ($cached) {
+            $this->partitions = $this->decode($cached);
+        }
+    }
+
+    /**
      * Loads the data from cache.
      */
     protected function &loadData($offset)
@@ -176,7 +189,7 @@ class StudipCachedArray implements ArrayAccess, Countable
 
         if ($offset !== null) {
             $partition = $this->getPartition($offset);
-            if (!array_key_exists($partition, $this->partitions) && count($this->data[$partition]) > 0) {
+            if (!array_key_exists($partition, $this->partitions) || count($this->data[$partition]) > 0) {
                 $this->partitions[$partition] = count($this->data[$partition]);
             } elseif (array_key_exists($partition, $this->partitions) && count($this->data[$partition]) === 0) {
                 unset($this->partitions[$partition]);
