@@ -19,9 +19,11 @@ class WikiPage extends SchemaProvider
      */
     public function getResourceLinks($resource)
     {
-        $links = [
-//            LinkInterface::SELF => $this->getSelfSubLink($resource),
-        ];
+        $url = $this->getDiContainer()->get('router')->pathFor(
+            'get-wiki-page',
+            ['id' => sprintf("%s_%s", $resource->range_id, $resource->keyword)]
+        );
+        $links = [ Link::SELF => $this->createLink($url) ];
 
         return $links;
     }

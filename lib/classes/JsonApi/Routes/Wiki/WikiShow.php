@@ -18,7 +18,6 @@ class WikiShow extends JsonApiController
     use HelperTrait;
 
     protected $allowedIncludePaths = ['author', 'range'];
-    protected $allowedFilteringParameters = [];
 
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameters)
@@ -31,20 +30,6 @@ class WikiShow extends JsonApiController
             throw new AuthorizationFailedException();
         }
 
-        return $this->getContentResponse(
-            $wikiPage,
-            ResponsesInterface::HTTP_OK,
-            [Link::SELF => $this->getSelfLink($wikiPage)]
-        );
-    }
-
-    private function getSelfLink($wikiPage)
-    {
-        $url = $this->container['router']->pathFor(
-            'get-wiki-page',
-            ['id' => $wikiPage->id]
-        );
-
-        return new Link($url);
+        return $this->getContentResponse($wikiPage);
     }
 }

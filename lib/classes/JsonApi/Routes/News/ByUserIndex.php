@@ -12,6 +12,7 @@ use JsonApi\JsonApiController;
 */
 class ByUserIndex extends JsonApiController
 {
+    protected $allowedPagingParameters = ['offset', 'limit'];
     protected $allowedIncludePaths = ['author', 'ranges'];
 
     /**

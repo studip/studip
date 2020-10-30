@@ -13,6 +13,7 @@ use JsonApi\JsonApiController;
  */
 class WikiIndex extends JsonApiController
 {
+    protected $allowedPagingParameters = ['offset', 'limit'];
     protected $allowedIncludePaths = ['author', 'range'];
 
     /**
