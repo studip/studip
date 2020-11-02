@@ -45,6 +45,20 @@
     color: #ffffff; border:
     solid 1px #aaaaaa;
     box-shadow: 0px 0px 8px rgba(0,0,0,0.5);
+    a.link-extern {
+        .icon('before', 'link-extern', 'info_alt', 16, 2px);
+    }
+    a.link-intern {
+        .icon('before', 'link-intern', 'info_alt', 16, 2px);
+    }
+    a, a:link, a:visited {
+        color: #FFFFFF;
+        text-decoration: none;
+    }
+    a:hover, a:active, a:hover.index, a:active.index, a:hover.tree {
+        color: #FFFFFF;
+        text-decoration: underline;
+    }
 }
 
 #tour_tip_interactive {
