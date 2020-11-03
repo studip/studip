@@ -58,7 +58,6 @@ class ResourceNavigation extends Navigation
         //Check if the user has permissions one at lease one room:
         $user_has_rooms = RoomManager::userHasRooms($user);
 
-        $user_is_room_admin = RoomManager::userHasRooms($user, 'admin') > 0;
         $user_is_global_resource_user = ResourceManager::userHasGlobalPermission($user, 'user');
         if (!$show_global_admin_actions && !$user_has_rooms && !$user_is_global_resource_user) {
             return;

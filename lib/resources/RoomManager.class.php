@@ -47,7 +47,8 @@ class RoomManager
         $permanent_only = false,
         $time = null,
         $sql_conditions = '',
-        $sql_condition_parameters = []
+        $sql_condition_parameters = [],
+        $sql_order_by = 'ORDER BY resources.sort_position DESC, resources.name ASC'
     )
     {
         $used_time = time();
@@ -67,12 +68,9 @@ class RoomManager
 
         $query = '';
         $data = [];
-
         if ($user_is_admin) {
-            $query = "INNER JOIN resource_categories rc
-                ON rc.id = resources.category_id
-                WHERE
-                rc.class_name IN ( :room_class_names ) ";
+            $query = "resources.category_id IN (:room_categories)
+                ";
             if ($sql_conditions) {
                 $query .= 'AND ' . $sql_conditions;
                 if (count($sql_condition_parameters)) {
@@ -83,10 +81,7 @@ class RoomManager
             $perms = ResourceManager::getHigherPermissionLevels($level);
             array_push($perms, $level);
 
-            $query = "INNER JOIN resource_categories
-                ON resources.category_id = resource_categories.id
-                WHERE
-                resource_categories.class_name IN ( :room_class_names )
+            $query = "resources.category_id IN (:room_categories)
                 AND
                 resources.id IN (
                     SELECT resource_id FROM resource_permissions
@@ -114,10 +109,10 @@ class RoomManager
                 }
             }
         }
-        $data['room_class_names'] = self::getAllRoomClassNames();
-
-        $query .= " GROUP BY resources.id
-                ORDER BY resources.sort_position DESC, resources.name ASC";
+        $data['room_categories'] = SimpleCollection::createFromArray(ResourceCategory::findAll())
+            ->findBy('class_name', self::getAllRoomClassNames())
+            ->pluck('id');
+        $query .= " GROUP BY resources.id " . $sql_order_by;
 
         return [
             'query' => $query,
@@ -168,10 +163,10 @@ class RoomManager
         if ($GLOBALS['perm']->have_perm('root', $user->id)) {
             return true;
         }
-        $sql = self::getUserRoomsSqlData($user, $level, $permanent_only, $time, $sql_conditions, $sql_condition_parameters);
+        $sql = self::getUserRoomsSqlData($user, $level, $permanent_only, $time, $sql_conditions, $sql_condition_parameters, 'ORDER BY NULL');
 
         $db = DBManager::get();
-        $exists_query = 'SELECT 1 FROM resources ' . $sql['query'] . ' LIMIT 1';
+        $exists_query = 'SELECT 1 FROM resources WHERE ' . $sql['query'] . ' LIMIT 1';
         $stmt = $db->prepare($exists_query);
         $stmt->execute($sql['data']);
         return $stmt->fetchColumn();
