@@ -1891,7 +1891,7 @@ class FileManager
             $range_ids[] = $course->id;
         }
         foreach ($institutes as $institute) {
-            $range_ids[] = $institue->id;
+            $range_ids[] = $institute->id;
         }
 
         if ($with_personal_file_area) {

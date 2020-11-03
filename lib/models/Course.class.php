@@ -717,27 +717,18 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
      */
     public static function findByUser($user_id, $perms = [], $with_deputies = true)
     {
-        if (!$user_id) {
-            return [];
-        }
-
-        $sql = 'INNER JOIN `seminar_user` USING (`Seminar_id`) ';
+        $db = DBManager::get();
+        $sql = 'SELECT seminar_id FROM `seminar_user` WHERE `seminar_user`.`user_id` = :user_id';
         $sql_params = ['user_id' => $user_id];
-        if (Config::get()->DEPUTIES_ENABLE && $with_deputies) {
-            $sql .= ' LEFT JOIN `deputies`
-                ON (`seminare`.`Seminar_id` = `deputies`.`range_id`) ';
-        }
-        $sql .= 'WHERE (`seminar_user`.`user_id` = :user_id';
         if (is_array($perms) && count($perms)) {
-            $sql .= ' AND `seminar_user`.`perms` IN ( :perms )';
-            $sql_params = ['perms' => $perms];
+            $sql .= ' AND `seminar_user`.`status` IN ( :perms )';
+            $sql_params['perms'] = $perms;
         }
-        $sql .= ' )';
+        $seminar_ids = $db->fetchFirst($sql, $sql_params);
         if (Config::get()->DEPUTIES_ENABLE && $with_deputies) {
-            $sql .= ' OR `deputies`.`user_id` = :user_id';
+            $sql = 'SELECT range_id FROM `deputies` WHERE `deputies`.`user_id` = :user_id';
+            $seminar_ids = array_merge($seminar_ids, $db->fetchFirst($sql, $sql_params));
         }
-        $sql .= ' ORDER BY duration_time = -1, start_time DESC, Name ASC';
-
-        return Course::findBySql($sql, $sql_params);
+        return Course::findMany($seminar_ids, 'ORDER BY duration_time = -1, start_time DESC, Name ASC');
     }
 }
