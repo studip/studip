@@ -14,7 +14,7 @@ class AddMissingIndices extends Migration
     public function up()
     {
         $query = "ALTER TABLE `activities`
-                  ADD INDEX `object_id` (`object_id`)";
+                  ADD INDEX `object_id` (`object_id`(32))";
         DBManager::get()->exec($query);
 
         $query = "ALTER TABLE `plugins_activated`
