@@ -4,15 +4,19 @@
  * @license GPL2 or any later version
  * @see https://develop.studip.de/trac/ticket/10882
  */
-class AddIndexForPluginsActivated extends Migration
+class AddMissingIndices extends Migration
 {
     public function description()
     {
-        return 'Adds missing index over `range_id` and `range_type` for table `plugins_activated`';
+        return 'Adds missing indices for tables `activities` and `plugins_activated`';
     }
 
     public function up()
     {
+        $query = "ALTER TABLE `activities`
+                  ADD INDEX `object_id` (`object_id`)";
+        DBManager::get()->exec($query);
+
         $query = "ALTER TABLE `plugins_activated`
                   ADD INDEX `range` (`range_id`, `range_type`)";
         DBManager::get()->exec($query);
@@ -20,6 +24,10 @@ class AddIndexForPluginsActivated extends Migration
 
     public function down()
     {
+        $query = "ALTER TABLE `activities`
+                  DROP INDEX `object_id`";
+        DBManager::get()->exec($query);
+
         $query = "ALTER TABLE `plugins_activated`
                   DROP INDEX `range`";
         DBManager::get()->exec($query);
