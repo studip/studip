@@ -272,9 +272,9 @@ div#sidebar-navigation {
 }
 .sidebar-widget-content {
     border-top: 1px solid $content-color-40;
+    overflow-wrap: break-word;
     padding: 4px;
     transition: all 0.5s;
-    word-break: break-all;
 }
 
 .sidebar-widget-header {
