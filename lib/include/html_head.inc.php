@@ -7,7 +7,7 @@
 */
 ?>
 <!DOCTYPE html>
-<html class="no-js" lang="<?= htmlReady(strtr($_SESSION['_language'], '_', '-')) ?>">
+<html class="no-js">
 <head>
     <meta charset="utf-8">
     <title data-original="<?= htmlReady(PageLayout::getTitle()) ?>">
