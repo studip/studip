@@ -34,7 +34,9 @@ foreach ($topFolder->getFiles() as $file) {
 }
 $vue_folders = [];
 foreach ($topFolder->getSubfolders() as $folder) {
-    $vue_folders[] = FilesystemVueDataManager::getFolderVueData($folder, $topFolder, $last_visitdate);
+    if ($folder->isVisible($GLOBALS['user']->id)) {
+        $vue_folders[] = FilesystemVueDataManager::getFolderVueData($folder, $topFolder, $last_visitdate);
+    }
 }
 
 $vue_topFolder['buttons'] = '<span class="multibuttons">';
