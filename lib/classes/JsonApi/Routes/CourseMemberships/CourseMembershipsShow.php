@@ -3,6 +3,7 @@
 namespace JsonApi\Routes\CourseMemberships;
 
 use JsonApi\Errors\AuthorizationFailedException;
+use JsonApi\Errors\BadRequestException;
 use JsonApi\Errors\RecordNotFoundException;
 use JsonApi\JsonApiController;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -20,7 +21,7 @@ class CourseMembershipsShow extends JsonApiController
     {
         $membership = self::findMembership($args['id']);
 
-        if (!Authority::canShowMembership($this->getUser($request), $membership)) {
+        if (!Authority::canShowMemberships($this->getUser($request), $membership)) {
             throw new AuthorizationFailedException();
         }
 
