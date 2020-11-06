@@ -149,7 +149,7 @@ class Icon
      */
     public function getShape()
     {
-        return $this->shape;
+        return $this->shapeToPath($this->shape);
     }
 
     /**
