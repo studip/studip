@@ -87,11 +87,17 @@ class Calendar_ContentboxController extends StudipController {
             }
 
             // Store for view
+            $description = '';
+            if ($courseDate instanceof CourseExDate) {
+                $description = $courseDate->content;
+            } elseif ($courseDate->cycle instanceof SeminarCycleDate) {
+                $description = $courseDate->cycle->description;
+            }
             $this->termine[] = [
                 'id'          => $courseDate->id,
                 'chdate'      => $courseDate->chdate,
                 'title'       => $courseDate->getFullname() . (count($courseDate->topics) > 0 ? ', ' . implode(', ', $courseDate->topics->getValue('title')) : ''),
-                'description' => $courseDate instanceOf CourseExDate ? $courseDate->content : '',
+                'description' => $description,
                 'topics'      => $courseDate->topics->toArray('title description'),
                 'room'        => $courseDate->getRoomName(),
                 'info'        => $info
