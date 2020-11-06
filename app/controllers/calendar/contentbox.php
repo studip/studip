@@ -12,9 +12,6 @@
  * @category    Stud.IP
  * @package     calender
  */
-
-require_once 'app/models/calendar/SingleCalendar.php';
-
 class Calendar_ContentboxController extends StudipController {
 
     /**

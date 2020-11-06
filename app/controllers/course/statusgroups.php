@@ -1,6 +1,5 @@
 <?php
-
-/*
+/**
  * StatusgroupController
  *
  * This program is free software; you can redistribute it and/or
@@ -14,8 +13,6 @@
  * @since       3.5
  */
 
- require_once 'app/models/members.php';
-require_once 'app/models/statusgroups.php';
 require_once 'lib/messaging.inc.php'; //Funktionen des Nachrichtensystems
 require_once 'lib/export/export_studipdata_func.inc.php'; // Funktionen für den Export
 require_once 'lib/export/export_linking_func.inc.php';

@@ -1,6 +1,4 @@
 <?php
-require_once 'app/models/smiley.php';
-
 /**
  * smileys.php - controller class for the smileys administration
  *

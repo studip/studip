@@ -1,6 +1,4 @@
 <?php
-require_once 'app/models/smiley_favorites.php';
-
 /**
  * smiley.php - model class for a smiley
  *

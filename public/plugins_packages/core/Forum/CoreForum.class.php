@@ -13,7 +13,6 @@
  * @category    Stud.IP
  */
 
-require_once 'app/models/smiley.php';
 require_once 'controllers/forum_controller.php';
 require_once 'lib/activities/Activity.php';
 require_once 'models/ForumEntry.php';

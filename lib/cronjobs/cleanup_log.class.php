@@ -81,14 +81,6 @@ class CleanupLogJob extends CronJob
     }
 
     /**
-     * Setup method. Loads the neccessary classes.
-     */
-    public function setUp()
-    {
-        require_once 'app/models/event_log.php';
-    }
-
-    /**
      * Executes the cronjob.
      *
      * @param mixed $last_result What the last execution of this cronjob
@@ -120,4 +112,3 @@ class CleanupLogJob extends CronJob
         }
     }
 }
-

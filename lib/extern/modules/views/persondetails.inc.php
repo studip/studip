@@ -6,10 +6,6 @@
 
 require_once 'lib/statusgruppe.inc.php';
 
-if (Config::get()->CALENDAR_ENABLE) {
-    require_once 'app/models/calendar/SingleCalendar.php';
-}
-
 $instituts_id = $this->config->range_id;
 $username = $args['username'];
 $sem_id = $args['seminar_id'];

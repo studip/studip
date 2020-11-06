@@ -8,8 +8,6 @@
  * @license   GPL2 or any later version
  */
 
-require_once 'app/models/event_log.php';
-
 class EventLogController extends AuthenticatedController
 {
     protected $_autobind = true;

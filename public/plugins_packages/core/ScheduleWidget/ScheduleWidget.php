@@ -13,7 +13,6 @@
  * @category    Stud.IP
  */
 
-require_once 'app/models/calendar/schedule.php';
 require_once __DIR__ . '/CalendarWidgetView.php';
 
 class ScheduleWidget extends StudIPPlugin implements PortalPlugin

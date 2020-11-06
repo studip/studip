@@ -11,11 +11,6 @@ namespace RESTAPI\Routes;
  */
 class Schedule extends \RESTAPI\RouteMap
 {
-    public static function before()
-    {
-        require_once 'app/models/calendar/schedule.php';
-    }
-
     /**
      * returns schedule for a given user and semester
      *

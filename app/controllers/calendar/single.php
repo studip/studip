@@ -13,9 +13,6 @@
  */
 
 require_once 'app/controllers/calendar/calendar.php';
-require_once 'app/models/calendar/Calendar.php';
-require_once 'app/models/calendar/SingleCalendar.php';
-require_once 'app/models/ical_export.php';
 
 class Calendar_SingleController extends Calendar_CalendarController
 {

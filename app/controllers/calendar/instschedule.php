@@ -1,7 +1,7 @@
 <?php
 # Lifter010: TODO
 
-/*
+/**
  * This controller displays an institute-calendar for seminars
  *
  * This program is free software; you can redistribute it and/or
@@ -12,14 +12,6 @@
  * @author      Till Glöggler <tgloeggl@uos.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
- */
-
-require_once 'app/models/calendar/schedule.php';
-require_once 'app/models/calendar/instschedule.php';
-
-/**
- * Controller of the institutes' schedules.
- * *
  * @since      2.0
  */
 class Calendar_InstscheduleController extends AuthenticatedController

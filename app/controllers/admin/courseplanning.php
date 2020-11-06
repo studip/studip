@@ -6,9 +6,6 @@
  * @license GPL2 or any version
  * @since   Stud.IP 4.5
  */
-
-require_once 'app/models/calendar/instschedule.php';
-
 class Admin_CourseplanningController extends AuthenticatedController
 {
     public function before_filter(&$action, &$args)

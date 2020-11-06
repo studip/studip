@@ -16,8 +16,6 @@
  * @package     calendar
  */
 
-require_once('app/models/calendar/SingleCalendar.php');
-
 class CalendarExport
 {
     protected $_writer;

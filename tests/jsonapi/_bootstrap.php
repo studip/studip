@@ -61,7 +61,8 @@ StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/raumzeit');
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/resources');
 
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/activities', 'Studip\\Activity');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/globalsearch');
+StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/classes/calendar');
+StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/classes/globalsearch');
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/lib/classes/visibility');
 
 StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'].'/vendor/oauth-php/library');
@@ -71,9 +72,6 @@ StudipAutoloader::addClassLookups(
     array(
         'StudipPlugin' => $GLOBALS['STUDIP_BASE_PATH'].'/lib/plugins/core/StudIPPlugin.class.php',
         'messaging' => $GLOBALS['STUDIP_BASE_PATH'].'/lib/messaging.inc.php',
-
-        'SingleCalendar' => $GLOBALS['STUDIP_BASE_PATH'].'/app/models/calendar/SingleCalendar.php',
-        'CalendarScheduleModel' => $GLOBALS['STUDIP_BASE_PATH'].'/app/models/calendar/schedule.php',
     )
 );
 

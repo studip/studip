@@ -14,7 +14,6 @@
  * @since       3.0
  */
 
-require_once 'app/models/courseset.php';
 require_once 'lib/admission.inc.php';
 
 class Admission_CoursesetController extends AuthenticatedController

@@ -10,7 +10,6 @@
 
 require_once __DIR__ . '/studip_cli_env.inc.php';
 require_once __DIR__ . '/../config/config_local.inc.php';
-require_once __DIR__ . '/../app/models/members.php';
 
 function output($what) {
     if (StudipVersion::olderThan(4)) {

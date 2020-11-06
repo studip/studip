@@ -2,8 +2,6 @@
 
 require_once 'app/controllers/calendar/calendar.php';
 require_once 'app/controllers/authenticated_controller.php';
-require_once 'app/models/calendar/Calendar.php';
-require_once 'app/models/calendar/SingleCalendar.php';
 
 class Calendar_GroupController extends Calendar_CalendarController
 {

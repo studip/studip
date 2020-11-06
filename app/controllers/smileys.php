@@ -15,8 +15,6 @@
  * @package  smiley
  * @since    2.3
  */
-require_once 'app/models/smiley.php';
-
 class SmileysController extends AuthenticatedController
 {
     const GRID_WIDTH  = 5;

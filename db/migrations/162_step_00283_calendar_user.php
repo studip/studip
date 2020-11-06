@@ -1,6 +1,4 @@
 <?php
-require_once 'app/models/calendar/Calendar.php';
-
 class Step00283CalendarUser extends Migration {
 
     function description() {
@@ -17,9 +15,9 @@ class Step00283CalendarUser extends Migration {
             PRIMARY KEY (`owner_id`,`user_id`)
         ) ENGINE=MyISAM");
     }
-    
+
     function down() {
         DBManager::get()->execute('DROP TABLE IF EXISTS calendar_user');
     }
-    
+
 }

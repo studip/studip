@@ -1,7 +1,4 @@
 <?php
-
-require_once 'app/models/calendar/Calendar.php';
-
 class TransferCalpermission extends Migration {
 
     function description() {

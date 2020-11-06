@@ -8,9 +8,6 @@
  * @copyright 2008 Ansgar Bockstiegel
  * @license   GPL2 or any later version
  */
-
-require_once 'app/models/siteinfo.php';
-
 class SiteinfoController extends StudipController
 {
     protected $with_session = true;

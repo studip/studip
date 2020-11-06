@@ -39,8 +39,6 @@
 
 require_once 'lib/messaging.inc.php';
 require_once 'lib/dates.inc.php';
-require_once 'app/models/calendar/schedule.php';
-
 
 /**
  * Insert a user into a seminar with optional log-message and contingent
@@ -55,7 +53,7 @@ require_once 'app/models/calendar/schedule.php';
  * @return void
  */
 function insert_seminar_user($seminar_id, $user_id, $status, $copy_studycourse = false, $contingent = false, $log_message = false) {
-    
+
     if (!$user_id) {
         return false;
     }
@@ -115,7 +113,7 @@ function insert_seminar_user($seminar_id, $user_id, $status, $copy_studycourse =
     if ($cs) {
         $prio_delete = AdmissionPriority::unsetPriority($cs->getId(), $user_id, $sem->getId());
     }
-    
+
     CalendarScheduleModel::deleteSeminarEntries($user_id, $seminar_id);
 
     // reload the seminar, the contingents have changed
@@ -369,4 +367,3 @@ function admission_seminar_user_get_position($user_id, $seminar_id)
 
     return $position == 'na' ? true : $position;
 }
-

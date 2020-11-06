@@ -1,7 +1,7 @@
 <?php
 # Lifter010: TODO
 
-/*
+/**
  * This class displays a seminar-schedule for
  * users on a seminar-based view and for admins on an institute based view
  *
@@ -13,13 +13,6 @@
  * @author      Till Glöggler <tgloeggl@uos.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
- */
-
-require_once 'app/models/calendar/schedule.php';
-
-/**
- * Personal schedule controller.
- *
  * @since      2.0
  */
 class Calendar_ScheduleController extends AuthenticatedController

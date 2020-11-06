@@ -1,6 +1,4 @@
 <?php
-require_once 'app/models/calendar/Calendar.php';
-
 class Step00283UpdateCalendarSettings extends Migration {
 
     function description() {
@@ -28,7 +26,7 @@ class Step00283UpdateCalendarSettings extends Migration {
                 $default_settings['view'] = $replace[$settings['view']];
                 $config->store('CALENDAR_SETTINGS', $default_settings);
             }
-            
+
         }
     }
 
@@ -61,7 +59,7 @@ class Step00283UpdateCalendarSettings extends Migration {
                 $default_settings['view'] = $replace[$settings['view']];
                 $config->store('CALENDAR_SETTINGS', $default_settings);
             }
-            
+
         }
     }
 

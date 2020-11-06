@@ -1,6 +1,4 @@
-<?
-require_once 'app/models/smiley.php';
-
+<?php
 /**
  * SmileyFormat.php
  *

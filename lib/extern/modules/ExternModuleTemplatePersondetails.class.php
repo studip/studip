@@ -42,10 +42,6 @@ require_once 'lib/statusgruppe.inc.php';
 require_once 'lib/dates.inc.php';
 require_once 'lib/extern/views/extern_html_templates.inc.php';
 
-if (Config::get()->CALENDAR_ENABLE) {
-    require_once 'app/models/calendar/SingleCalendar.php';
-}
-
 class ExternModuleTemplatePersondetails extends ExternModule {
 
     public $markers = [];

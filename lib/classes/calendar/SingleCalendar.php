@@ -13,8 +13,6 @@
  * @since       3.2
  */
 
-require_once 'app/models/calendar/Calendar.php';
-
 class SingleCalendar
 {
     /**
