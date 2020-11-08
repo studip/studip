@@ -681,7 +681,7 @@ class Consultation_AdminController extends ConsultationController
             _('Alle Sprechstundentermine löschen'),
             $this->purgeURL(),
             Icon::create('trash'),
-            ['onclick' => 'return STUDIP.Dialog.confirmAsPost(' . json_encode(_('Wollen Sie wirklich alle Sprechstundentermine löschen?')) . ');']
+            ['onclick' => 'return STUDIP.Dialog.confirmAsPost(' . json_encode(_('Wollen Sie wirklich alle Sprechstundentermine löschen?')) . ', this.href);']
         );
 
         $options = $sidebar->addWidget(new OptionsWidget());
