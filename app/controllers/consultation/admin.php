@@ -51,7 +51,7 @@ class Consultation_AdminController extends ConsultationController
             $page = 1;
         }
 
-        $this->page = $page;
+        $this->page = max($page, 1);
         $this->blocks = $this->groupSlots(ConsultationSlot::findByTeacher_id(
             $this->current_user->id,
             "ORDER BY start ASC LIMIT " . (($page - 1) * $this->limit) . ", {$this->limit}"
@@ -70,7 +70,7 @@ class Consultation_AdminController extends ConsultationController
             $page = 1;
         }
 
-        $this->page = $page;
+        $this->page = max($page, 1);
         $this->blocks = $this->groupSlots(ConsultationSlot::findByTeacher_id(
             $this->current_user->id,
             "ORDER BY start ASC LIMIT " . (($page - 1) * $this->limit) . ", {$this->limit}",
