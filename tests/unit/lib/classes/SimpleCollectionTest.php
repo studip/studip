@@ -27,7 +27,7 @@ class SimpleCollectionTest extends \Codeception\Test\Unit
         $data[] = ['id' => 1, 'vorname' => 'Ândré', 'nachname' => 'Noack', 'perm' => 'dozent'];
         $data[] = ['id' => 2, 'vorname' => 'Stefan', 'nachname' => 'Suchi', 'perm' => 'dozent'];
         $data[] = ['id' => 10, 'vorname' => 'Élmar', 'nachname' => 'Ludwig', 'perm' => 'admin'];
-        $data[] = ['id' => 11, 'vorname' => 'Jan-Hendrik', 'nachname' => 'Wilms', 'perm' => 'tutor'];
+        $data[] = ['id' => 11, 'vorname' => 'Jan-Hendrik', 'nachname' => 'Willms', 'perm' => 'tutor'];
         $data[] = ['id' => 15, 'vorname' => 'Nico', 'nachname' => 'Müller', 'perm' => 'root'];
 
         $a = new SimpleCollection();
@@ -118,7 +118,7 @@ class SimpleCollectionTest extends \Codeception\Test\Unit
         $this->assertCount(1, $test);
         $test = $a->findBy('nachname', 'll', '*=');
         $this->assertInstanceOf('SimpleCollection', $test);
-        $this->assertCount(1, $test);
+        $this->assertCount(2, $test);
         $test = $a->findBy('nachname', 'Müll', '^=');
         $this->assertInstanceOf('SimpleCollection', $test);
         $this->assertCount(1, $test);
@@ -166,7 +166,7 @@ class SimpleCollectionTest extends \Codeception\Test\Unit
         $expected[1] = ['nachname' => 'Noack'];
         $expected[2] = ['nachname' => 'Suchi'];
         $expected[10] = ['nachname' => 'Ludwig'];
-        $expected[11] = ['nachname' => 'Wilms'];
+        $expected[11] = ['nachname' => 'Willms'];
         $expected[15] = ['nachname' => 'Müller'];
         $this->assertEquals($expected, $a->toGroupedArray('id', ['nachname']));
         $expected = [];
@@ -199,28 +199,29 @@ class SimpleCollectionTest extends \Codeception\Test\Unit
      */
     public function testOrderBy($a)
     {
-        $expected = [ 'Wilms',
-                            'Suchi',
-                            'Noack',
-                            'Müller',
-                            'Ludwig'
+        $expected = [
+            'Willms',
+            'Suchi',
+            'Noack',
+            'Müller',
+            'Ludwig'
         ];
         $this->assertEquals($expected, array_values($a->orderBy('nachname desc')->pluck('nachname')));
         $this->assertEquals(array_reverse($expected), array_values($a->orderBy('nachname asc')->pluck('nachname')));
         $expected =  [
-                        'Jan-Hendrik',
-                        'Nico',
-                        'Stefan',
-                        'Ândré',
-                        'Élmar'
+            'Jan-Hendrik',
+            'Nico',
+            'Stefan',
+            'Ândré',
+            'Élmar'
         ];
         $this->assertEquals($expected, array_values($a->orderBy('vorname asc', SORT_STRING)->pluck('vorname')));
         $expected =  [
-                         'Ândré',
-                         'Élmar',
-                         'Jan-Hendrik',
-                         'Nico',
-                         'Stefan'
+            'Ândré',
+            'Élmar',
+            'Jan-Hendrik',
+            'Nico',
+            'Stefan'
         ];
         $this->assertEquals($expected, array_values($a->orderBy('vorname asc', SORT_LOCALE_STRING)->pluck('vorname')));
         $expected = [1,2,10,11,15];
@@ -250,5 +251,31 @@ class SimpleCollectionTest extends \Codeception\Test\Unit
         $this->assertCount(7, $a);
         $expected = [1,2,10,11,15,19,20];
         $this->assertEquals($expected, array_values($a->orderBy('id asc', SORT_NUMERIC)->pluck('id')));
+    }
+
+    /**
+     * @depends testConstruct
+     */
+    public function testAny($a)
+    {
+        $this->assertTrue($a->any(function ($item) {
+            return $item->nachname === 'Willms';
+        }));
+        $this->assertFalse($a->any(function ($item) {
+            return $item->nachname === 'Siegfried';
+        }));
+    }
+
+    /**
+     * @depends testConstruct
+     */
+    public function testEvery($a)
+    {
+        $this->assertTrue($a->every(function ($item) {
+            return is_int($item->id);
+        }));
+        $this->assertFalse($a->every(function ($item) {
+            return $item->nachname === 'Willms';
+        }));
     }
 }

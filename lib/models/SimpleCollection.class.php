@@ -432,6 +432,40 @@ class SimpleCollection extends StudipArrayObject
     }
 
     /**
+     * Returns whether any element of the collection returns true for the
+     * given callback.
+     *
+     * @param  Closure $func the function to call
+     * @return bool
+     */
+    public function any(Closure $func)
+    {
+        foreach ($this->storage as $key => $value) {
+            if (call_user_func($func, $value, $key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether every element of the collection returns true for the
+     * given callback.
+     *
+     * @param  Closure $func the function to call
+     * @return bool
+     */
+    public function every(Closure $func)
+    {
+        foreach ($this->storage as $key => $value) {
+            if (!call_user_func($func, $value, $key)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * extract array of columns values
      * pass array or space-delimited string for multiple columns
      *
