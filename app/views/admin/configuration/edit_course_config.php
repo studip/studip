@@ -3,7 +3,7 @@
     <?= htmlReady(Course::find($range_id)->getFullname()) ?>
 </h2>
 
-<form action="<?= $controller->url_for('admin/configuration/edit_course_config/' . $range_id . '?id=' . $field) ?>" method="post" data-dialog class="default">
+<form action="<?= $controller->link_for('admin/configuration/edit_course_config/' . $range_id . '?id=' . $field) ?>" method="post" data-dialog class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>

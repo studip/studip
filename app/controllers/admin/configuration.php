@@ -237,6 +237,8 @@ class Admin_ConfigurationController extends AuthenticatedController
         // Step 1: Prepare input
         if ($config['type'] === 'array') {
             $value = json_decode($value, true);
+        } elseif ($config['type'] === 'i18n') {
+            $value = Request::i18n('value');
         }
 
         // Step 2: Validate

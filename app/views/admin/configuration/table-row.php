@@ -8,7 +8,7 @@
     <? endif; ?>
     </td>
     <td class="wrap-content">
-    <? if ($type === 'string'): ?>
+    <? if ($type === 'string' || $type === 'i18n'): ?>
         <em><?= htmlReady($value) ?></em>
     <? elseif ($type === 'integer'): ?>
         <?= (int)$value ?>

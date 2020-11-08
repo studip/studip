@@ -243,16 +243,23 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
                 }
                 switch ($row['type']) {
                     case 'integer':
-                        $value = (int)$row['value'];
+                        $value = (int) $row['value'];
                         break;
                     case 'boolean':
-                        $value = (bool)$row['value'];
+                        $value = (bool) $row['value'];
                         break;
                     case 'array':
-                        $value = (array)json_decode($row['value'], true);
+                        $value = (array) json_decode($row['value'], true);
+                        break;
+                    case 'i18n':
+                        $value = new I18NString($row['value'], null, [
+                            'object_id' => md5($row['field']),
+                            'table'     => 'config',
+                            'field'     => 'value',
+                        ]);
                         break;
                     default:
-                        $value = (string)$row['value'];
+                        $value = (string) $row['value'];
                         $row['type'] = 'string';
                 }
 
@@ -280,16 +287,26 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
         }
         switch ($this->metadata[$field]['type']) {
             case 'boolean':
-                $values['value'] = (bool)$values['value'];
-            break;
+                $values['value'] = (bool) $values['value'];
+                break;
             case 'integer':
-                $values['value'] = (int)$values['value'];
-            break;
+                $values['value'] = (int) $values['value'];
+                break;
             case 'array' :
-                 $values['value'] = json_encode($values['value']);
-            break;
+                $values['value'] = json_encode($values['value']);
+                break;
+            case 'i18n':
+                $values['value']->setMetadata([
+                    'object_id' => md5($field),
+                    'table'     => 'config',
+                    'field'     => 'value',
+                ]);
+                $values['value']->storeTranslations();
+
+                $values['value'] = $values['value']->original();
+                break;
             default:
-                $values['value'] = (string)$values['value'];
+                $values['value'] = (string) $values['value'];
         }
 
         $entry = ConfigEntry::find($field);
