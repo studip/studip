@@ -51,7 +51,7 @@ class SimpleCollection extends StudipArrayObject
      */
     public static function createFromArray(Array $data)
     {
-        return new static($data);
+        return new self($data);
     }
 
     /**
