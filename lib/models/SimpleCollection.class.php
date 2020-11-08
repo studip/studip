@@ -1,6 +1,11 @@
 <?php
-if (!defined('SORT_NATURAL')) define('SORT_NATURAL', 6);
-if (!defined('SORT_FLAG_CASE')) define('SORT_FLAG_CASE', 8);
+if (!defined('SORT_NATURAL')) {
+    define('SORT_NATURAL', 6);
+}
+if (!defined('SORT_FLAG_CASE')) {
+    define('SORT_FLAG_CASE', 8);
+}
+
 /**
  * SimpleCollection.class.php
  * collection of assoc arrays with convenience
@@ -14,10 +19,9 @@ if (!defined('SORT_FLAG_CASE')) define('SORT_FLAG_CASE', 8);
  * @copyright   2013 Stud.IP Core-Group
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
-*/
+ */
 class SimpleCollection extends StudipArrayObject
 {
-
     /**
      * callable to initialize collection
      *
@@ -47,7 +51,7 @@ class SimpleCollection extends StudipArrayObject
      */
     public static function createFromArray(Array $data)
     {
-        return new SimpleCollection($data);
+        return new static($data);
     }
 
     /**
@@ -62,13 +66,17 @@ class SimpleCollection extends StudipArrayObject
         if ($a instanceof StudipArrayObject) {
             $a->setFlags(StudipArrayObject::ARRAY_AS_PROPS);
             return $a;
-        } else if ($a instanceof ArrayObject) {
-            return new StudipArrayObject($a->getArrayCopy(), StudipArrayObject::ARRAY_AS_PROPS);
-        } else if ($a instanceof ArrayAccess) {
-            return $a;
-        } else {
-            return new StudipArrayObject((array)$a, StudipArrayObject::ARRAY_AS_PROPS);
         }
+
+        if ($a instanceof ArrayObject) {
+            return new StudipArrayObject($a->getArrayCopy(), StudipArrayObject::ARRAY_AS_PROPS);
+        }
+
+        if ($a instanceof ArrayAccess) {
+            return $a;
+        }
+
+        return new StudipArrayObject((array) $a, StudipArrayObject::ARRAY_AS_PROPS);
     }
 
     /**
@@ -83,24 +91,34 @@ class SimpleCollection extends StudipArrayObject
     public static function getCompFunc($operator, $args)
     {
         if ($operator instanceOf Closure) {
-            $comp_func = function ($a) use ($args, $operator) {return $operator($a, $args);};
+            $comp_func = function ($a) use ($args, $operator) {
+                return $operator($a, $args);
+            };
         } else {
             if (!is_array($args)) {
                 $args = [$args];
             }
             switch ($operator) {
                 case '==':
-                    $comp_func = function ($a) use ($args) {return in_array($a, $args);};
+                    $comp_func = function ($a) use ($args) {
+                        return in_array($a, $args);
+                    };
                 break;
                 case '===':
-                    $comp_func = function ($a) use ($args) {return in_array($a, $args, true);};
+                    $comp_func = function ($a) use ($args) {
+                        return in_array($a, $args, true);
+                    };
                 break;
                 case '!=':
                 case '<>':
-                    $comp_func = function ($a) use ($args) {return !in_array($a, $args);};
+                    $comp_func = function ($a) use ($args) {
+                        return !in_array($a, $args);
+                    };
                 break;
                 case '!==':
-                    $comp_func = function ($a) use ($args) {return !in_array($a, $args, true);};
+                    $comp_func = function ($a) use ($args) {
+                        return !in_array($a, $args, true);
+                    };
                 break;
                 case '<':
                 case '>':
@@ -117,28 +135,30 @@ class SimpleCollection extends StudipArrayObject
                             return $a > $b;
                         }
                     };
-                    $comp_func = function($a) use ($op_func, $args) {return $op_func($a, $args[0]);};
+                    $comp_func = function ($a) use ($op_func, $args) {
+                        return $op_func($a, $args[0]);
+                    };
                 break;
                 case '><':
-                    $comp_func = function($a) use ($args) {
+                    $comp_func = function ($a) use ($args) {
                         return $a > $args[0] && $a < $args[1];
                     };
                 break;
                 case '>=<=':
-                    $comp_func = function($a) use ($args) {
+                    $comp_func = function ($a) use ($args) {
                         return $a >= $args[0] && $a <= $args[1];
                     };
                     break;
                 case '%=':
-                    $comp_func = function($a) use ($args) {
-                        $a = mb_strtolower(SimpleCollection::translitLatin1($a));
-                        $args = array_map('SimpleCollection::translitLatin1', $args);
+                    $comp_func = function ($a) use ($args) {
+                        $a = mb_strtolower(static::translitLatin1($a));
+                        $args = array_map('static::translitLatin1', $args);
                         $args = array_map('mb_strtolower', $args);
                         return in_array($a, $args);
                     };
                 break;
                 case '*=':
-                    $comp_func = function($a) use ($args) {
+                    $comp_func = function ($a) use ($args) {
                         foreach ($args as $arg) {
                             if (mb_strpos($a, $arg) !== false) {
                                 return true;
@@ -148,7 +168,7 @@ class SimpleCollection extends StudipArrayObject
                     };
                 break;
                 case '^=':
-                    $comp_func = function($a) use ($args) {
+                    $comp_func = function ($a) use ($args) {
                         foreach ($args as $arg) {
                             if (mb_strpos($a, $arg) === 0) {
                                 return true;
@@ -158,11 +178,10 @@ class SimpleCollection extends StudipArrayObject
                     };
                 break;
                 case '$=':
-                    $comp_func = function($a) use ($args) {
+                    $comp_func = function ($a) use ($args) {
                         foreach ($args as $arg) {
                             $found = mb_strrpos($a, $arg);
-                            if ($found !== false && ($found
-                                + mb_strlen($arg)) === mb_strlen($a)) {
+                            if ($found !== false && ($found + mb_strlen($arg)) === mb_strlen($a)) {
                                 return true;
                             }
                         }
@@ -170,7 +189,7 @@ class SimpleCollection extends StudipArrayObject
                     };
                 break;
                 case '~=':
-                    $comp_func = function($a) use ($args) {
+                    $comp_func = function ($a) use ($args) {
                         foreach ($args as $arg) {
                             if (preg_match($arg, $a) === 1) {
                                 return true;
@@ -192,7 +211,8 @@ class SimpleCollection extends StudipArrayObject
      * @param string $text
      * @return string
      */
-    public static function translitLatin1($text) {
+    public static function translitLatin1($text)
+    {
         if (!preg_match('/[\200-\377]/', $text)) {
             return $text;
         }
@@ -216,7 +236,7 @@ class SimpleCollection extends StudipArrayObject
      *
      * @param mixed $data array or closure to fill collection
      */
-    function __construct($data = [])
+    public function __construct($data = [])
     {
         parent::__construct();
         $this->finder = $data instanceof Closure ? $data : null;
@@ -232,9 +252,9 @@ class SimpleCollection extends StudipArrayObject
      * @param array $input
      * @return array
      */
-    function exchangeArray($input)
+    public function exchangeArray($input)
     {
-        return parent::exchangeArray(array_map('SimpleCollection::arrayToArrayObject', $input));
+        return parent::exchangeArray(array_map('static::arrayToArrayObject', $input));
     }
 
     /**
@@ -242,17 +262,17 @@ class SimpleCollection extends StudipArrayObject
      *
      * @return array
      */
-    function toArray()
+    public function toArray()
     {
         $args = func_get_args();
-        return $this->map( function ($a) use ($args) {
+        return $this->map(function ($a) use ($args) {
             if (method_exists($a, 'toArray')) {
                 return call_user_func_array([$a, 'toArray'], $args);
             }
             if (method_exists($a, 'getArrayCopy')) {
                 return $a->getArrayCopy();
             }
-            return (array)$a;
+            return (array) $a;
         }
         );
     }
@@ -261,9 +281,9 @@ class SimpleCollection extends StudipArrayObject
      *
      * @see ArrayObject::append()
      */
-    function append($newval)
+    public function append($newval)
     {
-        return parent::append(SimpleCollection::arrayToArrayObject($newval));
+        return parent::append(static::arrayToArrayObject($newval));
     }
 
     /**
@@ -272,12 +292,12 @@ class SimpleCollection extends StudipArrayObject
      *
      * @see ArrayObject::offsetSet()
      */
-    function offsetSet($index, $newval)
+    public function offsetSet($index, $newval)
     {
         if (is_numeric($index)) {
-            $index = (int)$index;
+            $index = (int) $index;
         }
-        return parent::offsetSet($index, SimpleCollection::arrayToArrayObject($newval));
+        return parent::offsetSet($index, static::arrayToArrayObject($newval));
     }
 
     /**
@@ -287,7 +307,7 @@ class SimpleCollection extends StudipArrayObject
      * @see ArrayObject::offsetUnset()
      * @throws InvalidArgumentException
      */
-    function offsetUnset($index)
+    public function offsetUnset($index)
     {
         if ($this->offsetExists($index)) {
             $this->deleted[] = $this->offsetGet($index);
@@ -300,7 +320,7 @@ class SimpleCollection extends StudipArrayObject
      *
      * @param Closure $finder
      */
-    function setFinder(Closure $finder)
+    public function setFinder(Closure $finder)
     {
         $this->finder = $finder;
     }
@@ -309,7 +329,7 @@ class SimpleCollection extends StudipArrayObject
      * get deleted records collection
      * @return SimpleCollection
      */
-    function getDeleted()
+    public function getDeleted()
     {
         return $this->deleted;
     }
@@ -320,7 +340,7 @@ class SimpleCollection extends StudipArrayObject
      *
      * @return number of records after refresh
      */
-    function refresh()
+    public function refresh()
     {
         if (is_callable($this->finder)) {
             $data = call_user_func($this->finder);
@@ -354,10 +374,12 @@ class SimpleCollection extends StudipArrayObject
      * @param mixed $op operator to find
      * @return SimpleCollection with found records
      */
-    function findBy($key, $values, $op = '==')
+    public function findBy($key, $values, $op = '==')
     {
         $comp_func = self::getCompFunc($op, $values);
-        return $this->filter(function($record) use ($comp_func, $key) {return $comp_func($record[$key]);});
+        return $this->filter(function ($record) use ($comp_func, $key) {
+            return $comp_func($record[$key]);
+        });
     }
 
     /**
@@ -370,10 +392,12 @@ class SimpleCollection extends StudipArrayObject
      * @param mixed $op operator to find
      * @return SimpleORMap found record
      */
-    function findOneBy($key, $values, $op = '==')
+    public function findOneBy($key, $values, $op = '==')
     {
         $comp_func = self::getCompFunc($op, $values);
-        return $this->filter(function($record) use ($comp_func, $key) {return $comp_func($record[$key]);}, 1)->first();
+        return $this->filter(function ($record) use ($comp_func, $key) {
+            return $comp_func($record[$key]);
+        }, 1)->first();
     }
 
     /**
@@ -383,11 +407,11 @@ class SimpleCollection extends StudipArrayObject
      * @param Closure $func the function to call
      * @return int addition of return values
      */
-    function each(Closure $func)
+    public function each(Closure $func)
     {
         $result = false;
         foreach ($this->storage as $record) {
-            $result+= call_user_func($func, $record);
+            $result += call_user_func($func, $record);
         }
         return $result;
     }
@@ -399,7 +423,7 @@ class SimpleCollection extends StudipArrayObject
      * @param Closure $func the function to call
      * @return array
      */
-    function map(Closure $func)
+    public function map(Closure $func)
     {
         $results = [];
         foreach ($this->storage as $key => $value) {
@@ -416,7 +440,7 @@ class SimpleCollection extends StudipArrayObject
      * @param integer $limit limit number of found records
      * @return SimpleCollection containing filtered elements
      */
-    function filter(Closure $func = null, $limit = null)
+    public function filter(Closure $func = null, $limit = null)
     {
         $results = [];
         $found = 0;
@@ -472,12 +496,12 @@ class SimpleCollection extends StudipArrayObject
      * @param string|array $columns the column(s) to extract
      * @return array of extracted values
      */
-    function pluck($columns)
+    public function pluck($columns)
     {
         if (!is_array($columns)) {
             $columns = words($columns);
         }
-        $func = function($r) use ($columns) {
+        $func = function ($r) use ($columns) {
             $result = [];
             foreach ($columns as $c) {
                 $result[] = $r[$c];
@@ -501,7 +525,7 @@ class SimpleCollection extends StudipArrayObject
      * @param Closure $group_func closure to aggregate grouped entries
      * @return array assoc array
      */
-    function toGroupedArray($group_by = 'id', $only_these_fields = null, Closure $group_func = null)
+    public function toGroupedArray($group_by = 'id', $only_these_fields = null, Closure $group_func = null)
     {
         $result = [];
         if (is_string($only_these_fields)) {
@@ -527,7 +551,7 @@ class SimpleCollection extends StudipArrayObject
      *
      * @return Array first element or null
      */
-    function first()
+    public function first()
     {
         $keys = array_keys($this->storage);
         $first_offset = reset($keys);
@@ -539,7 +563,7 @@ class SimpleCollection extends StudipArrayObject
      *
      * @return Array last element or null
      */
-    function last()
+    public function last()
     {
         $keys = array_keys($this->storage);
         $last_offset = end($keys);
@@ -551,7 +575,7 @@ class SimpleCollection extends StudipArrayObject
      *
      * @return mixed
      */
-    function val($key)
+    public function val($key)
     {
         $first = $this->first();
         return $first[$key] ?: null;
@@ -583,7 +607,7 @@ class SimpleCollection extends StudipArrayObject
      * @param mixed $op operator to find elements
      * @return number of unsetted elements
      */
-    function unsetBy($key, $values, $op = '==')
+    public function unsetBy($key, $values, $op = '==')
     {
         $ret = false;
         $comp_func = self::getCompFunc($op, $values);
@@ -620,7 +644,7 @@ class SimpleCollection extends StudipArrayObject
      * @param integer $sort_flags
      * @return SimpleCollection the sorted collection
      */
-    function orderBy($order, $sort_flags = SORT_LOCALE_STRING)
+    public function orderBy($order, $sort_flags = SORT_LOCALE_STRING)
     {
         //('name asc, nummer desc ')
         $sort_locale = false;
@@ -638,7 +662,9 @@ class SimpleCollection extends StudipArrayObject
             $sort_func = 'strcmp';
             break;
         case SORT_NUMERIC:
-            $sort_func = function($a,$b) {return (int)$a-(int)$b;};
+            $sort_func = function ($a, $b) {
+                return (int) $a - (int) $b;
+            };
             break;
         case SORT_LOCALE_STRING:
         default:
@@ -658,8 +684,8 @@ class SimpleCollection extends StudipArrayObject
                     $value1 = $d1[$field];
                     $value2 = $d2[$field];
                 } else {
-                    $value1 = SimpleCollection::translitLatin1(mb_substr($d1[$field], 0, 100));
-                    $value2 = SimpleCollection::translitLatin1(mb_substr($d2[$field], 0, 100));
+                    $value1 = static::translitLatin1(mb_substr($d1[$field], 0, 100));
+                    $value2 = static::translitLatin1(mb_substr($d2[$field], 0, 100));
                 }
                 $ret = $sort_func($value1, $value2);
                 if (mb_strtolower($dir) == 'desc') $ret = $ret * -1;
@@ -684,7 +710,7 @@ class SimpleCollection extends StudipArrayObject
      * @param integer $arg2
      * @return SimpleCollection
      */
-    function limit($arg1, $arg2 = null)
+    public function limit($arg1, $arg2 = null)
     {
         if (is_null($arg2)) {
             if ($arg1 > 0) {
@@ -708,7 +734,7 @@ class SimpleCollection extends StudipArrayObject
      * @param array $params parameters for methodcall
      * @return array of all return values
      */
-    function sendMessage($method, $params = []) {
+    public function sendMessage($method, $params = []) {
         $results = [];
         foreach ($this->storage as $record) {
             $results[] = call_user_func_array([$record, $method], $params);
@@ -718,15 +744,14 @@ class SimpleCollection extends StudipArrayObject
 
     /**
      * magic version of sendMessage
-     * calls undefineds methods on all elements
-     * of the collection
+     * calls undefineds methods on all elements of the collection
      * But beware of the dark side...
      *
      * @param string $method methodname to call
      * @param array $params parameters for methodcall
      * @return array of all return values
      */
-    function __call($method, $params)
+    public function __call($method, $params)
     {
         return $this->sendMessage($method, $params);
     }
@@ -736,7 +761,7 @@ class SimpleCollection extends StudipArrayObject
      *
      * @param SimpleCollection $a_collection
      */
-    function merge(SimpleCollection $a_collection)
+    public function merge(SimpleCollection $a_collection)
     {
         $this->storage = array_merge($this->storage, $a_collection->getArrayCopy());
     }
