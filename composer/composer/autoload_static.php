@@ -53,6 +53,10 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
         array (
             'MyCLabs\\Enum\\' => 13,
         ),
+        'I' => 
+        array (
+            'ILess\\' => 6,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -139,6 +143,10 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
         'MyCLabs\\Enum\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/php-enum/src',
+        ),
+        'ILess\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mishal/iless/lib/ILess',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

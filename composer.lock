@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "76639b04b5dfa1c09600e1aadeb249a6",
+    "content-hash": "c7c49c8221e9687e2868671ee703634b",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -145,6 +145,59 @@
                 "url"
             ],
             "time": "2017-03-20T17:10:46+00:00"
+        },
+        {
+            "name": "mishal/iless",
+            "version": "2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mishal/iless.git",
+                "reference": "d75af501ab0ca411efd041faa53e6652f1602553"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mishal/iless/zipball/d75af501ab0ca411efd041faa53e6652f1602553",
+                "reference": "d75af501ab0ca411efd041faa53e6652f1602553",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "bin": [
+                "bin/iless"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ILess\\": "lib/ILess"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ILess contributors",
+                    "homepage": "https://github.com/mishal/iless/wiki/Contributors"
+                }
+            ],
+            "description": "Less.js port to PHP",
+            "homepage": "http://github.com/mishal/iless",
+            "keywords": [
+                "compiler",
+                "css",
+                "less",
+                "less.js",
+                "lesscss",
+                "parser"
+            ],
+            "time": "2016-04-25T07:03:37+00:00"
         },
         {
             "name": "myclabs/php-enum",
