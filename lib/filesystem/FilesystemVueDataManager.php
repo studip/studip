@@ -71,14 +71,14 @@ class FilesystemVueDataManager
         }
         if ($folder->isReadable($GLOBALS['user']->id) && $GLOBALS['user']->id !== 'nobody') {
             $actionMenu->addLink(
-                URLHelper::getURL('file/download_folder/' . $folder->getId()),
+                URLHelper::getURL('dispatch.php/file/download_folder/' . $folder->getId()),
                 _('Ordner herunterladen'),
                 Icon::create('download', 'clickable', ['size' => 20])
             );
         }
         if ($folder->isEditable($GLOBALS['user']->id)) {
             $actionMenu->addLink(
-                URLHelper::getURL('disptach.php/file/choose_destination/move/' . $folder->getId(), ['isfolder' => 1]),
+                URLHelper::getURL('dispatch.php/file/choose_destination/move/' . $folder->getId(), ['isfolder' => 1]),
                 _('Ordner verschieben'),
                 Icon::create('folder-empty+move_right', 'clickable', ['size' => 20]),
                 ['data-dialog' => 'size=auto']
