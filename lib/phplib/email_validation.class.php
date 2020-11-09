@@ -6,8 +6,6 @@
  *
  */
 
-require_once 'vendor/idna_convert/idna_convert.class.php';
-
 class email_validation_class
 {
     var $username_regular_expression=null;

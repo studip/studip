@@ -56,6 +56,7 @@
         "seboettg/citeproc-php": "^2",
         "tecnickcom/tcpdf": "^6.3",
         "scssphp/scssphp": "^1.4",
-        "symfony/yaml": "^3.4"
+        "symfony/yaml": "^3.4",
+        "phpwhois/idna-convert": "^0.9.0"
     }
 }

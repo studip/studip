@@ -101,11 +101,7 @@ class idna_convert {
 
         // populate mbstring overloading cache if not set
         if (self::$_mb_string_overload === null) {
-            $func_overload = "0";
-            if (version_compare(PHP_VERSION, '7.2.0', '<')) {
-                $func_overload = ini_get('mbstring.func_overload');
-            }
-            self::$_mb_string_overload = (extension_loaded('mbstring') && ($func_overload & 0x02) === 0x02);
+            self::$_mb_string_overload = (extension_loaded('mbstring') && (ini_get('mbstring.func_overload') & 0x02) === 0x02);
         }
     }
 

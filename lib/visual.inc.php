@@ -5,7 +5,6 @@
 # Lifter010: TODO
 
 
-include_once 'vendor/idna_convert/idna_convert.class.php';
 require_once 'lib/wiki.inc.php';
 
 // Wrapper for formatted content (defined as a constant since it is used

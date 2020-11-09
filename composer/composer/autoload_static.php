@@ -18,6 +18,7 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '8cff32064859f4559445b89279f3199c' => __DIR__ . '/..' . '/php-http/message/src/filters.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
+        '27c1b27b98c11fe56f66714494e3016f' => __DIR__ . '/..' . '/phpwhois/idna-convert/idna_convert.class.php',
     );
 
     public static $prefixLengthsPsr4 = array (
