@@ -25,7 +25,7 @@ table.dates {
     }
     .draggable-topic-handle {
         cursor: move;
-        background: transparent url("#{image-path}/anfasser_24.png") 3px center no-repeat;
+        background: transparent url("#{$image-path}/anfasser_24.png") 3px center no-repeat;
         padding-left: 12px;
     }
     .ui-draggable-dragging {

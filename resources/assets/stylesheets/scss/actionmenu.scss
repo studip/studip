@@ -207,7 +207,7 @@ $action-menu-shadow: 1px 1px 1px $dark-gray-color-60;
     }
 
     a {
-        @keyframes #{animation-name}-front {
+        @keyframes #{$animation-name}-front {
             0% {
                 opacity: 1;
                 transform: rotateX(0);
@@ -225,11 +225,11 @@ $action-menu-shadow: 1px 1px 1px $dark-gray-color-60;
                 transform: rotateX(0);
             }
         }
-        animation: #{animation-name}-front $animation-duration linear;
+        animation: #{$animation-name}-front $animation-duration linear;
     }
 
     div {
-        @keyframes #{animation-name}-back {
+        @keyframes #{$animation-name}-back {
             0% {
                 opacity: 0;
                 transform: rotateX(180deg);
@@ -247,6 +247,6 @@ $action-menu-shadow: 1px 1px 1px $dark-gray-color-60;
                 transform: rotateX(180deg);
             }
         }
-        animation: #{animation-name}-back $animation-duration linear;
+        animation: #{$animation-name}-back $animation-duration linear;
     }
 }
