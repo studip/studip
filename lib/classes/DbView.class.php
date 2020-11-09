@@ -200,7 +200,7 @@ class DbView
     public function get_query()
     {
         $parsed_query = $this->get_parsed_query(func_get_args());
-        $this->db->cache_query($parsed_query);
+        $this->db->query($parsed_query);
         return $this->db;
     }
 

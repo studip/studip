@@ -248,9 +248,13 @@ class DB_Sql {
         return $this->query(vsprintf($format, $args));
     }
 
-    /* public: perform a query with caching directive for mysql*/
-    function cache_query($Query_String) {
-        return $this->query(preg_replace("/^select\b/i", "SELECT SQL_CACHE", $Query_String));
+    /**
+     * perform a query with caching directive for mysql
+     * @param  string $Query_String
+     * @return Resultset | int
+     */
+    public function cache_query($Query_String) {
+        trigger_error(__CLASS__ . ' no longer supports query caching - use query() instead.', E_USER_DEPRECATED);
+        return $this->query($Query_String);
     }
 }
-?>
