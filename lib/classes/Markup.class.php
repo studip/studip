@@ -20,12 +20,11 @@
  */
 namespace Studip;
 
-require_once 'vendor/HTMLPurifier/HTMLPurifier.standalone.php';
-require_once 'htmlpurifier/HTMLPurifier_Injector_ClassifyLinks.php';
-require_once 'htmlpurifier/HTMLPurifier_Injector_ClassifyTables.php';
-require_once 'htmlpurifier/HTMLPurifier_Injector_LinkifyEmail.php';
-require_once 'htmlpurifier/HTMLPurifier_Injector_TransformLinks.php';
-require_once 'htmlpurifier/HTMLPurifier_Injector_Unlinkify.php';
+require_once __DIR__ . '/htmlpurifier/HTMLPurifier_Injector_ClassifyLinks.php';
+require_once __DIR__ . '/htmlpurifier/HTMLPurifier_Injector_ClassifyTables.php';
+require_once __DIR__ . '/htmlpurifier/HTMLPurifier_Injector_LinkifyEmail.php';
+require_once __DIR__ . '/htmlpurifier/HTMLPurifier_Injector_TransformLinks.php';
+require_once __DIR__ . '/htmlpurifier/HTMLPurifier_Injector_Unlinkify.php';
 
 class Markup
 {

@@ -20,8 +20,6 @@
  */
 require_once 'tests/unit/fakeserver.php';
 
-require_once 'vendor/HTMLPurifier/HTMLPurifier.standalone.php';
-
 require_once 'lib/classes/htmlpurifier/HTMLPurifier_Injector_ClassifyLinks.php';
 
 /**
