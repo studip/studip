@@ -43,7 +43,6 @@ $EVAL_AUSWERTUNG_GRAPH_FORMAT = Config::get()->EVAL_AUSWERTUNG_GRAPH_FORMAT ?: '
 include 'lib/seminar_open.php'; // initialise Stud.IP-Session
 
 // -- here you have to put initialisations for the current page
-require_once 'vendor/phplot/phplot.php';
 require_once 'lib/evaluation/evaluation.config.php';
 require_once EVAL_FILE_EVAL;
 require_once EVAL_FILE_OBJECTDB;

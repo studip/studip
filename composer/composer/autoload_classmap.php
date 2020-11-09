@@ -8,6 +8,8 @@ $baseDir = dirname($vendorDir);
 return array(
     'Datamatrix' => $vendorDir . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
     'PDF417' => $vendorDir . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',
+    'PHPlot' => $vendorDir . '/davefx/phplot/phplot/phplot.php',
+    'PHPlot_truecolor' => $vendorDir . '/davefx/phplot/phplot/phplot.php',
     'QRcode' => $vendorDir . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
     'TCPDF' => $vendorDir . '/tecnickcom/tcpdf/tcpdf.php',
     'TCPDF2DBarcode' => $vendorDir . '/tecnickcom/tcpdf/tcpdf_barcodes_2d.php',

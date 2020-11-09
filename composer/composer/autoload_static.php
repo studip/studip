@@ -184,6 +184,8 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
     public static $classMap = array (
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'PDF417' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',
+        'PHPlot' => __DIR__ . '/..' . '/davefx/phplot/phplot/phplot.php',
+        'PHPlot_truecolor' => __DIR__ . '/..' . '/davefx/phplot/phplot/phplot.php',
         'QRcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
         'TCPDF' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf.php',
         'TCPDF2DBarcode' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_barcodes_2d.php',

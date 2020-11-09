@@ -81,6 +81,43 @@
         "installation-source": "source"
     },
     {
+        "name": "davefx/phplot",
+        "version": "6.2.1",
+        "version_normalized": "6.2.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/davefx/PHPlot.git",
+            "reference": "d2e201ecaabb0428116c89cebe281a8f54096450"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/davefx/PHPlot/zipball/d2e201ecaabb0428116c89cebe281a8f54096450",
+            "reference": "d2e201ecaabb0428116c89cebe281a8f54096450",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">5.3.0"
+        },
+        "time": "2016-10-19T07:14:15+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "phplot/"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL"
+        ],
+        "description": "PHPlot - Create charts in PHP",
+        "homepage": "http://phplot.sourceforge.net",
+        "keywords": [
+            "chart",
+            "phplot"
+        ]
+    },
+    {
         "name": "ezyang/htmlpurifier",
         "version": "v4.13.0",
         "version_normalized": "4.13.0.0",

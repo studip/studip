@@ -20,7 +20,6 @@
 
 require '../lib/bootstrap.php';
 
-require_once 'vendor/phplot/phplot.php';
 require_once 'lib/evaluation/evaluation.config.php';
 require_once EVAL_FILE_EVAL;
 require_once EVAL_FILE_OBJECTDB;
