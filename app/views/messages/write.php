@@ -172,7 +172,8 @@
     <? endif ?>
 
     <footer data-dialog-button>
-        <?= \Studip\Button::create(_('Abschicken'), null, ['onclick' => "STUDIP.Messages.checkAdressee();"]) ?>
+        <?= Studip\Button::createAccept(_('Abschicken'), null, ['onclick' => "STUDIP.Messages.checkAdressee();"]) ?>
+        <?= Studip\LinkButton::createCancel(_('Abbrechen'), $controller->url_for('messages')) ?>
     </footer>
 
 </form>
