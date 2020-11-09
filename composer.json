@@ -47,7 +47,6 @@
     "require": {
         "php": "^7.0",
         "guzzlehttp/psr7": "~1.4.2",
-        "leafo/scssphp": "^0.8.4",
         "neomerx/json-api": "~1.0.9",
         "slim/slim": "~3.12.3",
         "spomky-labs/otphp": "^8.3.3",
@@ -55,6 +54,7 @@
         "citation-style-language/locales":"@dev",
         "citation-style-language/styles-distribution":"@dev",
         "seboettg/citeproc-php": "^2",
-        "tecnickcom/tcpdf": "^6.3"
+        "tecnickcom/tcpdf": "^6.3",
+        "scssphp/scssphp": "^1.4"
     }
 }

@@ -5,13 +5,13 @@ use Assets;
 use StudipCacheFactory;
 use Studip;
 
-use Leafo\ScssPhp\Compiler as ScssCompiler;
-use Leafo\ScssPhp\Formatter;
+use ScssPhp\ScssPhp\Compiler as ScssCompiler;
+use ScssPhp\ScssPhp\Formatter;
 
 /**
  * SCSS Compiler for assets.
  *
- * Uses scssphp by leafo <http://leafo.github.io/scssphp/>.
+ * Uses scssphp <https://scssphp.github.io/scssphp/>.
  *
  * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
  * @license GPL2 or any later version
@@ -96,7 +96,7 @@ class SASSCompiler implements Compiler
                     continue;
                 }
 
-                $core_file = "{$GLOBALS['STUDIP_BASE_PATH']}/resources/assets/stylesheets/{$match[1]}";
+                $core_file = "assets/stylesheets/{$match[1]}";
                 $prefix .= sprintf('@import "%s";' . "\n", $core_file);
             }
 
@@ -106,6 +106,7 @@ class SASSCompiler implements Compiler
 
             $cache->write(self::CACHE_KEY, $prefix);
         }
+
         return $prefix;
     }
 }

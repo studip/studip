@@ -27,6 +27,7 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
             'Slim\\' => 5,
             'Seboettg\\Collection\\' => 20,
             'Seboettg\\CiteProc\\' => 18,
+            'ScssPhp\\ScssPhp\\' => 16,
         ),
         'P' => 
         array (
@@ -47,10 +48,6 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
         'M' => 
         array (
             'MyCLabs\\Enum\\' => 13,
-        ),
-        'L' => 
-        array (
-            'Leafo\\ScssPhp\\' => 14,
         ),
         'G' => 
         array (
@@ -95,6 +92,10 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
         array (
             0 => __DIR__ . '/..' . '/seboettg/citeproc-php/src',
         ),
+        'ScssPhp\\ScssPhp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/scssphp/scssphp/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -126,10 +127,6 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
         'MyCLabs\\Enum\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/php-enum/src',
-        ),
-        'Leafo\\ScssPhp\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/leafo/scssphp/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (
