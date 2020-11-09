@@ -28,19 +28,20 @@ if (version_compare(phpversion(), '5.4', '>=')) {
 
 // set include path
 $inc_path = ini_get('include_path');
-$inc_path .= PATH_SEPARATOR . dirname(__FILE__) . '/../..';
-$inc_path .= PATH_SEPARATOR . dirname(__FILE__) . '/../../config';
+$inc_path .= PATH_SEPARATOR . __DIR__ . '/../..';
+$inc_path .= PATH_SEPARATOR . __DIR__ . '/../../config';
 ini_set('include_path', $inc_path);
 
 // load varstream for easier filesystem testing
 require_once 'varstream.php';
 
-define("TEST_FIXTURES_PATH", dirname(dirname(__FILE__)) . "/_data/");
+define("TEST_FIXTURES_PATH", dirname(__DIR__) . "/_data/");
 
+require __DIR__ . '/../../composer/autoload.php';
 require 'lib/classes/StudipAutoloader.php';
 require 'lib/functions.php';
 
-$STUDIP_BASE_PATH = realpath(dirname(__FILE__) . '/../..');
+$STUDIP_BASE_PATH = realpath(__DIR__ . '/../..');
 
 StudipAutoloader::register();
 StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/activities', 'Studip\\Activity');
@@ -62,9 +63,7 @@ StudipFileloader::load(
     true
 );
 
-require_once 'vendor/yaml/lib/sfYamlParser.php';
-$yaml = new \sfYamlParser();
-$config = $yaml->parse(file_get_contents(dirname(__FILE__) .'/../unit.suite.yml'));
+$config = Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__ .'/../unit.suite.yml'));
 
 // connect to database if configured
 if (isset($config['modules']['config']['Db'])) {

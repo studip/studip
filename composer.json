@@ -55,6 +55,7 @@
         "citation-style-language/styles-distribution":"@dev",
         "seboettg/citeproc-php": "^2",
         "tecnickcom/tcpdf": "^6.3",
-        "scssphp/scssphp": "^1.4"
+        "scssphp/scssphp": "^1.4",
+        "symfony/yaml": "^3.4"
     }
 }
