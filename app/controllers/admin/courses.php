@@ -250,9 +250,8 @@ class Admin_CoursesController extends AuthenticatedController
             $export->addLink(
                 _('Als Excel exportieren'),
                  URLHelper::getURL('dispatch.php/admin/courses/export_csv', $params),
-                 Icon::create('file-excel'),
-                ['data-dialog' => 1]
-            );
+                 Icon::create('file-excel')
+            )->asDialog('size=auto');
             $sidebar->addWidget($export);
         }
     }
@@ -471,9 +470,9 @@ class Admin_CoursesController extends AuthenticatedController
      */
     public function export_csv_action()
     {
-        $filter_config = Request::getArray("fields");
+        $filter_config = Request::getArray('fields');
 
-        if (count($filter_config)) {
+        if (count($filter_config) > 0) {
             $sortby = $GLOBALS['user']->cfg->getValue('MEINE_SEMINARE_SORT');
             $config_my_course_type_filter = $GLOBALS['user']->cfg->getValue('MY_COURSES_TYPE_FILTER');
 
@@ -581,7 +580,7 @@ class Admin_CoursesController extends AuthenticatedController
                 return;
             }
         } else {
-            PageLayout::setTitle(_("Spalten zum Export auswählen"));
+            PageLayout::setTitle(_('Spalten zum Export auswählen'));
             $this->fields = $this->getViewFilters();
             $this->selection = $this->getFilterConfig();
         }
