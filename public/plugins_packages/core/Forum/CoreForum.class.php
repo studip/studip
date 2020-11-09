@@ -39,7 +39,7 @@ class CoreForum extends StudipPlugin implements ForumModule
     {
         // Add JS and StyleSheet to header
         $this->addScript('javascript/forum.js');
-        $this->addStylesheet('stylesheets/forum.less');
+        $this->addStylesheet('stylesheets/forum.scss');
 
         parent::perform($unconsumed_path);
     }
