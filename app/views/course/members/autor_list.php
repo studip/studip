@@ -99,7 +99,7 @@
                             Avatar::SMALL,
                             [
                                 'style' => 'margin-right: 5px',
-                                'title' => htmlReady($fullname)
+                                'title' => $fullname
                             ]
                         ) ?>
                         <?= htmlReady($fullname) ?>
