@@ -1,7 +1,10 @@
 <?php
 
-/*
+/**
  * InstitutePublicFolder.php
+ *
+ * The InstitutePublicFolder is a specialisation of the CoursePublicFolder class
+ * for the file area of an institute.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -13,15 +16,9 @@
  * @license   http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category  Stud.IP
  */
-
-
-/**
- * The InstitutePublicFolder is a specialisation of the CoursePublicFolder class
- * for the file area of an institute.
- */
 class InstitutePublicFolder extends CoursePublicFolder
 {
-    static public function getTypeName()
+    public static function getTypeName()
     {
         return _('Ordner für öffentlich zugängliche Dateien');
     }
@@ -37,12 +34,12 @@ class InstitutePublicFolder extends CoursePublicFolder
      * @param string $user_id The user for which the availability of this
      *     folder type shall be checked.
      *
-     * @returns bool True, if the folder type is available, false otherwise.
+     * @return bool True, if the folder type is available, false otherwise.
      */
     public static function availableInRange($range_id_or_object, $user_id)
     {
         $institute = Institute::toObject($range_id_or_object);
-        if (($institute instanceof Institute) && !$institute->isNew()) {
+        if ($institute instanceof Institute && !$institute->isNew()) {
             return $GLOBALS['perm']->have_studip_perm('tutor', $institute->id, $user_id);
         }
         return false;
@@ -56,8 +53,7 @@ class InstitutePublicFolder extends CoursePublicFolder
      * is set.
      *
      * @param string $user_id The user who wishes to see the folder.
-     *
-     * @returns bool True, in case the user may see the folder, false otherwise.
+     * @return bool True, in case the user may see the folder, false otherwise.
      */
     public function isVisible($user_id)
     {
@@ -66,13 +62,17 @@ class InstitutePublicFolder extends CoursePublicFolder
                 return true;
             }
             $range = $this->getRangeObject();
-            return (Config::get()->ENABLE_FREE_ACCESS == '1') && isset($range);
+            return Config::get()->ENABLE_FREE_ACCESS && isset($range);
         }
 
         return true;
     }
 
-
+    /**
+     * Returns a description template for InstitutePublicFolder.
+     *
+     * @return string A string describing this folder type.
+     */
     public function getDescriptionTemplate()
     {
         return _('Dateien aus diesem Ordner sind auch für Personen sichtbar, die nicht der Einrichtung zugeordnet sind.');

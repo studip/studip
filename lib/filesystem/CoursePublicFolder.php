@@ -14,7 +14,6 @@
  */
 class CoursePublicFolder extends StandardFolder
 {
-
     public static $sorter = 7;
 
 
@@ -23,7 +22,7 @@ class CoursePublicFolder extends StandardFolder
      *
      * @return string The localised name of this folder type.
      */
-    static public function getTypeName()
+    public static function getTypeName()
     {
         return _('Ordner für öffentlich zugängliche Dateien');
     }
@@ -54,14 +53,12 @@ class CoursePublicFolder extends StandardFolder
     /**
      * Determines, if the folder is accessible worldwide.
      *
-     * @returns bool True, if the folder is accessible worldwide,
+     * @return bool True, if the folder is accessible worldwide,
      *     false otherwise.
      */
     public function hasWorldwideAccess()
     {
-        return $this->folderdata['data_content']['worldwide_access']
-             ? true
-             : false;
+        return (bool) $this->folderdata['data_content']['worldwide_access'];
     }
 
 
@@ -119,7 +116,7 @@ class CoursePublicFolder extends StandardFolder
     public function getEditTemplate()
     {
         $template = $GLOBALS['template_factory']->open('filesystem/course_public_folder/edit.php');
-        $template->worldwide_access = $this->folderdata['data_content']['worldwide_access'];
+        $template->worldwide_access = $this->hasWorldwideAccess();
         return $template;
     }
 
@@ -143,7 +140,7 @@ class CoursePublicFolder extends StandardFolder
      * @param string $file_id The ID to a FileRef.
      * @param string $user_id The user who wishes to downlaod the file.
      *
-     * @return bool True
+     * @return bool
      */
     public function isFileDownloadable($file_id, $user_id)
     {
