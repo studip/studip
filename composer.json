@@ -61,6 +61,7 @@
         "mishal/iless": "^2.2",
         "rashid2538/php-htmldiff": "dev-master",
         "ezyang/htmlpurifier": "^4.13",
-        "davefx/phplot": "^6.2"
+        "davefx/phplot": "^6.2",
+        "jasig/phpcas": "^1.3"
     }
 }

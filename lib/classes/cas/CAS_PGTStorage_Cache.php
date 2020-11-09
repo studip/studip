@@ -11,9 +11,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  */
-
-require_once 'vendor/phpCAS/CAS.php';
-
 class CAS_PGTStorage_Cache extends CAS_PGTStorage_AbstractStorage
 {
     /**
