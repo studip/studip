@@ -1,5 +1,5 @@
-@action-menu-icon-size: 20px;
-@action-menu-shadow: 1px 1px 1px @dark-gray-color-60;
+$action-menu-icon-size: 20px;
+$action-menu-shadow: 1px 1px 1px $dark-gray-color-60;
 
 .action-menu {
     display: inline-block;
@@ -32,8 +32,8 @@
         padding: 4px 8px;
 
         background: white;
-        border: thin solid @dark-gray-color-45;
-        box-shadow: @action-menu-shadow;
+        border: thin solid $dark-gray-color-45;
+        box-shadow: $action-menu-shadow;
         font-weight: normal;
         text-align: left;
         white-space: nowrap;
@@ -51,13 +51,14 @@
 
         // Create animated icon that changes to close icon on activation/hover
         div {
-            .square((@action-menu-icon-size / 4));
-            transform: translate((-(@action-menu-icon-size / 8)), 0);
+            width: ($action-menu-icon-size / 4);
+            height: ($action-menu-icon-size / 4);
+            transform: translate((-($action-menu-icon-size / 8)), 0);
             transition: all .25s ease-in-out;
 
             display: block;
             position: absolute;
-            background:  @base-color;
+            background:  $base-color;
             border-radius: 50%;
             opacity: 1;
             left: 50%;
@@ -67,8 +68,8 @@
             }
 
             &:nth-child(2) {
-                top: (@action-menu-icon-size / 2);
-                transform: translate((-(@action-menu-icon-size / 8)), (-(@action-menu-icon-size / 8)));
+                top: ($action-menu-icon-size / 2);
+                transform: translate((-($action-menu-icon-size / 8)), (-($action-menu-icon-size / 8)));
             }
 
             &:nth-child(3) {
@@ -104,7 +105,7 @@
             > label {
                 &,
                 &:hover {
-                    color: @dark-gray-color-80;
+                    color: $dark-gray-color-80;
                     cursor: default;
                 }
             }
@@ -118,8 +119,8 @@
             margin: 0 0.25em;
             vertical-align: middle;
 
-            width: @action-menu-icon-size;
-            height: @action-menu-icon-size;
+            width: $action-menu-icon-size;
+            height: $action-menu-icon-size;
         }
 
         > button {
@@ -132,10 +133,10 @@
 
         > label,
         > button {
-            color: @base-color;
+            color: $base-color;
             cursor: pointer;
             &:hover {
-                color: @active-color;
+                color: $active-color;
             }
         }
     }
@@ -148,7 +149,7 @@
 
                 &:nth-child(1) {
                     left: 0;
-                    .transform(rotate(45deg), translate(((@action-menu-icon-size / 4) + 0.5), ((@action-menu-icon-size / 4) + 0.5)));
+                    transform: rotate(45deg) translate((($action-menu-icon-size / 4) + 0.5), (($action-menu-icon-size / 4) + 0.5));
                     width: 100%;
                 }
 
@@ -158,7 +159,7 @@
 
                 &:nth-child(3) {
                     left: 0;
-                    .transform(rotate(-45deg), translate((@action-menu-icon-size / 4), (-(@action-menu-icon-size / 4))));
+                    transform: rotate(-45deg) translate(($action-menu-icon-size / 4), (-($action-menu-icon-size / 4)));
                     width: 100%;
                 }
             }
@@ -180,8 +181,8 @@
 
 /* copied from copyable-links.less and modified */
 .js-action-confirm-animation {
-    @animation-name: js-action-confirm-confirmation;
-    @animation-duration: 2s;
+    $animation-name: js-action-confirm-confirmation;
+    $animation-duration: 2s;
 
     // Position confirmation message above the link
     position: relative;
@@ -195,7 +196,7 @@
 
         text-align: center;
 
-        .icon('before', 'check-circle', 'status-green', 16px, 5px);
+        @include icon(before, check-circle, status-green, 16px, 5px);
     }
 
     // Flip the link and confirmation message along the x axis
@@ -206,24 +207,46 @@
     }
 
     a {
-        .keyframes(~"@{animation-name}-front", {
-            opacity: 1;
-            transform: rotateX(0);
-        }, {
-           opacity: 0;
-            transform: rotateX(180deg);
-        });
-        animation: ~"@{animation-name}-front" @animation-duration linear;
+        @keyframes #{animation-name}-front {
+            0% {
+                opacity: 1;
+                transform: rotateX(0);
+            }
+            33% {
+                opacity: 0;
+                transform: rotateX(180deg);
+            }
+            66% {
+                opacity: 0;
+                transform: rotateX(180deg);
+            }
+            to {
+                opacity: 1;
+                transform: rotateX(0);
+            }
+        }
+        animation: #{animation-name}-front $animation-duration linear;
     }
 
     div {
-        .keyframes(~"@{animation-name}-back", {
-            opacity: 0;
-            transform: rotateX(180deg);
-        }, {
-            opacity: 1;
-            transform: rotateX(0);
-        });
-        animation: ~"@{animation-name}-back" @animation-duration linear;
+        @keyframes #{animation-name}-back {
+            0% {
+                opacity: 0;
+                transform: rotateX(180deg);
+            }
+            33% {
+                opacity: 1;
+                transform: rotateX(0);
+            }
+            66% {
+                opacity: 1;
+                transform: rotateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: rotateX(180deg);
+            }
+        }
+        animation: #{animation-name}-back $animation-duration linear;
     }
 }
