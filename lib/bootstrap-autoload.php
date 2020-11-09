@@ -89,7 +89,6 @@ StudipAutoloader::addClassLookup(
 // Vendor
 StudipAutoloader::addClassLookups([
     'PasswordHash' => $GLOBALS['STUDIP_BASE_PATH'] . '/vendor/phpass/PasswordHash.php',
-    'DocBlock'     => $GLOBALS['STUDIP_BASE_PATH'] . '/vendor/docblock-parser/docblock-parser.php',
 ]);
 
 // XMLRpc

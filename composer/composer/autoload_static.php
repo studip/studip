@@ -19,6 +19,15 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
     );
 
     public static $prefixLengthsPsr4 = array (
+        'p' => 
+        array (
+            'phootwork\\lang\\' => 15,
+            'phootwork\\collection\\' => 21,
+        ),
+        'g' => 
+        array (
+            'gossi\\docblock\\' => 15,
+        ),
         'T' => 
         array (
             'Tuupola\\Middleware\\' => 19,
@@ -75,6 +84,18 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
     );
 
     public static $prefixDirsPsr4 = array (
+        'phootwork\\lang\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phootwork/lang/src',
+        ),
+        'phootwork\\collection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phootwork/collection/src',
+        ),
+        'gossi\\docblock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/gossi/docblock/src',
+        ),
         'Tuupola\\Middleware\\' => 
         array (
             0 => __DIR__ . '/..' . '/tuupola/cors-middleware/src',

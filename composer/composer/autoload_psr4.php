@@ -6,6 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'phootwork\\lang\\' => array($vendorDir . '/phootwork/lang/src'),
+    'phootwork\\collection\\' => array($vendorDir . '/phootwork/collection/src'),
+    'gossi\\docblock\\' => array($vendorDir . '/gossi/docblock/src'),
     'Tuupola\\Middleware\\' => array($vendorDir . '/tuupola/cors-middleware/src'),
     'Symfony\\Polyfill\\Util\\' => array($vendorDir . '/symfony/polyfill-util'),
     'Symfony\\Polyfill\\Php56\\' => array($vendorDir . '/symfony/polyfill-php56'),

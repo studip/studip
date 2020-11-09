@@ -1,6 +1,9 @@
 <?php
 namespace RESTAPI;
-use Request, Config, DocBlock;
+
+use Config;
+use Request;
+use gossi\docblock\DocBlock;
 
 /**
  * RouteMaps define and group routes to resources.
@@ -26,7 +29,7 @@ use Request, Config, DocBlock;
  *
  * By default, all API routes are unaccessible for nobody users.
  * To explicitly allow access for nobody users, add the allow_nobody
- * tag to the handler method's DocBlock. Example:
+ * tag to the handler method's doc block. Example:
  *
  * @code
  * / * *
@@ -952,7 +955,7 @@ abstract class RouteMap
     public function getRoutes($http_method = null)
     {
         $ref      = new \ReflectionClass($this);
-        $docblock = DocBlock::ofClass($this);
+        $docblock = new DocBlock($ref);
         $class_conditions = $this->extractConditions($docblock);
 
         // Create result array by creating an associative array from all
@@ -972,10 +975,10 @@ abstract class RouteMap
             }
 
             // Parse docblock
-            $docblock = DocBlock::ofMethod($ref_method->class, $ref_method->name);
+            $docblock = new DocBlock($ref_method);
 
             // No docblock tags? Not an api route!
-            if (!$docblock->tags) {
+            if ($docblock->getTags()->isEmpty()) {
                 continue;
             }
 
@@ -984,9 +987,9 @@ abstract class RouteMap
 
             // Iterate through all possible methods in order to identify
             // any according docblock tags
-            $allow_nobody = isset($docblock->tags['allow_nobody']);
+            $allow_nobody = $docblock->hasTag('allow_nobody');
             foreach (array_keys($routes) as $http_method) {
-                if (!isset($docblock->tags[$http_method])) {
+                if (!$docblock->hasTag($http_method)) {
                     //The tag for the current HTTP method cannot be found
                     //in the route's DocBlock tags.
                     continue;
@@ -994,11 +997,12 @@ abstract class RouteMap
 
                 // Route all defined method and uri template combinations to
                 // the according methods of the object.
-                foreach ($docblock->tags[$http_method] as $uri_template) {
+                foreach ($docblock->getTags($http_method) as $tag) {
+                    $uri_template = trim($tag->getDescription());
                     $routes[$http_method][$uri_template] = [
                         'handler'      => [$this, $ref_method->name],
                         'conditions'   => $conditions,
-                        'description'  => $docblock->desc ?: false,
+                        'description'  => trim($docblock->getShortDescription()) ?: false,
                         'allow_nobody' => $allow_nobody
                     ];
                 }
@@ -1022,11 +1026,9 @@ abstract class RouteMap
      */
     protected function extractConditions($docblock, $conditions = [])
     {
-        if (!empty($docblock->tags['condition'])) {
-            foreach ($docblock->tags['condition'] as $condition) {
-                list($var, $pattern) = explode(' ', $condition, 2);
-                $conditions[$var] = $pattern;
-            }
+        foreach ($docblock->getTags('condition') as $condition) {
+            list($var, $pattern) = explode(' ', $condition->getDescription(), 2);
+            $conditions[$var] = $pattern;
         }
 
         return $conditions;
