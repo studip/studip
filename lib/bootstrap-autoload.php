@@ -91,3 +91,9 @@ StudipAutoloader::addClassLookups([
     'PasswordHash' => $GLOBALS['STUDIP_BASE_PATH'] . '/vendor/phpass/PasswordHash.php',
     'DocBlock'     => $GLOBALS['STUDIP_BASE_PATH'] . '/vendor/docblock-parser/docblock-parser.php',
 ]);
+
+// XMLRpc
+StudipAutoloader::addClassLookup(
+    ['xmlrpcval', 'xmlrpcmsg', 'xmlrpcresp', 'xmlrpc_client'],
+    $GLOBALS['STUDIP_BASE_PATH'] . '/composer/phpxmlrpc/phpxmlrpc/lib/xmlrpc.inc'
+);

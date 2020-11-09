@@ -40,6 +40,7 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
+            'PhpXmlRpc\\' => 10,
             'ParagonIE\\ConstantTime\\' => 23,
         ),
         'O' => 
@@ -125,6 +126,10 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'PhpXmlRpc\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpxmlrpc/phpxmlrpc/src',
         ),
         'ParagonIE\\ConstantTime\\' => 
         array (

@@ -4,8 +4,7 @@
 # Lifter003: TODO
 # Lifter010: TODO
 
-require_once("webservice_client.php");
-require_once("vendor/phpxmlrpc/xmlrpc.inc");
+require_once __DIR__ . '/webservice_client.php';
 
 class XML_RPC_WebserviceClient extends WebserviceClient
 {
@@ -32,4 +31,3 @@ class XML_RPC_WebserviceClient extends WebserviceClient
         return $xmlrpc_return->value();
     }
 }
-

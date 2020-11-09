@@ -19,13 +19,6 @@ require_once 'vendor/nusoap/class.soap_server_delegate.php';
 require_once 'vendor/studip_ws/studip_ws.php';
 require_once 'vendor/studip_ws/soap_dispatcher.php';
 
-# requiring phpxmlrpc
-require_once 'vendor/phpxmlrpc/xmlrpc.inc';
-require_once 'vendor/phpxmlrpc/xmlrpcs.inc';
-require_once 'vendor/phpxmlrpc/docxmlrpcs.inc';
-require_once 'vendor/phpxmlrpc/jsonrpc.inc';
-require_once 'vendor/phpxmlrpc/jsonrpcs.inc';
-
 # requiring xmlrpc_dispatcher
 require_once 'vendor/studip_ws/studip_ws.php';
 require_once 'vendor/studip_ws/xmlrpc_dispatcher.php';
