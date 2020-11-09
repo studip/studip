@@ -103,7 +103,7 @@
 							$current_word = $character;
 							$mode = 'whitespace';
 						} else {
-							if( ctype_alnum( $character ) && ( mb_strlen($current_word) == 0 || ctype_alnum( $current_word ) ) ) {
+							if( $this->IsAlphaNum( $character ) && ( strlen($current_word) == 0 || $this->IsAlphaNum( $current_word ) ) ) {
 								$current_word .= $character;
 							} else {
 								$words[] = $current_word;
@@ -163,6 +163,10 @@
 
 		private function IsWhiteSpace( $value ) {
 			return !preg_match( '[^\s]', $value );
+		}
+
+		private function IsAlphaNum( $value ) {
+			return preg_match( '/[\p{L}\p{N}]+/u', $value );
 		}
 
 		private function Explode( $value ) {
@@ -259,7 +263,7 @@
 						}
 					}
 				}
-				if( count( $words ) == 0 && empty( $specialCaseTagInjection ) ) {
+				if( count( $words ) == 0 && count( $specialCaseTagInjection ) == 0 ) {
 					break;
 				}
 				if( $specialCaseTagInjectionIsBefore ) {
@@ -267,7 +271,7 @@
 				} else {
 					$workTag = $this->ExtractConsecutiveWords( $words, 'tag' );
 			                if( isset($workTag[0]) && $this->IsOpeningTag( $workTag[ 0 ] ) && !$this->IsClosingTag( $workTag[ 0 ] ) ) {
-			                    if( mb_strpos( $workTag[ 0 ], 'class=' ) ) {
+			                    if( strpos( $workTag[ 0 ], 'class=' ) ) {
 			                        $workTag[ 0 ] = str_replace( 'class="', 'class="diffmod ', $workTag[ 0 ] );
 			                        $workTag[ 0 ] = str_replace( "class='", 'class="diffmod ', $workTag[ 0 ] );
 			                    } else {

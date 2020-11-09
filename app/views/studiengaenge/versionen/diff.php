@@ -1,4 +1,3 @@
-<? require_once 'vendor/php-htmldiff/HtmlDiff.php'; ?>
 <style>
     del.diffmod {
         color: red;

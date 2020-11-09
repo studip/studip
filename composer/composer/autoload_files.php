@@ -13,4 +13,5 @@ return array(
     'bd9634f2d41831496de0d3dfe4c94881' => $vendorDir . '/symfony/polyfill-php56/bootstrap.php',
     'a0edc8309cc5e1d60e3047b5df6b7052' => $vendorDir . '/guzzlehttp/psr7/src/functions_include.php',
     '27c1b27b98c11fe56f66714494e3016f' => $vendorDir . '/phpwhois/idna-convert/idna_convert.class.php',
+    'ff9e7f2875c50a305c040868a2ebadbb' => $vendorDir . '/rashid2538/php-htmldiff/HtmlDiff.php',
 );

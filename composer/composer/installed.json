@@ -780,6 +780,51 @@
         ]
     },
     {
+        "name": "rashid2538/php-htmldiff",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/rashid2538/php-htmldiff.git",
+            "reference": "72eded67fdb83dfce4f84a503999dda9702bde6a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/rashid2538/php-htmldiff/zipball/72eded67fdb83dfce4f84a503999dda9702bde6a",
+            "reference": "72eded67fdb83dfce4f84a503999dda9702bde6a",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2016-06-12T09:25:19+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "files": [
+                "HtmlDiff.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GNU General Public License V2"
+        ],
+        "authors": [
+            {
+                "name": "Rashid Mohamad",
+                "email": "rashid2538@gmail.com",
+                "homepage": "https://jsmorpheus.flexinetsolutions.com/",
+                "role": "Developer"
+            }
+        ],
+        "description": "A library for comparing two HTML files/snippets and highlighting the differences using simple HTML.",
+        "homepage": "https://github.com/rashid2538/php-htmldiff",
+        "keywords": [
+            "diff",
+            "html"
+        ]
+    },
+    {
         "name": "scssphp/scssphp",
         "version": "v1.4.0",
         "version_normalized": "1.4.0.0",

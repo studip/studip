@@ -1,5 +1,3 @@
-<? require_once 'vendor/php-htmldiff/HtmlDiff.php'; ?>
-
 <style>
     del.diffmod {
         color: red;
@@ -82,13 +80,13 @@
             $diff = new HtmlDiff($old, $new);
             $diff->build();
             echo $diff->getDifference();
-            
+
             $old  = $this->render_partial('shared/modul/_pruefungen', ['modul' => $old_module]);
             $new  = $this->render_partial('shared/modul/_pruefungen', ['modul' => $new_module]);
             $diff = new HtmlDiff($old, $new);
             $diff->build();
             echo $diff->getDifference();
-            
+
             $old  = $this->render_partial('shared/modul/_regularien', ['modul' => $old_module]);
             $new  = $this->render_partial('shared/modul/_regularien', ['modul' => $new_module]);
             $diff = new HtmlDiff($old, $new);

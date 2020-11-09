@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c7c49c8221e9687e2868671ee703634b",
+    "content-hash": "7166e8192190f069491ac804aad80ba8",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -753,6 +753,49 @@
                 "psr-3"
             ],
             "time": "2020-03-23T09:12:05+00:00"
+        },
+        {
+            "name": "rashid2538/php-htmldiff",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rashid2538/php-htmldiff.git",
+                "reference": "72eded67fdb83dfce4f84a503999dda9702bde6a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rashid2538/php-htmldiff/zipball/72eded67fdb83dfce4f84a503999dda9702bde6a",
+                "reference": "72eded67fdb83dfce4f84a503999dda9702bde6a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "HtmlDiff.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GNU General Public License V2"
+            ],
+            "authors": [
+                {
+                    "name": "Rashid Mohamad",
+                    "email": "rashid2538@gmail.com",
+                    "homepage": "https://jsmorpheus.flexinetsolutions.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A library for comparing two HTML files/snippets and highlighting the differences using simple HTML.",
+            "homepage": "https://github.com/rashid2538/php-htmldiff",
+            "keywords": [
+                "diff",
+                "html"
+            ],
+            "time": "2016-06-12T09:25:19+00:00"
         },
         {
             "name": "scssphp/scssphp",
@@ -4648,7 +4691,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "citation-style-language/locales": 20,
-        "citation-style-language/styles-distribution": 20
+        "citation-style-language/styles-distribution": 20,
+        "rashid2538/php-htmldiff": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

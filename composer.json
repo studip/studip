@@ -58,6 +58,7 @@
         "scssphp/scssphp": "^1.4",
         "symfony/yaml": "^3.4",
         "phpwhois/idna-convert": "^0.9.0",
-        "mishal/iless": "^2.2"
+        "mishal/iless": "^2.2",
+        "rashid2538/php-htmldiff": "dev-master"
     }
 }
