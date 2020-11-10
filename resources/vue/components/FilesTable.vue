@@ -147,7 +147,7 @@
                 role="row"
                 data-permissions="file.isEditable ? 'w' : (file.download_url ? 'dr' : '')">
                 <td v-if="show_bulk_actions">
-                    <template v-if="file.download_url">
+                    <template>
                         <input type="checkbox"
                                class="studip-checkbox"
                                name="ids[]"
