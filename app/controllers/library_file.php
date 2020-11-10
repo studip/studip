@@ -103,11 +103,14 @@ class LibraryFileController extends AuthenticatedController
         foreach ($this->defined_variables as $variable) {
             if ($variable['required']) {
                 $this->required_properties[] = $variable['name'];
+                $key += 100;
             }
             if (in_array($variable['name'], $this->document_type['properties'])) {
-                $this->enriched_properties[] = $variable;
+                $this->enriched_properties[$key] = $variable;
+                $property_types[$variable['name']] = $variable['type'];
             }
         }
+        krsort($this->enriched_properties);
         $this->user_language = getUserLanguage($GLOBALS['user']->id);
 
         if (Request::submitted('save')) {
@@ -119,18 +122,35 @@ class LibraryFileController extends AuthenticatedController
             $empty_required = 0;
             foreach ($this->document_properties as $name => $property) {
                 if (in_array($name, $this->required_properties)) {
-                    if ($name == 'author') {
+                    if ($property_types[$name] == 'name') {
                         if (!$property[0]['family']) {
+                            $empty_required++;
+                        }
+                    } elseif ($property_types[$name] == 'date') {
+                        if (!$property['date-parts'][0][0]) {
                             $empty_required++;
                         }
                     } elseif (!trim($property)) {
                         $empty_required++;
+                    }
+                } else {
+                    if ($property_types[$name] == 'name') {
+                        if (!$property[0]['family']) {
+                            unset($this->document_properties[$name]);
+                        }
+                    } elseif ($property_types[$name] == 'date') {
+                        if (!$property['date-parts'][0][0]) {
+                            unset($this->document_properties[$name]);
+                        }
+                    } elseif (!trim($property)) {
+                        unset($this->document_properties[$name]);
                     }
                 }
                 if ($property) {
                     $all_empty = false;
                 }
             }
+
             if ($all_empty) {
                 PageLayout::postError(_('Es wurden keine Daten eingegeben!'));
                 return;
@@ -220,14 +240,17 @@ class LibraryFileController extends AuthenticatedController
         //"enrich" the properties of the document type using the definitions:
         $this->required_properties = [];
         $this->enriched_properties = [];
-        foreach ($this->defined_variables as $variable) {
+        foreach ($this->defined_variables as $key => $variable) {
             if ($variable['required']) {
                 $this->required_properties[] = $variable['name'];
+                $key += 100;
             }
             if (in_array($variable['name'], $this->document_type['properties'])) {
-                $this->enriched_properties[] = $variable;
+                $this->enriched_properties[$key] = $variable;
+                $property_types[$variable['name']] = $variable['type'];
             }
         }
+        krsort($this->enriched_properties);
         $this->user_language = getUserLanguage($GLOBALS['user']->id);
 
         $this->document_properties = $this->library_file->library_document->csl_data;
@@ -241,12 +264,28 @@ class LibraryFileController extends AuthenticatedController
             $empty_required = 0;
             foreach ($this->document_properties as $name => $property) {
                 if (in_array($name, $this->required_properties)) {
-                    if ($name == 'author') {
+                    if ($property_types[$name] == 'name') {
                         if (!$property[0]['family']) {
+                            $empty_required++;
+                        }
+                    } elseif ($property_types[$name] == 'date') {
+                        if (!$property['date-parts'][0][0]) {
                             $empty_required++;
                         }
                     } elseif (!trim($property)) {
                         $empty_required++;
+                    }
+                } else {
+                    if ($property_types[$name] == 'name') {
+                        if (!$property[0]['family']) {
+                            unset($this->document_properties[$name]);
+                        }
+                    } elseif ($property_types[$name] == 'date') {
+                        if (!$property['date-parts'][0][0]) {
+                            unset($this->document_properties[$name]);
+                        }
+                    } elseif (!trim($property)) {
+                        unset($this->document_properties[$name]);
                     }
                 }
                 if ($property) {
@@ -261,7 +300,6 @@ class LibraryFileController extends AuthenticatedController
                 PageLayout::postError(_('Mindestens ein Pflichfeld ist leer!'));
                 return;
             }
-
             //Filter all properties so that only those that are defined
             //for the document type are stored.
             $filtered_properties = array_intersect_key(

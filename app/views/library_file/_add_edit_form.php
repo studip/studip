@@ -16,7 +16,7 @@
                            value="<?= htmlReady($document_properties[$property['name']]) ?>"
                            name="document_properties[<?= htmlReady($property['name']) ?>]">
                 <? else : ?>
-                    <? if ($property['name'] == 'author') : ?>
+                    <? if ($property['type'] == 'name') : ?>
                         <input type="text" placeholder="<?= _('Nachname') ?>"
                                value="<?= htmlReady($document_properties[$property['name']][0]['family']) ?>"
                                name="document_properties[<?= htmlReady($property['name']) ?>][0][family]">
@@ -26,6 +26,17 @@
                         <input type="text" placeholder="<?= _('Namenszusatz') ?>"
                                value="<?= htmlReady($document_properties[$property['name']][0]['suffix']) ?>"
                                name="document_properties[<?= htmlReady($property['name']) ?>][0][suffix]">
+                        <? elseif ($property['type'] == 'date') : ?>
+                        <input type="text" placeholder="<?= _('Jahr') ?>"
+                               value="<?= htmlReady($document_properties[$property['name']]['date-parts'][0][0]) ?>"
+                               name="document_properties[<?= htmlReady($property['name']) ?>][date-parts][0][0]">
+                        <input type="text" placeholder="<?= _('Monat') ?>"
+                               value="<?= htmlReady($document_properties[$property['name']]['date-parts'][0][1]) ?>"
+                               name="document_properties[<?= htmlReady($property['name']) ?>][date-parts][0][1]">
+                        <input type="text" placeholder="<?= _('Tag') ?>"
+                               value="<?= htmlReady($document_properties[$property['name']]['date-parts'][0][2]) ?>"
+                               name="document_properties[<?= htmlReady($property['name']) ?>][date-parts][0][2]">
+
                     <? else : ?>
                         <input type="text"
                                value="<?= htmlReady($document_properties[$property['name']]) ?>"
