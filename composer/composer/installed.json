@@ -871,6 +871,54 @@
         "abandoned": "mso/idna-convert"
     },
     {
+        "name": "phpxmlrpc/extras",
+        "version": "0.6.2",
+        "version_normalized": "0.6.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/gggeek/phpxmlrpc-extras.git",
+            "reference": "327f1195feae4079c691fa281b7e63d2be4c193a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/gggeek/phpxmlrpc-extras/zipball/327f1195feae4079c691fa281b7e63d2be4c193a",
+            "reference": "327f1195feae4079c691fa281b7e63d2be4c193a",
+            "shasum": ""
+        },
+        "require": {
+            "phpxmlrpc/phpxmlrpc": ">=2.1.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": ">=4.0.0"
+        },
+        "time": "2017-12-02T15:40:43+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "adodb/drivers/",
+                "adodb/lib/",
+                "ajax/ajaxmlrpc.inc",
+                "jsonrpc/jsonrpc.inc",
+                "jsonrpc/jsonrpcs.inc",
+                "proxy/proxyxmlrpcs.inc",
+                "xmlrpc_extension_api/xmlrpc_extension_api.inc",
+                "docxmlrpcserver/docxmlrpcs.inc"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "A collection of extensions, addons and other stuff that might be of use for development of xml-rpc (and jsonrpc, soap) based applications",
+        "homepage": "https://github.com/gggeek/phpxmlrpc-extras",
+        "keywords": [
+            "jsonrpc",
+            "webservices",
+            "xmlrpc"
+        ]
+    },
+    {
         "name": "phpxmlrpc/phpxmlrpc",
         "version": "4.4.2",
         "version_normalized": "4.4.2.0",

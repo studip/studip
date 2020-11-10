@@ -4,14 +4,14 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
+class ComposerStaticInit102e652b40fa714b72854854eb2eb527
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
-        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
+        'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '27c1b27b98c11fe56f66714494e3016f' => __DIR__ . '/..' . '/phpwhois/idna-convert/idna_convert.class.php',
@@ -208,6 +208,11 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
     );
 
     public static $classMap = array (
+        'ADODB_soap' => __DIR__ . '/..' . '/phpxmlrpc/extras/adodb/drivers/adodb-soap.inc.php',
+        'ADODB_xmlrpc' => __DIR__ . '/..' . '/phpxmlrpc/extras/adodb/drivers/adodb-xmlrpc.inc.php',
+        'ADORecordSet_soap' => __DIR__ . '/..' . '/phpxmlrpc/extras/adodb/drivers/adodb-soap.inc.php',
+        'ADORecordSet_xmlrpc' => __DIR__ . '/..' . '/phpxmlrpc/extras/adodb/drivers/adodb-xmlrpc.inc.php',
+        'ADORecordset_empty_I' => __DIR__ . '/..' . '/phpxmlrpc/extras/adodb/drivers/adodb-xmlrpc.inc.php',
         'CAS_AuthenticationException' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/AuthenticationException.php',
         'CAS_Client' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Client.php',
         'CAS_CookieJar' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/CookieJar.php',
@@ -268,16 +273,24 @@ class ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8
         'TCPDF_IMPORT' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_import.php',
         'TCPDF_PARSER' => __DIR__ . '/..' . '/tecnickcom/tcpdf/tcpdf_parser.php',
         'TCPDF_STATIC' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/tcpdf_static.php',
+        'documenting_xmlrpc_server' => __DIR__ . '/..' . '/phpxmlrpc/extras/docxmlrpcserver/docxmlrpcs.inc',
+        'js_rpc_server' => __DIR__ . '/..' . '/phpxmlrpc/extras/ajax/ajaxmlrpc.inc',
+        'jsonrpc_client' => __DIR__ . '/..' . '/phpxmlrpc/extras/jsonrpc/jsonrpc.inc',
+        'jsonrpc_server' => __DIR__ . '/..' . '/phpxmlrpc/extras/jsonrpc/jsonrpcs.inc',
+        'jsonrpcmsg' => __DIR__ . '/..' . '/phpxmlrpc/extras/jsonrpc/jsonrpc.inc',
+        'jsonrpcresp' => __DIR__ . '/..' . '/phpxmlrpc/extras/jsonrpc/jsonrpc.inc',
+        'jsonrpcval' => __DIR__ . '/..' . '/phpxmlrpc/extras/jsonrpc/jsonrpc.inc',
         'phpCAS' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS.php',
+        'proxy_xmlrpc_server' => __DIR__ . '/..' . '/phpxmlrpc/extras/proxy/proxyxmlrpcs.inc',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitbefad8a09b2e9c0e9a82eaee305d4ea8::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit102e652b40fa714b72854854eb2eb527::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit102e652b40fa714b72854854eb2eb527::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit102e652b40fa714b72854854eb2eb527::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit102e652b40fa714b72854854eb2eb527::$classMap;
 
         }, null, ClassLoader::class);
     }

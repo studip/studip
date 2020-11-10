@@ -96,3 +96,7 @@ StudipAutoloader::addClassLookup(
     ['xmlrpcval', 'xmlrpcmsg', 'xmlrpcresp', 'xmlrpc_client'],
     $GLOBALS['STUDIP_BASE_PATH'] . '/composer/phpxmlrpc/phpxmlrpc/lib/xmlrpc.inc'
 );
+StudipAutoloader::addClassLookup(
+    ['xmlrpc_server'],
+    $GLOBALS['STUDIP_BASE_PATH'] . '/composer/phpxmlrpc/phpxmlrpc/lib/xmlrpcs.inc'
+);

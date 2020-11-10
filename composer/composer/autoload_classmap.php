@@ -6,6 +6,11 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'ADODB_soap' => $vendorDir . '/phpxmlrpc/extras/adodb/drivers/adodb-soap.inc.php',
+    'ADODB_xmlrpc' => $vendorDir . '/phpxmlrpc/extras/adodb/drivers/adodb-xmlrpc.inc.php',
+    'ADORecordSet_soap' => $vendorDir . '/phpxmlrpc/extras/adodb/drivers/adodb-soap.inc.php',
+    'ADORecordSet_xmlrpc' => $vendorDir . '/phpxmlrpc/extras/adodb/drivers/adodb-xmlrpc.inc.php',
+    'ADORecordset_empty_I' => $vendorDir . '/phpxmlrpc/extras/adodb/drivers/adodb-xmlrpc.inc.php',
     'CAS_AuthenticationException' => $vendorDir . '/jasig/phpcas/source/CAS/AuthenticationException.php',
     'CAS_Client' => $vendorDir . '/jasig/phpcas/source/CAS/Client.php',
     'CAS_CookieJar' => $vendorDir . '/jasig/phpcas/source/CAS/CookieJar.php',
@@ -66,5 +71,13 @@ return array(
     'TCPDF_IMPORT' => $vendorDir . '/tecnickcom/tcpdf/tcpdf_import.php',
     'TCPDF_PARSER' => $vendorDir . '/tecnickcom/tcpdf/tcpdf_parser.php',
     'TCPDF_STATIC' => $vendorDir . '/tecnickcom/tcpdf/include/tcpdf_static.php',
+    'documenting_xmlrpc_server' => $vendorDir . '/phpxmlrpc/extras/docxmlrpcserver/docxmlrpcs.inc',
+    'js_rpc_server' => $vendorDir . '/phpxmlrpc/extras/ajax/ajaxmlrpc.inc',
+    'jsonrpc_client' => $vendorDir . '/phpxmlrpc/extras/jsonrpc/jsonrpc.inc',
+    'jsonrpc_server' => $vendorDir . '/phpxmlrpc/extras/jsonrpc/jsonrpcs.inc',
+    'jsonrpcmsg' => $vendorDir . '/phpxmlrpc/extras/jsonrpc/jsonrpc.inc',
+    'jsonrpcresp' => $vendorDir . '/phpxmlrpc/extras/jsonrpc/jsonrpc.inc',
+    'jsonrpcval' => $vendorDir . '/phpxmlrpc/extras/jsonrpc/jsonrpc.inc',
     'phpCAS' => $vendorDir . '/jasig/phpcas/source/CAS.php',
+    'proxy_xmlrpc_server' => $vendorDir . '/phpxmlrpc/extras/proxy/proxyxmlrpcs.inc',
 );

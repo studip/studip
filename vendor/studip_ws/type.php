@@ -43,7 +43,7 @@ class Studip_Ws_Type {
    *
    * @return mixed <description>
    */
-  function translate($type) {
+  public static function translate($type) {
 
     # complex types
     if (is_string($type) && class_exists($type))
@@ -121,7 +121,7 @@ class Studip_Ws_Type {
    *
    * @todo name ist falsch
    */
-  function get_type($type) {
+  public static function get_type($type) {
 
     if (is_array($type))
       return key($type);

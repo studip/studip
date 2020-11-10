@@ -27,7 +27,7 @@
 
 class Studip_Ws_Dispatcher {
 
-	
+
   /**
    * <FieldDescription>
    *
@@ -35,7 +35,7 @@ class Studip_Ws_Dispatcher {
    * @var array
    */
   var $api_methods = array();
-  
+
 
   /**
    * Constructor. Give an unlimited number of services' class names as
@@ -67,15 +67,15 @@ class Studip_Ws_Dispatcher {
   function add_service($service_name) {
 
     if (!is_string($service_name)) {
-      trigger_error('Arguments must be strings.', E_USER_WARNING);        
+      trigger_error('Arguments must be strings.', E_USER_WARNING);
       return FALSE;
     }
-    
+
     # not a service
     if (!class_exists($service_name) ||
         !$this->is_a_service($service_name)) {
       trigger_error(sprintf('Service "%s" does not exist.', $service_name),
-                    E_USER_WARNING);        
+                    E_USER_WARNING);
       return FALSE;
     }
 
@@ -84,7 +84,6 @@ class Studip_Ws_Dispatcher {
     $api_methods = $service->get_api_methods();
 
     foreach ($api_methods as $method_name => $method) {
-      
       if (isset($this->api_methods[$method_name])) {
         trigger_error(sprintf('Method %s already defined.', $method_name),
                       E_USER_ERROR);
@@ -93,7 +92,7 @@ class Studip_Ws_Dispatcher {
 
       $this->api_methods[$method_name] =& $api_methods[$method_name];
     }
-    
+
     return TRUE;
   }
 
@@ -124,7 +123,7 @@ class Studip_Ws_Dispatcher {
     # find service that provides $method
     if (!isset($this->api_methods[$method0]))
       return $this->throw_exception('No service responds to "%s".', $method0);
-      
+
     $service = $this->api_methods[$method0]->service;
 
     # calling before filter
@@ -139,7 +138,7 @@ class Studip_Ws_Dispatcher {
 
     # call actual function
     $result = call_user_func_array(array(&$service, $method), $argument_array);
-    
+
     # calling after filter
     $service->after_filter($method0, $argument_array, $result);
 
@@ -148,7 +147,7 @@ class Studip_Ws_Dispatcher {
       return $exception;
     }
 
-    return $result; 
+    return $result;
   }
 
 
@@ -164,23 +163,23 @@ class Studip_Ws_Dispatcher {
    * @return bool returns TRUE if the argument was a Studip_Ws_Service
    */
   function is_a_service($class) {
-    
+
     if (!is_string($class)) {
       if (is_object($class)) {
         $class = get_class($class);
       } else {
-        trigger_error('Argument has to be a string or an object.', 
+        trigger_error('Argument has to be a string or an object.',
                       E_USER_ERROR);
         return FALSE;
       }
     }
-      
+
     if (strcasecmp($class, 'Studip_Ws_Service') === 0)
       return TRUE;
 
     if ($parent = get_parent_class($class))
       return Studip_Ws_Dispatcher::is_a_service($parent);
-    
+
     return FALSE;
   }
 
@@ -197,8 +196,8 @@ class Studip_Ws_Dispatcher {
   function map_function($function) {
     return $function . '_action';
   }
-  
-  
+
+
   /**
    * <MethodDescription>
    *
