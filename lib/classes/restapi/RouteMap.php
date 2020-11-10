@@ -3,7 +3,7 @@ namespace RESTAPI;
 
 use Config;
 use Request;
-use gossi\docblock\DocBlock;
+use gossi\docblock\Docblock;
 
 /**
  * RouteMaps define and group routes to resources.
@@ -955,7 +955,7 @@ abstract class RouteMap
     public function getRoutes($http_method = null)
     {
         $ref      = new \ReflectionClass($this);
-        $docblock = new DocBlock($ref);
+        $docblock = new Docblock($ref);
         $class_conditions = $this->extractConditions($docblock);
 
         // Create result array by creating an associative array from all
@@ -975,7 +975,7 @@ abstract class RouteMap
             }
 
             // Parse docblock
-            $docblock = new DocBlock($ref_method);
+            $docblock = new Docblock($ref_method);
 
             // No docblock tags? Not an api route!
             if ($docblock->getTags()->isEmpty()) {
@@ -1018,7 +1018,7 @@ abstract class RouteMap
     /**
      * Extracts defined conditions from a given docblock.
      *
-     * @param DocBlock $docblock   DocBlock to examine
+     * @param Docblock $docblock   DocBlock to examine
      * @param Array    $conditions Optional array of already defined
      *                             conditions to extend
      * @return Array of all extracted conditions with the variable name
