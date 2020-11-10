@@ -233,6 +233,10 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         $config['i18n_fields']['leistungsnachweis'] = true;
         $config['i18n_fields']['ort'] = true;
 
+        $config['additional_fields']['config']['get'] = function ($course) {
+            return CourseConfig::get($course->id);
+        };
+
         $config['registered_callbacks']['before_update'][] = 'logStore';
         $config['registered_callbacks']['after_delete'][] = function ($course) {
             CourseAvatar::getAvatar($course->id)->reset();

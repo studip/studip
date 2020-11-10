@@ -32,11 +32,16 @@ class Course_StatusgroupsController extends AuthenticatedController
         $course = Course::findCurrent();
         $this->course_id = $course->id;
         $this->course_title = $course->getFullname();
+        $this->config = CourseConfig::get($this->course_id);
 
         // Check perms
         $this->is_dozent = $perm->have_studip_perm('dozent', $this->course_id);
         $this->is_tutor  = $perm->have_studip_perm('tutor', $this->course_id);
         $this->is_autor  = $perm->have_studip_perm('autor', $this->course_id);
+
+        if (!$this->is_tutor && $this->config->COURSE_MEMBERS_HIDE) {
+            throw new AccessDeniedException();
+        }
 
         // Check lock rules
         $this->is_locked = LockRules::Check($this->course_id, 'groups');

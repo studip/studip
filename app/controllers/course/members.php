@@ -37,6 +37,7 @@ class Course_MembersController extends AuthenticatedController
         $this->course_id    = Context::getId();
         $this->course_title = Context::get()->Name;
         $this->user_id      = $GLOBALS['user']->id;
+        $this->config       = CourseConfig::get($this->course_id);
 
         // Check perms
         $this->is_dozent = $perm->have_studip_perm('dozent', $this->course_id);
@@ -47,6 +48,10 @@ class Course_MembersController extends AuthenticatedController
             PageLayout::setHelpKeyword("Basis.VeranstaltungenVerwaltenTeilnehmer");
         } else {
             PageLayout::setHelpKeyword("Basis.InVeranstaltungTeilnehmer");
+        }
+
+        if (!$this->is_tutor && $this->config->COURSE_MEMBERS_HIDE) {
+            throw new AccessDeniedException();
         }
 
         // Check lock rules
@@ -1405,12 +1410,11 @@ class Course_MembersController extends AuthenticatedController
     {
         $sem = Seminar::GetInstance($this->course_id);
         $course = Course::find($this->course_id);
-        $config = CourseConfig::get($this->course_id);
 
         $sidebar = Sidebar::get();
         $widget  = $sidebar->addWidget(new ActionsWidget());
 
-        if ($this->is_tutor || $config->COURSE_STUDENT_MAILING) {
+        if ($this->is_tutor || $this->config->COURSE_STUDENT_MAILING) {
             $widget->addLink(
                 _('Nachricht an alle eingetragenen Teilnehmenden (Rundmail)'),
                 URLHelper::getURL('dispatch.php/messages/write', [
@@ -1721,16 +1725,25 @@ class Course_MembersController extends AuthenticatedController
                 }
             }
 
+            $options = new OptionsWidget();
+            $options->addCheckbox(
+                _('Diese Seite für Studierende verbergen'),
+                $this->config->COURSE_MEMBERS_HIDE,
+                $this->url_for('course/members/course_members_hide/1'),
+                $this->url_for('course/members/course_members_hide/0'),
+                ['title' => _('Über diese Option können Sie die Teilnehmendenliste für Studierende der Veranstaltung unsichtbar machen')]
+            );
+
             if ($this->is_dozent) {
-                $options = $sidebar->addWidget(new OptionsWidget());
                 $options->addCheckbox(
                     _('Rundmails von Studierenden erlauben'),
-                    $config->COURSE_STUDENT_MAILING,
+                    $this->config->COURSE_STUDENT_MAILING,
                     $this->url_for('course/members/toggle_student_mailing/1'),
                     $this->url_for('course/members/toggle_student_mailing/0'),
                     ['title' => _('Über diese Option können Sie Studierenden das Schreiben von Nachrichten an alle anderen Teilnehmenden der Veranstaltung erlauben')]
                 );
             }
+            $sidebar->addWidget($options);
         } else if ($this->is_autor || $this->is_user) {
             // Visibility preferences
             if ($this->my_visibility['iam_visible']) {
@@ -1790,8 +1803,18 @@ class Course_MembersController extends AuthenticatedController
             throw new AccessDeniedException();
         }
 
-        $config = CourseConfig::get($this->course_id);
-        $config->store('COURSE_STUDENT_MAILING', $state);
+        $this->config->store('COURSE_STUDENT_MAILING', $state);
+
+        $this->redirect('course/members');
+    }
+
+    public function course_members_hide_action($state)
+    {
+        if (!$this->is_tutor) {
+            throw new AccessDeniedException();
+        }
+
+        $this->config->store('COURSE_MEMBERS_HIDE', $state);
 
         $this->redirect('course/members');
     }

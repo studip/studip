@@ -24,8 +24,14 @@ class CoreParticipants implements StudipModule
             return null;
         }
 
-        // Determine url to redirect to
         $course = Course::find($course_id);
+
+        // Is the participants page hidden for students?
+        if (!$GLOBALS['perm']->have_studip_perm('tutor', $course_id, $user_id) && $course->config->COURSE_MEMBERS_HIDE) {
+            return null;
+        }
+
+        // Determine url to redirect to
         if (!$course->getSemClass()->isGroup()) {
             $url = 'dispatch.php/course/members/index';
         } elseif (!$GLOBALS['perm']->have_studip_perm('tutor', $course_id, $user_id)) {
@@ -103,6 +109,11 @@ class CoreParticipants implements StudipModule
         $navigation->setActiveImage(Icon::create('persons', Icon::ROLE_INFO));
 
         $course = Course::find($course_id);
+        $config = CourseConfig::get($course_id);
+
+        if (!$GLOBALS['perm']->have_studip_perm('tutor', $course_id) && $config->COURSE_MEMBERS_HIDE) {
+            return null;
+        }
 
         // Only courses without children have a regular member list and statusgroups.
         if (!$course->getSemClass()->isGroup()) {
