@@ -16,11 +16,15 @@ class Course extends SchemaProvider
     const REL_FILES = 'file-refs';
     const REL_FOLDERS = 'folders';
     const REL_FORUM_CATEGORIES = 'forum-categories';
+    const REL_INSTITUTE = 'institute';
     const REL_MEMBERSHIPS = 'memberships';
     const REL_NEWS = 'news';
+    const REL_PARTICIPATING_INSTITUTES = 'participating-institutes';
+    const REL_SEM_CLASS = 'sem-class';
+    const REL_SEM_TYPE = 'sem-type';
     const REL_START_SEMESTER = 'start-semester';
+    const REL_STATUS_GROUPS = 'status-groups';
     const REL_WIKI_PAGES = 'wiki-pages';
-    const REL_INSTITUTE = 'institute';
 
     protected $resourceType = self::TYPE;
 
@@ -63,6 +67,7 @@ class Course extends SchemaProvider
             $relationships[self::REL_END_SEMESTER] = $semester;
         }
 
+        $relationships = $this->getParticipatingInstitutes($relationships, $course, $includeList);
         $relationships = $this->getFilesRelationship($relationships, $course);
         $relationships = $this->getForumCategoriesRelationship($relationships, $course, $includeList);
         $relationships = $this->getBlubberRelationship($relationships, $course, $includeList);
@@ -70,6 +75,9 @@ class Course extends SchemaProvider
         $relationships = $this->getFeedbackRelationship($relationships, $course, $includeList);
         $relationships = $this->getMembershipsRelationship($relationships, $course, $includeList);
         $relationships = $this->getNewsRelationship($relationships, $course, $includeList);
+        $relationships = $this->getSemClassRelationship($relationships, $course, $includeList);
+        $relationships = $this->getSemTypeRelationship($relationships, $course, $includeList);
+        $relationships = $this->getStatusGroupsRelationship($relationships, $course, $includeList);
         $relationships = $this->getWikiPagesRelationship($relationships, $course, $includeList);
 
         return $relationships;
@@ -261,5 +269,74 @@ class Course extends SchemaProvider
         ];
 
         return $relationships;
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    private function getParticipatingInstitutes(
+        array $relationships,
+        \Course $course,
+        $includeData
+    ) {
+        $institutes = $course->institutes->filter(
+            function ($institute) use ($course) {
+                return $institute->id != $course->institut_id;
+            }
+        );
+
+        $relationships[self::REL_PARTICIPATING_INSTITUTES] = [
+            self::DATA => $institutes
+        ];
+
+        return $relationships;
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    private function getSemClassRelationship(
+        array $relationships,
+        \Course $course,
+        $includeData
+    ) {
+        $relationships[self::REL_SEM_CLASS] = [
+            self::DATA => $course->getSemClass()
+        ];
+
+        return $relationships;
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    private function getSemTypeRelationship(
+        array $relationships,
+        \Course $course,
+        $includeData
+    ) {
+        $relationships[self::REL_SEM_TYPE] = [
+            self::DATA => $course->getSemType()
+        ];
+
+        return $relationships;
+    }
+
+    private function getStatusGroupsRelationship(
+        array $relationships,
+        \Course $resource,
+        $includeData
+    ) {
+        $relation = [
+            self::LINKS => [
+                Link::RELATED => $this->getRelationshipRelatedLink($resource, self::REL_STATUS_GROUPS),
+            ]
+        ];
+        if (in_array(self::REL_STATUS_GROUPS, $includeData)) {
+            $related = \Statusgruppen::findBySeminar_id($resource->id);
+            $relation[self::DATA] = $related;
+        }
+
+        return array_merge($relationships, [self::REL_STATUS_GROUPS => $relation]);
     }
 }

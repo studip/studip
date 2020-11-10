@@ -12,7 +12,24 @@ class CoursesIndex extends JsonApiController
 {
     protected $allowedFilteringParameters = ['q', 'fields', 'semester'];
 
-    protected $allowedIncludePaths = ['institute', 'start-semester', 'end-semester'];
+    protected $allowedIncludePaths = [
+        'blubber-threads',
+        'end-semester',
+        'events',
+        'feedback-elements',
+        'file-refs',
+        'folders',
+        'forum-categories',
+        'institute',
+        'memberships',
+        'news',
+        'participating-institutes',
+        'sem-class',
+        'sem-type',
+        'start-semester',
+        'status-groups',
+        'wiki-pages',
+    ];
 
     protected $allowedPagingParameters = ['offset', 'limit'];
 

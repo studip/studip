@@ -144,6 +144,7 @@ class RouteMap
         $this->addAuthenticatedInstitutesRoutes();
         $this->addAuthenticatedMessagesRoutes();
         $this->addAuthenticatedNewsRoutes();
+        $this->addAuthenticatedStudyAreasRoutes();
         $this->addAuthenticatedWikiRoutes();
     }
 
@@ -227,6 +228,8 @@ class RouteMap
         $this->app->get('/institute-memberships/{id}', Routes\InstituteMemberships\InstituteMembershipsShow::class);
         $this->app->get('/institutes/{id}', Routes\Institutes\InstitutesShow::class);
         $this->app->get('/institutes', Routes\Institutes\InstitutesIndex::class);
+
+        $this->app->get('/institutes/{id}/status-groups', Routes\Institutes\StatusGroupsOfInstitutes::class);
     }
 
     private function addAuthenticatedNewsRoutes()
@@ -249,6 +252,18 @@ class RouteMap
         $this->addRelationship('/news/{id}/relationships/ranges', Routes\News\Rel\Ranges::class);
     }
 
+
+    private function addAuthenticatedStudyAreasRoutes()
+    {
+        $this->app->get('/study-areas', Routes\StudyAreas\StudyAreasIndex::class);
+        $this->app->get('/study-areas/{id}', Routes\StudyAreas\StudyAreasShow::class);
+
+        $this->app->get('/study-areas/{id}/children', Routes\StudyAreas\ChildrenOfStudyAreas::class);
+        $this->app->get('/study-areas/{id}/courses', Routes\StudyAreas\CoursesOfStudyAreas::class);
+        $this->app->get('/study-areas/{id}/institute', Routes\StudyAreas\InstituteOfStudyAreas::class);
+        $this->app->get('/study-areas/{id}/parent', Routes\StudyAreas\ParentOfStudyAreas::class);
+    }
+
     private function addAuthenticatedWikiRoutes()
     {
         $this->app->get('/courses/{id}/wiki-pages', Routes\Wiki\WikiIndex::class);
@@ -268,6 +283,14 @@ class RouteMap
 
         $this->app->get('/courses/{id}/memberships', Routes\Courses\CoursesMembershipsIndex::class);
         $this->addRelationship('/courses/{id}/relationships/memberships', Routes\Courses\Rel\Memberships::class);
+
+        $this->app->get('/courses/{id}/status-groups', Routes\Courses\StatusGroupsOfCourses::class);
+
+        $this->app->get('/sem-classes', Routes\Courses\SemClassesIndex::class);
+        $this->app->get('/sem-classes/{id}', Routes\Courses\SemClassesShow::class);
+        $this->app->get('/sem-classes/{id}/sem-types', Routes\Courses\SemTypesBySemClassIndex::class);
+        $this->app->get('/sem-types', Routes\Courses\SemTypesIndex::class);
+        $this->app->get('/sem-types/{id}', Routes\Courses\SemTypesShow::class);
     }
 
     private function addAuthenticatedFilesRoutes()

@@ -5,12 +5,22 @@ namespace JsonApi\Routes\Users;
 use JsonApi\Errors\AuthorizationFailedException;
 use JsonApi\Errors\BadRequestException;
 use JsonApi\JsonApiController;
+use JsonApi\Schemas\User as UserSchema;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class UsersIndex extends JsonApiController
 {
     protected $allowedFilteringParameters = ['search'];
+    protected $allowedIncludePaths = [
+        UserSchema::REL_ACTIVITYSTREAM,
+        UserSchema::REL_CONTACTS,
+        UserSchema::REL_COURSES,
+        UserSchema::REL_COURSE_MEMBERSHIPS,
+        UserSchema::REL_EVENTS,
+        UserSchema::REL_INSTITUTE_MEMBERSHIPS,
+        UserSchema::REL_SCHEDULE,
+    ];
     protected $allowedPagingParameters = ['offset', 'limit'];
 
     /**

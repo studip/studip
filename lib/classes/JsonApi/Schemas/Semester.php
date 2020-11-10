@@ -18,10 +18,12 @@ class Semester extends SchemaProvider
         return [
             'title' => (string) $semester->name,
             'description' => (string) $semester->description,
+            'token' => (string) $semester->token,
             'start' => date('c', $semester->beginn),
             'end' => date('c', $semester->ende),
-            // TODO: vorles_beginn
-            // TODO: vorles_ende
+            'start-of-lectures' => date('c', $semester->vorles_beginn),
+            'end-of-lectures' => date('c', $semester->vorles_ende),
+            'visible' => (bool) $semester->visible,
         ];
     }
 }

@@ -1,32 +1,30 @@
 <?php
 
-namespace JsonApi\Routes\Institutes;
+namespace JsonApi\Routes\Courses;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use JsonApi\Errors\AuthorizationFailedException;
 use JsonApi\Errors\RecordNotFoundException;
 use JsonApi\JsonApiController;
-use JsonApi\Schemas\Institute as InstituteSchema;
 
-/**
- * Zeigt eine bestimmte Einrichtung an.
- */
-class InstitutesShow extends JsonApiController
+class SemTypesShow extends JsonApiController
 {
     protected $allowedIncludePaths = [
-        InstituteSchema::REL_STATUS_GROUPS,
+        'sem-class',
     ];
 
     /**
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * @SuppressWarnings(PHPMD.UnusedFormalParameters)
      */
     public function __invoke(Request $request, Response $response, $args)
     {
-        if (!$institute = \Institute::find($args['id'])) {
+        $semTypes = \SemType::getTypes();
+
+        if (!isset($semTypes[$args['id']])) {
             throw new RecordNotFoundException();
         }
 
-        return $this->getContentResponse($institute);
+        return $this->getContentResponse($semTypes[$args['id']]);
     }
 }
