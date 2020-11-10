@@ -798,39 +798,47 @@ class MyRealmModel
                 'studygroup_semtypes' => $studygroup_sem_types
             ]
         );
+        $studygroups = [];
+        Course::findEachMany(
+            function ($studygroup) use (&$studygroups) {
+                $studygroups[$studygroup->id] = $studygroup;
+            },
+            array_map(
+                function ($membership) {
+                    return $membership->seminar_id;
+                },
+                $studygroup_memberships
+            )
+        );
 
         $data_fields = 'name seminar_id visible veranstaltungsnummer start_time duration_time status visible '
                      . 'chdate admission_binding modules admission_prelim';
         $modules = new Modules();
         $studygroup_data = [];
-        $studygroup_ids = [];
         foreach ($studygroup_memberships as $membership) {
-            if (!($membership->course instanceof Course)) {
-                continue;
-            }
-            $studygroup_ids[] = $membership->seminar_id;
-            $data = $membership->course->toArray($data_fields);
-            $data['sem_class'] = $membership->course->getSemClass();
-            $data['start_semester'] = $membership->course->start_semester->name;
-            $data['end_semester'] = $membership->course->end_semester->name;
+            $studygroup = $studygroups[$membership->seminar_id];
+            $data = $studygroup->toArray($data_fields);
+            $data['sem_class'] = $studygroup->getSemClass();
+            $data['start_semester'] = $studygroup->start_semester->name;
+            $data['end_semester'] = $studygroup->end_semester->name;
             $data['obj_type'] = 'sem';
-            $data['user_status'] = $membership->course->status;
+            $data['user_status'] = $studygroup->status;
             $data['gruppe'] = $membership->gruppe;
             $data['modules'] = $modules->getLocalModules(
-                $membership->seminar_id,
+                $studygroup->id,
                 'sem',
-                $membership->course->modules,
-                $membership->course->status
+                $studygroup->modules,
+                $studygroup->status
             );
             $data['navigation'] = self::getAdditionalNavigations(
-                $membership->seminar_id,
+                $studygroup->id,
                 $data,
                 $data['sem_class'],
                 $GLOBALS['user']->id
             );
-            $studygroup_data[$membership->seminar_id] = $data;
+            $studygroup_data[$studygroup->id] = $data;
         }
-        $visit_data = get_objects_visits($studygroup_ids, 'sem', null);
+        $visit_data = get_objects_visits(array_keys($studygroups), 'sem', null);
         foreach ($visit_data as $id => $visit) {
             $studygroup_data[$id]['last_visitdate'] = $visit['last_visitdate'];
             $studygroup_data[$id]['visitdate'] = $visit['visitdate'];
