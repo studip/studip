@@ -44,6 +44,7 @@ const Files = {
             }
         }
     },
+
     openAddFilesWindow: function(folder_id) {
         var responsive_mode = jQuery('html').first().hasClass('responsive-display');
         if ($('.files_source_selector').length > 0) {
@@ -58,6 +59,7 @@ const Files = {
             });
         }
     },
+
     validateUpload: function(file) {
         if (!Files.uploadConstraints) {
             return true;
@@ -73,21 +75,39 @@ const Files = {
 
         return $.inArray(ending, Files.uploadConstraints.file_types) !== -1;
     },
+
     upload: function(filelist) {
-        var files = 0,
-            folder_id = $('.files_source_selector').data('folder_id'),
-            data = new FormData();
+        var files = 0;
+        var folder_id = $('.files_source_selector').data('folder_id');
+        var thresholds = []
+        var data = new FormData();
+        var updater_enabled = STUDIP.jsupdate_enable;
+        STUDIP.JSUpdater.stop();
 
         //Open upload-dialog
-        $('.file_upload_window .filenames').html('');
+        const nameslist = $('.file_upload_window .filenames').empty();
         $('.file_upload_window .errorbox').hide();
         $('.file_upload_window .messagebox').hide();
+
+        var total_size = 0;
         $.each(filelist, function(index, file) {
             if (Files.validateUpload(file)) {
                 data.append('file[]', file, file.name);
-                $('<li/>')
-                    .text(file.name)
-                    .appendTo('.file_upload_window .filenames');
+
+                var id = `upload-element-${index}`;
+                var li = $('<li/>').attr('id', id).appendTo(nameslist);
+                $('<span/>').text(file.name).appendTo(li);
+                $('<span class="upload-progress"/>').appendTo(li);
+
+                thresholds.push({
+                    position: total_size,
+                    threshold: total_size + file.size,
+                    name: file.name,
+                    size: file.size,
+                    element: id
+                });
+
+                total_size += file.size;
                 files += 1;
             } else {
                 $('.file_upload_window .errorbox').show();
@@ -109,43 +129,65 @@ const Files = {
         //start upload
         $('form.drag-and-drop.files').removeClass('hovered');
         if (files > 0) {
-            $('.file_upload_window .uploadbar')
-                .show()
-                .css('background-size', '0% 100%');
+            $('.file_upload_window .uploadbar').show().filter('.uploadbar-inner').css({
+                right: '100%'
+            });
             $.ajax({
-                url: STUDIP.URLHelper.getURL('dispatch.php/file/upload/' + folder_id),
+                url: STUDIP.URLHelper.getURL(`dispatch.php/file/upload/${folder_id}`),
                 data: data,
                 cache: false,
                 contentType: false,
                 processData: false,
                 type: 'POST',
-                xhr: function() {
+                xhr: () => {
                     var xhr = $.ajaxSettings.xhr();
                     if (xhr.upload) {
-                        xhr.upload.addEventListener(
-                            'progress',
-                            function(event) {
-                                var percent = 0,
-                                    position = event.loaded || event.position,
-                                    total = event.total;
-                                if (event.lengthComputable) {
-                                    percent = Math.ceil((position / total) * 100);
-                                }
+                        const uploadbar      = $('.file_upload_window .uploadbar-inner');
+                        const uploadprogress = $('.file_upload_window .uploadbar .upload-progress');
+                        var last = null;
+                        xhr.upload.addEventListener('progress', event => {
+                            if (event.lengthComputable) {
                                 //Set progress
-                                $('.file_upload_window .uploadbar').css('background-size', percent + '% 100%');
-                            },
-                            false
-                        );
+                                const position = event.loaded || event.position;
+                                const total = event.total;
+                                const percent = Math.round(position / total * 100 * 100) / 100;
+
+                                uploadbar.css('right', `${100 - percent}%`);
+                                uploadprogress.text(`${percent}%`);
+
+                                const current = thresholds.find(element => element.threshold >= position);
+                                if (current) {
+                                    const current_percent = Math.round((position - current.position) / current.size * 100);
+                                    $(`#${current.element} .upload-progress`).text(`${current_percent}%`);
+
+                                    if (current.element !== last && last !== null) {
+                                        $(`#${last} .upload-progress`).text(`100%`).closest('li').prevAll('li').find('.upload-progress').text('100%');
+                                    }
+                                    last = current.element;
+                                }
+                            }
+                        }, false);
                     }
+
+                    $(document).on('dialog-close.xhr-upload', () => xhr.abort());
+
                     return xhr;
                 }
-            }).done(function (json) {
-                $('.file_upload_window .uploadbar').css('background-size', '100% 100%');
+            }).done(json => {
+                $('.file_upload_window .uploadbar-inner').css('right', '0');
+                $('.file_upload_window .upload-progress').text(`100%`);
+
+                $(document).off('.xhr-upload');
+            }).always(() => {
+                if (updater_enabled) {
+                    STUDIP.JSUpdater.start();
+                }
             });
         } else {
             $('.file_upload_window .uploadbar').hide();
         }
     },
+
     addFile: (payload, delay = 0, hide_dialog = true) => {
         var redirect = false;
         var html = [];
@@ -170,6 +212,7 @@ const Files = {
             Dialog.handlers.header['X-Location'](payload.url);
         }
     },
+
     addFileDisplay: (html, delay = 0) => {
         if (!Array.isArray(html)) {
             html = [html];
@@ -188,6 +231,7 @@ const Files = {
         });
         $(document).trigger('refresh-handlers');
     },
+
     removeFileDisplay: function (ids) {
         if (!Array.isArray(ids)) {
             ids = [ids];
@@ -199,6 +243,7 @@ const Files = {
         });
         $(document).trigger('refresh-handlers');
     },
+
     addFolderDisplay: function (html, delay = 0) {
         if (!Array.isArray(html)) {
             html = [html];
@@ -208,6 +253,7 @@ const Files = {
         });
         $(document).trigger('refresh-handlers');
     },
+
     getFolders: function(name) {
         var element_name = 'folder_select_' + name,
             context = $('#' + element_name + '-destination').val(),
@@ -242,27 +288,22 @@ const Files = {
                     }
                 },
                 'json'
-            ).done(function() {
-                $('#' + element_name + '-subfolder').show();
+            ).done(() => {
+                $(`#${element_name}-subfolder`).show();
             });
         }
     },
 
     changeFolderSource: function(name) {
-        var element_name = 'folder_select_' + name,
-            elem = $('#' + element_name + '-destination');
+        var element_name = `folder_select_${name}`;
+        var elem = $(`#${element_name}-destination`);
 
-        $('#' + element_name + '-range-course').hide();
-        $('#' + element_name + '-range-inst').hide();
-        $('#' + element_name + '-subfolder').hide();
-        $('#' + element_name + '-subfolder select').empty();
+        $(`#${element_name}-range-course`).toggle(elem.val() === 'courses');
+        $(`#${element_name}-range-inst`).toggle(elem.val() === 'institutes');
+        $(`#${element_name}-subfolder`).toggle(elem.val() === 'myfiles');
 
-        if ($.inArray(elem.val(), ['courses']) > -1) {
-            $('#' + element_name + '-range-course').show();
-        } else if ($.inArray(elem.val(), ['institutes']) > -1) {
-            $('#' + element_name + '-range-inst').show();
-        } else if ($.inArray(elem.val(), ['myfiles']) > -1) {
-            $('#' + element_name + '-subfolder').show();
+        if (elem.val() === 'myfiles') {
+            $(`#${element_name}-subfolder select`).empty();
             Files.getFolders(name);
         }
     },
@@ -273,10 +314,18 @@ const Files = {
 
         var selected_id = $(this).val();
 
-        $('#terms_of_use_description-' + selected_id).removeClass('invisible');
+        $(`#terms_of_use_description-${selected_id}`).removeClass('invisible');
     },
+
     openGallery: function () {
         $(".lightbox-image").first().click();
+    },
+
+    // Upload constraints
+    uploadConstraints: false,
+
+    setUploadConstraints (constraints) {
+        Files.uploadConstraints = constraints;
     }
 };
 

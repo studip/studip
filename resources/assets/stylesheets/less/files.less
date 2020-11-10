@@ -1,16 +1,71 @@
 .file_uploader {
     display: none;
+}
+.file_upload_window {
+    .filenames li {
+        display: flex;
+        justify-content: space-between;
 
+        span {
+            flex: 1;
+            &.upload-progress {
+                flex: 0;
+            }
+        }
+    }
 }
 .uploadbar {
-    padding: 10px;
-    background-image: linear-gradient(@base-color, @base-color);
-    background-size: 0% 100%;
-    background-repeat: no-repeat;
-    border: @base-color solid 1px;
-    .ufo {
-        float: right;
-        animation: ufoflight 1.5s linear infinite;
+    position: relative;
+
+    img {
+        margin: 10px;
+        z-index: 1;
+    }
+
+    &.uploadbar-outer {
+        border: @base-color solid 1px;
+    }
+    &.uploadbar-inner {
+        position: absolute;
+        top: 0;
+        right: 100%;
+        bottom: 0;
+        left: 0;
+        background-color: @base-color;
+        overflow: hidden;
+        white-space: nowrap;
+
+        display: flex;
+        justify-content: space-between;
+
+        transition: right 200ms;
+
+        img {
+            background-color: @base-color;
+            flex: 0;
+            outline: 10px solid @base-color;
+        }
+        .ufo {
+            animation: ufoflight 1.5s linear infinite;
+            z-index: 0;
+        }
+    }
+
+    .upload-progress {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: @white;
+        font-size: large;
+        text-shadow: 0 1px 0 @base-color,
+                     1px 1px 0 @base-color,
+                     1px 0 0 @base-color,
+                     1px -1px 0 @base-color,
+                     0 -1px 0 @base-color,
+                     -1px 1px 0 @base-color,
+                     0 1px 0 @base-color,
+                     -1px -1px 0 @base-color;
     }
 }
 
