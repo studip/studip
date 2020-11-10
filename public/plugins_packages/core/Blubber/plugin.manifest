@@ -5,11 +5,11 @@ version=3
 summary=Schneller und einfacher Austausch von Informationen
 description=Blubber ist eine Kommunikationsform mit Ähnlichkeiten zu einem Forum, in dem aber in Echtzeit miteinander kommuniziert werden kann und das durch den etwas informelleren Charakter eher einem Chat anmutet. Anders als im Forum ist es nicht notwendig, die Seiten neu zu laden, um die neuesten Einträge (z. B. Antworten auf eigene Postings) sehen zu können: Die Seite aktualisiert sich selbst bei neuen Einträgen. Dateien (z.B. Fotos, Audiodateien, Links) können per Drag and Drop in das Feld gezogen und somit verlinkt werden. Auch Textformatierungen und das Verwenden von Smileys sind möglich.
 
-screenshots = plus/screenshots/Blubber
+screenshots = ../../../assets/images/plus/screenshots/Blubber
 screenshots.blubberscreenshot.png = Blubbern
 
 displayname = Blubber
-icon = icons/black/blubber.svg
+icon = ../../../assets/images/icons/black/blubber.svg
 keywords = Einfach Text schreiben und mit <Enter> abschicken; Direktes Kontaktieren anderer Stud.IP-NutzerInnen (@Vorname Nachname); Setzen von und Suche nach Stichworten über Hashtags (#Stichwort); Einbinden von Dateien per drag and drop
 category = Kommunikation und Zusammenarbeit
 descriptionshort = Schneller und einfacher Austausch von Informationen in Gesprächsform
