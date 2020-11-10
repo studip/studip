@@ -64,7 +64,6 @@ class StudipDocumentingXmlRpcServer extends documenting_xmlrpc_server
     }
 }
 
-PhpXmlRpc\PhpXmlRpc::$xmlrpc_internalencoding = 'ISO-8859-1';
 $GLOBALS['_xmlrpcs_dmap'] = [];
 $GLOBALS['xmlrpcdocparts']['html']['docheader'] .= '<link href="assets/stylesheets/webservices.css" type="text/css" rel="stylesheet">';
 
