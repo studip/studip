@@ -260,13 +260,21 @@ class LibraryFile extends URLFile
     public function getInfoDialogButtons(array $extra_link_params = []) : array
     {
         $buttons = [];
-
         if ($this->isEditable($GLOBALS['user']->id)) {
-            $buttons[] = Studip\LinkButton::create(
-                _('Bearbeiten'),
-                URLHelper::getURL('dispatch.php/library_file/edit/' . $this->fileref->id),
-                ['data-dialog' => 'size=auto']
-            );
+            $known_document_type = false;
+            foreach ($GLOBALS['LIBRARY_DOCUMENT_TYPES'] as $defined_type) {
+                if ($defined_type['name'] == $this->library_document->type) {
+                    $known_document_type = true;
+                    break;
+                }
+            }
+            if ($known_document_type) {
+                $buttons[] = Studip\LinkButton::create(
+                    _('Bearbeiten'),
+                    URLHelper::getURL('dispatch.php/library_file/edit/' . $this->fileref->id),
+                    ['data-dialog' => 'size=auto']
+                );
+            }
         }
 
         if ($this->isDownloadable($GLOBALS['user']->id)) {
