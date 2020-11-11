@@ -21,7 +21,7 @@ $element_id = md5(uniqid());
 
 <? if ($show || $show_hidden) : ?>
 <div id="schedule_entry_<?= $element_id ?>_<?= $entry[0]['start'] .'/'. $entry[0]['end'] .'/'. implode(',', $ids) .'/'. $day ?>" class="schedule_entry <?= !$show ? 'invisible_entry' : '' ?>"
-    style="top: <?= $top ?>px; height: <?= $height ?>px; width: <?= $width ?>%<?= ($col > 0) ? ';left:'. ($col * $width) .'%' : '' ?>"
+    style="top: <?= $top ?>px; height: <?= $height ?>px; width: <?= str_replace(',', '.', $width) ?>%<?= ($col > 0) ? ';left:'. str_replace(',', '.', $col * $width) .'%' : '' ?>"
     title="<?= htmlReady(implode(', ', $title)) ?>">
 
     <a <?= $entry['url'] ? ' href="'.$entry['url'].'"' : '' ?>

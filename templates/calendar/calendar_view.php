@@ -27,7 +27,7 @@ $cell_steps = $cell_height / 60;
         if (STUDIP.Calendar.click_in_progress) return;
 
         var column_id = this.id.substr(this.id.lastIndexOf("_")+1);
-        
+
         STUDIP.Calendar.click_start_hour = Math.floor(((event.pageY - Math.ceil(jQuery(this).offset().top)) - 2)
             / STUDIP.Calendar.cell_height) + STUDIP.Calendar.start_hour;
 
@@ -123,7 +123,7 @@ $cell_steps = $cell_height / 60;
                 <div id="calendar_view_<?= $view_id ?>_column_<?= $column->getId() ?>" class="schedule_day" style="overflow: hidden">
                     <? $groups = $column->getGroupedEntries();
                     if (!empty($groups)) :
-                    $width = floor( 98 / sizeof($groups));
+                    $width = round(100 / sizeof($groups), 2);
                     $col = 0;
                     foreach ($groups as $grouped_entries) :
 
@@ -164,7 +164,7 @@ $cell_steps = $cell_height / 60;
                             $this->col    = $col;
 
                             // if we have no concurring entries set the maximum useful width
-                            if ($max == 1) $this->width = '98';
+                            if ($max == 1) $this->width = '100';
 
                             if ($calendar_view->isGrouped()) {
                                 echo $this->render_partial('calendar/entries/grouped_entry', ['day' => $column->getId()]);

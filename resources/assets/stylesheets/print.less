@@ -2,11 +2,12 @@
 @import "less/fullcalendar-print.less";
 @import "less/resources-print.less";
 @import "less/qrcode-print.less";
+@import (reference) "less/schedule.less";
 
 
 /*******************************************************************************
-    Druck-Stylesheet f�r Stud.IP
-    - nur pt Gr��enangaben verwenden
+    Druck-Stylesheet für Stud.IP
+    - nur pt Größenangaben verwenden
     - auf background-colors verzichten (werden nicht gedruckt)
 *******************************************************************************/
 
@@ -163,8 +164,7 @@ td.rahmen_table_row_odd {
     div.schedule_entry {
         position: absolute;
         margin: 0;
-        padding: 0 0 2pt;
-        overflow: hidden;
+        padding: 0;
         font-size: 11pt;
         color: #000000;
 
@@ -172,8 +172,9 @@ td.rahmen_table_row_odd {
             height: 100%;
             margin: 0;
             color: black ! important;
-            background-image: none ! important;
-            background-color: transparent ! important;
+            background-color: @white;
+            border: 1px solid @light-gray-color-60;
+            overflow: hidden;
 
             dd {
                 margin: 0;
@@ -192,7 +193,7 @@ td.rahmen_table_row_odd {
     }
 
     div.schedule_day {
-        border-right: 1pt solid black;
+        border-left: 1pt solid black;
         position: relative;
     }
 
