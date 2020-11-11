@@ -174,7 +174,7 @@ const wysiwyg = {
                 (extraPlugins ? ',' + extraPlugins : ''),
             removePlugins: removePlugins ? removePlugins : textarea.closest('.ui-dialog').length ? 'autogrow' : '',
             enterMode: CKEDITOR.ENTER_BR,
-            mathJaxLib: STUDIP.URLHelper.getURL('assets/javascripts/mathjax/MathJax.js?config=TeX-AMS_HTML,default'),
+            mathJaxLib: STUDIP.URLHelper.getURL('assets/javascripts/mathjax/es5/tex-svg.js'),
             studipUpload_url: STUDIP.URLHelper.getURL('dispatch.php/wysiwyg/upload'),
             codemirror: {
                 autoCloseTags: false,

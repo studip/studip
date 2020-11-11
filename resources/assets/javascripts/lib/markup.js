@@ -22,7 +22,9 @@ const Markup = {
         math_jax: function (element) {
             $('span.math-tex:not(:has(.MathJax)),.formatted-content:contains("[tex]")', element).each((index, block) => {
                 STUDIP.loadChunk('mathjax').then((MathJax) => {
-                    MathJax.Hub.Queue(['Typeset', MathJax.Hub, block]);
+                    if (typeof MathJax.typeset === "function") {
+                        MathJax.typeset([block]);
+                    }
                 });
             });
         },
