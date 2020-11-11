@@ -31,7 +31,13 @@ class GlobalSearchController extends AuthenticatedController
     {
         $limit = min(100, (int)$limit);
         // Perform search by mysqli (=async) or by PDO (=sync)?
-        $async = Config::get()->GLOBALSEARCH_ASYNC_QUERIES;
+        $async = Config::get()->GLOBALSEARCH_ASYNC_QUERIES
+                 && extension_loaded('mysqli');
+        if ($async) {
+            // throw exceptions on mysqli error
+            $driver = new mysqli_driver();
+            $driver->report_mode = MYSQLI_REPORT_ERROR;
+        }
 
         // Now load all modules
         $modules = GlobalSearchModule::getActiveSearchModules();
@@ -59,6 +65,7 @@ class GlobalSearchController extends AuthenticatedController
                     do {
                         if ($res = $mysqli->store_result()) {
                             $all_links[$className][] = $res->fetch_all(MYSQLI_ASSOC);
+                            $res->free();
                         }
                     } while ($mysqli->more_results() && $mysqli->next_result());
                 }
