@@ -33,17 +33,9 @@
 
         <span class="invalid_message"><?= _('Die Endzeit liegt vor der Startzeit!') ?></span>
 
-        <section id="color_picker">
-            <?= _('Farbe des Termins') ?><br>
-            <div style="margin: 10px 0">
-                <? foreach ($GLOBALS['PERS_TERMIN_KAT'] as $index => $data) : ?>
-                    <span class="schedule-category<?= $index ?>" style="vertical-align: middle; padding: 3px">
-                        <input type="radio" name="entry_color"
-                               value="<?= $index ?>" <?= ($index == $show_entry['color']) ? 'checked="checked"' : '' ?>>
-                    </span>
-                <? endforeach ?>
-            </div>
-        </section>
+        <?= $this->render_partial('calendar/schedule/_colorpicker.php', [
+            'selected' => $show_entry['color'],
+        ]) ?>
 
         <label>
             <?= _('Titel') ?>

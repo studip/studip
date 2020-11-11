@@ -130,11 +130,6 @@ div.schedule_edit_entry > form {
     padding-top: 10px;
 }
 
-#color_picker {
-    padding-top: 3px;
-    white-space: nowrap;
-}
-
 #schedule_entry_hours {
     display: inline;
     padding: 2px;
@@ -184,9 +179,43 @@ td.schedule-adminbind {
     }
 }
 
-/* --- Coloring Styles for Timetable ---------------------------------------------- */
 #color_picker {
+    div {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
     span {
+        flex: 0 0 auto;
+
+        padding: 3px;
+        vertical-align: middle;
+    }
+
+    input[type="radio"] {
+        display: none;
+
+        &:checked + label {
+            outline: 1px solid @black;
+
+            position: relative;
+            .icon('before', 'accept', 'info', 24px);
+            &::before {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                filter: drop-shadow(0 0 2px @white);
+            }
+        }
+    }
+
+    label {
+        border: 1px solid @white;
+        display: inline-block;
+        height: 32px;
+        width: 32px;
+
         &.schedule-category1 {
             background-color: @calendar-category-1;
         }
