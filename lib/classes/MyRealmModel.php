@@ -822,7 +822,7 @@ class MyRealmModel
             $data['start_semester'] = $studygroup->start_semester->name;
             $data['end_semester'] = $studygroup->end_semester->name;
             $data['obj_type'] = 'sem';
-            $data['user_status'] = $studygroup->status;
+            $data['user_status'] = $membership->status;
             $data['gruppe'] = $membership->gruppe;
             $data['modules'] = $modules->getLocalModules(
                 $studygroup->id,
@@ -838,11 +838,13 @@ class MyRealmModel
             );
             $studygroup_data[$studygroup->id] = $data;
         }
+
         $visit_data = get_objects_visits(array_keys($studygroups), 'sem', null);
         foreach ($visit_data as $id => $visit) {
             $studygroup_data[$id]['last_visitdate'] = $visit['last_visitdate'];
             $studygroup_data[$id]['visitdate'] = $visit['visitdate'];
         }
+
         return $studygroup_data;
     }
 
