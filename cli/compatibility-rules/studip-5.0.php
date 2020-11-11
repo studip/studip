@@ -1,14 +1,12 @@
 <?php
 // "Rules"/definitions for critical changes in 5.0
 return [
-    'ScheduleDidUpdate' => 'Parameters for Notification have changed. You will now receive a #{yellow:Schedule object} instead of user_id and values array.',
-    'ScheduleDidCreate' => 'Parameters for Notification have changed. You will now receive a #{yellow:Schedule object} instead of user_id and values array.',
+    'SemesterData'      => '#{red:Removed} - Use #{yellow:Semester model} instead',
+    'StatusgroupsModel' => '#{red:Removed} - Use #{yellow:Statusgruppen model} instead',
+    'StudipNullCache'   => '#{red:Removed} - Use #{yellow:StudipMemoryCache} instead',
 
-    'SemesterData'      => '#{red:Removed} - use #{yellow:Semester model} instead',
-    'StatusgroupsModel' => '#{red:Removed} - use #{yellow:Statusgruppen model} instead',
-    'StudipNullCache'   => '#{red:Removed} - use #{yellow:StudipMemoryCache} instead',
-
-    'get_config' => '#{red:Deprecated} - use #{yellow:Config::get()} instead',
+    'get_config'        => '#{red:Deprecated} - Use #{yellow:Config::get()} instead.',
+    'RESTAPI\\RouteMap' => '#{red:Deprecated} - Use the #{yellow:JSONAPI} instead.',
 
     // Vendor changes
     'Leafo\\ScssPhp' => 'Library was replaced by #{yellow:scssphp/scssphp}',
