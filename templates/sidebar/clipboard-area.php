@@ -106,7 +106,9 @@
                                                id="<?= htmlReady($checkbox_id) ?>"
                                                <?= in_array($item['id'], $selected_clipboard_items)
                                                  ? 'checked="checked"'
-                                                 : '' ?>
+                                                 : (!$selected_clipboard_items
+                                                  ? 'checked="checked"'
+                                                  : '' ?>
                                                class="studip-checkbox">
                                         <label for="<?= htmlReady($checkbox_id) ?>"><?= htmlReady($item['name']) ?></label>
                                     </td>
