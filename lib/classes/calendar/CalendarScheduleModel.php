@@ -17,6 +17,17 @@
 define('DEFAULT_COLOR_SEM', 2);
 define('DEFAULT_COLOR_NEW', 3);
 define('DEFAULT_COLOR_VIRTUAL', 1);
+define('CALENDAR_COLOR_MAPPING', [
+    0 => 9,
+    1 => 8,
+    2 => 5,
+    3 => 14,
+    4 => 7,
+    5 => 10,
+    6 => 11,
+    7 => 2,
+    8 => 2,
+]);
 
 /**
  * Pseudo-namespace containing helper methods for the schedule.
@@ -213,12 +224,10 @@ class CalendarScheduleModel
 
 
                 // check the settings for this entry
-                $db = DBManager::get();
-                $stmt = $db->prepare('SELECT user_id FROM seminar_user WHERE Seminar_id = ? AND user_id = ?');
-                $stmt->execute([$sem->getId(), $user_id]);
-                $entry['type'] = $stmt->fetchColumn() ? 'sem' : 'virtual';
+                $member = CourseMember::find([$sem->getId(), $user_id]);
+                $entry['type'] = $member ? 'sem' : 'virtual';
 
-                $stmt = $db->prepare('SELECT * FROM schedule_seminare WHERE seminar_id = ? AND user_id = ? AND metadate_id = ?');
+                $stmt = DBManager::get()->prepare('SELECT * FROM schedule_seminare WHERE seminar_id = ? AND user_id = ? AND metadate_id = ?');
                 $stmt->execute([$sem->getId(), $user_id, $cycle->getMetaDateId()]);
                 $details = $stmt->fetch();
 
@@ -229,7 +238,7 @@ class CalendarScheduleModel
                         'title' => _("Dies ist eine vorgemerkte Veranstaltung")
                     ];
                 } else {
-                    $entry['color'] = $details['color'] ? $details['color'] : DEFAULT_COLOR_SEM;
+                    $entry['color'] = $details['color'] ?: CALENDAR_COLOR_MAPPING[$member->gruppe] ?? DEFAULT_COLOR_SEM;
                 }
                 $entry['visible'] = $details ? $details['visible'] : 1;
 
