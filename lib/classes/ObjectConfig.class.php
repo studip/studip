@@ -111,6 +111,13 @@ class ObjectConfig extends Config
                     case 'array':
                         $value = (array)json_decode($row['value'], true);
                         break;
+                    case 'i18n':
+                        $value = new I18NString($row['value'], null, [
+                            'object_id' => md5("{$row['field']}|{$this->range_id}"),
+                            'table'     => 'config',
+                            'field'     => 'value',
+                        ]);
+                        break;
                     default:
                         $value = $row['value'];
                 }
@@ -168,13 +175,23 @@ class ObjectConfig extends Config
         switch ($metadata['type']) {
             case 'integer':
             case 'boolean':
-                $value = (int)$value;
-            break;
+                $value = (int) $value;
+                break;
             case 'array' :
                 $value = json_encode($value);
-            break;
+                break;
+            case 'i18n':
+                $value->setMetadata([
+                    'object_id' => md5("{$field}|{$this->range_id}"),
+                    'table'     => 'config',
+                    'field'     => 'value',
+                ]);
+                $value->storeTranslations();
+
+                $value = $value->original();
+                break;
             default:
-                $value = (string)$value;
+                $value = (string) $value;
         }
         $entry->value = $value;
         $ret = $entry->store();
