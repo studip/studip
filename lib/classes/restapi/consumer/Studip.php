@@ -4,9 +4,10 @@ namespace RESTAPI\Consumer;
 /**
  * Stud.IP Session Consumer for the rest api
  *
- * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @license GPL 2 or later
- * @since   Stud.IP 3.0
+ * @author     Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @license    GPL 2 or later
+ * @since      Stud.IP 3.0
+ * @deprecated Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  */
 class Studip extends Base
 {

@@ -5,9 +5,10 @@ use DBManager, PDO;
 /**
  * REST API routing permissions
  *
- * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @license GPL 2 or later
- * @since   Stud.IP 2.6
+ * @author     Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @license    GPL 2 or later
+ * @since      Stud.IP 2.6
+ * @deprecated Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  */
 class UserPermissions
 {
@@ -21,7 +22,7 @@ class UserPermissions
     public static function get($user_id = null)
     {
         $user_id = $user_id ?: $GLOBALS['user']->id;
-        
+
         static $cache = [];
         if (!isset($cache[$user_id])) {
             $cache[$user_id] = new self($user_id);
@@ -125,7 +126,7 @@ class UserPermissions
 
         return $result;
     }
-    
+
     /**
      * Get a list of all consumer the user has granted acces to.
      *

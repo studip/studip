@@ -154,10 +154,11 @@ use gossi\docblock\Docblock;
  *       strings encoded in windows-1252. If the original body
  *       was UTF-8 encoded, it is automatically re-encoded to windows-1252.
  *
- * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @author  <mlunzena@uos.de>
- * @license GPL 2 or later
- * @since   Stud.IP 3.0
+ * @author     Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @author     <mlunzena@uos.de>
+ * @license    GPL 2 or later
+ * @since      Stud.IP 3.0
+ * @deprecated Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  */
 abstract class RouteMap
 {

@@ -2,8 +2,9 @@
 /**
  * This class implements REST routes for the new Stud.IP file system.
  *
- * @author Moritz Strohm <strohm@data-quest.de>
- * @license GNU General Public License Version 2 or later
+ * @author     Moritz Strohm <strohm@data-quest.de>
+ * @license    GNU General Public License Version 2 or later
+ * @deprecated Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  *
  * Partially based upon the Files.php source code from Jan-Hendrik Willms
  * (tleilax+studip@gmail.com) and mluzena@uos.de which is also

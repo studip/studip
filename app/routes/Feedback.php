@@ -3,7 +3,8 @@
 namespace RESTAPI\Routes;
 
 /**
- * @author Nils Gehrke <nils.gehrke@uni-goettingen.de>
+ * @author     Nils Gehrke <nils.gehrke@uni-goettingen.de>
+ * @deprecated Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  *
  * @condition feedback_id ^\d*$
  * @condition course_id ^[a-f0-9]{32}$

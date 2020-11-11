@@ -6,9 +6,10 @@ use SemClass;
 use SemType;
 
 /**
- * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @author  <mlunzena@uos.de>
- * @license GPL 2 or later
+ * @author     Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @author     <mlunzena@uos.de>
+ * @license    GPL 2 or later
+ * @deprecated Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  */
 class Studip extends \RESTAPI\RouteMap
 {

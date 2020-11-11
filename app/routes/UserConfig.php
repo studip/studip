@@ -7,9 +7,10 @@ use RESTAPI\Router;
 /**
  * API routes for accessing user config values.
  *
- * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @license GPL2 or any later version
- * @since   Stud.IP 3.4
+ * @author     Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @license    GPL2 or any later version
+ * @since      Stud.IP 3.4
+ * @deprecated Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  *
  * @condition user_id ^[0-9a-f]{1,32}$
  *

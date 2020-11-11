@@ -3,7 +3,7 @@
 require_once 'lib/bootstrap-api.php';
 
 /**
- *
+ * @deprecated Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  **/
 class Api_OauthController extends StudipController
 {

@@ -5,10 +5,11 @@ use \Exception;
 /**
  * Router exception.
  *
- * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @author  <mlunzena@uos.de>
- * @license GPL 2 or later
- * @since   Stud.IP 3.0
+ * @author     Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @author     <mlunzena@uos.de>
+ * @license    GPL 2 or later
+ * @since      Stud.IP 3.0
+ * @deprecated Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  */
 class RouterException extends Exception
 {

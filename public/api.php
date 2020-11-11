@@ -13,6 +13,8 @@
  * finden. Der Router liefert in jedem Fall ein Response-Objekt
  * zurück, dass dann anschließende ausgegeben wird, d.h. die Header
  * werden gesendet und dann das Ergebnis ausgegeben oder gestreamt.
+ *
+ * @deprecated  Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  */
 
 

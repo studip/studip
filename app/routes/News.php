@@ -2,8 +2,9 @@
 namespace RESTAPI\Routes;
 
 /**
- * @author  <mlunzena@uos.de>
- * @license GPL 2 or later
+ * @author     <mlunzena@uos.de>
+ * @license    GPL 2 or later
+ * @deprecated Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  *
  * @condition news_id ^[0-9a-f]{1,32}$
  * @condition course_id ^[0-9a-f]{1,32}$

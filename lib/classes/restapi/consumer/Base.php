@@ -12,9 +12,10 @@ use PDO;
  * Consumers provide means for authenticating a user and the access
  * permissions for routes are bound to specific consumers.
  *
- * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @license GPL 2 or later
- * @since   Stud.IP 3.0
+ * @author     Jan-Hendrik Willms <tleilax+studip@gmail.com>
+ * @license    GPL 2 or later
+ * @since      Stud.IP 3.0
+ * @deprecated Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  */
 abstract class Base extends \SimpleORMap
 {
