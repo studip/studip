@@ -2101,6 +2101,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $user_is_resource_autor || ($user->id == $this->user_id);
 
         $request_api_urls  = [];
+        $request_view_urls = [];
 
         if ($request_is_editable) {
             $request_api_urls = [
@@ -2134,13 +2135,6 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
                     );
                 }
             }
-        } else {
-            $request_view_urls = [
-                'show' => URLHelper::getURL(
-                    'dispatch.php/resources/room_request/index/'
-                    . $this->id
-                )
-            ];
         }
 
         $events = [];
