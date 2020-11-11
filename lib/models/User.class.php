@@ -1285,6 +1285,12 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$new_id, $old_id]);
 
+        // Consultations
+        $query = "UPDATE IGNORE consultation_bookings SET user_id = ? WHERE user_id = ?";
+        DBManager::get()->execute($query, [$new_id, $old_id]);
+        $query = "UPDATE IGNORE consultation_blocks SET teacher_id = ? WHERE teacher_id = ?";
+        DBManager::get()->execute($query, [$new_id, $old_id]);
+
         NotificationCenter::postNotification('UserDidMigrate', $old_id, $new_id);
 
         $messages[] = _('Dateien, Termine, Adressbuch, Nachrichten und weitere Daten wurden migriert.');
