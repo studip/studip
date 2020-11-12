@@ -164,6 +164,7 @@ if ($file instanceof LibraryFile) {
     }
 }
 if (isset($file_ref) && $file_ref->file->metadata['access_type'] == 'redirect') {
+    $file_ref->incrementDownloadCounter();
     header('Location: ' . $file_ref->file->metadata['url']);
     die();
 }
