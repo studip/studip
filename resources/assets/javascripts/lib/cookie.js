@@ -1,7 +1,7 @@
 /*jslint esversion: 6*/
 class Cookie {
     static set(name, value, expiry_days) {
-        var chunks = [name + '=' + value];
+        var chunks = [name + '=' + value, 'SameSite=strict'];
         if (expiry_days !== undefined) {
             let date = new Date();
             date.setTime(date.getTime() + expiry_days * 24 * 60 * 60 * 1000);
