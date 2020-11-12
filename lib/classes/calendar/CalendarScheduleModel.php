@@ -18,15 +18,15 @@ define('DEFAULT_COLOR_SEM', 2);
 define('DEFAULT_COLOR_NEW', 3);
 define('DEFAULT_COLOR_VIRTUAL', 1);
 define('CALENDAR_COLOR_MAPPING', [
-    0 => 9,
-    1 => 8,
-    2 => 5,
-    3 => 14,
-    4 => 7,
-    5 => 10,
-    6 => 11,
-    7 => 2,
-    8 => 2,
+    0 => 2,
+    1 => 3,
+    2 => 8,
+    3 => 5,
+    4 => 9,
+    5 => 7,
+    6 => 1,
+    7 => 4,
+    8 => 6,
 ]);
 
 /**
