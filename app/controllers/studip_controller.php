@@ -431,7 +431,7 @@ abstract class StudipController extends Trails_Controller
 
         $disposition = $inline ? 'inline' : 'attachment';
 
-        $this->render_temporary_file($temp_file, $filename, 'application/pdf');
+        $this->render_temporary_file($temp_file, $filename, 'application/pdf', $disposition);
     }
 
     /**
