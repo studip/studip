@@ -459,11 +459,17 @@ class Calendar_ScheduleController extends AuthenticatedController
             $end_hour = Request::int('end_hour');
             $days = Request::getArray('days');
         }
+
+        if ($start_hour > $end_hour) {
+            $end_hour = $start_hour + 1;
+            PageLayout::postError(_('Die Endzeit darf nicht vor der Startzeit liegen!'));
+        }
+
         $this->my_schedule_settings = [
             'glb_start_time' => $start_hour,
-            'glb_end_time' => $end_hour,
-            'glb_days' => $days,
-            'converted' => true
+            'glb_end_time'   => $end_hour,
+            'glb_days'       => $days,
+            'converted'      => true
         ];
 
         if ($semester_id) {

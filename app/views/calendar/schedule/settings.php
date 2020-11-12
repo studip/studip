@@ -9,25 +9,15 @@
             <section class="hgroup">
                 <label>
                     <?= _('von') ?>
-                    <select name="start_hour">
-                        <? for ($i = 0; $i <= 23; $i++) : ?>
-                            <option
-                                value="<?= $i ?>" <?= $settings['glb_start_time'] == $i ? 'selected="selected"' : '' ?>>
-                                <?= str_pad($i, 2, '0', STR_PAD_LEFT) ?>:00
-                            </option>
-                        <? endfor ?>
-                    </select>
+                    <input type="text" name="start_hour" id="start-hour" class="size-s"
+                           value="<?= sprintf('%02u:00', $settings['glb_start_time']) ?>"
+                           data-time-picker>
                 </label>
                 <label>
                     <?= _('bis') ?>
-                    <select name="end_hour">
-                        <? for ($i = 0; $i <= 23; $i++) : ?>
-                            <option
-                                value="<?= $i ?>" <?= $settings['glb_end_time'] == $i ? 'selected="selected"' : '' ?>>
-                                <?= str_pad($i, 2, '0', STR_PAD_LEFT) ?>:00
-                            </option>
-                        <? endfor ?>
-                    </select>
+                    <input type="text" name="end_hour" id="end-hour" class="size-s"
+                           value="<?= sprintf('%02u:00', $settings['glb_end_time']) ?>"
+                           data-time-picker>
                 </label>
                 <?= _('Uhr') ?><br>
             </section>
