@@ -17,17 +17,6 @@
 define('DEFAULT_COLOR_SEM', 2);
 define('DEFAULT_COLOR_NEW', 3);
 define('DEFAULT_COLOR_VIRTUAL', 1);
-define('CALENDAR_COLOR_MAPPING', [
-    0 => 2,
-    1 => 3,
-    2 => 8,
-    3 => 5,
-    4 => 9,
-    5 => 7,
-    6 => 1,
-    7 => 4,
-    8 => 6,
-]);
 
 /**
  * Pseudo-namespace containing helper methods for the schedule.
@@ -238,7 +227,7 @@ class CalendarScheduleModel
                         'title' => _("Dies ist eine vorgemerkte Veranstaltung")
                     ];
                 } else {
-                    $entry['color'] = $details['color'] ?: CALENDAR_COLOR_MAPPING[$member->gruppe] ?? DEFAULT_COLOR_SEM;
+                    $entry['color'] = $details['color'] ?: ($member->gruppe % 9 + 1);
                 }
                 $entry['visible'] = $details ? $details['visible'] : 1;
 
