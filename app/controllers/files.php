@@ -374,13 +374,18 @@ class FilesController extends AuthenticatedController
 
         if ($this->current_view == 'overview') {
             $this->all_files_c = FileRef::countAll($GLOBALS['user']->id, $this->begin, $this->end);
-            $all_file_refs = FileRef::findAll($GLOBALS['user']->id, $this->begin, $this->end, '', 5, 0);
+            $all_file_refs = FileRef::findAll($GLOBALS['user']->id, $this->begin, $this->end, '', 100, 0);
             $this->all_files = [];
+            $count_visible = 0;
             foreach ($all_file_refs as $file_ref) {
-                $this->all_files[] = FilesystemVueDataManager::getFileVueData(
+                $vue_data = FilesystemVueDataManager::getFileVueData(
                     $file_ref->getFileType(),
                     $this->topFolder
                 );
+                if (isset($vue_data['download_url'])) {
+                    $this->all_files[] = $vue_data;
+                    if (++$count_visible === 5) break;
+                }
             }
             $this->public_files_c = FileRef::countPublicFiles($GLOBALS['user']->id, $this->begin, $this->end);
             $public_file_refs = FileRef::findPublicFiles($GLOBALS['user']->id, $this->begin, $this->end, 5, 0);

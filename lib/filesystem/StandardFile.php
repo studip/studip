@@ -1,6 +1,6 @@
 <?php
 
-class StandardFile implements FileType
+class StandardFile implements FileType, ArrayAccess
 {
 
     protected $fileref = null;
@@ -66,6 +66,62 @@ class StandardFile implements FileType
     {
         $this->fileref = $fileref;
         $this->file = $file ?: $fileref->file;
+    }
+
+    /**
+     * magic method for dynamic properties
+     */
+    public function __get($name)
+    {
+        return isset($this->fileref->$name) ? $this->fileref->$name : null;
+    }
+
+    /**
+     * magic method for dynamic properties
+     */
+    public function __set($name, $value)
+    {
+        return isset($this->fileref->$name) ? $this->fileref->$name = $value : null;
+    }
+
+    /**
+     * magic method for dynamic properties
+     */
+    public function __isset($name)
+    {
+        return isset($this->fileref->$name);
+    }
+
+    /**
+     * ArrayAccess: Check whether the given offset exists.
+     */
+    public function offsetExists($offset)
+    {
+        return $this->__isset($offset);
+    }
+
+    /**
+     * ArrayAccess: Get the value at the given offset.
+     */
+    public function offsetGet($offset)
+    {
+        return $this->__get($offset);
+    }
+
+    /**
+     * ArrayAccess: Set the value at the given offset.
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->__set($offset, $value);
+    }
+
+    /**
+     * ArrayAccess: unset the value at the given offset (not applicable)
+     */
+    public function offsetUnset($offset)
+    {
+
     }
 
     /**
@@ -278,8 +334,8 @@ class StandardFile implements FileType
 
     public function isVisible($user_id = null)
     {
-        //StandardFile objects are always visible:
-        return true;
+        $user_id || $user_id = $GLOBALS['user']->id;
+        return $this->getFolderType()->isReadable($user_id);
     }
 
 

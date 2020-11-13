@@ -269,8 +269,10 @@ class FileController extends AuthenticatedController
             $this->from_plugin = Request::get("from_plugin");
         } else {
             $file_ref = FileRef::find($file_area_object_id);
-            $class = $file_ref->file['filetype'];
-            $this->file = new $class($file_ref);
+            if ($file_ref) {
+                $class = $file_ref->file['filetype'];
+                $this->file = new $class($file_ref);
+            }
         }
 
         if ($this->file) {

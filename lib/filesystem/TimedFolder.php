@@ -201,4 +201,37 @@ class TimedFolder extends PermissionEnabledFolder
 
     }
 
+    /**
+     * @param FileRef|string $fileref_or_id
+     * @param string $user_id
+     * @return bool
+     */
+    public function isFileEditable($fileref_or_id, $user_id)
+    {
+        //HomeworkFolder Style
+        if (!Seminar_Perm::get()->have_studip_perm('tutor', $this->range_id) &&
+            $this->isWritable($user_id) && !$this->isReadable($user_id)) {
+            return false;
+        }
+        return parent::isFileEditable($fileref_or_id, $user_id);
+    }
+
+    /**
+     * Checks if a user has write permissions to a file.
+     *
+     *
+     * @param FileRef|string $fileref_or_id
+     * @param string $user_id
+     * @return bool
+     */
+    public function isFileWritable($fileref_or_id, $user_id)
+    {
+        //HomeworkFolder Style
+        if (!Seminar_Perm::get()->have_studip_perm('tutor', $this->range_id) &&
+            $this->isWritable($user_id) && !$this->isReadable($user_id)) {
+            return false;
+        }
+        return parent::isFileWritable($fileref_or_id, $user_id);
+    }
+
 }
