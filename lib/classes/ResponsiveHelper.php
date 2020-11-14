@@ -32,7 +32,7 @@ class ResponsiveHelper
             $image_src = $image ? $image->copyWithRole('info_alt')->asImagePath() : false;
             $item = [
                 'icon'   => $image_src ? self::getAssetsURL($image_src) : false,
-                'title'  => $nav->getTitle(),
+                'title'  => (string) $nav->getTitle(),
                 'url'    => self::getURL($nav->getURL(), $link_params),
             ];
 
@@ -71,7 +71,7 @@ class ResponsiveHelper
             $subpath = "{$path}/{$subpath}";
 
             $item = [
-                'title' => $subnav->getTitle(),
+                'title' => (string) $subnav->getTitle(),
                 'url'   => self::getURL($subnav->getURL()),
             ];
 
