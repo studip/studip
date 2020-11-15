@@ -246,6 +246,7 @@ function get_object_type($id, $check_only = [])
 
     // Institute or faculty?
     if ($check_all || in_array('inst', $check_only) || in_array('fak', $check_only)) {
+        $query = "SELECT Institut_id = fakultaets_id FROM Institute WHERE Institut_id = ?";
         $is_fak = DBManager::get()->fetchColumn($query, [$id]);
         if ($is_fak !== false) {
             return $cache[$id] = $is_fak ? 'fak' : 'inst';
