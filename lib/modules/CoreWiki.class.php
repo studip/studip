@@ -52,7 +52,7 @@ class CoreWiki implements StudipModule
             return null;
         }
 
-        $nav = new Navigation('wiki');
+        $nav = new Navigation(_('Wiki'));
         if ($result['neue']) {
             $nav->setURL('wiki.php', ['view' => 'listnew']);
             $nav->setImage(Icon::create('wiki+new', Icon::ROLE_ATTENTION, [

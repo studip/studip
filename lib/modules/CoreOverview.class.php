@@ -37,7 +37,7 @@ class CoreOverview implements StudipModule
             return null;
         }
 
-        $nav = new Navigation('news', '');
+        $nav = new Navigation(_('Ankündigungen'), '');
         if ($result['neue']) {
             $nav->setURL('?new_news=true');
             $nav->setImage(Icon::create('news+new', Icon::ROLE_ATTENTION), [

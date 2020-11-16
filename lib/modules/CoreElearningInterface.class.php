@@ -35,7 +35,7 @@ class CoreElearningInterface implements StudipModule
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         if (!empty($result)) {
-            $nav = new Navigation('elearning', 'dispatch.php/course/elearning/show');
+            $nav = new Navigation(_('Lernmodule'), 'dispatch.php/course/elearning/show');
             if ($result['neue']) {
                 $nav->setImage(Icon::create('learnmodule+new', Icon::ROLE_ATTENTION), [
                     'title' => sprintf(

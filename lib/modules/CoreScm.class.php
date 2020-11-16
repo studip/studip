@@ -41,7 +41,7 @@ class CoreScm implements StudipModule
 
         $scm = StudipScmEntry::find($result['scm_id']);
 
-        $nav = new Navigation('scm', 'dispatch.php/course/scm');
+        $nav = new Navigation((string) $scm->tab_name, 'dispatch.php/course/scm');
 
         if ($result['count']) {
             if ($result['neue']) {

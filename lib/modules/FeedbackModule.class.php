@@ -35,7 +35,7 @@ class FeedbackModule extends StudIPPlugin implements StandardPlugin, SystemPlugi
     public function getTabNavigation($course_id)
     {
         if (Feedback::hasAdminPerm($course_id)) {
-            $navigation = new Navigation('Feedback');
+            $navigation = new Navigation(_('Feedback'));
             $navigation->addSubNavigation('index', new Navigation(_('Übersicht'), 'dispatch.php/course/feedback'));
             return ['feedback' => $navigation];
         }

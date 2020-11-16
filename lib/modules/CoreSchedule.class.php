@@ -41,7 +41,7 @@ class CoreSchedule implements StudipModule
             return null;
         }
 
-        $nav = new Navigation('schedule', 'dispatch.php/course/dates');
+        $nav = new Navigation(_('Ablaufplan'), 'dispatch.php/course/dates');
         if ($result['neue']) {
             $nav->setImage(Icon::create('schedule+new', Icon::ROLE_ATTENTION), [
                 'title' => sprintf(
