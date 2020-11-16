@@ -61,70 +61,76 @@
           : _('unbekannt') ?>
     <? else: ?>
         <? if ($user_has_user_perms): ?>
-            <h3><?= _('Gebucht für:') ?></h3>
-            <? if ($booking->getAssignedUserType() === 'course'): ?>
+            <h3><?= _('Gebucht von:') ?></h3>
+            <? if ($booking->booking_user) :?>
                 <a href="<?= URLHelper::getScriptLink(
-                         'dispatch.php/course/details/index/'
-                         . $booking->getAssignedUser()->id
-                         ) ?>" data-dialog>
-                    <?= htmlReady($booking->getAssignedUserName(), true, true) ?>
-                    <?= Icon::create(
-                        'link-intern',
-                        Icon::ROLE_CLICKABLE,
-                        [
-                            'title' => _('Veranstaltungsdetails anzeigen'),
-                            'class' => 'text-bottom'
-                        ]
-                    ) ?>
-                </a>
-                <? if (Seminar_Perm::get()->have_studip_perm('dozent', $booking->getAssignedUser()->id)): ?>
-                    <div>
-                        <a href="<?= URLHelper::getLink('dispatch.php/course/timesrooms', [ 'cid' => $booking->getAssignedUser()->id]) ?>">
-                            <?=_('Verwaltung von Zeiten und Räumen')?>
-                            <?= Icon::create('schedule',
-                                Icon::ROLE_CLICKABLE,
-                                [
-                                 'title' => _('Verwaltung von Zeiten und Räumen'),
-                                 'class' => 'text-bottom'
-                                ]) ?>
-                        </a>
-                    </div>
-                <? endif ?>
-            <? elseif ($booking->getAssignedUserType() === 'user') :?>
-                <a href="<?= URLHelper::getScriptLink(
-                    'dispatch.php/profile',
-                    ['username' => $booking->assigned_user->username]
-                ) ?>">
-                    <?= htmlReady($booking->assigned_user->getFullName()) ?>
+                         'dispatch.php/profile',
+                         ['username' => $booking->booking_user->username]
+                         ) ?>">
+                <?= htmlReady($booking->booking_user->getFullName()) ?>
                 </a>
                 <a href="<?= URLHelper::getScriptLink(
-                    'dispatch.php/messages/write',
-                    ['rec_uname' => $booking->assigned_user->username]
-                ) ?>" data-dialog="size=auto">
-                    <?= Icon::create('mail')->asImg(20, ['class' => 'text-bottom']) ?>
+                         'dispatch.php/messages/write',
+                         ['rec_uname' => $booking->booking_user->username]
+                         ) ?>" data-dialog="size=auto">
+                <?= Icon::create('mail')->asImg(20, ['class' => 'text-bottom']) ?>
                 </a>
             <? else :?>
-                <?= htmlReady($booking->description) ?>
+                <?= _('unbekannt') ?>
             <? endif ?>
         <? endif ?>
+    <? endif ?>
+    <? if ($booking->getAssignedUserType() === 'course'): ?>
+        <h3><?= _('Gebucht für:') ?></h3>
+        <a href="<?= URLHelper::getScriptLink(
+                 'dispatch.php/course/details/index/'
+                 . $booking->getAssignedUser()->id
+                 ) ?>" data-dialog>
+            <?= htmlReady($booking->getAssignedUserName(), true, true) ?>
+            <?= Icon::create(
+                'link-intern',
+                Icon::ROLE_CLICKABLE,
+                [
+                    'title' => _('Veranstaltungsdetails anzeigen'),
+                    'class' => 'text-bottom'
+                ]
+            ) ?>
+        </a>
+        <? if (Seminar_Perm::get()->have_studip_perm('dozent', $booking->getAssignedUser()->id)): ?>
+            <div>
+                <a href="<?= URLHelper::getLink('dispatch.php/course/timesrooms', [ 'cid' => $booking->getAssignedUser()->id]) ?>">
+                    <?=_('Verwaltung von Zeiten und Räumen')?>
+                    <?= Icon::create(
+                        'schedule',
+                        Icon::ROLE_CLICKABLE,
+                        [
+                            'title' => _('Verwaltung von Zeiten und Räumen'),
+                            'class' => 'text-bottom'
+                        ]) ?>
+                </a>
+            </div>
         <? endif ?>
-        <h3><?= _('Gebucht von:') ?></h3>
-        <? if ($booking->booking_user) :?>
+    <? elseif ($booking->getAssignedUserType() === 'user') : ?>
+        <? if (($booking->assigned_user->visible == 'yes') ||
+               ($booking->assigned_user->id == $GLOBALS['user']->id) ||
+               $user_has_user_perms) : ?>
+            <h3><?= _('Gebucht für:') ?></h3>
             <a href="<?= URLHelper::getScriptLink(
-                'dispatch.php/profile',
-                ['username' => $booking->booking_user->username]
-            ) ?>">
-                <?= htmlReady($booking->booking_user->getFullName()) ?>
+                     'dispatch.php/profile',
+                     ['username' => $booking->assigned_user->username]
+                     ) ?>">
+                <?= htmlReady($booking->assigned_user->getFullName()) ?>
             </a>
             <a href="<?= URLHelper::getScriptLink(
-                'dispatch.php/messages/write',
-                ['rec_uname' => $booking->booking_user->username]
-            ) ?>" data-dialog="size=auto">
+                     'dispatch.php/messages/write',
+                     ['rec_uname' => $booking->assigned_user->username]
+                     ) ?>" data-dialog="size=auto">
                 <?= Icon::create('mail')->asImg(20, ['class' => 'text-bottom']) ?>
             </a>
-        <? else :?>
-          <?= _('unbekannt') ?>
         <? endif ?>
+    <? else : ?>
+        <?= htmlReady($booking->description) ?>
+    <? endif ?>
     <? if ($make_comment_editable): ?>
         <form class="default" method="post"
               action="<?= htmlReady(
