@@ -39,13 +39,6 @@ STUDIP.loadChunk = (function () {
                 );
                 break;
 
-            case 'widgetsystem':
-                promise = import(
-                    /* webpackChunkName: "widgetsystem" */
-                    './chunks/widgetsystem'
-                );
-                break;
-
             case 'mathjax':
                 if (mathjax_promise === null) {
                     //setup the configuration for MathJax 3.x or later:

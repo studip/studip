@@ -39,7 +39,6 @@
         "es6-promise": "4.2.8",
         "expose-loader": "0.7.5",
         "favico.js": "0.3.10",
-        "gridstack": "0.3.0",
         "highlight.js": "9.13.1",
         "jquery": "3.4.0",
         "jquery-nestable": "0.8.0",

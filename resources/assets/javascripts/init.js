@@ -73,7 +73,6 @@ import Toolbar from './lib/toolbar.js';
 import Tooltip from './lib/tooltip.js';
 import Tour from './lib/tour.js';
 import UserFilter from './lib/user_filter.js';
-import WidgetSystem from './lib/widget_system.js';
 import wysiwyg from './lib/wysiwyg.js';
 import ScrollToTop from './lib/scroll_to_top.js';
 
@@ -155,7 +154,6 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     Tour,
     URLHelper,
     UserFilter,
-    WidgetSystem,
     wysiwyg,
     Resources,
     Clipboard,
