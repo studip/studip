@@ -1694,7 +1694,33 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $name = $this->getRangeObject()->getFullname();
             $name .= ' (' . implode(',', $this->getRangeObject()->getMembersWithStatus('dozent', true)->limit(3)->getValue('nachname')) . ')';
         } else {
-            $name = $this->getRangeObject()->getFullname();
+            $range_object = $this->getRangeObject();
+            if ($range_object instanceof User) {
+                if ($range_object->visible == 'yes') {
+                    $name = $range_object->getFullName();
+                } else if ($this->user_id == $GLOBALS['user']->id) {
+                    $name = $range_object->getFullName();
+                } else {
+                    $current_user = User::findCurrent();
+                    if ($current_user instanceof User) {
+                        //If the current user has at least autor permissions
+                        //(which are required to see all requests), they can
+                        //see the name of the requester.
+                        if ($this->resource_id && ($this->resource instanceof Resource)
+                            && $this->resource->userHasPermission($current_user, 'autor')) {
+                            $name = $range_object->getFullname();
+                        } else if (ResourceManager::userHasGlobalPermission($current_user, 'autor')) {
+                            $name = $range_object->getFullname();
+                        } else {
+                            return '';
+                        }
+                    } else {
+                        return '';
+                    }
+                }
+            } else {
+                $name = $range_object->getFullname();
+            }
             if ($this->comment) {
                 $name .= " \n" . $this->comment;
             }

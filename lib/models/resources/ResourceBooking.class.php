@@ -1384,9 +1384,27 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
             $name = $this->assigned_course_date->course->getFullname();
             $name .= ' (' . implode(',', $this->assigned_course_date->course->getMembersWithStatus('dozent', true)->limit(3)->getValue('nachname')) . ')';
         } elseif ($this->getAssignedUserType() === 'user') {
-            $name = $this->assigned_user->getFullname();
-            if ($this->description) {
-                $name .= " \n" . $this->description;
+            if (($this->assigned_user->visible == 'yes') ||
+                ($this->assigned_user->id == $GLOBALS['user']->id)
+            ) {
+                $name = $this->assigned_user->getFullname();
+                if ($this->description) {
+                    $name .= " \n" . $this->description;
+                }
+            } else {
+                //Check if the current user has at least user permissions
+                //on the resource. In that case, even invisible assigned
+                //users become visible.
+                $resource = $this->resource->getDerivedClassInstance();
+                $current_user = User::findCurrent();
+                if (($resource instanceof Resource) && ($current_user instanceof User)) {
+                    if ($resource->userHasPermission($current_user, 'user')) {
+                        $name = $this->assigned_user->getFullname();
+                        if ($this->description) {
+                            $name .= " \n" . $this->description;
+                        }
+                    }
+                }
             }
         } else {
             $name = $this->description;
