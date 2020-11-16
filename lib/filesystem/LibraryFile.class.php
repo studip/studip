@@ -41,14 +41,12 @@ class LibraryFile extends URLFile
 
     public static function createFromLibraryDocument(LibraryDocument $document, $folder_id = null, $user_id = null)
     {
-        $file_name = self::getFileNameFromDocument($document);
         $file = new File();
-        $file->name = $file_name;
+        $file->name = '';
         $file->size = '0';
-        $file->mime_type = 'application/octet-stream'; //We don't know the mime type.
+        $file->mime_type = '';
         $file->metadata = $document->toJson();
         $file->user_id = $user_id ? $user_id : $GLOBALS['user']->id;
-        $file->author_name = trim($document->csl_data['author']) ? trim($document->csl_data['author']) : _('unbekannt');
         $file->filetype = get_called_class();
         $file->store();
 
@@ -363,6 +361,7 @@ class LibraryFile extends URLFile
                 }
             }
             $this->fileref->file_id = $file->id;
+            $this->fileref->name = $file->name;
             if ($this->fileref->isDirty()) {
                 if ($this->fileref->store()) {
                     $old_file->delete();
@@ -387,5 +386,18 @@ class LibraryFile extends URLFile
     public function hasFileAttached() : bool
     {
         return file_exists($this->file->path);
+    }
+
+    public function removeDataFile()
+    {
+        if ($this->hasFileAttached()) {
+            $this->file->deleteDataFile();
+            $this->file->mime_type = '';
+            $this->file->name = '';
+            $this->file->size = 0;
+            $this->fileref->name = '';
+            $this->fileref->store();
+            return $this->file->store();
+        }
     }
 }
