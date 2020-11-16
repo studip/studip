@@ -811,6 +811,8 @@ class MyRealmModel
             )
         );
 
+        $visit_data = get_objects_visits(array_keys($studygroups), 'sem', null);
+
         $data_fields = 'name seminar_id visible veranstaltungsnummer start_time duration_time status visible '
                      . 'chdate admission_binding modules admission_prelim';
         $modules = new Modules();
@@ -830,6 +832,8 @@ class MyRealmModel
                 $studygroup->modules,
                 $studygroup->status
             );
+            $data['visitdate'] = $visit_data[$studygroup->id]['visitdate'];
+            $data['last_visitdate'] = $visit_data[$studygroup->id]['last_visitdate'];
             $data['navigation'] = self::getAdditionalNavigations(
                 $studygroup->id,
                 $data,
@@ -837,12 +841,6 @@ class MyRealmModel
                 $GLOBALS['user']->id
             );
             $studygroup_data[$studygroup->id] = $data;
-        }
-
-        $visit_data = get_objects_visits(array_keys($studygroups), 'sem', null);
-        foreach ($visit_data as $id => $visit) {
-            $studygroup_data[$id]['last_visitdate'] = $visit['last_visitdate'];
-            $studygroup_data[$id]['visitdate'] = $visit['visitdate'];
         }
 
         return $studygroup_data;
