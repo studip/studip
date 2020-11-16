@@ -50,7 +50,7 @@ class GlobalSearchRoomBookings extends GlobalSearchModule
 
         $query = DBManager::get()->quote('%' . trim($search) . '%');
 
-        $sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT a.`id`, a.`description`, r.`resource_id`, r.`name`, a.`begin`, a.`end`
+        $sql = "SELECT SQL_CALC_FOUND_ROWS DISTINCT a.`id`, a.`description`, r.`id`, r.`name`, a.`begin`, a.`end`
                 FROM `resource_bookings` a
                 JOIN `resources` r
                 ON a.`resource_id` = r.`id`
