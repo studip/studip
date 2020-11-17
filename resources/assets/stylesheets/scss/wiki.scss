@@ -40,8 +40,7 @@ textarea.wiki-editor {
 
 body#wiki #main_content {
     a:not([href]) {
-        top: floor(-$bar-bottom-container-height - 10);
-        position: relative;
+        scroll-margin-top: ceil($bar-bottom-container-height + 10);
     }
     td.printcontent:last-child:not(:first-child) {
         padding-right: 22px;
