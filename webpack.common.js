@@ -24,7 +24,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, "public/assets"),
-        chunkFilename: `javascripts/[name]-${version.replace(/\W/g, '-')}.chunk.js`,
+        chunkFilename: `javascripts/[id].chunk.js`,
         filename: "javascripts/[name].js"
     },
     module: {
@@ -87,7 +87,9 @@ module.exports = {
                     {
                         loader: "less-loader",
                         options: {
-                            relativeUrls: false
+                            lessOptions: {
+                                relativeUrls: false
+                            }
                         }
                     }
                 ]

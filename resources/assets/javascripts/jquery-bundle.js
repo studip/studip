@@ -1,5 +1,4 @@
-import 'expose-loader?$!jquery';
-import 'expose-loader?jQuery!jquery';
+import 'expose-loader?exposes[]=$&exposes[]=jQuery!jquery';
 
 import 'jquery-ui/ui/widget.js';
 import 'jquery-ui/ui/position.js';
