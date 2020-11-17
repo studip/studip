@@ -1,0 +1,2 @@
+(self.webpackChunk_studip_core=self.webpackChunk_studip_core||[]).push([[811],{6585:function(a,t,e){"use strict";e.r(t);e(8333),e(6866),e(8512);jQuery.tablesorter.addParser({id:"htmldata",is:function(a,t,e,r){var s=t.config.parserMetadataName||"sortValue";return void 0!==$(e).data(s)},format:function(a,t,e){var r=t.config.parserMetadataName||"sortValue";return $(e).data(r)},type:"text"})}}]);
+//# sourceMappingURL=811.chunk.js.map

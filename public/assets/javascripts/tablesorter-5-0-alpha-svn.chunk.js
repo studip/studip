@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{184:function(a,t,r){"use strict";r.r(t);r(215),r(216),r(217);jQuery.tablesorter.addParser({id:"htmldata",is:function(a,t,r){var e=t.config.parserMetadataName||"sortValue";return void 0!==$(r).data(e)},format:function(a,t,r){var e=t.config.parserMetadataName||"sortValue";return $(r).data(e)},type:"text"})}}]);
-//# sourceMappingURL=tablesorter-5-0-alpha-svn.chunk.js.map
