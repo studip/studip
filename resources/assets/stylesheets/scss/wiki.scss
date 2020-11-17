@@ -38,8 +38,14 @@ textarea.wiki-editor {
     width: 98%;
 }
 
-body#wiki #main_content td.printcontent:last-child:not(:first-child) {
-    padding-right: 22px;
+body#wiki #main_content {
+    a:not([href]) {
+        top: floor(-$bar-bottom-container-height - 10);
+        position: relative;
+    }
+    td.printcontent:last-child:not(:first-child) {
+        padding-right: 22px;
+    }
 }
 
 .no-js #wiki button[name="submit-and-edit"] {
