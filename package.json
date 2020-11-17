@@ -4,7 +4,7 @@
     "description": "Stud.IP",
     "private": true,
     "scripts": {
-        "wds": "webpack-dev-server --progress --config webpack.dev-server.js",
+        "wds": "webpack serve --progress --config webpack.dev-server.js",
         "webpack-dev": "webpack --config webpack.dev.js --mode development",
         "webpack-prod": "webpack --config webpack.prod.js --mode production",
         "webpack-watch": "webpack --config webpack.dev.js --mode development --watch"
