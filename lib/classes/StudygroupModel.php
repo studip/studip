@@ -138,17 +138,18 @@ class StudygroupModel
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$username, $sem_id]);
         if ($accept_user_id = $statement->fetchColumn()) {
-            $query = "INSERT INTO seminar_user
-                        (user_id, seminar_id, status, position, gruppe,
-                         notification, mkdate, comment, visible)
-                      VALUES (?, ?, 'autor', 0, 8, 0, UNIX_TIMESTAMP(), '', 'yes')";
-            $statement = DBManager::get()->prepare($query);
-            $statement->execute([$accept_user_id, $sem_id]);
+            CourseMember::create([
+                'seminar_id' => $sem_id,
+                'user_id'    => $accept_user_id,
+                'status'     => 'autor',
+                'gruppe'     => 8,
+                'visible'    => 'yes',
+            ]);
 
-            $query = "DELETE FROM admission_seminar_user
-                      WHERE user_id = ? AND seminar_id = ?";
-            $statement = DBManager::get()->prepare($query);
-            $statement->execute([$accept_user_id, $sem_id]);
+            AdmissionApplication::deleteBySQL(
+                'user_id = ? AND seminar_id = ?',
+                [$accept_user_id, $sem_id]
+            );
 
             // Post equivalent notifications to a regular course
             $seminar = Seminar::getInstance($sem_id);
@@ -174,13 +175,12 @@ class StudygroupModel
      */
     public static function deny_user($username, $sem_id)
     {
-        $query = "DELETE FROM admission_seminar_user
-                  WHERE user_id = ? AND seminar_id = ?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([
-            get_userid($username),
-            $sem_id
-        ]);
+        $user = User::findByUsername($username);
+
+        AdmissionApplication::deleteBySQL(
+            'user_id = ? AND seminar_id = ?',
+            [$user->id, $sem_id]
+        );
     }
 
     /**
@@ -194,15 +194,11 @@ class StudygroupModel
      */
     public static function promote_user($username, $sem_id, $perm)
     {
-        $query = "UPDATE seminar_user
-                  SET status = ?
-                  WHERE Seminar_id = ? AND user_id = ?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([
-            $perm,
-            $sem_id,
-            get_userid($username),
-        ]);
+        $user = User::findByUsername($username);
+
+        $member = CourseMember::find([$sem_id, $user->id]);
+        $member->status = $perm;
+        $member->store();
     }
 
     /**
@@ -215,12 +211,12 @@ class StudygroupModel
      */
     public static function remove_user($username, $sem_id)
     {
-        $user_id = get_userid($username);
+        $user = User::findByUsername($username);
 
-        $query = "DELETE FROM seminar_user
-                  WHERE Seminar_id = ? AND user_id = ?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$sem_id, $user_id]);
+        CourseMember::deleteBySQL(
+            'Seminar_id = ? AND user_id = ?',
+            [$sem_id, $user->id]
+        );
 
         // Post equivalent notifications to a regular course
         $seminar = Seminar::getInstance($sem_id);
@@ -241,29 +237,29 @@ class StudygroupModel
      */
     public static function countGroups($search = null, $closed_groups = null)
     {
-        $status = studygroup_sem_types();
+        $conditions = ['status IN (?)'];
+        $parameters = [studygroup_sem_types()];
 
-        $query = "SELECT COUNT(*)
-                  FROM seminare
-                  WHERE status IN (?)";
+        // Only root may see hidden studygroups
         if (!$GLOBALS['perm']->have_perm('root')) {
-            $query .= "AND visible = 1";
+            $conditions[] = 'visible = 1';
         }
 
-        $parameters = [$status];
-
+        // Search by name?
         if (isset($search)) {
-            $query .= " AND Name LIKE CONCAT('%', ?, '%')";
+            $conditions[] = "Name LIKE CONCAT('%', ?, '%')";
             $parameters[] = $search;
         }
+
+        // Show closed groups
         if (isset($closed_groups) && !$closed_groups) {
-            $query .= " AND admission_prelim = 0 ";
+            $conditions[] = 'admission_prelim = 0';
         }
 
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute($parameters);
-
-        return (int) $statement->fetchColumn();
+        return Course::countBySQL(
+            implode(' AND ', $conditions),
+            $parameters
+        );
     }
 
     /**
@@ -365,14 +361,7 @@ class StudygroupModel
      */
     public static function countMembers($semid)
     {
-        $sql = "SELECT COUNT(`user_id`)
-                FROM `seminar_user`
-                WHERE `Seminar_id` = ?";
-        $stmt = DBManager::get()->prepare($sql);
-        $stmt->execute([$semid]);
-        $count = $stmt->fetchColumn();
-
-        return (int) $count;
+        return (int) CourseMember::countBySeminar_id($semid);
     }
 
     /**
@@ -403,14 +392,7 @@ class StudygroupModel
      */
     public static function isMember($userid, $semid)
     {
-        $sql = "SELECT 1
-                FROM `seminar_user`
-                WHERE `Seminar_id` = ? AND `user_id` = ?";
-
-        $stmt = DBManager::get()->prepare($sql);
-        $stmt->execute([$semid, $userid]);
-
-        return (bool)$stmt->fetchColumn();
+        return CourseMember::exists([$semid, $userid]);
     }
 
     /**
@@ -421,10 +403,13 @@ class StudygroupModel
      */
     public static function addFounder($username, $sem_id)
     {
-        $query = "INSERT IGNORE INTO seminar_user (Seminar_id, user_id, status)
-                  VALUES (?, ?, 'dozent')";
-        $stmt = DBManager::get()->prepare($query);
-        $stmt->execute([$sem_id, get_userid($username)]);
+        $user = User::findByUsername($username);
+
+        $member = new CourseMember([$sem_id, $user->id]);
+        if ($member->isNew()) {
+            $member->status = 'dozent';
+            $member->store();
+        }
     }
 
     /**
@@ -435,10 +420,12 @@ class StudygroupModel
      */
     public static function removeFounder($username, $sem_id)
     {
-        $query = "DELETE FROM seminar_user
-                  WHERE Seminar_id = ? AND user_id = ?";
-        $stmt = DBManager::get()->prepare($query);
-        $stmt->execute([$sem_id, get_userid($username)]);
+        $user = User::findByUsername($username);
+
+        CourseMember::deleteBySQL(
+            'Seminar_id = ? AND user_id = ?',
+            [$sem_id, $user->id]
+        );
     }
 
     /**
