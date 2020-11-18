@@ -8,6 +8,23 @@
  */
 final class RangeFactory
 {
+    const TYPE_MAPPING = [
+        'sem'  => 'course',
+        'user' => 'user',
+        'inst' => 'institute',
+        'fak'  => 'institute',
+    ];
+
+    public static function find($id)
+    {
+        $type = get_object_type($id, ['sem', 'user', 'inst', 'fak']);
+        if ($type === false) {
+            return false;
+        }
+
+        return self::createRange(self::TYPE_MAPPING[$type], $id);
+    }
+
     /**
      * Create a range by given type and id.
      *

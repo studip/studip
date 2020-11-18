@@ -14,13 +14,12 @@
  * @category    Stud.IP
 */
 
-class UserConfig extends ObjectConfig implements PrivacyObject
+class UserConfig extends RangeConfig implements PrivacyObject
 {
     /**
-     * range type ('user' or 'course')
-     * @var string
+     * range type
      */
-    protected $range_type = 'user';
+    const RANGE_TYPE = 'user';
 
     /**
      * Export available data of a given user into a storage object

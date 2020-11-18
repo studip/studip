@@ -259,6 +259,14 @@ class Institute extends SimpleORMap implements Range
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getConfiguration()
+    {
+        return InstituteConfig::get($this);
+    }
+
+    /**
      * Decides whether the user may access the range.
      *
      * @param string $user_id Optional id of a user, defaults to current user

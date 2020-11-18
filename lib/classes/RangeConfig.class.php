@@ -1,6 +1,6 @@
 <?php
 /**
- * ObjectConfig.class.php
+ * RangeConfig.class.php
  * provides access to object preferences
  *
  * This program is free software; you can redistribute it and/or
@@ -9,18 +9,24 @@
  * the License, or (at your option) any later version.
  *
  * @author      André Noack <noack@data-quest.de>
+ * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>>
  * @copyright   2010 Stud.IP Core-Group
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
 */
 
-class ObjectConfig extends Config
+class RangeConfig extends Config
 {
     /**
-     * cache of created ObjectConfig instances
+     * range type
+     */
+    const RANGE_TYPE = 'range';
+
+    /**
+     * cache of created RangeConfig instances
      * @var array
      */
-    private static $instances;
+    protected static $instances = [];
 
     /**
      * range_id
@@ -29,25 +35,27 @@ class ObjectConfig extends Config
     private $range_id;
 
     /**
-     * range type ('user' or 'course')
-     * @var string
-     */
-    protected $range_type;
-
-    /**
      * returns cached instance for given range_id
      * creates new objects if needed
      * @param string $range_id
-     * @return ObjectConfig
+     * @return RangeConfig
      */
     public static function get()
     {
-        $range_id = func_get_arg(0);
-        if (self::$instances[$range_id] === null) {
-            $config = new static($range_id);
-            self::$instances[$range_id] = $config;
+        if (func_num_args() === 0 || func_get_arg(0) === null) {
+            return new static(true);
         }
-        return self::$instances[$range_id];
+
+        $range_id = func_get_arg(0);
+
+        if ($range_id instanceof Range) {
+            $range_id = $range_id->getRangeId();
+        }
+
+        if (static::$instances[$range_id] === null) {
+            static::$instances[$range_id] = new static($range_id);
+        }
+        return static::$instances[$range_id];
     }
 
     /**
@@ -55,11 +63,11 @@ class ObjectConfig extends Config
      * use for testing or to unset cached instance by passing
      * null as second param
      * @param string $range_id
-     * @param ObjectConfig $my_instance
+     * @param RangeConfig $my_instance
      */
     public static function set()
     {
-        list ($range_id, $my_instance) = func_get_args();
+        list($range_id, $my_instance) = func_get_args();
         self::$instances[$range_id] = $my_instance;
     }
 
@@ -79,7 +87,7 @@ class ObjectConfig extends Config
     }
 
     /**
-     * @see lib/classes/Config::fetchData()
+     * {@inheritdoc}
      */
     protected function fetchData($data = null)
     {
@@ -87,41 +95,28 @@ class ObjectConfig extends Config
             $this->data = $data;
         } else {
             $this->data = [];
-            foreach(Config::get()->getFields($this->range_type) as $field) {
+            foreach (Config::get()->getFields(static::RANGE_TYPE) as $field) {
                 $this->data[$field] = Config::get()->$field;
-                $metadata[$field] = Config::get()->getMetadata($field);
+                $this->metadata[$field] = Config::get()->getMetadata($field);
             }
-            $db = DBManager::get();
             try {
-                $query = 'SELECT field, value FROM config_values WHERE range_id = ';
-                $rs = $db->query($query . $db->quote($this->range_id));
+                $query = "SELECT field, value FROM config_values WHERE range_id = :id";
+                $statement = DBManager::get()->prepare($query);
+                $statement->bindValue(':id', $this->range_id);
+                $statement->execute();
             } catch (Exception $e) {
                 //in case we have not migrated 226 yet:
-                $query = 'SELECT field, value FROM user_config WHERE user_id = ';
-                $rs = $db->query($query . $db->quote($this->range_id));
+                $query = 'SELECT field, value FROM user_config WHERE user_id = :id';
+                $statement = DBManager::get()->prepare($query);
+                $statement->bindValue(':id', $this->range_id);
+                $statement->execute();
             }
-            while ($row = $rs->fetch(PDO::FETCH_ASSOC)) {
-                switch ($metadata[$row['field']]['type']) {
-                    case 'integer':
-                        $value = (int)$row['value'];
-                        break;
-                    case 'boolean':
-                        $value = (bool)$row['value'];
-                        break;
-                    case 'array':
-                        $value = (array)json_decode($row['value'], true);
-                        break;
-                    case 'i18n':
-                        $value = new I18NString($row['value'], null, [
-                            'object_id' => md5("{$row['field']}|{$this->range_id}"),
-                            'table'     => 'config',
-                            'field'     => 'value',
-                        ]);
-                        break;
-                    default:
-                        $value = $row['value'];
-                }
-                $this->data[$row['field']] = $value ;
+            while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+                $this->data[$row['field']] = $this->convertFromDatabase(
+                    $this->metadata[$row['field']]['type'],
+                    $row['value'],
+                    $row['field']
+                );
             }
         }
     }
@@ -172,50 +167,49 @@ class ObjectConfig extends Config
 
         // Otherwise convert it to an appropriate format and store it
         $metadata = Config::get()->getMetadata($field);
-        switch ($metadata['type']) {
-            case 'integer':
-            case 'boolean':
-                $value = (int) $value;
-                break;
-            case 'array' :
-                $value = json_encode($value);
-                break;
-            case 'i18n':
-                $value->setMetadata([
-                    'object_id' => md5("{$field}|{$this->range_id}"),
-                    'table'     => 'config',
-                    'field'     => 'value',
-                ]);
-                $value->storeTranslations();
+        $entry->value = $this->convertForDatabase($metadata['type'], $value, $field);
 
-                $value = $value->original();
-                break;
-            default:
-                $value = (string) $value;
-        }
-        $entry->value = $value;
         $ret = $entry->store();
         if ($ret) {
             $this->fetchData();
         }
-        return $ret;
 
+        return $ret;
     }
 
     /**
-     * @see lib/classes/Config::delete()
+     * {@inheritdoc}
+     */
+    public function create($field, $data = [])
+    {
+        if (!isset($data['range'])) {
+            $data['range'] = static::RANGE_TYPE;
+        }
+
+        parent::create($field, $data);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function delete($field)
     {
         $entry = ConfigValue::find([$field, $this->range_id]);
-        if ($entry !== null) {
-            if ($ret = $entry->delete()) {
-                $this->data[$field] = Config::get()->$field;
-            }
-            return $ret;
-        } else {
+        if (!$entry) {
             return null;
         }
+
+        if ($ret = $entry->delete()) {
+            $this->data[$field] = Config::get()->$field;
+        }
+        return $ret;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function getI18NIdentifier($field)
+    {
+        return md5("{$field}|{$this->range_id}");
+    }
 }

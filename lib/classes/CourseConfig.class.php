@@ -14,11 +14,10 @@
  * @category    Stud.IP
 */
 
-class CourseConfig extends ObjectConfig
+class CourseConfig extends RangeConfig
 {
     /**
-     * range type ('user' or 'course')
-     * @var string
+     * range type
      */
-    protected $range_type = 'course';
+    const RANGE_TYPE = 'course';
 }

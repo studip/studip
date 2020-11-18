@@ -75,18 +75,23 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
     /**
      * returns a list of config entry names, filtered by
      * given params
-     * @param string filter by range: global or user
+     * @param string filter by range: global, range, user, course or institute
      * @param string filter by section
      * @param string filter by part of name
      * @return array
      */
     public function getFields($range = null, $section = null, $name = null)
     {
+        if ($range && !in_array($range, words('global range user course institute'))) {
+            throw new Exception('Invalid range type');
+        }
+
         $temp = $this->metadata;
 
-        if (in_array($range, words('global user course'))) {
+        if ($range) {
             $temp = array_filter($temp, function ($a) use ($range) {
-                return $a['range'] === $range;
+                return $a['range'] === $range
+                    || ($a['range'] === 'range' && in_array($range, words('user course institute')));
             });
         }
         if ($section) {
@@ -100,7 +105,9 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
             });
         }
 
-        return array_keys($temp);
+        $fields = array_keys($temp);
+        sort($fields, SORT_NATURAL |  SORT_FLAG_CASE);
+        return $fields;
     }
 
     /**
@@ -241,31 +248,16 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
                 if (!empty($this->metadata[$row['field']])) {
                     $row['type'] = $this->metadata[$row['field']]['type'];
                 }
-                switch ($row['type']) {
-                    case 'integer':
-                        $value = (int) $row['value'];
-                        break;
-                    case 'boolean':
-                        $value = (bool) $row['value'];
-                        break;
-                    case 'array':
-                        $value = (array) json_decode($row['value'], true);
-                        break;
-                    case 'i18n':
-                        $value = new I18NString($row['value'], null, [
-                            'object_id' => md5($row['field']),
-                            'table'     => 'config',
-                            'field'     => 'value',
-                        ]);
-                        break;
-                    default:
-                        $value = (string) $row['value'];
-                        $row['type'] = 'string';
-                }
 
-                $this->data[$row['field']] = $value;
+                $this->data[$row['field']] = $this->convertFromDatabase(
+                    $row['type'],
+                    $row['value'],
+                    $row['field']
+                );
+
                 $this->metadata[$row['field']] = array_intersect_key($row, array_flip(words('type section range description is_default comment')));
                 $this->metadata[$row['field']]['field'] = $row['field'];
+                $this->metadata[$row['field']]['type']  = $row['type'] ?: 'string';
             }
         }
     }
@@ -285,29 +277,12 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
         } else {
             $values = $data;
         }
-        switch ($this->metadata[$field]['type']) {
-            case 'boolean':
-                $values['value'] = (bool) $values['value'];
-                break;
-            case 'integer':
-                $values['value'] = (int) $values['value'];
-                break;
-            case 'array' :
-                $values['value'] = json_encode($values['value']);
-                break;
-            case 'i18n':
-                $values['value']->setMetadata([
-                    'object_id' => md5($field),
-                    'table'     => 'config',
-                    'field'     => 'value',
-                ]);
-                $values['value']->storeTranslations();
 
-                $values['value'] = $values['value']->original();
-                break;
-            default:
-                $values['value'] = (string) $values['value'];
-        }
+        $values['value'] = $this->convertForDatabase(
+            $this->metadata[$field]['type'],
+            $values['value'],
+            $field
+        );
 
         $entry = ConfigEntry::find($field);
         if (!isset($entry)) {
@@ -387,5 +362,84 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
             $this->fetchData();
         }
         return $deleted;
+    }
+
+    /**
+     * Returns the identifier for the i18n field.
+     * @param  string $field
+     * @return string
+     */
+    protected function getI18NIdentifier($field)
+    {
+        return md5($field);
+    }
+
+    /**
+     * Transforms the data from the database for use.
+     *
+     * @param  string $type
+     * @param  mixed  $value
+     * @param  string $field
+     * @return mixed
+     */
+    protected function convertFromDatabase($type, $value, $field)
+    {
+        if ($type === 'integer') {
+            return (int) $value;
+        }
+
+        if ($type === 'boolean') {
+            return (bool) $value;
+        }
+
+        if ($type === 'array') {
+            return json_decode($value, true);
+        }
+
+        if ($type === 'i18n') {
+            return new I18NString($value, null, [
+                'object_id' => $this->getI18NIdentifier($field),
+                'table'     => 'config',
+                'field'     => 'value',
+            ]);
+        }
+
+        return (string) $value;
+    }
+
+    /**
+     * Transforms the given value to be stored in the database.
+     *
+     * @param  string $type
+     * @param  mixed  $value
+     * @param  string $field
+     * @return mixed
+     */
+    protected function convertForDatabase($type, $value, $field)
+    {
+        if ($type === 'boolean') {
+            return (bool) $value;
+        }
+
+        if ($type === 'integer') {
+            return (int) $value;
+        }
+
+        if ($type === 'array') {
+            return json_encode($value);
+        }
+
+        if ($type === 'i18n') {
+            $value->setMetadata([
+                'object_id' => $this->getI18NIdentifier($field),
+                'table'     => 'config',
+                'field'     => 'value',
+            ]);
+            $value->storeTranslations();
+
+            return $value->original();
+        }
+
+        return (string) $value;
     }
 }

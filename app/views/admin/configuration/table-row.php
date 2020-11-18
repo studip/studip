@@ -1,6 +1,6 @@
 <tr>
     <td>
-        <a data-dialog href="<?= $controller->url_for($linkchunk . $field) ?>">
+        <a data-dialog href="<?= $controller->link_for($linkchunk, compact('field')) ?>">
             <?= htmlReady($field) ?>
         </a>
     <? if (!empty($description)): ?>
@@ -11,19 +11,19 @@
     <? if ($type === 'string' || $type === 'i18n'): ?>
         <em><?= htmlReady($value) ?></em>
     <? elseif ($type === 'integer'): ?>
-        <?= (int)$value ?>
+        <?= (int) $value ?>
     <? elseif ($type === 'boolean'): ?>
         <?if ($value):?>
-            <?= Icon::create('accept', 'accept', ['title' => _('TRUE')])->asImg() ?>
+            <?= Icon::create('accept', Icon::ROLE_STATUS_GREEN)->asImg(['title' => _('TRUE')]) ?>
         <? else :?>
-            <?= Icon::create('decline', 'attention', ['title' => _('FALSE')])->asImg() ?>
+            <?= Icon::create('decline', Icon::ROLE_STATUS_RED)->asImg(['title' => _('FALSE')]) ?>
         <? endif; ?>
     <? endif; ?>
     </td>
     <td><?= htmlReady($type) ?></td>
     <td class="actions">
-        <a data-dialog href="<?= $controller->url_for($linkchunk . $field) ?>">
-            <?= Icon::create('edit', 'clickable', ['title' => _('Konfigurationsparameter bearbeiten')])->asImg(16) ?>
+        <a data-dialog href="<?= $controller->link_for($linkchunk, compact('field')) ?>">
+            <?= Icon::create('edit')->asImg(['title' => _('Konfigurationsparameter bearbeiten')]) ?>
         </a>
     </td>
 </tr>

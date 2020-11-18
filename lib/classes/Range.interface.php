@@ -29,6 +29,20 @@ interface Range
     public function getRangeId();
 
     /**
+     * Returns the full name of the range (in given format).
+     *
+     * @param  string $format
+     * @return string
+     */
+    public function getFullname($format = 'default');
+
+    /**
+     * Returns the configuration object for this range.
+     * @return RangeConfig
+     */
+    public function getConfiguration();
+
+    /**
      * Decides whether the user may access the range.
      *
      * @param string $user_id Optional id of a user, defaults to current user

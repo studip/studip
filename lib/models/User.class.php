@@ -511,9 +511,13 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
      * @param string one of full,full_rev,no_title,no_title_rev,no_title_short,no_title_motto,full_rev_username
      * @return string guess what - the fullname
      */
-    public function getFullName($format = 'full')
+    public function getFullName($format = 'default')
     {
         static $concat,$left,$if,$quote;
+
+        if ($format === 'default') {
+            $format = 'full';
+        }
 
         $sql = $GLOBALS['_fullname_sql'][$format];
         if (!$sql || $format == 'no_title') {
@@ -1361,6 +1365,14 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
     public function getRangeId()
     {
         return $this->id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfiguration()
+    {
+        return UserConfig::get($this);
     }
 
     /**

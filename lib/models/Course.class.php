@@ -498,6 +498,14 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getConfiguration()
+    {
+        return CourseConfig::get($this);
+    }
+
+    /**
      * Decides whether the user may access the range.
      *
      * @param string $user_id Optional id of a user, defaults to current user

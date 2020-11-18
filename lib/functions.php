@@ -1056,14 +1056,13 @@ function format_help_url($keyword)
 
 /**
  * Splits a string by space characters and returns these words as an array.
+ * If an array is given, returns the array itself.
  *
- * @param string $string the string to split
- *
+ * @param mixed   $what what to split
  * @return array  the words of the string as array
  */
-function words($string)
-{
-  return preg_split('/ /', $string, -1, PREG_SPLIT_NO_EMPTY);
+function words($what) {
+    return is_array($what) ? $what : preg_split('/ /', $what, -1, PREG_SPLIT_NO_EMPTY);
 }
 
 /**
