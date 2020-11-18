@@ -8,11 +8,10 @@ const config = require("./config/webpack.dev-server.config.json");
 module.exports = merge(common, {
     mode: 'development',
     devtool: 'inline-source-map',
-    output: {
-        publicPath: `${config.protocol}://${config.host}:${config.port}/${path.basename(__dirname)}`
-    },
     devServer: {
 //        contentBase: path.join(__dirname, './public/assets'),
+        publicPath: `${config.protocol}://${config.host}:${config.port}/${path.basename(__dirname)}`,
+        target: 'web',
         compress: true,
         port: config.port,
         historyApiFallback: true,
