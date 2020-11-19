@@ -1,4 +1,4 @@
-<form action="<?= $controller->link_for('admin/configuration/edit_configuration', ['id' => $config['field']]) ?>" method="post" data-dialog class="default">
+<form action="<?= $controller->link_for('admin/configuration/edit_configuration', ['field' => $config['field']]) ?>" method="post" data-dialog class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
