@@ -85,10 +85,14 @@ class CronjobScheduler
 
             $classes = get_declared_classes();
             require_once $filename;
-            $class = end(array_diff(get_declared_classes(), $classes));
+            $new_classes = array_diff(get_declared_classes(), $classes);
+            $new_classes = array_filter($new_classes, function ($class) {
+                return is_subclass_of($class, 'CronJob', true);
+            });
+            $class = end($new_classes);
 
             if (empty($class)) {
-                throw new RuntimeException('No class was defined in file.');
+                throw new RuntimeException('No valid class was defined in file.');
             }
 
             $reflection = new ReflectionClass($class);
