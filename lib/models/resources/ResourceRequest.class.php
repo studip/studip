@@ -1696,7 +1696,7 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         } else {
             $range_object = $this->getRangeObject();
             if ($range_object instanceof User) {
-                if ($range_object->visible == 'yes') {
+                if (get_visibility_by_id($range_object->id)) {
                     $name = $range_object->getFullName();
                 } else if ($this->user_id == $GLOBALS['user']->id) {
                     $name = $range_object->getFullName();
