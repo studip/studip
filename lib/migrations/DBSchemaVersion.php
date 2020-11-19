@@ -26,6 +26,11 @@ class DBSchemaVersion implements SchemaVersion
     private $versions = [];
 
     /**
+     * @var array
+     */
+    private $data = [];
+
+    /**
      * Initialize a new DBSchemaVersion for a given domain.
      * The default domain name is 'studip'.
      *
@@ -52,11 +57,18 @@ class DBSchemaVersion implements SchemaVersion
      */
     private function initSchemaInfo()
     {
+        $this->data = [];
+
         try {
-            $query = "SELECT version FROM schema_versions WHERE domain = ?";
-            $statement = DBManager::get()->prepare($query);
-            $statement->execute([$this->domain]);
-            $this->versions = $statement->fetchAll(PDO::FETCH_COLUMN);
+            $query = "SELECT * FROM schema_versions WHERE domain = ?";
+            DBManager::get()->fetchAll($query, [$this->domain], function ($row) use (&$data) {
+                $this->data[$row['version']] = array_filter([
+                    'user_id' => $row['user_id'] ?? null,
+                    'mkdate'  => $row['mkdate'] ?? null,
+                ]) ?: null;
+            });
+
+            $this->versions = array_keys($this->data);
         } catch (PDOException $e) {
             $query = "SELECT version FROM schema_version WHERE domain = ?";
             $statement = DBManager::get()->prepare($query);
@@ -97,12 +109,22 @@ class DBSchemaVersion implements SchemaVersion
         $version = (int) $version;
 
         try {
-            $query = "INSERT INTO `schema_versions` (`domain`, `version`)
-                      VALUES (?, ?)";
-            DBManager::get()->execute($query, [
-                $this->domain,
-                $version,
-            ]);
+            try {
+                $query = "INSERT INTO `schema_versions` (`domain`, `version`, `user_id`, `mkdate`)
+                          VALUES (?, ?, ?, UNIX_TIMESTAMP())";
+                DBManager::get()->execute($query, [
+                    $this->domain,
+                    $version,
+                    $GLOBALS['user']->id
+                ]);
+            } catch (PDOException $e) {
+                $query = "INSERT INTO `schema_versions` (`domain`, `version`)
+                          VALUES (?, ?)";
+                DBManager::get()->execute($query, [
+                    $this->domain,
+                    $version,
+                ]);
+            }
         } catch (PDOException $e) {
             $query = "UPDATE `schema_version`
                       SET `version` = ?
@@ -149,5 +171,14 @@ class DBSchemaVersion implements SchemaVersion
             $this->domain,
             $version
         );
+    }
+
+    public function getVersionInfo($version = null)
+    {
+        if ($version === null) {
+            return $this->data;
+        }
+
+        return $this->data[$version] ?? false;
     }
 }

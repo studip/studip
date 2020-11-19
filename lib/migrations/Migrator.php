@@ -325,7 +325,10 @@ class Migrator
 
             list($file, $class) = $migration_file_and_class;
 
-            $result[$version] = $this->loadMigration($file, $class);
+            try {
+                $result[$version] = $this->loadMigration($file, $class);
+            } catch (Exception $e) {
+            }
         }
 
         return $result;

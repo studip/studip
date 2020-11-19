@@ -14,7 +14,7 @@
  */
 
 
-require '../lib/bootstrap.php';
+require __DIR__ . '/../lib/bootstrap.php';
 
 page_open([
     'sess' => 'Seminar_Session',
@@ -23,8 +23,7 @@ page_open([
     'user' => 'Seminar_User',
 ]);
 
-$auth->login_if(!$perm->have_perm('root'));
-$perm->check('root');
+URLHelper::setBaseUrl($GLOBALS['ABSOLUTE_URI_STUDIP']);
 
 if (empty($_SESSION['_language'])) {
     $_SESSION['_language'] = get_accepted_languages();
@@ -32,59 +31,10 @@ if (empty($_SESSION['_language'])) {
 
 $_language_path = init_i18n($_SESSION['_language']);
 
-$path = $GLOBALS['STUDIP_BASE_PATH'] . '/db/migrations';
-$verbose = true;
-$target = NULL;
+$GLOBALS['template_factory'] = new Flexi_TemplateFactory('../templates/');
 
-FileLock::setDirectory($GLOBALS['TMP_PATH']);
-$lock = new FileLock('web-migrate');
-if ($lock->isLocked() && Request::int('release_lock')) {
-    $lock->release();
-}
+# get plugin class from request
+$dispatch_to = $_SERVER['PATH_INFO'] ?: '';
 
-if (Request::int('target')) {
-    $target = (int) Request::int('target');
-}
-
-$version = new DBSchemaVersion('studip');
-$migrator = new Migrator($path, $version, $verbose);
-
-if (Request::submitted('start')) {
-    ob_start();
-    set_time_limit(0);
-
-    $lock->lock(['timestamp' => time(), 'user_id' => $GLOBALS['user']->id]);
-
-    $migrator->migrateTo($target);
-
-    $lock->release();
-
-    $announcements = ob_get_clean();
-    PageLayout::postSuccess(
-        _('Die Datenbank wurde erfolgreich migriert.'),
-        array_filter(explode("\n", $announcements))
-    );
-    $version = new DBSchemaVersion('studip');
-    $migrator = new Migrator($path, $version, $verbose);
-
-    $_SESSION['migration-check'] = [
-        'timestamp' => time(),
-        'count'     => 0,
-    ];
-}
-
-$current = $version->get();
-$migrations = $migrator->relevantMigrations($target);
-
-PageLayout::setTitle(_('Stud.IP Web-Migrator'));
-$widget = Sidebar::get()->addWidget(new SidebarWidget());
-$widget->setTitle(_('Aktueller Versionsstand'));
-$widget->addElement(new WidgetElement($current));
-
-$template = $template_factory->open('web_migrate');
-$template->current_page = _('Datenbank-Migration');
-$template->target       = $target;
-$template->migrations   = $migrations;
-$template->lock         = $lock;
-$template->set_layout($template_factory->open('layouts/base.php'));
-echo $template->render();
+$dispatcher = new Trails_Dispatcher( '../app', $_SERVER['SCRIPT_NAME'], 'web_migrate');
+$dispatcher->dispatch("web_migrate/{$dispatch_to}");
