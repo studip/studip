@@ -1,6 +1,15 @@
 <?php
 class WebMigrateController extends StudipController
 {
+    public function __construct($dispatcher)
+    {
+        if (basename($dispatcher->trails_uri, '.php') !== 'web_migrate') {
+            throw new Exception('Web Migrator cannot be invoked via standard dispatcher.');
+        }
+
+        parent::__construct($dispatcher);
+    }
+
     public function before_filter(&$action, &$args)
     {
         $GLOBALS['auth']->login_if(!$GLOBALS['perm']->have_perm('root'));
