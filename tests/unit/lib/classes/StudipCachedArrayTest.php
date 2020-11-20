@@ -217,6 +217,21 @@ class StudipCachedArrayTest extends \Codeception\Test\Unit
         $this->assertEquals(2, count($this->cache->getCachedData()));
     }
 
+    /**
+     * This will test the getArrayCopy() method
+     */
+    public function testGetArrayCopy()
+    {
+        $data = [23 => 42, 42 => 23];
+
+        $cache = $this->getCachedArray();
+        foreach ($data as $key => $value) {
+            $cache[$key] = $value;
+        }
+
+        $this->assertEquals($data, $cache->getArrayCopy());
+    }
+
     public function JSONStorageProvider(): array
     {
         return [

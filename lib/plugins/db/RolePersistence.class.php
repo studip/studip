@@ -60,8 +60,7 @@ class RolePersistence
     public static function saveRole($role)
     {
         // sweep roles cache, see #getAllRoles
-        self::expireCache(null);
-        self::getUserRolesCache()->clear();
+        self::expireCaches();
 
         // role is not in database
         $query = "INSERT INTO `roles` (`roleid`, `rolename`, `system`)
@@ -99,8 +98,7 @@ class RolePersistence
         $name = $role->getRolename();
 
         // sweep roles cache
-        self::expireCache(null);
-        self::getUserRolesCache()->clear();
+        self::expireCaches();
 
         $query = "SELECT `pluginid` FROM `roles_plugins` WHERE `roleid` = ?";
         $statement = DBManager::get()->prepare($query);

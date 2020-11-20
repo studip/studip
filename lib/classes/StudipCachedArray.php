@@ -144,10 +144,9 @@ class StudipCachedArray implements ArrayAccess, Countable
     {
         $result = [];
         foreach (array_keys($this->partitions) as $partition) {
-            $result = array_merge(
-                $result,
-                $this->loadData($partition)
-            );
+            foreach ($this->loadData($partition) as $key => $value) {
+                $result[$key] = $value;
+            }
         }
         return $result;
     }
