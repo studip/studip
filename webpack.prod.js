@@ -1,8 +1,8 @@
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
+const common = require('./webpack.common.js')
 const webpack = require('webpack')
 const { merge } = require('webpack-merge')
-const common = require('./webpack.common.js')
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin")
-const TerserPlugin = require("terser-webpack-plugin")
 
 module.exports = merge(common, {
     mode: 'production',
@@ -18,13 +18,11 @@ module.exports = merge(common, {
                     extractComments: false
                 }
             ),
-            new OptimizeCSSAssetsPlugin({
-                cssProcessorOptions: {
-                    discardComments: {
-                        removeAll: true
-                    }
-                }
-            })
+            new CssMinimizerPlugin({
+                minimizerOptions: {
+                    preset: [ 'default', { discardComments: { removeAll: true } } ],
+                },
+            }),
         ]
     }
 })
