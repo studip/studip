@@ -100,7 +100,7 @@ class LibraryFileController extends AuthenticatedController
         //"enrich" the properties of the document type using the definitions:
         $this->required_properties = [];
         $this->enriched_properties = [];
-        foreach ($this->defined_variables as $variable) {
+        foreach ($this->defined_variables as $key => $variable) {
             if ($variable['required']) {
                 $this->required_properties[] = $variable['name'];
                 $key += 100;
