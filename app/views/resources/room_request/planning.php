@@ -188,7 +188,7 @@
                         <?foreach ($requestsintervals as $requestsinterval): ?>
 
                             <? $request = $requestsinterval['request']; ?>
-
+                            <? $range_object = $request->getRangeObject(); ?>
                             <? if ($range_object instanceof Course) {
                                 $displayname = htmlReady($range_object->getFullName('number-type-name'));
                             } elseif ($range_object instanceof User) {
