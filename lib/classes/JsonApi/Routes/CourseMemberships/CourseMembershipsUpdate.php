@@ -3,6 +3,7 @@
 namespace JsonApi\Routes\CourseMemberships;
 
 use JsonApi\Errors\AuthorizationFailedException;
+use JsonApi\Errors\BadRequestException;
 use JsonApi\Errors\RecordNotFoundException;
 use JsonApi\JsonApiController;
 use JsonApi\Routes\ValidationTrait;
@@ -26,7 +27,7 @@ class CourseMembershipsUpdate extends JsonApiController
 
         $json = $this->validate($request, $membership);
 
-        if (!Authority::canEditMembership($this->getUser($request), $membership)) {
+        if (!Authority::canEditMemberships($this->getUser($request), $membership)) {
             throw new AuthorizationFailedException();
         }
 
