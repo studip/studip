@@ -7,6 +7,11 @@ class JSONAPI extends AbstractAPI
         super(`jsonapi.php/v${version}`);
     }
 
+    encodeData (data) {
+        data = super.encodeData(data);
+        return JSON.stringify(data);
+    }
+
     request (url, options = {}) {
         options.contentType = 'application/vnd.api+json';
         return super.request(url, options);

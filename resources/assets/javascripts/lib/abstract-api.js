@@ -30,6 +30,13 @@ class AbstractAPI
         this.base_url = base_url;
     }
 
+    encodeData (data) {
+        if (data instanceof Function) {
+            data = data();
+        }
+        return data;
+    }
+
     request (url, options = {}) {
         // Normalize parameters
         if (Array.isArray(url)) {
@@ -69,7 +76,7 @@ class AbstractAPI
             deferred = $.ajax(STUDIP.URLHelper.getURL(`${this.base_url}/${url}`), {
                 contentType: options.contentType || 'application/x-www-form-urlencoded; charset=UTF-8',
                 method: options.method.toUpperCase(),
-                data: options.data instanceof Function ? options.data() : options.data,
+                data: this.encodeData(options.data),
                 headers: options.headers
             }).always(() => {
                 // Decrease request counter, remove overlay if neccessary
