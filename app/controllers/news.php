@@ -645,17 +645,7 @@ class NewsController extends StudipController
             return false;
         }
 
-        $date_array = explode('.', $date);
-
-        // Date is invalid
-        if (!checkdate($date_array[1], $date_array[0], $date_array[2])) {
-            return false;
-        }
-
-        $date = mktime(0, 0, 0, $date_array[1], $date_array[0], $date_array[2]);
-        return $mode === 'end'
-             ? strtotime('today 23:59', $date)
-             : $date;
+        return strtotime($date);
     }
 
     /**

@@ -9,8 +9,8 @@
               'news_allow_comments' => $news->allow_comments,
               'news_topic' => $news->topic,
               'news_body' => $news->body,
-              'news_startdate' => $news->date ? date('d.m.Y', $news->date) : '',
-              'news_enddate' => $news->expire ? date('d.m.Y', $news->date + $news->expire) : ''] ?>
+              'news_startdate' => $news->date ? date('d.m.Y H:i', $news->date) : '',
+              'news_enddate' => $news->expire ? date('d.m.Y H:i', $news->date + $news->expire) : ''] ?>
     <?=createQuestion2($flash['question_text'],
         array_merge($flash['question_param'], $form_content),
         $form_content,
@@ -71,8 +71,8 @@
 
             <input type="text" class="news_date news_prevent_submit"
                    name="news_startdate" id="news_startdate"
-                   data-date-picker
-                   value="<? if ($news->date) echo strftime('%x', $news->date); ?>"
+                   data-datetime-picker
+                   value="<? if ($news->date) echo strftime('%x %X', $news->date); ?>"
                    aria-label="<?= _('Einstelldatum') ?>" required>
         </label>
 
@@ -83,8 +83,8 @@
 
             <input type="text" class="news_date news_prevent_submit"
                    name="news_enddate" id="news_enddate"
-                   data-date-picker='{">=":"#news_startdate","offset":"#news_duration"}'
-                   value="<? if ($news->expire) echo strftime('%x', $news->date + $news->expire) ?>"
+                   data-datetime-picker='{">=":"#news_startdate","offset":"#news_duration"}'
+                   value="<? if ($news->expire) echo strftime('%x %X', $news->date + $news->expire) ?>"
                    aria-label="<?= _('Ablaufdatum') ?>" required>
         </label>
 
