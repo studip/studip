@@ -99,10 +99,11 @@ class CoreForum extends StudipPlugin implements ForumModule
      */
     public static function overviewDidClear($notification, $user_id)
     {
-        $stmt = DBManager::get()->prepare("UPDATE forum_visits
-            SET visitdate = UNIX_TIMESTAMP(), last_visitdate = UNIX_TIMESTAMP()
-            WHERE user_id = ?");
-        $stmt->execute([$user_id]);
+        $query = "REPLACE INTO `forum_visits`
+                  SELECT `user_id`, `Seminar_id`, UNIX_TIMESTAMP(), UNIX_TIMESTAMP()
+                  FROM `seminar_user`
+                  WHERE `user_id` = ?";
+        DBManager::get()->execute($query, [$user_id]);
     }
 
     /**
