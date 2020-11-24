@@ -1206,6 +1206,8 @@ class Admin_CoursesController extends AuthenticatedController
                 $seminars[$seminar_id]['dozenten'] = $dozenten;
 
                 if (in_array('contents', $params['view_filter'])) {
+                    $seminars[$seminar_id]['visitdate'] = $visits[$seminar_id]['sem']['visitdate'];
+                    $seminars[$seminar_id]['last_visitdate'] = $visits[$seminar_id]['sem']['last_visitdate'];
                     $seminars[$seminar_id]['sem_class'] = $sem_types[$seminar['status']]->getClass();
                     $seminars[$seminar_id]['modules'] = $modules->getLocalModules(
                         $seminar_id,
