@@ -14,7 +14,7 @@ class CoreOverview implements StudipModule
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         $sql = "SELECT COUNT(nw.news_id) AS count,
-                       COUNT(IF((nw.chdate > :threshold AND nw.user_id !=:user_id), nw.news_id, NULL)) AS neue
+                       COUNT(IF((nw.chdate > IFNULL(b.visitdate, :threshold) AND nw.user_id !=:user_id), nw.news_id, NULL)) AS neue
                 FROM news_range AS a
                 LEFT JOIN news AS nw
                   ON a.news_id = nw.news_id
@@ -29,7 +29,7 @@ class CoreOverview implements StudipModule
         $statement = DBManager::get()->prepare($sql);
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $course_id);
-        $statement->bindValue(':threshold', $last_visit);
+        $statement->bindValue(':threshold', object_get_visit_threshold());
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
