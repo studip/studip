@@ -28,6 +28,19 @@ require_once 'lib/object.inc.php';
 
 class MyRealmModel
 {
+    const AVAILABLE_MODULES = [
+        'forum',
+        'participants',
+        'documents',
+        'overview',
+        'scm',
+        'schedule',
+        'wiki',
+        'vote',
+        'elearning_interface',
+        'resources'
+    ];
+
     /**
      * Check the voting system
      * @param      $my_obj
@@ -316,7 +329,7 @@ class MyRealmModel
         // filtering courses
         $modules = new Modules();
         $member_ships = User::findCurrent()->course_memberships->toGroupedArray('seminar_id', 'status gruppe');
-        $visits = get_objects_visits($courses->pluck('id'), 'sem', null);
+        $visits = get_objects_visits($courses->pluck('id'), 'sem', null, null, self::AVAILABLE_MODULES);
         $children = [];
         $semester_assign = [];
         foreach ($courses as $index => $course) {
@@ -347,8 +360,8 @@ class MyRealmModel
                 });
             }
 
-            $_course['last_visitdate'] = $visits[$course->id]['last_visitdate'];
-            $_course['visitdate']      = $visits[$course->id]['visitdate'];
+            $_course['last_visitdate'] = $visits[$course->id]['sem']['last_visitdate'];
+            $_course['visitdate']      = $visits[$course->id]['sem']['visitdate'];
             $_course['user_status']    = $user_status;
             $_course['gruppe']         = !$is_deputy ? @$member_ships[$course->id]['gruppe'] : self::getDeputieGroup($course->id);
             $_course['sem_number_end'] = $course->duration_time == -1 ? $max_sem_key : Semester::getIndexById($course->end_semester->id);
@@ -365,8 +378,15 @@ class MyRealmModel
                 $_course['parent_course'] = $course->parent_course;
             }
             $_course['is_group'] = $course->getSemClass()->isGroup();
+            $_course['navigation'] = self::getAdditionalNavigations(
+                $_course['seminar_id'],
+                $_course,
+                $_course['sem_class'],
+                $GLOBALS['user']->id,
+                $visits[$course->id]
+            );
+
             // add the the course to the correct semester
-            self::getObjectValues($_course);
 
             if (!$_course['parent_course']) {
                 if ($course->duration_time == -1) {
@@ -452,16 +472,11 @@ class MyRealmModel
      * @param $user_id
      * @return array
      */
-    public static function getAdditionalNavigations($object_id, &$my_obj_values, $sem_class, $user_id)
+    public static function getAdditionalNavigations($object_id, &$my_obj_values, $sem_class, $user_id, $visit_data = [])
     {
-        if ($threshold = object_get_visit_threshold()) {
-            $my_obj_values['visitdate'] = max($my_obj_values['visitdate'], $threshold);
-        }
-
         $plugin_navigation = self::getPluginNavigationForSeminar($object_id, $sem_class, $user_id, $my_obj_values['visitdate']);
-        $available_modules = 'forum participants documents overview scm schedule wiki vote elearning_interface resources';
 
-        foreach (words($available_modules) as $key) {
+        foreach (self::AVAILABLE_MODULES as $key) {
 
             // Go to next module if current module is not available and not voting-module
             if (!$my_obj_values['modules'][$key] && $key !== 'vote') {
@@ -478,7 +493,7 @@ class MyRealmModel
             if ($sem_class) {
                 $module = $sem_class->getModule($key);
                 if ($module instanceof StudipModule) {
-                    $nav = $module->getIconNavigation($object_id, $my_obj_values['visitdate'], $user_id) ?: false;
+                    $nav = $module->getIconNavigation($object_id, $visit_data[$key]['visitdate'], $user_id) ?: false;
                 }
             }
 
@@ -540,14 +555,19 @@ class MyRealmModel
                   ON DUPLICATE KEY UPDATE last_visitdate = IFNULL(visitdate, 0), visitdate = :timestamp";
         $statement = DBManager::get()->prepare($query);
         $statement->bindValue(':user_id', $user_id);
-        $statement->bindValue(':timestamp', $timestamp ? : time());
+        $statement->bindValue(':timestamp', $timestamp ?: time());
         $statement->bindValue('id', $object_id);
         $statement->execute();
 
         // Update all activated modules
-        foreach (words('forum documents schedule participants wiki scm elearning_interface') as $type) {
-            if ($object['modules'][$type]) {
-                object_set_visit($object_id, $type);
+        foreach (self::AVAILABLE_MODULES as $module) {
+            // Skip modules that were already handled above
+            if (in_array($type, ['news', 'vote', 'eval'])) {
+                continue;
+            }
+
+            if ($object['modules'][$module]) {
+                object_set_visit($object_id, $module);
             }
         }
 
@@ -556,22 +576,6 @@ class MyRealmModel
 
         return true;
     }
-
-    /**
-     * This functions check all modules for changes (new documents,...) and adds a new icon-navigation item to given course
-     * This function will only add something if nothing exists to get better performance
-     * @param $course
-     * @param $call (debug)
-     */
-    public static function getObjectValues(&$course)
-    {
-
-        if (!isset($course['navigation'])) {
-            // get additional navigation items
-            $course['navigation'] = self::getAdditionalNavigations($course['seminar_id'], $course, $course['sem_class'], $GLOBALS['user']->id);
-        }
-    }
-
 
     public static function getWaitingList($user_id)
     {
@@ -635,13 +639,13 @@ class MyRealmModel
 
         $insts = new SimpleCollection($memberShips);
         $ids = $insts->pluck('institut_id');
-        $visits = get_objects_visits($ids, 'inst', null);
+        $visits = get_objects_visits($ids, 'inst', null, null, self::AVAILABLE_MODULES);
 
         $institutes = $insts->map(function ($a) use ($visits) {
             $inst                   = $a->institute->toArray();
             $inst['perms']          = $a->inst_perms;
-            $inst['visitdate']      = $visits[$a->institut_id]['visitdate'];
-            $inst['last_visitdate'] = $visits[$a->institut_id]['last_visitdate'];
+            $inst['visitdate']      = $visits[$a->institut_id]['inst']['visitdate'];
+            $inst['last_visitdate'] = $visits[$a->institut_id]['inst']['last_visitdate'];
 
             return $inst;
         });
@@ -652,7 +656,13 @@ class MyRealmModel
             foreach ($institutes as $index => $inst) {
                 $institutes[$index]['modules']    = $Modules->getLocalModules($inst['institut_id'], 'inst', $inst['modules'], $inst['type'] ? : 1);
                 $institutes[$index]['obj_type']   = 'inst';
-                $institutes[$index]['navigation'] = self::getAdditionalNavigations($inst['institut_id'], $institutes[$index], SemClass::getDefaultInstituteClass($inst['type']), $GLOBALS['user']->id);
+                $institutes[$index]['navigation'] = self::getAdditionalNavigations(
+                    $inst['institut_id'],
+                    $institutes[$index],
+                    SemClass::getDefaultInstituteClass($inst['type']),
+                    $GLOBALS['user']->id,
+                    $visits[$inst['institut_id']]
+                );
             }
             unset($Modules);
         }
@@ -811,7 +821,7 @@ class MyRealmModel
             )
         );
 
-        $visit_data = get_objects_visits(array_keys($studygroups), 'sem', null);
+        $visit_data = get_objects_visits(array_keys($studygroups), 'sem', null, null, self::AVAILABLE_MODULES);
 
         $data_fields = 'name seminar_id visible veranstaltungsnummer start_time duration_time status visible '
                      . 'chdate admission_binding modules admission_prelim';
@@ -832,13 +842,14 @@ class MyRealmModel
                 $studygroup->modules,
                 $studygroup->status
             );
-            $data['visitdate'] = $visit_data[$studygroup->id]['visitdate'];
-            $data['last_visitdate'] = $visit_data[$studygroup->id]['last_visitdate'];
+            $data['visitdate'] = $visit_data[$studygroup->id]['sem']['visitdate'];
+            $data['last_visitdate'] = $visit_data[$studygroup->id]['sem']['last_visitdate'];
             $data['navigation'] = self::getAdditionalNavigations(
                 $studygroup->id,
                 $data,
                 $data['sem_class'],
-                $GLOBALS['user']->id
+                $GLOBALS['user']->id,
+                $visit_data[$studygroup->id]
             );
             $studygroup_data[$studygroup->id] = $data;
         }
