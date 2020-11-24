@@ -562,7 +562,7 @@ class MyRealmModel
         // Update all activated modules
         foreach (self::AVAILABLE_MODULES as $module) {
             // Skip modules that were already handled above
-            if (in_array($type, ['news', 'vote', 'eval'])) {
+            if (in_array($module, ['news', 'vote', 'eval'])) {
                 continue;
             }
 
