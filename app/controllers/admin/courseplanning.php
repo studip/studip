@@ -851,7 +851,8 @@ class Admin_CourseplanningController extends AuthenticatedController
             $modules = new Modules();
         }
 
-        $seminars = array_map('reset', $courses);
+        $seminars   = array_map('reset', $courses);
+        $visit_data = get_objects_visits(array_keys($seminars), 'sem', null, null, MyRealmModel::AVAILABLE_MODULES);
 
         if (!empty($seminars)) {
             foreach ($seminars as $seminar_id => $seminar) {
@@ -863,7 +864,13 @@ class Admin_CourseplanningController extends AuthenticatedController
                 if (in_array('contents', $params['view_filter'])) {
                     $seminars[$seminar_id]['sem_class'] = $sem_types[$seminar['status']]->getClass();
                     $seminars[$seminar_id]['modules'] = $modules->getLocalModules($seminar_id, 'sem', $seminar['modules'], $seminar['status']);
-                    $seminars[$seminar_id]['navigation'] = MyRealmModel::getAdditionalNavigations($seminar_id, $seminars[$seminar_id], $seminars[$seminar_id]['sem_class'], $GLOBALS['user']->id);
+                    $seminars[$seminar_id]['navigation'] = MyRealmModel::getAdditionalNavigations(
+                        $seminar_id,
+                        $seminars[$seminar_id],
+                        $seminars[$seminar_id]['sem_class'],
+                        $GLOBALS['user']->id,
+                        $visit_data[$seminar_id]
+                    );
                 }
                 //add last activity column:
                 if (in_array('last_activity', $params['view_filter'])) {

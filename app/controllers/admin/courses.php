@@ -1195,7 +1195,8 @@ class Admin_CoursesController extends AuthenticatedController
             $modules = new Modules();
         }
 
-        $seminars = array_map('reset', $courses);
+        $seminars   = array_map('reset', $courses);
+        $visit_data = get_objects_visits(array_keys($seminars), 'sem', null, null, MyRealmModel::AVAILABLE_MODULES);
 
         if (!empty($seminars)) {
             foreach ($seminars as $seminar_id => $seminar) {
@@ -1216,7 +1217,8 @@ class Admin_CoursesController extends AuthenticatedController
                         $seminar_id,
                         $seminars[$seminar_id],
                         $seminars[$seminar_id]['sem_class'],
-                        $GLOBALS['user']->id
+                        $GLOBALS['user']->id,
+                        $visit_data[$seminar_id]
                     );
                 }
                 //add last activity column:
