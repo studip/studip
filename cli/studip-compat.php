@@ -2,7 +2,7 @@
 <?php
 require_once 'studip_cli_env.inc.php';
 
-$opts = getopt('fhnoc', ['filenames', 'help', 'non-recursive', 'verbose', 'no-color']);
+$opts = getopt('fhnvc', ['filenames', 'help', 'non-recursive', 'verbose', 'no-color']);
 
 if (isset($opts['h']) || isset($opts['help'])) {
     fwrite(STDOUT, 'Stud.IP compatibility scanner - Checks plugins for common issues' . PHP_EOL);
@@ -135,13 +135,21 @@ if (count($folders) === 0) {
 }
 $folders = array_unique($folders);
 
+$checkRule = function ($rule, $contents) {
+    if ($rule[0] === '/' && $rule[strlen($rule) - 1] === '/') {
+        return (bool) preg_match("{$rule}s", $contents);
+    }
+
+    return strpos($contents, strtolower($rule)) > 0;
+};
+
 // Main checker
-$check = function ($filename) use ($rules) {
+$check = function ($filename) use ($checkRule, $rules) {
     $errors = [];
 
     $contents = strtolower(file_get_contents($filename));
     foreach ($rules as $needle => $suggestion) {
-        if (strpos($contents, strtolower($needle)) > 0) {
+        if ($checkRule($needle, $contents)) {
             $errors[$needle] = $suggestion;
         }
     }
@@ -162,7 +170,7 @@ foreach ($folders as $folder) {
     } else {
         $iterator = new DirectoryIterator($folder);
     }
-    $regexp_iterator = new RegexIterator($iterator, '/.*\.(?:php|tpl|inc)$/', RecursiveRegexIterator::MATCH);
+    $regexp_iterator = new RegexIterator($iterator, '/.*\.(?:php|tpl|inc|js)$/', RecursiveRegexIterator::MATCH);
 
     $issues = [];
 

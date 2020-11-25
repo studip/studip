@@ -1,14 +1,22 @@
 <?php
 // "Rules"/definitions for critical changes in 5.0
 return [
-    'SemesterData'      => '#{red:Removed} - Use #{yellow:Semester model} instead',
-    'StatusgroupsModel' => '#{red:Removed} - Use #{yellow:Statusgruppen model} instead',
-    'StudipNullCache'   => '#{red:Removed} - Use #{yellow:StudipMemoryCache} instead',
+    // https://develop.studip.de/trac/ticket/10806
+    'SemesterData' => '#{red:Removed} - Use #{yellow:Semester model} instead',
 
-    'get_config'        => '#{red:Deprecated} - Use #{yellow:Config::get()} instead.',
+    // https://develop.studip.de/trac/ticket/10786
+    'StatusgroupsModel' => '#{red:Removed} - Use #{yellow:Statusgruppen model} instead',
+
+    // https://develop.studip.de/trac/ticket/10796
+    'StudipNullCache' => '#{red:Removed} - Use #{yellow:StudipMemoryCache} instead',
+
+    // https://develop.studip.de/trac/ticket/10870
+    'get_config' => '#{red:Deprecated} - Use #{yellow:Config::get()} instead.',
+
+    // https://develop.studip.de/trac/ticket/10919
     'RESTAPI\\RouteMap' => '#{red:Deprecated} - Use the #{yellow:JSONAPI} instead.',
 
-    // Vendor changes
+    // https://develop.studip.de/trac/ticket/10878
     'Leafo\\ScssPhp' => 'Library was replaced by #{yellow:scssphp/scssphp}',
     'sfYamlParser'   => 'Library was replaced by #{yellow:symfony/yaml}',
     'DocBlock::of'   => 'Library was replaced by #{yellow:gossi/docblock}',
@@ -20,5 +28,7 @@ return [
     'vendor/phpCAS'       => 'Remove include/require. Will be autoloaded.',
     'vendor/phpxmlrpc'    => 'Remove include/require. Will be autoloaded.',
 
-    'periodicalPushData' => '#{red:Removed} - Use #{yellow:STUDIP.JSUpdater.register()} instead',
+    // https://develop.studip.de/trac/ticket/10964
+    'periodicalPushData'                           => '#{red:Removed} - Use #{yellow:STUDIP.JSUpdater.register()} instead',
+    '/UpdateInformtion::setInformation\(.+\..+\)/' => '#{red:Removed} - Use #{yellow:STUDIP.JSUpdater.register()} instead',
 ];
