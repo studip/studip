@@ -266,8 +266,6 @@ class BasicDataWizardStep implements CourseWizardStep
         // We only need our own stored values here.
         $values = $values[__CLASS__];
 
-        PageLayout::postInfo('<pre>' . print_r($values, 1) . '</pre>');
-
         // Add a participating institute.
         if (Request::submitted('add_part_inst') && Request::option('part_inst_id')) {
             $values['participating'][Request::option('part_inst_id')] = true;
