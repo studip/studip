@@ -34,7 +34,7 @@
     <label for="wizard-name" class="required">
         <?= _('Veranstaltungstitel') ?>
     </label>
-    <input type="text" name="name" id="wizard-name" size="75" maxlength="254" value="<?= htmlReady($values['name']) ?>"/>
+    <?= I18N::input('name', $values['name'], ['id' => 'wizard-name', 'size' => 75, 'maxlength' => 255]) ?>
 </section>
 <section>
     <? $course_number_format_config = Config::get()->getMetadata('COURSE_NUMBER_FORMAT'); ?>
@@ -50,7 +50,7 @@
     <label for="wizard-description">
         <?= _('Beschreibung') ?>
     </label>
-    <textarea name="description" id="wizard-description" cols="75" rows="4"><?= htmlReady($values['description']) ?></textarea>
+    <?= I18N::textarea('description', $values['description'], ['id' => 'wizard-description', 'cols' => 75, 'rows' => 4]) ?>
 </section>
 <section>
     <label for="wizard-home-institute" class="required">

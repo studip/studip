@@ -4,13 +4,13 @@
     <label for="wizard-subtitle">
         <?= _('Untertitel') ?>
     </label>
-    <input type="text" name="subtitle" id="wizard-subtitle" size="75" maxlength="254" value="<?= htmlReady($values['subtitle']) ?>"/>
+    <?= I18N::input('subtitle', $values['subtitle'], ['id' => 'wizard-subtitle', 'size' => 75, 'maxlength' => 254]) ?>
 </section>
 <section>
     <label for="wizard-kind">
         <?= _('Veranstaltungsart') ?>
     </label>
-    <input type="text" name="kind" id="wizard-kind" size="75" maxlength="254" value="<?= htmlReady($values['kind']) ?>"/>
+    <?= I18N::input('kind', $values['kind'], ['id' => 'wizard-kind', 'size' => 75, 'maxlength' => 254]) ?>
 </section>
 <section>
     <label for="wizard-ects">

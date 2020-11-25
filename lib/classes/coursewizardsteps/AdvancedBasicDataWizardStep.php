@@ -22,7 +22,7 @@ class AdvancedBasicDataWizardStep extends BasicDataWizardStep
      * for this step.
      *
      * @param Array $values Pre-set values
-     * @param int $stepnumber which nqumber has the current step in the wizard?
+     * @param int $stepnumber which number has the current step in the wizard?
      * @param String $temp_id temporary ID for wizard workflow
      * @return String a Flexi template for getting needed data.
      */
@@ -38,7 +38,12 @@ class AdvancedBasicDataWizardStep extends BasicDataWizardStep
         // Load template from step template directory.
         $factory = new Flexi_TemplateFactory($GLOBALS['STUDIP_BASE_PATH'].'/app/views/course/wizard/steps');
         $template = $factory->open('advancedbasicdata/index');
-        if ($this->setupTemplateAttributes($template, $values, $stepnumber, $temp_id)) {
+
+        if ($template = $this->setupTemplateAttributes($template, $values, $stepnumber, $temp_id)) {
+            $values = $this->makeI18N($values[__CLASS__], ['name', 'description', 'subtitle', 'kind']);
+
+            $template->set_attribute('values', array_merge($template->values, $values));
+
             return $template->render();
         }
     }
@@ -80,8 +85,8 @@ class AdvancedBasicDataWizardStep extends BasicDataWizardStep
         }
 
         // Add advanced data
-        $course->Untertitel = $values[__CLASS__]['subtitle'];
-        $course->art = $values[__CLASS__]['kind'];
+        $course->untertitel = new I18NString($values[__CLASS__]['subtitle'], $values[__CLASS__]['subtitle_i18n']);
+        $course->art = new I18NString($values[__CLASS__]['kind'], $values[__CLASS__]['kind_i18n']);
         $course->ects = $values[__CLASS__]['ects'];
         $course->admission_turnout = $values[__CLASS__]['maxmembers'];
         if ($course->store() === false) {
@@ -127,7 +132,9 @@ class AdvancedBasicDataWizardStep extends BasicDataWizardStep
 
         $values[__CLASS__] = array_merge($values[__CLASS__], [
             'subtitle' => $course->untertitel,
+            'subtitle_i18n' => $course->untertitel->toArray(),
             'kind' => $course->art,
+            'kind_i18n' => $course->art->toArray(),
             'ects' => $course->ects,
             'maxmembers' => $course->admission_turnout,
         ]);

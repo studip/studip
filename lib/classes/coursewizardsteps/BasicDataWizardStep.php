@@ -118,6 +118,9 @@ class BasicDataWizardStep implements CourseWizardStep
             return false;
         }
 
+        // Create a I18NString for course name and description.
+        $values = $this->makeI18N($values, ['name', 'description']);
+
         // Get all allowed home institutes (my own).
         $institutes = Institute::getMyInstitutes();
         if ($values['studygroup'] || count($institutes) > 0) {
@@ -262,6 +265,9 @@ class BasicDataWizardStep implements CourseWizardStep
     {
         // We only need our own stored values here.
         $values = $values[__CLASS__];
+
+        PageLayout::postInfo('<pre>' . print_r($values, 1) . '</pre>');
+
         // Add a participating institute.
         if (Request::submitted('add_part_inst') && Request::option('part_inst_id')) {
             $values['participating'][Request::option('part_inst_id')] = true;
@@ -399,9 +405,9 @@ class BasicDataWizardStep implements CourseWizardStep
         $course->status = $values['coursetype'];
         $course->start_time = $values['start_time'];
         $course->duration_time = 0;
-        $course->name = $values['name'];
+        $course->name = new I18NString($values['name'], $values['name_i18n']);
         $course->veranstaltungsnummer = $values['number'];
-        $course->beschreibung = $values['description'];
+        $course->beschreibung = new I18NString($values['description'], $values['description_i18n']);
         $course->institut_id = $values['institute'];
 
         $semclass = $seminar->getSemClass();
@@ -484,9 +490,11 @@ class BasicDataWizardStep implements CourseWizardStep
             'coursetype' => $course->status,
             'start_time' => $course->start_time,
             'name' => $course->name,
+            'name_i18n' => $course->name->toArray(),
             'number' => $course->veranstaltungsnummer,
             'institute' => $course->institut_id,
-            'description' => $course->beschreibung
+            'description' => $course->beschreibung,
+            'description_i18n' => $course->beschreibung->toArray()
         ];
         $lecturers = $course->members->findBy('status', 'dozent')->pluck('user_id');
         $data['lecturers'] = array_flip($lecturers);
@@ -570,6 +578,41 @@ class BasicDataWizardStep implements CourseWizardStep
         $ret['exclude_user'] = array_keys((array)$context['lecturers']);
         $ret['institute'] = array_merge([$context['institute']], array_keys((array)$context['participating']));
         return $ret;
+    }
+
+    /**
+     * Creates I18N strings from the given values at the given indices.
+     *
+     * @param array $values this step's set values
+     * @param array $indices the values to convert to I18NStrings
+     *
+     * @return array modified values
+     */
+    protected function makeI18N($values, $indices)
+    {
+        /**
+         * Create array for configured content languages
+         */
+        $translations = array_combine(
+            array_keys($GLOBALS['CONTENT_LANGUAGES']),
+            array_fill(0, count($GLOBALS['CONTENT_LANGUAGES']), '')
+        );
+
+        foreach ($indices as $index) {
+            // There are values given => create an I18NString
+            if ($values[$index]) {
+
+                $values[$index] = new I18NString($values[$index], $values[$index . '_i18n']);
+
+            // Current index is not set (yet), create an empty I18NString
+            } else {
+
+                $values[$index] = new I18NString('', $translations);
+
+            }
+        }
+
+        return $values;
     }
 
 }
