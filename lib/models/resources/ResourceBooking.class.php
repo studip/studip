@@ -96,14 +96,6 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
 
         $config['registered_callbacks']['after_store'][] = 'updateIntervals';
 
-        // Some notifications that follow a booking lifecycle
-        $config['registered_callbacks']['before_create'][] = 'cbPostNotification';
-        $config['registered_callbacks']['after_create'][] = 'cbPostNotification';
-        $config['registered_callbacks']['before_store'][] = 'cbPostNotification';
-        $config['registered_callbacks']['after_store'][] = 'cbPostNotification';
-        $config['registered_callbacks']['before_delete'][] = 'cbPostNotification';
-        $config['registered_callbacks']['after_delete'][] = 'cbPostNotification';
-
         //In regard to TIC 6460:
         //As long as TIC 6460 is not implemented, we must add the validate
         //method as a callback before storing the object.
@@ -1794,38 +1786,6 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
                 return 'daily';
             }
         }
-    }
-
-    public function cbPostNotification($type)
-    {
-        $data = [
-            'booking_id' => $this->id,
-            'start' => $this->begin,
-            'end' => $this->end,
-            'resource' => $this->resource_id
-        ];
-        switch ($type) {
-            case 'before_create':
-                $event = 'ResourceBookingWillCreate';
-                break;
-            case 'after_create':
-                $event = 'ResourceBookingDidCreate';
-                break;
-            case 'before_store':
-                $event = 'ResourceBookingWillUpdate';
-                break;
-            case 'after_store':
-                $event = 'ResourceBookingDidUpdate';
-                break;
-            case 'before_delete':
-                $event = 'ResourceBookingWillDelete';
-                break;
-            case 'after_delete':
-                $event = 'ResourceBookingDidDelete';
-                break;
-        }
-
-        NotificationCenter::postNotification($event, $data);
     }
 
 }
