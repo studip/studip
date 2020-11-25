@@ -1,6 +1,13 @@
 const Questionnaire = {
     lastUpdate: null,
-    periodicalPushData: function() {
+    initialize() {
+        STUDIP.JSUpdater.register(
+            'questionnaire',
+            Questionnaire.updateQuestionnaireResults,
+            Questionnaire.getParamsForPolling
+        );
+    },
+    getParamsForPolling: function() {
         var questionnaires = {
             questionnaire_ids: [],
             last_update: Questionnaire.lastUpdate

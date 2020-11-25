@@ -15,6 +15,7 @@ jQuery(document).on('dialog-open', '#messages .title a', function() {
 STUDIP.domReady(() => {
     /*********** infinity-scroll in the overview ***********/
     if (jQuery('#messages').length > 0) {
+        STUDIP.Messages.init();
         jQuery(window.document).on(
             'scroll',
             _.throttle(function(event) {

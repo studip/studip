@@ -30,6 +30,7 @@
 
     <script>
         STUDIP.Questionnaire.lastUpdate = Math.floor(Date.now() / 1000);
+        STUDIP.Questionnaire.initialize();
     </script>
     <div data-dialog-button style="max-height: none; opacity: 1; text-align: center;">
         <? if ($questionnaire->isAnswerable() && $questionnaire['editanswers']) : ?>

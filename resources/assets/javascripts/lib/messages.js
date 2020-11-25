@@ -1,9 +1,13 @@
 import Markup from './markup.js';
 
 const Messages = {
+    init() {
+        STUDIP.JSUpdater.register('messages', Messages.newMessages, Messages.getParamsForPolling);
+    },
+
     /*********** AJAX-reload function for overview ***********/
 
-    periodicalPushData: function() {
+    getParamsForPolling() {
         if (jQuery('#messages').length && jQuery('#since').val()) {
             return {
                 since: jQuery('#since').val(),

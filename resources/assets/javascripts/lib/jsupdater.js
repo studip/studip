@@ -11,15 +11,15 @@
  * Refer to the according function definitions for further info.
  * ------------------------------------------------------------------------ */
 
-var active = false,
-    lastAjaxDuration = 200, //ms of the duration of an ajax-call
-    currentDelayFactor = 0,
-    lastJsonResult = null,
-    dateOfLastCall = +new Date(), // Get milliseconds of date object
-    serverTimestamp = STUDIP.server_timestamp,
-    ajaxRequest = null,
-    timeout = null,
-    registeredHandlers = {};
+let active = false;
+let lastAjaxDuration = 200; //ms of the duration of an ajax-call
+let currentDelayFactor = 0;
+let lastJsonResult = null;
+let dateOfLastCall = +new Date(); // Get milliseconds of date object
+let serverTimestamp = STUDIP.server_timestamp;
+let ajaxRequest = null;
+let timeout = null;
+let registeredHandlers = {};
 
 // Reset json memory, used to delay polling if consecutive requests always
 // return the same result
@@ -36,32 +36,17 @@ function resetJSONMemory(json) {
 
 // Process returned json object by calling registered handlers
 function process(json) {
-    $.each(json, function(index, value) {
+    for (const [index, value] of Object.entries(json)) {
         // Set timestamp
         if (index === 'server_timestamp') {
             serverTimestamp = value;
         } else {
             // Call registered handler callback by index
-            if (registeredHandlers.hasOwnProperty(index)) {
+            if (index in registeredHandlers) {
                 registeredHandlers[index].callback(value);
-                return;
-            }
-
-            // Legacy: Iterate over global STUDIP object and try to locate
-            // the function to call by it's index in the resulting json
-            // object
-            var func = STUDIP,
-                nodes = index.split('.'),
-                node = nodes.shift();
-            while (node && func.hasOwnProperty(node)) {
-                func = func[node];
-                node = nodes.shift();
-            }
-            if (nodes.length === 0 && $.isFunction(func)) {
-                func(value);
             }
         }
-    });
+    }
 
     // Reset json memory
     resetJSONMemory(json);
@@ -84,26 +69,17 @@ function registerNextPoll() {
 // Collect data for polling
 function collectData() {
     var data = {};
-    // Legacy: Pull data from periodicalPushData-methods attached to objects
-    // on global STUDIP object
-    $.each(STUDIP, function(index, element) {
-        if ($.isFunction(element.periodicalPushData)) {
-            data[index] = element.periodicalPushData();
-        }
-    });
     // Pull data from all registered handlers, either by collecting the data
     // itself or by calling the appropriate function
-    $.each(registeredHandlers, function(index, handler) {
-        var thisData = null;
-        if (handler.data && $.isFunction(handler.data)) {
-            thisData = handler.data();
-        } else if (handler.data) {
-            thisData = handler.data;
+    for (const [index, handler] of Object.entries(registeredHandlers)) {
+        if (handler.data) {
+            const thisData = $.isFunction(handler.data) ? handler.data() : handler.data;
+            if (thisData !== null && !$.isEmptyObject(thisData)) {
+                data[index] = thisData;
+            }
         }
-        if (thisData !== null && !$.isEmptyObject(thisData)) {
-            data[index] = thisData;
-        }
-    });
+    }
+
     return data;
 }
 
@@ -208,44 +184,41 @@ function poll(forced) {
 }
 
 // Register global object
-const JSUpdater = {};
-
-// Starts the updater, also registers the activity handlers
-JSUpdater.start = function() {
-    if (!active) {
-        $(document).on('mousemove', userActivityHandler);
-        $(window).on('blur focus', windowActivityHandler);
-        registerNextPoll();
-    }
-    active = true;
-};
-
-// Stops the updater, also unregisters the activity handlers
-JSUpdater.stop = function() {
-    if (active) {
-        $(document).off('mousemove', userActivityHandler);
-        $(window).off('blur focus', windowActivityHandler);
-        if (ajaxRequest) {
-            ajaxRequest.abort();
-            ajaxRequest = null;
+const JSUpdater = {
+    // Starts the updater, also registers the activity handlers
+    start() {
+        if (!active) {
+            $(document).on('mousemove', userActivityHandler);
+            $(window).on('blur focus', windowActivityHandler);
+            registerNextPoll();
         }
-        window.clearTimeout(timeout);
+        active = true;
+    },
+
+    // Stops the updater, also unregisters the activity handlers
+    stop() {
+        if (active) {
+            $(document).off('mousemove', userActivityHandler);
+            $(window).off('blur focus', windowActivityHandler);
+            if (ajaxRequest) {
+                ajaxRequest.abort();
+                ajaxRequest = null;
+            }
+            window.clearTimeout(timeout);
+        }
+        active = false;
+    },
+
+    // Registers a new handler by an index, a callback and an optional data
+    // object or function
+    register(index, callback, data = null) {
+        registeredHandlers[index] = { callback, data };
+    },
+
+    // Unregisters/removes a previously registered handler
+    unregister(index) {
+        delete registeredHandlers[index];
     }
-    active = false;
-};
-
-// Registers a new handler by an index, a callback and an optional data
-// object or function
-JSUpdater.register = function(index, callback, data) {
-    registeredHandlers[index] = {
-        callback: callback,
-        data: data || null
-    };
-};
-
-// Unregisters/removes a previously registered handler
-JSUpdater.unregister = function(index) {
-    delete registeredHandlers[index];
-};
+}
 
 export default JSUpdater;

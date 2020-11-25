@@ -21,7 +21,7 @@ class JsupdaterController extends AuthenticatedController
 
     /**
      * Checks whether we have a valid logged in user,
-     * send "Forbidden" otherwise
+     * send "Forbidden" otherwise.
      *
      * @param String $action The action to perform
      * @param Array  $args   Potential arguments
@@ -107,80 +107,50 @@ class JsupdaterController extends AuthenticatedController
      * SystemPlugins may call UpdateInformation::setInformation to set information
      * to be sent via ajax to the main request. Core-functionality-data should be
      * collected and set here.
-     * @return array: array(array('js_function' => $data), ...)
+     * @return array: array(array('index' => $data), ...)
      */
     protected function coreInformation()
     {
+        $pageInfo = Request::getArray("page_info");
+        $data = [
+            'blubber' => $this->getBlubberUpdates($pageInfo),
+            'messages' => $this->getMessagesUpdates($pageInfo),
+            'personalnotifications' => $this->getPersonalNotificationUpdates($pageInfo),
+            'questionnaire' => $this->getQuestionnaireUpdates($pageInfo),
+        ];
+
+        return array_filter($data);
+    }
+
+    private function getBlubberUpdates($pageInfo)
+    {
         $data = [];
-        if (PersonalNotifications::isActivated()) {
-            $notifications = PersonalNotifications::getMyNotifications();
-            if ($notifications && count($notifications)) {
-                $ret = [];
-                foreach ($notifications as $notification) {
-                    $info = $notification->toArray();
-                    $info['html'] = $notification->getLiElement();
-                    $ret[] = $info;
-                }
-                $data['PersonalNotifications.newNotifications'] = $ret;
-            } else {
-                $data['PersonalNotifications.newNotifications'] = [];
-            }
-        }
-        $page_info = Request::getArray("page_info");
-        if (mb_stripos(Request::get("page"), "dispatch.php/messages") !== false) {
-            $messages = Message::findNew(
-                $GLOBALS["user"]->id,
-                $page_info['Messages']['received'],
-                $page_info['Messages']['since'],
-                $page_info['Messages']['tag']
-            );
-            $template_factory = $this->get_template_factory();
-            $received = $page_info['Messages']['received'];
-            foreach ($messages as $message) {
-                $data['Messages.newMessages']['messages'][$message->getId()] = $template_factory
-                        ->open("messages/_message_row.php")
-                        ->render(compact("message", "received") + ['controller' => $this]);
-            }
-        }
-        if (is_array($page_info['Questionnaire']['questionnaire_ids'])) {
-            foreach ($page_info['Questionnaire']['questionnaire_ids'] as $questionnaire_id) {
-                $questionnaire = new Questionnaire($questionnaire_id);
-                if ($questionnaire->latestAnswerTimestamp() > $page_info['Questionnaire']['last_update']) {
-                    $template = $this->get_template_factory()->open("questionnaire/evaluate");
-                    $template->set_layout(null);
-                    $template->set_attribute("questionnaire", $questionnaire);
-                    $data['Questionnaire.updateQuestionnaireResults'][$questionnaire->getId()] = [
-                        'html' => $template->render()
-                    ];
-                }
-            }
-        }
-        if (is_array($page_info['Blubber']['threads']) && count($page_info['Blubber']['threads'])) {
+        if (is_array($pageInfo['blubber']['threads']) && count($pageInfo['blubber']['threads'])) {
             $blubber_data = array();
-            foreach ($page_info['Blubber']['threads'] as $thread_id) {
+            foreach ($pageInfo['blubber']['threads'] as $thread_id) {
                 $thread = new BlubberThread($thread_id);
                 if ($thread->isReadable()) {
                     $comments = BlubberComment::findBySQL("thread_id = :thread_id AND chdate >= :time ORDER BY mkdate ASC", array(
-                        'thread_id' => $thread_id,
-                        'time' => UpdateInformation::getTimestamp()
-                    ));
+                                                              'thread_id' => $thread_id,
+                                                              'time' => UpdateInformation::getTimestamp()
+                                                          ));
                     foreach ($comments as $comment) {
                         $blubber_data[$thread_id][] = $comment->getJSONdata();
                     }
                 }
             }
             if (count($blubber_data)) {
-                $data['Blubber.addNewComments'] = $blubber_data;
+                $data['addNewComments'] = $blubber_data;
             }
             $statement = DBManager::get()->prepare("
                 SELECT blubber_events_queue.item_id
                 FROM blubber_events_queue
                 WHERE blubber_events_queue.event_type = 'delete'
             ");
-            $statement->execute([$page_info['Blubber']['threads']]);
+            $statement->execute([$pageInfo['blubber']['threads']]);
             $comment_ids = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
             if (count($comment_ids)) {
-                $data['Blubber.removeDeletedComments'] = $comment_ids;
+                $data['removeDeletedComments'] = $comment_ids;
             }
             $statement = DBManager::get()->prepare("
                 DELETE FROM blubber_events_queue
@@ -201,12 +171,83 @@ class JsupdaterController extends AuthenticatedController
                 );
             }
             if (count($thread_widget_data)) {
-                $data['Blubber.updateThreadWidget'] = $thread_widget_data;
+                $data['updateThreadWidget'] = $thread_widget_data;
             }
         }
-        if (mb_stripos(Request::get("page"), "plugins.php/blubber/messenger") !== false) {
 
+        return $data;
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.Superglobals)
+     */
+    private function getMessagesUpdates($pageInfo)
+    {
+        $data = [];
+        if (mb_stripos(Request::get("page"), "dispatch.php/messages") !== false) {
+            $messages = Message::findNew(
+                $GLOBALS["user"]->id,
+                $pageInfo['messages']['received'],
+                $pageInfo['messages']['since'],
+                $pageInfo['messages']['tag']
+            );
+            $templateFactory = $this->get_template_factory();
+            foreach ($messages as $message) {
+                $attributes = [
+                    'message' => $message,
+                    'received' => $pageInfo['messages']['received'],
+                    'controller' => $this,
+                ];
+                $html = $templateFactory->open("messages/_message_row.php")
+                                         ->render($attributes);
+                $data['messages'][$message->getId()] = $html;
+            }
         }
+
+        return $data;
+    }
+
+    /**
+     * @SuppressWarnings(UnusedFormalParameter)
+     */
+    private function getPersonalNotificationUpdates($pageInfo)
+    {
+        $data = [];
+        if (PersonalNotifications::isActivated()) {
+            $notifications = PersonalNotifications::getMyNotifications();
+            if ($notifications && count($notifications)) {
+                $ret = [];
+                foreach ($notifications as $notification) {
+                    $info = $notification->toArray();
+                    $info['html'] = $notification->getLiElement();
+                    $ret[] = $info;
+                }
+                $data['notifications'] = $ret;
+            } else {
+                $data['notifications'] = [];
+            }
+        }
+
+        return $data;
+    }
+
+    private function getQuestionnaireUpdates($pageInfo)
+    {
+        $data = [];
+        if (is_array($pageInfo['questionnaire']['questionnaire_ids'])) {
+            foreach ($pageInfo['questionnaire']['questionnaire_ids'] as $questionnaireId) {
+                $questionnaire = new Questionnaire($questionnaireId);
+                if ($questionnaire->latestAnswerTimestamp() > $pageInfo['questionnaire']['last_update']) {
+                    $template = $this->get_template_factory()->open("questionnaire/evaluate");
+                    $template->set_layout(null);
+                    $template->set_attribute("questionnaire", $questionnaire);
+                    $data[$questionnaire->getId()] = [
+                        'html' => $template->render()
+                    ];
+                }
+            }
+        }
+
         return $data;
     }
 }

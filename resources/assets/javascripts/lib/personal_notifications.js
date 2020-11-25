@@ -42,7 +42,7 @@ function create_desktop_notification(data) {
 }
 
 // Handler for all notifications received by an ajax request
-function process_notifications(notifications) {
+function process_notifications({ notifications }) {
     var cache = Cache.getInstance('desktop.notifications');
     var ul = $('<ul/>');
     var changed = false;
@@ -97,7 +97,11 @@ const PersonalNotifications = {
                 stack[data.id] = data;
             });
 
-            PersonalNotifications.newNotifications = process_notifications;
+            STUDIP.JSUpdater.register(
+                'personalnotifications',
+                process_notifications,
+                null
+            );
 
             if ($('#audio_notification').length > 0) {
                 audio_notification = $('#audio_notification').get(0);
@@ -117,7 +121,6 @@ const PersonalNotifications = {
                 .toggle(permission === 'default');
         });
     },
-    newNotifications () {},
     markAsRead (event) {
         var notification = $(this).closest('.notification'),
             id = notification.data().id;

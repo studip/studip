@@ -3,6 +3,8 @@ const Blubber = {
     App: null, //This app is not always available. The app is blubber with a widget and the threads next to it.
     threads: [],
     init () {
+        STUDIP.JSUpdater.register('blubber', Blubber.updateState, Blubber.getParamsForPolling);
+
         if ($('#blubber-index, #messenger-course').length) {
             let panel_data = $('.blubber_panel').data();
             STUDIP.Blubber.App = new Vue({
@@ -91,14 +93,21 @@ const Blubber = {
             });
         });
     },
-    periodicalPushData () {
-        let data = {
+    updateState(datagram) {
+        for (const [method, data] of Object.entries(datagram)) {
+            if (method in Blubber) {
+                Blubber[method](data);
+            }
+        }
+    },
+    getParamsForPolling () {
+        const data = {
             threads: [],
-            widget: null
         };
         $('.blubber_thread').each(function () {
             data.threads.push(this.__vue__._props.thread_data.thread_posting.thread_id);
         });
+
         return data;
     },
     addNewComments (blubberdata) {
