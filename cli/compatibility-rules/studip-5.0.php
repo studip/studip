@@ -20,4 +20,5 @@ return [
     'vendor/phpCAS'       => 'Remove include/require. Will be autoloaded.',
     'vendor/phpxmlrpc'    => 'Remove include/require. Will be autoloaded.',
 
+    'periodicalPushData' => '#{red:Removed} - Use #{yellow:STUDIP.JSUpdater.register()} instead',
 ];
