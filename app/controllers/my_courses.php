@@ -665,13 +665,24 @@ class MyCoursesController extends AuthenticatedController
         if ($GLOBALS['perm']->have_perm('admin')) {
             throw new AccessDeniedException();
         }
+
         PageLayout::setTitle(_('Meine archivierten Veranstaltungen'));
         PageLayout::setHelpKeyword('Basis.MeinArchiv');
         Navigation::activateItem('/browse/my_courses/archive');
         SkipLinks::addIndex(_('Hauptinhalt'), 'layout_content', 100);
+
+        if (Config::get()->ENABLE_ARCHIVE_SEARCH) {
+            $actions = Sidebar::get()->addWidget(new ActionsWidget());
+            $actions->addLink(
+                _('Suche im Archiv'),
+                URLHelper::getURL('dispatch.php/search/archive'),
+                Icon::create('search')
+            );
+        }
+
         $sortby = Request::option('sortby', 'name');
 
-        $query     = "SELECT semester, name, seminar_id, status, archiv_file_id,
+        $query = "SELECT semester, name, seminar_id, status, archiv_file_id,
                          LENGTH(forumdump) > 0 AS forumdump, # Test for existence
                          LENGTH(wikidump) > 0 AS wikidump    # Test for existence
                   FROM archiv_user
