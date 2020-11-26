@@ -74,12 +74,3 @@
         </table>
     <? endforeach; ?>
 <? endif; ?>
-<?
-$sidebar = Sidebar::get();
-
-$links = new LinksWidget();
-$links->setTitle(_('Aktionen'));
-$links->addLink(_('Suche im Archiv'),URLHelper::getURL('dispatch.php/search/archive'), Icon::create('search', 'info'));
-
-$sidebar->addWidget($links, 'actions');
-?>
