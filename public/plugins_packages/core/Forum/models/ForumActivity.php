@@ -72,6 +72,12 @@ class ForumActivity
      */
     public static function deleteEntry($event, $topic_id, $post)
     {
+        // Remove all previous activities for the post
+        Studip\Activity\Activity::deleteBySQL(
+            "provider = ? AND object_type = 'forum' AND object_id = ?",
+            [Studip\Activity\ForumProvider::class, $topic_id]
+        );
+
         $summary = _('%s hat im Forum der Veranstaltung "%s" einen Beitrag gelöscht.');
 
         if ($post['user_id'] == $GLOBALS['user']->id) {

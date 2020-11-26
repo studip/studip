@@ -22,6 +22,10 @@ class ForumProvider implements ActivityProvider
     {
         $post = \ForumEntry::getEntry($activity->object_id);
 
+        if (!$post) {
+            return false;
+        }
+
         $activity->content = formatReady($post['content']);
 
         $url = \PluginEngine::getURL('CoreForum', [], 'index/index/' . $post['topic_id']
