@@ -90,8 +90,23 @@ class Questionnaire extends SimpleORMap implements PrivacyObject
                 return true;
             } elseif (in_array($assignment['range_type'], ["static", "user", "institute"]) && $GLOBALS['perm']->have_perm("user")) {
                 return true;
+            } elseif ($assignment['range_type'] === "statusgruppe") {
+
+                $statusgruppe_user = StatusgruppeUser::findOneBySQL(
+                    "statusgruppe_id = ? AND user_id = ?",
+                    [$assignment['range_id'], $GLOBALS['user']->id]);
+                if ($statusgruppe_user) {
+                    return true;
+                }
             } elseif($GLOBALS['perm']->have_studip_perm("user", $assignment['range_id'])) {
                 return true;
+            } else {
+                //now look through all plugin if this assignment is related to plugin contents:
+                foreach (PluginManager::getInstance()->getPlugins("QuestionnaireAssignmentPlugin") as $plugin) {
+                    if ($plugin->isQuestionnaireViewable($assignment)) {
+                        return true;
+                    }
+                }
             }
         }
         return false;
@@ -121,8 +136,20 @@ class Questionnaire extends SimpleORMap implements PrivacyObject
             foreach ($this->assignments as $assignment) {
                 if ($assignment['range_type'] === "institute" && $GLOBALS['perm']->have_studip_perm("tutor", $assignment['range_id'])) {
                     return true;
+                } elseif ($assignment['range_type'] === "statusgruppe") {
+                    $statusgruppe = Statusgruppen::find($assignment['range_id']);
+                    if ($statusgruppe && $GLOBALS['perm']->have_studip_perm("tutor", $statusgruppe['range_id'])) {
+                        return true;
+                    }
                 } elseif($assignment['range_type'] === "course" && $GLOBALS['perm']->have_studip_perm("tutor", $assignment['range_id'])) {
                     return true;
+                } else {
+                    //now look through all plugin if this assignment is related to plugin contents:
+                    foreach (PluginManager::getInstance()->getPlugins("QuestionnaireAssignmentPlugin") as $plugin) {
+                        if ($plugin->isQuestionnaireEditable($assignment)) {
+                            return true;
+                        }
+                    }
                 }
             }
         }

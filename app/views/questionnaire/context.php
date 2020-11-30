@@ -45,6 +45,27 @@
         </ul>
         <?= QuickSearch::get("add_seminar_id", new SeminarSearch())->render() ?>
 
+        <h3><?= _("Teilnehmergruppen in Veranstaltungen") ?></h3>
+        <ul class="clean statusgroupselector">
+            <? foreach ($this->questionnaire->assignments as $assignment) : ?>
+                <? if ($assignment['range_type'] === "statusgruppe") : ?>
+                    <li>
+                        <label>
+                            <input type="checkbox" name="remove_statusgruppe[]" value="<?= htmlReady($assignment['range_id']) ?>" style="display: none;">
+                            <? $statusgruppe = Statusgruppen::find($assignment['range_id']) ?>
+                            <span>
+                            <a href="<?= URLHelper::getLink("seminar_main.php", ['auswahl' => $statusgruppe->getId()]) ?>">
+                                <?= htmlReady($statusgruppe->course['name'].": ".$statusgruppe->name) ?>
+                            </a>
+                            <?= Icon::create("trash", "clickable")->asimg("20px", ['class' => "text-bottom", 'title' => _("Zuweisung zur Veranstaltung aufheben.")]) ?>
+                        </span>
+                        </label>
+                    </li>
+                <? endif ?>
+            <? endforeach ?>
+        </ul>
+        <?= QuickSearch::get("add_statusgruppe_id", $statusgruppesearch)->render() ?>
+
         <? if ($GLOBALS['perm']->have_perm("admin")) : ?>
             <h3><?= _("Einrichtungen") ?></h3>
             <ul class="clean instituteselector">
@@ -64,6 +85,15 @@
                 return $q['range_type'] === 'institute';
             })->pluck('range_id')))->render() ?>
         <? endif ?>
+
+        <?
+        foreach (PluginManager::getInstance()->getPlugins("QuestionnaireAssignmentPlugin") as $plugin) {
+            $template = $plugin->getQuestionnaireAssignmentEditTemplate($assignment);
+            if ($template) {
+                echo $template->render();
+            }
+        }
+        ?>
 
     </fieldset>
 

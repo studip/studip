@@ -44,16 +44,20 @@ class QuestionnaireController extends AuthenticatedController
     {
         $this->range_type = Course::findCurrent() ? 'course' : 'institute';
         if (($this->range_type === "institute") && $GLOBALS['perm']->have_perm('admin')) {
-            if (!$GLOBALS['SessionSeminar']) {
+            if (!Context::get()->id) {
                 Navigation::activateItem('/admin/institute/questionnaires');
             }
             require_once 'lib/admin_search.inc.php';
         }
-        if (!$GLOBALS['perm']->have_studip_perm("tutor", $GLOBALS['SessionSeminar'])) {
+        if (!$GLOBALS['perm']->have_studip_perm("tutor", Context::get()->id)) {
             throw new AccessDeniedException("Only for logged in users.");
         }
         Navigation::activateItem("/course/admin/questionnaires");
-        $this->questionnaires = Questionnaire::findBySQL("INNER JOIN questionnaire_assignments USING (questionnaire_id) WHERE questionnaire_assignments.range_id = ? AND questionnaire_assignments.range_type = ? ORDER BY questionnaires.mkdate DESC", [$GLOBALS['SessionSeminar'], $this->range_type]);
+        $this->statusgruppen = Statusgruppen::findByRange_id(Context::get()->id);
+        $this->questionnaires = Questionnaire::findBySQL(
+            "INNER JOIN questionnaire_assignments USING (questionnaire_id) WHERE (questionnaire_assignments.range_id = ? AND questionnaire_assignments.range_type = ?) OR (questionnaire_assignments.range_id IN (?) AND questionnaire_assignments.range_type = 'statusgruppe') ORDER BY questionnaires.mkdate DESC",
+            [Context::get()->id, $this->range_type, array_map(function ($g) { return $g->getId(); }, $this->statusgruppen)]
+        );
         foreach ($this->questionnaires as $questionnaire) {
             if (!$questionnaire['visible'] && $questionnaire->isRunning()) {
                 $questionnaire->start();
@@ -68,6 +72,19 @@ class QuestionnaireController extends AuthenticatedController
     public function thank_you_action()
     {
 
+    }
+
+    public function add_to_context_action()
+    {
+        $this->statusgruppen = Statusgruppen::findByRange_id(Context::get()->id);
+        if (!count($this->statusgruppen)) {
+            $this->redirect("questionnaire/edit", [
+                'range_type' => Context::getType(),
+                'range_id' => Context::get()->id
+            ]);
+            return;
+        }
+        PageLayout::setTitle(_("Kontext auswählen"));
     }
 
     public function edit_action($questionnaire_id = null)
@@ -462,6 +479,9 @@ class QuestionnaireController extends AuthenticatedController
                 $course_assignment['user_id'] = $GLOBALS['user']->id;
                 $course_assignment->store();
             }
+            foreach (PluginManager::getInstance()->getPlugins("QuestionnaireAssignmentPlugin") as $plugin) {
+                $plugin->storeQuestionnaireAssignments($this->questionnaire);
+            }
 
             foreach (Request::getArray('remove_sem') as $seminar_id) {
                 if ($GLOBALS['perm']->have_studip_perm('tutor', $seminar_id)) {
@@ -494,6 +514,39 @@ class QuestionnaireController extends AuthenticatedController
             $this->response->add_header("X-Dialog-Execute", json_encode($output));
         }
         PageLayout::setTitle(sprintf(_("Bereiche für Fragebogen: %s"), $this->questionnaire->title));
+        if ($GLOBALS['perm']->have_perm("root")) {
+            $this->statusgruppesearch = new SQLSearch(
+                "SELECT statusgruppen.statusgruppe_id, CONCAT(seminare.name, ': ', statusgruppen.name) AS search_name
+                    FROM statusgruppen
+                        INNER JOIN seminare ON (seminare.Seminar_id = statusgruppen.range_id)
+                    WHERE CONCAT(seminare.name, ': ', statusgruppen.name) LIKE :input
+                    ORDER BY statusgruppen.name ASC ",
+                _("Teilnehmergruppe suchen")
+            );
+        } elseif ($GLOBALS['perm']->have_perm("admin")) {
+            $this->statusgruppesearch = new SQLSearch(
+                "SELECT statusgruppen.statusgruppe_id, CONCAT(seminare.name, ': ', statusgruppen.name) AS search_name
+                FROM statusgruppen
+                    INNER JOIN seminare ON (seminare.Seminar_id = statusgruppen.range_id)
+                    INNER JOIN seminar_inst ON (seminar_inst.seminar_id = seminare.Seminar_id)
+                    INNER JOIN user_inst ON (seminar_inst.institut_id = user_inst.Institut_id AND inst_perms = 'admin')
+                WHERE CONCAT(seminare.name, ': ', statusgruppen.name) LIKE :input
+                    AND user_inst.user_id = " . DBManager::get()->quote($GLOBALS['user']->id) . "
+                ORDER BY statusgruppen.name ASC ",
+                _("Teilnehmergruppe suchen")
+            );
+        } else {
+            $this->statusgruppesearch = new SQLSearch(
+                "SELECT statusgruppen.statusgruppe_id, CONCAT(seminare.name, ': ', statusgruppen.name) AS search_name
+                    FROM statusgruppen
+                        LEFT JOIN seminar_user ON (statusgruppen.range_id = seminar_user.Seminar_id AND seminar_user.status IN ('tutor', 'dozent'))
+                        LEFT JOIN seminare ON (seminare.Seminar_id = statusgruppen.range_id)
+                    WHERE seminar_user.user_id = " . DBManager::get()->quote($GLOBALS['user']->id) . "
+                        AND CONCAT(seminare.name, ': ', statusgruppen.name) LIKE :input
+                    ORDER BY statusgruppen.name ASC ",
+                _("Teilnehmergruppe suchen")
+            );
+        }
     }
 
     public function widget_action($range_id, $range_type = "course")
@@ -506,18 +559,36 @@ class QuestionnaireController extends AuthenticatedController
         if (in_array($this->range_id, ["public", "start"])) {
             $this->range_type = "static";
         }
+        $statusgruppen_ids = [];
+        if (in_array($this->range_type, ["course", "institute"])) {
+            if ($GLOBALS['perm']->have_studip_perm("tutor", $this->range_id)) {
+                $statusgruppen = Statusgruppen::findByRange_id(Context::get()->id);
+            } else {
+                $statusgruppen = Statusgruppen::findBySQL("INNER JOIN statusgruppe_user USING (statusgruppe_id) WHERE statusgruppen.range_id = ? AND statusgruppe_user.user_id = ? ", [
+                    Context::get()->id,
+                    $GLOBALS['user']->id
+                ]);
+            }
+            $statusgruppen_ids = array_map(function ($g) { return $g->getId(); }, $statusgruppen);
+        }
         $statement = DBManager::get()->prepare("
             SELECT questionnaires.*
             FROM questionnaires
                 INNER JOIN questionnaire_assignments ON (questionnaires.questionnaire_id = questionnaire_assignments.questionnaire_id)
-            WHERE questionnaire_assignments.range_id = :range_id
-                AND questionnaire_assignments.range_type = :range_type
+            WHERE (
+                    questionnaire_assignments.range_id = :range_id
+                    AND questionnaire_assignments.range_type = :range_type
+                ) OR (
+                    questionnaire_assignments.range_id IN (:statusgruppe_id)
+                    AND questionnaire_assignments.range_type = 'statusgruppe'
+                )
                 AND startdate <= UNIX_TIMESTAMP()
             ORDER BY questionnaires.mkdate DESC
         ");
         $statement->execute([
             'range_id' => $this->range_id,
-            'range_type' => $this->range_type
+            'range_type' => $this->range_type,
+            'statusgruppe_id' => $statusgruppen_ids
         ]);
         $this->questionnaire_data = $statement->fetchAll(PDO::FETCH_ASSOC);
         $stopped_visible = 0;

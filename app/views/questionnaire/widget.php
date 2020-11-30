@@ -7,7 +7,7 @@
         </h1>
         <nav>
             <? if ($allowed_to_add) : ?>
-                <a href="<?= URLHelper::getLink("dispatch.php/questionnaire/edit", ['range_id' => $range_id, 'range_type' => $range_type]) ?>" data-dialog title="<?= _('Fragebogen hinzufügen') ?>">
+                <a href="<?= $controller->link_for('questionnaire/add_to_context', $range_type ? ['range_type' => $range_type, 'range_id' => Context::getId()]: []) ?>" data-dialog title="<?= _('Fragebogen hinzufügen') ?>">
                     <?= Icon::create("add", "clickable")->asimg("16px", ['class' => "text-bottom"]) ?>
                 </a>
                 <a href="<?= URLHelper::getLink("dispatch.php/questionnaire/" . ($range_type == 'course' || $range_type == 'institute' ? 'course' : ''). "overview") ?>" title="<?= _('Fragebögen verwalten') ?>">

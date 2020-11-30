@@ -52,6 +52,13 @@ class MyRealmModel
         $count = 0;
         $neue  = 0;
 
+        $statusgruppen = Statusgruppen::findByRange_id($object_id);
+        if (!$GLOBALS['perm']->have_studip_perm("tutor", $object_id)) {
+            $statusgruppen = array_filter($statusgruppen, function ($sg) use ($user_id) {
+                return $sg->isMember($user_id);
+            });
+        }
+
         $threshold = object_get_visit_threshold();
         $statement = DBManager::get()->prepare("
             SELECT COUNT(DISTINCT questionnaires.questionnaire_id) AS count,
@@ -60,8 +67,15 @@ class MyRealmModel
             FROM questionnaire_assignments
                 INNER JOIN questionnaires ON (questionnaires.questionnaire_id = questionnaire_assignments.questionnaire_id)
                 LEFT JOIN object_user_visits ON(object_user_visits.object_id = questionnaires.questionnaire_id AND object_user_visits.user_id = :user_id AND object_user_visits.type = 'vote')
-            WHERE questionnaire_assignments.range_id = :course_id
-                AND questionnaire_assignments.range_type IN ('course', 'institute')
+            WHERE (
+                    (
+                        questionnaire_assignments.range_id = :course_id
+                        AND questionnaire_assignments.range_type IN ('course', 'institute')
+                    ) OR (
+                        questionnaire_assignments.range_id IN (:statusgruppe_ids)
+                        AND questionnaire_assignments.range_type = 'statusgruppe'
+                    )
+                )
                 AND questionnaires.startdate IS NOT NULL
                 AND questionnaires.startdate <= UNIX_TIMESTAMP()
                 AND (
@@ -71,9 +85,10 @@ class MyRealmModel
             GROUP BY questionnaire_assignments.range_id
         ");
         $statement->execute([
-            'threshold' => $threshold,
-            'user_id'   => $user_id,
-            'course_id' => $object_id
+            'threshold'       => $threshold,
+            'user_id'         => $user_id,
+            'course_id'       => $object_id,
+            'statusgruppe_ids' => array_map(function ($g) { return $g->getId(); }, $statusgruppen)
         ]);
 
         $result = $statement->fetch(PDO::FETCH_ASSOC);

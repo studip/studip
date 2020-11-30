@@ -48,8 +48,26 @@
                 <?= _('Profilseite')?>
             <? elseif ($assignment['range_type'] === 'course') : ?>
                 <?= htmlReady(Course::find($assignment['range_id'])->name) ?>
+            <? elseif ($assignment['range_type'] === 'statusgruppe') : ?>
+                <? $statusgruppe = Statusgruppen::find($assignment['range_id']) ?>
+                <? if ($statusgruppe) : ?>
+                    <?= $statusgruppe->course ? htmlReady($statusgruppe->course->name).":" : "" ?>
+                    <?= $statusgruppe->institute ? htmlReady($statusgruppe->institute->name).":" : "" ?>
+                    <?= htmlReady($statusgruppe->name) ?>
+                <? endif ?>
             <? elseif ($assignment['range_type'] === 'institute') : ?>
                 <?= htmlReady(Institute::find($assignment['range_id'])->name) ?>
+            <? elseif ($assignment['range_type'] === 'plugin') : ?>
+                <?= htmlReady(Institute::find($assignment['range_id'])->name) ?>
+            <? else : ?>
+                <?
+                foreach (PluginManager::getInstance()->getPlugins("QuestionnaireAssignmentPlugin") as $plugin) {
+                    $name = $plugin->getQuestionnaireAssignmentName($assignment);
+                    if ($name) {
+                        echo htmlReady($name);
+                    }
+                }
+                ?>
             <? endif ?>
             </li>
         <? endforeach ?>
