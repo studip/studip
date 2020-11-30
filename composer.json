@@ -3,7 +3,7 @@
     "description": "Stud.IP ist ein Campus- und Lernmanagementsystem für Hochschulen, Schulen, Unternehmen, Verbände und Behörden.",
     "config": {
         "platform": {
-            "php": "7.0.33"
+            "php": "7.2"
         },
         "vendor-dir": "composer"
     },
@@ -64,7 +64,7 @@
         "phpxmlrpc/phpxmlrpc": "^4.4",
         "gossi/docblock": "^1.6",
         "phpxmlrpc/extras": "^0.6.2",
-        "algo26-matthias/idna-convert": "^2.1",
+        "algo26-matthias/idna-convert": "^3.0",
         "caxy/php-htmldiff": "^0.1.9"
     }
 }

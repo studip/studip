@@ -13,12 +13,12 @@
   array (
     'algo26-matthias/idna-convert' => 
     array (
-      'pretty_version' => 'v2.1.0',
-      'version' => '2.1.0.0',
+      'pretty_version' => 'v3.0.4',
+      'version' => '3.0.4.0',
       'aliases' => 
       array (
       ),
-      'reference' => '2717d05713454991936bc581d068c6cea0d84e3b',
+      'reference' => '0786979b5ee8a8fee4731bd6d2be34490174bf74',
     ),
     'beberlei/assert' => 
     array (
@@ -91,6 +91,15 @@
       array (
       ),
       'reference' => 'f5b8a8512e2b58b0071a7280e39f14f72e05d87c',
+    ),
+    'jakeasmith/http_build_url' => 
+    array (
+      'pretty_version' => '1.0.1',
+      'version' => '1.0.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '93c273e77cb1edead0cf8bcf8cd2003428e74e37',
     ),
     'jasig/phpcas' => 
     array (
