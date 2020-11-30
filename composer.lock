@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cc7df23647fb5ea136f8cf698c2c355d",
+    "content-hash": "01fe234f02d13fcc18de3d928bc26e77",
     "packages": [
         {
             "name": "algo26-matthias/idna-convert",
@@ -112,6 +112,66 @@
                 "validation"
             ],
             "time": "2019-05-28T15:27:37+00:00"
+        },
+        {
+            "name": "caxy/php-htmldiff",
+            "version": "v0.1.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/caxy/php-htmldiff.git",
+                "reference": "4bad5c6a4ecc76954d37764e6a29273b6b7bf1f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/caxy/php-htmldiff/zipball/4bad5c6a4ecc76954d37764e6a29273b6b7bf1f8",
+                "reference": "4bad5c6a4ecc76954d37764e6a29273b6b7bf1f8",
+                "shasum": ""
+            },
+            "require": {
+                "ezyang/htmlpurifier": "^4.7",
+                "kub-at/php-simple-html-dom-parser": "^1.7",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "doctrine/cache": "~1.0",
+                "phpunit/phpunit": "~5.0"
+            },
+            "suggest": {
+                "doctrine/cache": "Used for caching the calculated diffs using a Doctrine Cache Provider"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Caxy\\HtmlDiff": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Josh Schroeder",
+                    "email": "jschroeder@caxy.com",
+                    "homepage": "http://www.caxy.com"
+                }
+            ],
+            "description": "A library for comparing two HTML files/snippets and highlighting the differences using simple HTML.",
+            "homepage": "https://github.com/caxy/php-htmldiff",
+            "keywords": [
+                "diff",
+                "html"
+            ],
+            "support": {
+                "issues": "https://github.com/caxy/php-htmldiff/issues",
+                "source": "https://github.com/caxy/php-htmldiff/tree/v0.1.9"
+            },
+            "time": "2019-02-20T18:52:14+00:00"
         },
         {
             "name": "citation-style-language/locales",
@@ -383,6 +443,56 @@
                 "jasig"
             ],
             "time": "2019-08-18T20:01:55+00:00"
+        },
+        {
+            "name": "kub-at/php-simple-html-dom-parser",
+            "version": "1.9.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kub-AT/php-simple-html-dom-parser.git",
+                "reference": "ff22f98bfd9235115c128059076f3eb740d66913"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kub-AT/php-simple-html-dom-parser/zipball/ff22f98bfd9235115c128059076f3eb740d66913",
+                "reference": "ff22f98bfd9235115c128059076f3eb740d66913",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "KubAT\\PhpSimple\\HtmlDomParser": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "S.C. Chen",
+                    "email": "me578022@gmail.com"
+                },
+                {
+                    "name": "Jakub Stawowy",
+                    "email": "Kub-AT@users.noreply.github.com"
+                }
+            ],
+            "description": "PHP Simple HTML DOM Parser with namespace and PHP 7.3 compatible",
+            "homepage": "http://simplehtmldom.sourceforge.net/",
+            "keywords": [
+                "Simple",
+                "dom",
+                "html"
+            ],
+            "support": {
+                "issues": "https://github.com/Kub-AT/php-simple-html-dom-parser/issues",
+                "source": "https://github.com/Kub-AT/php-simple-html-dom-parser/tree/master"
+            },
+            "time": "2019-10-25T12:34:43+00:00"
         },
         {
             "name": "mishal/iless",
@@ -1134,49 +1244,6 @@
                 "psr-3"
             ],
             "time": "2020-03-23T09:12:05+00:00"
-        },
-        {
-            "name": "rashid2538/php-htmldiff",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/rashid2538/php-htmldiff.git",
-                "reference": "72eded67fdb83dfce4f84a503999dda9702bde6a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/rashid2538/php-htmldiff/zipball/72eded67fdb83dfce4f84a503999dda9702bde6a",
-                "reference": "72eded67fdb83dfce4f84a503999dda9702bde6a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "HtmlDiff.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GNU General Public License V2"
-            ],
-            "authors": [
-                {
-                    "name": "Rashid Mohamad",
-                    "email": "rashid2538@gmail.com",
-                    "homepage": "https://jsmorpheus.flexinetsolutions.com/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A library for comparing two HTML files/snippets and highlighting the differences using simple HTML.",
-            "homepage": "https://github.com/rashid2538/php-htmldiff",
-            "keywords": [
-                "diff",
-                "html"
-            ],
-            "time": "2016-06-12T09:25:19+00:00"
         },
         {
             "name": "scssphp/scssphp",
@@ -5072,8 +5139,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "citation-style-language/locales": 20,
-        "citation-style-language/styles-distribution": 20,
-        "rashid2538/php-htmldiff": 20
+        "citation-style-language/styles-distribution": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

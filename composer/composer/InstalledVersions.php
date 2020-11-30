@@ -42,6 +42,15 @@ private static $installed = array (
       ),
       'reference' => '124317de301b7c91d5fce34c98bba2c6925bec95',
     ),
+    'caxy/php-htmldiff' => 
+    array (
+      'pretty_version' => 'v0.1.9',
+      'version' => '0.1.9.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '4bad5c6a4ecc76954d37764e6a29273b6b7bf1f8',
+    ),
     'citation-style-language/locales' => 
     array (
       'pretty_version' => '1.0.0',
@@ -104,6 +113,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '40c0769ce05a30c8172b36ceab11124375c8366e',
+    ),
+    'kub-at/php-simple-html-dom-parser' => 
+    array (
+      'pretty_version' => '1.9.1',
+      'version' => '1.9.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'ff22f98bfd9235115c128059076f3eb740d66913',
     ),
     'mishal/iless' => 
     array (
@@ -246,15 +264,6 @@ private static $installed = array (
       array (
       ),
       'reference' => '0f73288fd15629204f9d42b7055f72dacbe811fc',
-    ),
-    'rashid2538/php-htmldiff' => 
-    array (
-      'pretty_version' => 'dev-master',
-      'version' => 'dev-master',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '72eded67fdb83dfce4f84a503999dda9702bde6a',
     ),
     'scssphp/scssphp' => 
     array (

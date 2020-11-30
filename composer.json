@@ -58,13 +58,13 @@
         "scssphp/scssphp": "^1.4",
         "symfony/yaml": "^3.4",
         "mishal/iless": "^2.2",
-        "rashid2538/php-htmldiff": "dev-master",
         "ezyang/htmlpurifier": "^4.13",
         "davefx/phplot": "^6.2",
         "jasig/phpcas": "^1.3",
         "phpxmlrpc/phpxmlrpc": "^4.4",
         "gossi/docblock": "^1.6",
         "phpxmlrpc/extras": "^0.6.2",
-        "algo26-matthias/idna-convert": "^2.1"
+        "algo26-matthias/idna-convert": "^2.1",
+        "caxy/php-htmldiff": "^0.1.9"
     }
 }

@@ -66,7 +66,7 @@
     <?php
     $old  = $this->render_partial('shared/modul/_modul', ['modul' => $old_module]);
     $new  = $this->render_partial('shared/modul/_modul', ['modul' => $new_module]);
-    $diff = new HtmlDiff($old, $new);
+    $diff = new Caxy\HtmlDiff\HtmlDiff($old, $new);
     $diff->build();
     echo $diff->getDifference();
     ?>
@@ -77,19 +77,19 @@
             <?php
             $old  = $this->render_partial('shared/modul/_modullvs', ['modul' => $old_module]);
             $new  = $this->render_partial('shared/modul/_modullvs', ['modul' => $new_module]);
-            $diff = new HtmlDiff($old, $new);
+            $diff = new Caxy\HtmlDiff\HtmlDiff($old, $new);
             $diff->build();
             echo $diff->getDifference();
 
             $old  = $this->render_partial('shared/modul/_pruefungen', ['modul' => $old_module]);
             $new  = $this->render_partial('shared/modul/_pruefungen', ['modul' => $new_module]);
-            $diff = new HtmlDiff($old, $new);
+            $diff = new Caxy\HtmlDiff\HtmlDiff($old, $new);
             $diff->build();
             echo $diff->getDifference();
 
             $old  = $this->render_partial('shared/modul/_regularien', ['modul' => $old_module]);
             $new  = $this->render_partial('shared/modul/_regularien', ['modul' => $new_module]);
-            $diff = new HtmlDiff($old, $new);
+            $diff = new Caxy\HtmlDiff\HtmlDiff($old, $new);
             $diff->build();
             echo $diff->getDifference();
             ?>
@@ -119,7 +119,7 @@
             <?
             $old  = $this->render_partial('shared/modul/_modullv', ['modul' => $old_module]);
             $new  = $this->render_partial('shared/modul/_modullv', ['modul' => $new_module]);
-            $diff = new HtmlDiff($old, $new);
+            $diff = new Caxy\HtmlDiff\HtmlDiff($old, $new);
             $diff->build();
             echo $diff->getDifference();
             ?>
@@ -148,7 +148,7 @@
             <?php
             $old  = $this->render_partial('shared/modul/_modul_ohne_lv', ['modul' => $old_module]);
             $new  = $this->render_partial('shared/modul/_modul_ohne_lv', ['modul' => $new_module]);
-            $diff = new HtmlDiff($old, $new);
+            $diff = new Caxy\HtmlDiff\HtmlDiff($old, $new);
             $diff->build();
             echo $diff->getDifference();
             ?>

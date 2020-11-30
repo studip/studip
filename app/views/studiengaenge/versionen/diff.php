@@ -57,13 +57,13 @@
 <?
 $old = $this->render_partial('shared/version/_version', ['version' => $old_version]);
 $new = $this->render_partial('shared/version/_version', ['version' => $new_version]);
-$diff = new HtmlDiff($old, $new);
+$diff = new Caxy\HtmlDiff\HtmlDiff($old, $new);
 $diff->build();
 echo $diff->getDifference();
 
 $old = $this->render_partial('shared/version/_versionmodule', ['version' => $old_version]);
 $new = $this->render_partial('shared/version/_versionmodule', ['version' => $new_version]);
-$diff = new HtmlDiff($old, $new);
+$diff = new Caxy\HtmlDiff\HtmlDiff($old, $new);
 $diff->build();
 echo $diff->getDifference();
 ?>

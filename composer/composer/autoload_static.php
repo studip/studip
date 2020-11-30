@@ -9,12 +9,11 @@ class ComposerStaticInit102e652b40fa714b72854854eb2eb527
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'a4ecaeafb8cfb009ad0e052c90355e98' => __DIR__ . '/..' . '/beberlei/assert/lib/Assert/functions.php',
+        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
-        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        'ff9e7f2875c50a305c040868a2ebadbb' => __DIR__ . '/..' . '/rashid2538/php-htmldiff/HtmlDiff.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -202,11 +201,25 @@ class ComposerStaticInit102e652b40fa714b72854854eb2eb527
                 0 => __DIR__ . '/..' . '/pimple/pimple/src',
             ),
         ),
+        'K' => 
+        array (
+            'KubAT\\PhpSimple\\HtmlDomParser' => 
+            array (
+                0 => __DIR__ . '/..' . '/kub-at/php-simple-html-dom-parser/src',
+            ),
+        ),
         'H' => 
         array (
             'HTMLPurifier' => 
             array (
                 0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
+            ),
+        ),
+        'C' => 
+        array (
+            'Caxy\\HtmlDiff' => 
+            array (
+                0 => __DIR__ . '/..' . '/caxy/php-htmldiff/lib',
             ),
         ),
     );
