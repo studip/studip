@@ -3,7 +3,7 @@
     "description": "Stud.IP ist ein Campus- und Lernmanagementsystem für Hochschulen, Schulen, Unternehmen, Verbände und Behörden.",
     "config": {
         "platform": {
-            "php": "7.2"
+            "php": "7.0.33"
         },
         "vendor-dir": "composer"
     },
