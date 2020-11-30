@@ -329,22 +329,24 @@ function isLinkIntern($url) {
 * @param    boolean  for mailadr = true and for other link = false
 * @return   string  link in punycode
 */
-function idna_link($link, $mail = false){
-    if (!Config::get()->CONVERT_IDNA_URL) return $link;
+function idna_link($link, $mail = false) {
+    if (!Config::get()->CONVERT_IDNA_URL) {
+        return $link;
+    }
     $pu = @parse_url($link);
-    if (preg_match('/&\w+;/i',$pu['host'])) { //umlaute?  (html-coded)
-        $IDN = new idna_convert();
+    if (preg_match('/&\w+;/i', $pu['host'])) { //umlaute?  (html-coded)
+        $IDN = new Algo26\IdnaConvert\ToIdn();
         $out = false;
         if ($mail){
             if (preg_match('#^([^@]*)@(.*)$#i',$link, $matches)) {
-                $out = $IDN->encode(decodeHTML($matches[2], ENT_NOQUOTES)); // false by error
-                $out = ($out)? $matches[1].'@'.htmlReady($out) : $link;
+                $out = $IDN->convert(decodeHTML($matches[2], ENT_NOQUOTES)); // false by error
+                $out = $out ? $matches[1] . '@' . htmlReady($out) : $link;
             }
-        }elseif (preg_match('#^([^/]*)//([^/?]*)(((/|\?).*$)|$)#i',$link, $matches)) {
-            $out = $IDN->encode(decodeHTML($matches[2], ENT_NOQUOTES)); // false by error
-            $out = ($out)? $matches[1].'//'.htmlReady($out).$matches[3] : $link;
+        } elseif (preg_match('#^([^/]*)//([^/?]*)(((/|\?).*$)|$)#i',$link, $matches)) {
+            $out = $IDN->convert(decodeHTML($matches[2], ENT_NOQUOTES)); // false by error
+            $out = $out ? $matches[1].'//'.htmlReady($out).$matches[3] : $link;
         }
-        return ($out)? $out:$link;
+        return $out ?: $link;
     }
     return $link;
 }

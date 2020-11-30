@@ -28,7 +28,7 @@ class email_validation_class
     function __construct()
     {
         $this->username_regular_expression = Config::get()->USERNAME_REGULAR_EXPRESSION;
-        $this->idna_convert = new idna_convert();
+        $this->idna_convert = new Algo26\IdnaConvert\ToIdn();
     }
 
     Function Tokenize($string,$separator="")
@@ -121,7 +121,7 @@ class email_validation_class
      */
     public function ValidateEmailAddress($email, $domains = '')
     {
-        $converted_email = $this->idna_convert->encode($email);
+        $converted_email = $this->idna_convert->convert($email);
         if (!filter_var($converted_email, FILTER_VALIDATE_EMAIL)) {
             return false;
         }

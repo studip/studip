@@ -32,4 +32,5 @@ return array(
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
     'Assert\\' => array($vendorDir . '/beberlei/assert/lib/Assert'),
+    'Algo26\\IdnaConvert\\' => array($vendorDir . '/algo26-matthias/idna-convert/src'),
 );
