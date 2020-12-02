@@ -83,6 +83,13 @@ STUDIP.loadChunk = (function () {
                 promise = mathjax_promise;
                 break;
 
+            case 'vue':
+                promise = import(
+                    /* webpackChunkName: "vue.js" */
+                    'vue'
+                ).then(({default: Vue}) => Vue);
+                break;
+
             default:
                 promise = Promise.reject('Unknown chunk');
         }

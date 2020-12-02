@@ -1,3 +1,5 @@
+import Vue from './lib/studip-vue.js';
+
 import ActionMenu from './lib/actionmenu.js';
 import admin_sem_class from './lib/admin_sem_class.js';
 import Admission from './lib/admission.js';
@@ -160,5 +162,6 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     ready,
     domReady,
     dialogReady,
-    ScrollToTop
+    ScrollToTop,
+    Vue
 });

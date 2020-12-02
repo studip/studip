@@ -24,6 +24,7 @@ import "./jquery-bundle.js"
 
 import "./init.js"
 import "./chunk-loader.js"
+import "./bootstrap/vue.js"
 
 import "./studip-ui.js"
 import "./bootstrap/fullscreen.js"
@@ -86,7 +87,6 @@ import "./bootstrap/fullcalendar.js"
 import "./bootstrap/inline-editing.js"
 import "./bootstrap/gradebook.js"
 import "./bootstrap/blubber.js"
-import "./bootstrap/vue.js"
 import "./bootstrap/scroll_to_top.js"
 
 import "./mvv_course_wizard.js"
