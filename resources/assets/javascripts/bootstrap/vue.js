@@ -12,10 +12,13 @@ STUDIP.ready(() => {
             return;
         }
 
-        const config = $(this).data().vueApp;
+        const config = Object.assign({}, $(this).data().vueApp, {
+            id: false,
+            components: []
+        });
 
         let data = {};
-        if (window.STUDIP.AppData && window.STUDIP.AppData.hasOwnProperty(config.id)) {
+        if (config.id && window.STUDIP.AppData && window.STUDIP.AppData.hasOwnProperty(config.id)) {
             data = window.STUDIP.AppData[config.id];
         }
 
