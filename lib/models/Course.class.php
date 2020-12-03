@@ -292,7 +292,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
     {
         $result = CourseMember::findByCourseAndStatus($this->id, $status);
         return $as_collection
-             ? SimpleORMapCollection::createFromArray($result)
+             ? SimpleCollection::createFromArray($result)
              : $result;
     }
 

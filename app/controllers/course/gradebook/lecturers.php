@@ -37,7 +37,7 @@ class Course_Gradebook_LecturersController extends AuthenticatedController
 
         $course = \Context::get();
         $this->categories = Definition::getCategoriesByCourse($course);
-        $this->students = $course->getMembersWithStatus('autor', true)->pluck('user');
+        $this->students = $course->getMembersWithStatus('autor', true)->orderBy('nachname, vorname');
         $gradingDefinitions = Definition::findByCourse($course);
         $this->groupedDefinitions = $this->getGroupedDefinitions($gradingDefinitions);
         $this->groupedInstances = $this->groupedInstances($course);
@@ -59,14 +59,14 @@ class Course_Gradebook_LecturersController extends AuthenticatedController
         );
 
         $course = \Context::get();
-        $this->students = $course->getMembersWithStatus('autor', true)->pluck('user');
+        $this->students = $course->getMembersWithStatus('autor');
 
         $gradingDefinitions = Definition::findByCourse($course);
         $this->groupedDefinitions = $this->getGroupedDefinitions($gradingDefinitions);
         $this->categories = Definition::getCategoriesByCourse($course);
         $this->groupedInstances = $this->groupedInstances($course);
 
-        $headerLine = ['Name'];
+        $headerLine = ['Nachname', 'Vorname'];
         foreach ($this->categories as $category) {
             $categoryName = Definition::CUSTOM_DEFINITIONS_CATEGORY === $category ? _('Manuell eingetragen') : $category;
             foreach ($this->groupedDefinitions[$category] as $definition) {
@@ -75,11 +75,11 @@ class Course_Gradebook_LecturersController extends AuthenticatedController
         }
         $studentLines = [];
         foreach ($this->students as $user) {
-            $studentLine = [$user->getFullName('no_title_rev')];
+            $studentLine = [$user->nachname, $user->vorname];
             foreach ($this->categories as $category) {
                 foreach ($this->groupedDefinitions[$category] as $definition) {
-                    $studentLine[] = isset($this->groupedInstances[$user->id][$definition->id])
-                                   ? $this->groupedInstances[$user->id][$definition->id]->rawgrade
+                    $studentLine[] = isset($this->groupedInstances[$user->user_id][$definition->id])
+                                   ? $this->groupedInstances[$user->user_id][$definition->id]->rawgrade
                                    : 0;
                 }
             }
@@ -151,7 +151,7 @@ class Course_Gradebook_LecturersController extends AuthenticatedController
                                  ? $this->groupedDefinitions[Definition::CUSTOM_DEFINITIONS_CATEGORY]
                                  : [];
 
-        $this->students = $course->getMembersWithStatus('autor', true)->pluck('user');
+        $this->students = $course->getMembersWithStatus('autor', true)->orderBy('nachname, vorname');
         $this->groupedInstances = $this->groupedInstances($course);
     }
 
@@ -298,16 +298,16 @@ class Course_Gradebook_LecturersController extends AuthenticatedController
         $this->redirect('course/gradebook/lecturers/edit_custom_definitions');
     }
 
-    public function getInstanceForUser(Definition $definition, \User $user)
+    public function getInstanceForUser(Definition $definition, \CourseMember $user)
     {
-        if (!isset($this->groupedInstances[$user->id])) {
+        if (!isset($this->groupedInstances[$user->user_id])) {
             return null;
         }
-        if (!isset($this->groupedInstances[$user->id][$definition->id])) {
+        if (!isset($this->groupedInstances[$user->user_id][$definition->id])) {
             return null;
         }
 
-        return $this->groupedInstances[$user->id][$definition->id];
+        return $this->groupedInstances[$user->user_id][$definition->id];
     }
 
     private function groupedInstances($course)
@@ -329,17 +329,17 @@ class Course_Gradebook_LecturersController extends AuthenticatedController
         $gradingDefinitions = \SimpleCollection::createFromArray($gradingDefinitions);
         $totalSums = [];
         foreach ($this->students as $student) {
-            if (!isset($totalSums[$student->id])) {
-                $totalSums[$student->id] = 0;
+            if (!isset($totalSums[$student->user_id])) {
+                $totalSums[$student->user_id] = 0;
             }
 
-            if (!isset($this->groupedInstances[$student->id])) {
+            if (!isset($this->groupedInstances[$student->user_id])) {
                 continue;
             }
 
-            foreach ($this->groupedInstances[$student->id] as $definitionId => $instance) {
+            foreach ($this->groupedInstances[$student->user_id] as $definitionId => $instance) {
                 if ($definition = $gradingDefinitions->findOneBy('id', $definitionId)) {
-                    $totalSums[$student->id] += $instance->rawgrade * ($definition->weight / $this->sumOfWeights);
+                    $totalSums[$student->user_id] += $instance->rawgrade * ($definition->weight / $this->sumOfWeights);
                 }
             }
         }

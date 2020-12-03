@@ -40,12 +40,12 @@
         <? if (count($students)) { ?>
             <? foreach ($students as $student) { ?>
                 <tr>
-                    <td class="gradebook-student-name" data-sort-value="<?= $studentName = htmlReady($student->getFullName('no_title_rev')) ?>">
+                    <td class="gradebook-student-name" data-sort-value="<?= $studentName = htmlReady($student->nachname . ', ' . $student->vorname) ?>">
                         <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $student->username]) ?>">
                             <?= $studentName ?>
                         </a>
                     </td>
-                    <? $totalSum = isset($totalSums[$student->id]) ? $totalSums[$student->id] : 0 ?>
+                    <? $totalSum = isset($totalSums[$student->user_id]) ? $totalSums[$student->user_id] : 0 ?>
                     <td data-sort-value="<?= $totalSum?>">
                         <?= $controller->formatAsPercent($totalSum) ?> %
                     </td>

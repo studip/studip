@@ -66,12 +66,12 @@ trait GradebookTemplateHelpers
 
     protected function viewerIsStudent()
     {
-        return $this->viewerHasPerm('autor') && !$this->viewerHasPerm('dozent');
+        return !$this->viewerHasPerm('tutor');
     }
 
     protected function viewerIsLecturer()
     {
-        return $this->viewerHasPerm('dozent');
+        return $this->viewerHasPerm('tutor');
     }
 
     /**

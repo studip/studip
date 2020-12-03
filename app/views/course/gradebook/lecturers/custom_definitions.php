@@ -25,7 +25,7 @@
 
                 <? foreach ($students as $index => $student) { ?>
                     <tr>
-                        <td class="gradebook-student-name" data-sort-value="<?= $studentName = htmlReady($student->getFullName('no_title_rev')) ?>">
+                        <td class="gradebook-student-name" data-sort-value="<?= $studentName = htmlReady(htmlReady($student->nachname . ', ' . $student->vorname)) ?>">
                             <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $student->username]) ?>">
                                 <?= $studentName ?>
                             </a>
@@ -37,7 +37,7 @@
                                     <? $rawgrade = $instance ? $instance->rawgrade : 0 ?>
                                     <label class="undecorated">
                                         <input type="number"
-                                               name="grades[<?= htmlReady($student->id) ?>][<?= htmlReady($definition->id) ?>]"
+                                               name="grades[<?= htmlReady($student->user_id) ?>][<?= htmlReady($definition->id) ?>]"
                                                value="<?= $controller->formatAsPercent($rawgrade) ?>"
                                                min="0"> %
                                     </label>
