@@ -15,6 +15,19 @@ class SemesterSelectorWidget extends SelectWidget
 {
     protected $include_all = false;
 
+
+    /**
+     * The timestamp of the first semester that shall be selectable.
+     */
+    protected $semester_range_begin = 0;
+
+
+    /**
+     * The timestamp of the last semester that shall be selectable.
+     */
+    protected $semester_range_end = 0;
+
+
     /**
      * Overrides parent constructor by setting a default title and default
      * name.
@@ -32,6 +45,23 @@ class SemesterSelectorWidget extends SelectWidget
     {
         $this->include_all = $state;
     }
+
+
+    /**
+     * Sets the range of semesters to be displayed.
+     *
+     * @param $semester_range_begin The timestamp of the first semester.
+     *
+     * @param $semester_range_end The timestamp of the end semester.
+     */
+    public function setRange($semester_range_begin, $semester_range_end)
+    {
+        if ($semester_range_end >= $semester_range_begin) {
+            $this->semester_range_begin = $semester_range_begin;
+            $this->semester_range_end = $semester_range_end;
+        }
+    }
+
 
     /**
      * Populates and renders the widget according to the previously made
@@ -53,7 +83,21 @@ class SemesterSelectorWidget extends SelectWidget
             $this->addElement($element);
         }
 
-        $semesters = array_reverse(Semester::getAll());
+        $semesters = [];
+        if ($this->semester_range_begin && $this->semester_range_end) {
+            $semesters = Semester::findBySql(
+                '`beginn` BETWEEN :begin AND :end
+                OR
+                `ende` BETWEEN :begin AND :end
+                ORDER BY `beginn` DESC',
+                [
+                    'begin' => $this->semester_range_begin,
+                    'end' => $this->semester_range_end
+                ]
+            );
+        } else {
+            $semesters = array_reverse(Semester::getAll());
+        }
         foreach ($semesters as $semester) {
             $element = new SelectElement($semester->id, $semester->name, $current_id && $semester->id == $current_id);
             $this->addElement($element);

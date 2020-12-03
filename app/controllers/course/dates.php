@@ -52,10 +52,21 @@ class Course_DatesController extends AuthenticatedController
         $this->assignLockRulesToTemplate();
 
         $this->last_visitdate = object_get_visit($this->course->id, 'schedule');
-        $this->dates          = $this->course->getDatesWithExdates();
+        $semester_id = Request::get('semester_id');
+        $semester = null;
+        if ($semester_id != 'all') {
+            $semester = Semester::find($semester_id);
+        }
+        if (!$semester || ($semester_id == 'all')) {
+            $this->dates = $this->course->getDatesWithExdates();
+        } else {
+            $this->dates = $this->course->getDatesWithExDates($semester->beginn, $semester->ende);
+        }
 
 
         // set up sidebar
+        $sidebar = Sidebar::get();
+
         $actions = new ActionsWidget();
 
         if (!$this->show_raumzeit && $this->hasAccess()) {
@@ -84,8 +95,26 @@ class Course_DatesController extends AuthenticatedController
             $this->url_for('course/dates/export_csv'),
             Icon::create('file-excel')
         );
+        $sidebar->addWidget($actions);
 
-        Sidebar::get()->addWidget($actions);
+        $course_end_time = $this->course->getEnd_Time();
+        if (($course_end_time == -1) || ($course_end_time > 0)) {
+            //The course has more than one semester:
+            $semester_widget = new SemesterSelectorWidget(
+                $this->url_for('course/dates/index')
+            );
+            $semester_end_range = $course_end_time;
+            if ($semester_end_range == -1) {
+                //The end semester is set to unlimited.
+                $semester_end_range = PHP_INT_MAX;
+            }
+            $semester_widget->includeAll();
+            $semester_widget->setRange(
+                $this->course->start_time,
+                $semester_end_range
+            );
+            $sidebar->addWidget($semester_widget);
+        }
 
         if ($this->show_raumzeit && $this->hasAccess()) {
             $actions = new LinksWidget();
@@ -93,7 +122,7 @@ class Course_DatesController extends AuthenticatedController
             $actions->addLink(_('Zeiten und Räume bearbeiten'),
                               $this->url_for('course/timesrooms'),
                               Icon::create('link-intern'));
-            Sidebar::get()->addWidget($actions);
+            $sidebar->addWidget($actions);
         }
     }
 

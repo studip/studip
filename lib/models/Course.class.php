@@ -393,10 +393,20 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         return trim(vsprintf($template[$format], array_map('trim', $data)));
     }
 
-    public function getDatesWithExdates()
+    public function getDatesWithExdates($range_begin = 0, $range_end = 0)
     {
-        $dates = $this->ex_dates->findBy('content', '', '<>');
-        $dates->merge($this->dates);
+        $dates = [];
+        if (($range_begin > 0) && ($range_end > 0) && ($range_end > $range_begin)) {
+            $ex_dates = $this->ex_dates->findBy('content', '', '<>')
+                          ->findBy('date', $range_begin, '>=')
+                          ->findBy('end_time', $range_end, '<=');
+            $dates = $this->dates->findBy('date', $range_begin, '>=')
+                          ->findBy('end_time', $range_end, '<=');
+            $dates->merge($ex_dates);
+        } else {
+            $dates = $this->ex_dates->findBy('content', '', '<>');
+            $dates->merge($this->dates);
+        }
         $dates->uasort(function($a, $b) {
             return $a->date - $b->date
                 ?: strnatcasecmp($a->getRoomName(), $b->getRoomName());
