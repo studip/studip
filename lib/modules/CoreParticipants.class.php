@@ -118,7 +118,9 @@ class CoreParticipants implements StudipModule
         // Only courses without children have a regular member list and statusgroups.
         if (!$course->getSemClass()->isGroup()) {
             $navigation->addSubNavigation('view', new Navigation(_('Teilnehmende'), 'dispatch.php/course/members'));
-            $navigation->addSubNavigation('statusgroups', new Navigation(_('Gruppen'), 'dispatch.php/course/statusgroups'));
+            if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id) || !$config->COURSE_MEMBERGROUPS_HIDE) {
+                $navigation->addSubNavigation('statusgroups', new Navigation(_('Gruppen'), 'dispatch.php/course/statusgroups'));
+            }
         } else {
             if (!$GLOBALS['perm']->have_studip_perm('tutor', $course_id)) {
                 return null;
