@@ -60,7 +60,7 @@ class Course_DatesController extends AuthenticatedController
         if (!$semester || ($semester_id == 'all')) {
             $this->dates = $this->course->getDatesWithExdates();
         } else {
-            $this->dates = $this->course->getDatesWithExDates($semester->beginn, $semester->ende);
+            $this->dates = $this->course->getDatesWithExdates($semester->beginn, $semester->ende);
         }
 
 

@@ -393,6 +393,19 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         return trim(vsprintf($template[$format], array_map('trim', $data)));
     }
 
+
+    /**
+     * Retrieves the course dates including cancelled dates ("ex-dates").
+     * The dates can be filtered by an optional time range. By default,
+     * all dates are retrieved.
+     *
+     * @param $range_begin The begin timestamp of the time range.
+     *
+     * @param $range_end The end timestamp of the time range.
+     *
+     * @returns SimpleCollection A collection of all retrieved dates and
+     *     cancelled dates.
+     */
     public function getDatesWithExdates($range_begin = 0, $range_end = 0)
     {
         $dates = [];
