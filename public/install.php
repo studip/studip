@@ -15,6 +15,7 @@ if (file_exists($GLOBALS['STUDIP_BASE_PATH'] . '/config/config_local.inc.php')
 
 set_include_path($GLOBALS['STUDIP_BASE_PATH']);
 
+require_once 'composer/autoload.php';
 require_once 'lib/visual.inc.php';
 require_once 'vendor/trails/trails.php';
 require_once 'vendor/flexi/flexi.php';
