@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Vuex from 'vuex';
 
 const eventBus = new Vue();
 
@@ -15,8 +16,11 @@ Vue.mixin({
 
 registerGlobalComponents(Vue);
 
-function createApp(...args) {
-    return new Vue(...args);
+Vue.use(Vuex);
+const store = new Vuex.Store({});
+
+function createApp(options, ...args) {
+    return new Vue({ store, ...options }, ...args);
 }
 
 function registerGlobalComponents() {
@@ -27,4 +31,4 @@ function registerGlobalComponents() {
     });
 }
 
-export { Vue, createApp, eventBus };
+export { Vue, createApp, eventBus, store };
