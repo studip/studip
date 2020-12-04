@@ -37,7 +37,7 @@
         <label>
             <?= _('Inhalt') ?>
             <?= I18N::textarea('content', $scm->content, [
-                'class' => 'add_toolbar wysiwyg',
+                'class' => 'add_toolbar wysiwyg size-l',
             ]) ?>
         </label>
     </fieldset>
