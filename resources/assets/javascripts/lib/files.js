@@ -6,22 +6,26 @@ const Files = {
     init () {
         if ($('#files-index, #course-files-index, #institute-files-index, #files-flat, #course-files-flat, #institute-files-flat, #files-overview').length
             && jQuery("#files_table_form").length) {
-            this.filesapp = STUDIP.Vue.createApp("#layout_container", {
-                "files":       jQuery("#files_table_form").data("files") || [],
-                "folders":     jQuery("#files_table_form").data("folders") || [],
-                "topfolder":   jQuery("#files_table_form").data("topfolder"),
-                "breadcrumbs": jQuery("#files_table_form").data("breadcrumbs") || []
-            }, {
-                methods: {
-                    hasFilesOfType (type) {
-                        for (let i in this.files) {
-                            if (this.files[i].mime_type.indexOf(type) === 0) {
-                                return true;
+            STUDIP.Vue.load().then(({createApp}) => {
+                this.filesapp = createApp({
+                    el: "#layout_container",
+                    data: {
+                        "files":       jQuery("#files_table_form").data("files") || [],
+                        "folders":     jQuery("#files_table_form").data("folders") || [],
+                        "topfolder":   jQuery("#files_table_form").data("topfolder"),
+                        "breadcrumbs": jQuery("#files_table_form").data("breadcrumbs") || []
+                    },
+                    methods: {
+                        hasFilesOfType (type) {
+                            for (let i in this.files) {
+                                if (this.files[i].mime_type.indexOf(type) === 0) {
+                                    return true;
+                                }
                             }
+                            return false;
                         }
-                        return false;
                     }
-                }
+                });
             });
         }
 
@@ -30,11 +34,16 @@ const Files = {
         var tables = jQuery('.vue-file-table');
         if (tables.length) {
             for (var table of tables) {
-                var vue_instance = STUDIP.Vue.createApp(table, {
-                    "files":       jQuery(table).data("files") || [],
-                    "folders":     jQuery(table).data("folders") || [],
-                    "topfolder":   jQuery(table).data("topfolder"),
-                    "breadcrumbs": jQuery(table).data("breadcrumbs") || []
+                STUDIP.Vue.load().then(({createApp}) => {
+                    createApp({
+                        el: table,
+                        data: {
+                            "files":       jQuery(table).data("files") || [],
+                            "folders":     jQuery(table).data("folders") || [],
+                            "topfolder":   jQuery(table).data("topfolder"),
+                            "breadcrumbs": jQuery(table).data("breadcrumbs") || []
+                        }
+                    });
                 });
             }
         }

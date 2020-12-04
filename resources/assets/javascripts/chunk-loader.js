@@ -86,8 +86,8 @@ STUDIP.loadChunk = (function () {
             case 'vue':
                 promise = import(
                     /* webpackChunkName: "vue.js" */
-                    'vue'
-                ).then(({default: Vue}) => Vue);
+                    './chunks/vue'
+                );
                 break;
 
             default:

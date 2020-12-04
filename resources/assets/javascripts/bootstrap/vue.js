@@ -27,12 +27,13 @@ STUDIP.ready(() => {
             components[component] = () => import(`../../../vue/components/${component}.vue`);
         });
 
-        const app = STUDIP.Vue.createApp(
-            this,
-            data,
-            {components},
-            config.components.length === 0
-        );
+        STUDIP.Vue.load().then(({createApp}) => {
+            createApp({
+                el: this,
+                data,
+                components
+            });
+        });
 
         $(this).attr('data-vue-app-created', '');
     });
