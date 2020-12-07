@@ -297,7 +297,7 @@ class Consultation_AdminController extends ConsultationController
             $permissions[] = 'dozent';
         }
 
-        $this->search_object = new PermissionSearch('user', _('Person suchen'));
+        $this->search_object = new PermissionSearch('user', _('Person suchen'), 'user_id', ['permission' => $permissions]);
         if ($this->range instanceof Course) {
             $this->search_object = new PermissionSearch('user_in_sem', _('Person suchen'), 'user_id', [
                 'seminar_id' => $this->range->getRangeId(),
