@@ -14,7 +14,7 @@ class Consultation_ExportController extends ConsultationController
     {
         parent::before_filter($action, $args);
 
-        if ($this->current_user->id !== $GLOBALS['user']->id && $GLOBALS['user']->perms !== 'root') {
+        if (!$this->range->userMayEditRange()) {
             throw new AccessDeniedException();
         }
     }
@@ -32,7 +32,7 @@ class Consultation_ExportController extends ConsultationController
             _('Grund'),
         ];
 
-        $blocks = ConsultationBlock::findByTeacher_id($this->current_user->id, 'ORDER BY start ASC');
+        $blocks = ConsultationBlock::findByRange($this->range, 'ORDER BY start ASC');
         foreach ($blocks as $block) {
             foreach ($block->slots as $slot) {
                 foreach ($slot->bookings as $booking) {
@@ -52,6 +52,40 @@ class Consultation_ExportController extends ConsultationController
         $this->render_csv($csv, 'Sprechstunden-Anmeldungen-' . date('Ymd') . '.csv');
     }
 
+    public function all_action()
+    {
+        $csv = [];
+        $csv[] = [
+            _('Datum'),
+            _('Beginn'),
+            _('Ende'),
+            _('Person'),
+            _('Ort'),
+            _('Notiz'),
+            _('Grund'),
+        ];
+
+        $blocks = ConsultationBlock::findByRange($this->range, 'ORDER BY start ASC');
+        foreach ($blocks as $block) {
+            foreach ($block->slots as $slot) {
+                $csv[] = [
+                    strftime('%x', $slot->start_time),
+                    date('H:i', $slot->start_time),
+                    date('H:i', $slot->end_time),
+                    implode("\n", $slot->bookings->map(function ($booking) {
+                        return $booking->user->getFullName();
+                    })),
+                    $slot->block->room,
+                    $slot->note ?: $slot->block->note,
+                    implode("\n", $slot->bookings->map(function ($booking) {
+                        return $booking->reason;
+                    })),
+                ];
+            }
+        }
+
+        $this->render_csv($csv, 'Sprechstunden-' . date('Ymd') . '.csv');
+    }
 
     public function print_action($block_id)
     {

@@ -18,7 +18,9 @@ class GarbageCollectorJob extends CronJob
 
     public static function getDescription()
     {
-        return _('Entfernt endgültig gelöschte Nachrichten, nicht zugehörige Dateianhänge, abgelaufene Ankündigungen, alte Aktivitäten, veraltete Plugin-Assets sowie veraltete OAuth-Servernonces');
+        return _('Entfernt endgültig gelöschte Nachrichten, nicht zugehörige Dateianhänge, abgelaufene Ankündigungen, '
+               . 'alte Aktivitäten, veraltete Plugin-Assets sowie veraltete OAuth-Servernonces und abgelaufene '
+               . 'Sprechstundenblöcke');
     }
 
     public static function getParameters()
@@ -82,12 +84,12 @@ class GarbageCollectorJob extends CronJob
             $message_deletion_days =  (int) $parameters['message_deletion_days'] * 86400;
         }
         $query = "SELECT message_id FROM message
-                 WHERE autor_id = '____%system%____' 
+                 WHERE autor_id = '____%system%____'
                  AND UNIX_TIMESTAMP(DATE(FROM_UNIXTIME(mkdate))) + ? < UNIX_TIMESTAMP(DATE(FROM_UNIXTIME(UNIX_TIMESTAMP())))";
 
         $stm = $db->prepare($query);
         $stm->execute([$message_deletion_days]);
-        $to_delete_system = $stm->fetchAll(PDO::FETCH_COLUMN);  
+        $to_delete_system = $stm->fetchAll(PDO::FETCH_COLUMN);
 
         if (count($to_delete_system) > 0) {
             $db->exec("DELETE FROM message_user WHERE message_id IN(" . $db->quote($to_delete_system) . ")");
@@ -131,7 +133,7 @@ class GarbageCollectorJob extends CronJob
                 'user_id' => $GLOBALS['user']->id
             ]
         );
-        if (count($unsent_mvv_folders)) {
+        if ($unsent_mvv_folders) {
             $db->exec("DELETE FROM mvv_files_filerefs WHERE fileref_id NOT IN (SELECT id FROM file_refs)");
             $db->exec("DELETE FROM mvv_files WHERE mvvfile_id NOT IN (SELECT mvvfile_id FROM mvv_files_filerefs)");
             $db->exec("DELETE FROM mvv_files_ranges WHERE mvvfile_id NOT IN (SELECT mvvfile_id FROM mvv_files)");
@@ -140,8 +142,8 @@ class GarbageCollectorJob extends CronJob
         if ($parameters['verbose']) {
             printf(_("Gelöschte Ankündigungen: %u") . "\n", (int)$deleted_news);
             printf(_("Gelöschte Nachrichten: %u") . "\n", (count($to_delete) + count($to_delete_system)));
-            printf(_("Gelöschte Dateianhänge: %u") . "\n", count($unsent_attachment_folders));
-            printf(_("Gelöschte MVV-Dateien: %u") . "\n", count($unsent_mvv_folders));
+            printf(_("Gelöschte Dateianhänge: %u") . "\n", $unsent_attachment_folders);
+            printf(_("Gelöschte MVV-Dateien: %u") . "\n", $unsent_mvv_folders);
         }
 
         Token::deleteBySQL('expiration < UNIX_TIMESTAMP()');
@@ -163,6 +165,19 @@ class GarbageCollectorJob extends CronJob
 
         if ($removed > 0 && $parameters['verbose']) {
             printf(_('Gelöschte Server-Nonces: %u') . "\n", (int)$removed);
+        }
+
+        // Remove expired consultation slots
+        $condition = "LEFT JOIN `consultation_slots` USING (`block_id`)
+                      JOIN `config_values`
+                        ON `config_values`.`range_id` = `consultation_blocks`.`range_id`
+                           AND `field` = 'CONSULTATION_GARBAGE_COLLECT'
+                           AND `value` = '1'
+                      GROUP BY `block_id`
+                      HAVING COUNT(`slot_id`) = SUM(`end_time` < UNIX_TIMESTAMP())";
+        $removed = ConsultationBlock::deleteBySQL($condition);
+        if ($removed > 0 && $parameters['verbose']) {
+            printf(_('Gelöschte Sprechstundenblöcke: %u') . "\n", $removed);
         }
     }
 }

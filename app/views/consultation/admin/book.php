@@ -16,10 +16,10 @@
 
         <label>
             <span class="required">
-            <? if ($slot->block->course): ?>
+            <? if ($slot->block->range instanceof Course): ?>
                 <?= htmlReady(sprintf(
                     _('Teilnehmer der Veranstaltung "%s" suchen'),
-                    $slot->block->course->getFullName()
+                    $slot->block->range->getFullName()
                 )) ?>
             <? else: ?>
                 <?= _('Person suchen') ?>
@@ -42,7 +42,7 @@
         <?= Studip\Button::createAccept(_('Termin reservieren')) ?>
         <?= Studip\LinkButton::createCancel(
             _('Abbrechen'),
-            $controller->url_for("consultation/admin#block-{$slot->block_id}")
+            $controller->indexURL($page, "#block-{$slot->block_id}")
         ) ?>
     </footer>
 </form>

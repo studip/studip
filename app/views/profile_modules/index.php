@@ -24,7 +24,7 @@
 
                 <div class="element_description">
                 <? if ($item['icon']): ?>
-                    <img class="plugin_icon text-bottom" alt="" src="<?= $item['icon'] ?>">
+                    <?= $item['icon']->asImg(['class' => 'plugin_icon text-bottom']) ?>
                 <? endif ?>
 
                     <strong class="shortdesc">

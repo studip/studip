@@ -45,7 +45,7 @@ interface Range
     /**
      * Decides whether the user may access the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      */
     public function userMayAccessRange($user_id = null);
@@ -53,16 +53,16 @@ interface Range
     /**
      * Decides whether the user may edit/alter the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      */
     public function userMayEditRange($user_id = null);
 
     /**
-     * Decides whether the user may administer the range.
+     * Decides whether the user may manage the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      */
-    public function userMayAdministerRange($user_id = null);
+    public function userMayManageRange($user_id = null);
 }

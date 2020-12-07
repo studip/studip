@@ -135,6 +135,7 @@ class RouteMap
         $this->app->get('/seminar-cycle-dates/{id}', Routes\Schedule\SeminarCycleDatesShow::class);
 
         $this->addAuthenticatedBlubberRoutes();
+//        $this->addAuthenticatedConsultationRoutes();
         $this->addAuthenticatedContactsRoutes();
         $this->addAuthenticatedCoursesRoutes();
         $this->addAuthenticatedEventsRoutes();
@@ -195,6 +196,23 @@ class RouteMap
 
         // REL mentions
         $this->addRelationship('/blubber-threads/{id}/relationships/mentions', Routes\Blubber\Rel\Mentions::class);
+    }
+
+    private function addAuthenticatedConsultationRoutes()
+    {
+        $this->app->get('/users/{id}/consultations', Routes\Consultations\BlocksByUserIndex::class);
+
+        $this->app->get('/consultation-blocks/{id}', Routes\Consultations\BlockShow::class);
+        $this->app->get('/consultation-blocks/{id}/slots', Routes\Consultations\SlotsByBlockIndex::class);
+
+        $this->app->get('/consultation-slots/{id}', Routes\Consultations\SlotShow::class);
+        $this->app->get('/consultation-slots/{id}/bookings', Routes\Consultations\BookingsBySlotIndex::class);
+        $this->app->post('/consultation-slots/{id}/bookings', Routes\Consultations\BookingsCreate::class);
+
+        $this->app->get('/consultation-bookings/{id}', Routes\Consultations\BookingsShow::class);
+        $this->app->delete('/consultation-bookings/{id}', Routes\Consultations\BookingsDelete::class);
+
+//        $this->addRelationship('/users/{id}/relationships/contacts', Routes\Users\Rel\Contacts::class);
     }
 
     private function addAuthenticatedContactsRoutes()

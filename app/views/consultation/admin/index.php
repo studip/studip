@@ -86,7 +86,7 @@
             </th>
         </tr>
     <? foreach ($block['slots'] as $slot): ?>
-        <tr class="<? if ($slot->is_expired) echo 'slot-is-expired'; ?>  <? if (count($slot->bookings) > 0) echo 'is-occupied'; ?>">
+        <tr id="slot-<?= htmlReady($slot->id) ?>" class="<? if ($slot->is_expired) echo 'slot-is-expired'; ?>  <? if (count($slot->bookings) > 0) echo 'is-occupied'; ?>">
             <td>
                 <input type="checkbox" name="slot-id[]" id="slot-<?= htmLReady($slot->id) ?>"
                        class="studip-checkbox"
@@ -106,7 +106,7 @@
                 &ndash;
             <? else: ?>
                 <? if ($slot->note): ?>
-                    <?= htmlReady($slot->note) ?>
+                    <?= formatLinks($slot->note) ?>
                     <br>
                 <? endif; ?>
                 <? if (count($slot->bookings) > 0): ?>
@@ -179,18 +179,20 @@
                     'data-activates-condition' => '.consultation-overview tbody tr.is-occupied:has(:checkbox:checked)',
                     'formaction'               => $controller->mailURL('bulk'),
                 ]) ?>
+                <?= Studip\Button::create(_('Absagen'), 'cancel', [
+                    'data-dialog'              => 'size=auto',
+                    'data-activates-condition' => '.consultation-overview tbody tr.is-occupied:has(:checkbox:checked)',
+                    ]) ?>
                 <?= Studip\Button::create(_('Löschen'), 'delete', [
-                    'data-confirm'             => _('Wollen Sie diese Sprechstundentermine wirklich löschen?'),
-                    'data-activates-condition' => '.consultation-overview tbody tr:not(.is-occupied):has(:checkbox:checked)',
+                    'class'        => 'consultation-delete-check',
+//                    'data-confirm' => _('Wollen Sie diese Sprechstundentermine wirklich löschen?'),
+                    'data-dialog'  => 'size=auto',
                 ]) ?>
 
                 <div class="actions">
-                    <?= $GLOBALS['template_factory']->render('shared/pagechooser.php', [
-                        'num_postings' => $count,
-                        'perPage'      => $limit,
-                        'page'         => $page,
-                        'pagelink'     => str_replace('§u', '%u', str_replace('%', '%%', $controller->url_for("consultation/admin/{$current_action}/§u"))),
-                    ]) ?>
+                    <?= Pagination::create($count, $page, $limit)->asLinks(function ($page) use ($controller, $current_action) {
+                        return $controller->action_link($current_action, $page);
+                    }) ?>
                 </div>
             </td>
         </tr>

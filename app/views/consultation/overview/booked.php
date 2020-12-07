@@ -32,7 +32,7 @@
             </th>
         </tr>
     <? endif; ?>
-        <tr>
+        <tr id="slot-<?= htmlReady($slot->id) ?>">
             <td>
                 <?= date('H:i', $slot->start_time) ?>
                 -
@@ -42,15 +42,7 @@
                 <?= $this->render_partial('consultation/slot-occupation.php', compact('slot')) ?>
             </td>
             <td>
-            <? if (!$slot->note && (count($slot->bookings) === 0 || !$slot->isOccupied($GLOBALS['user']->id))): ?>
-                &ndash;
-            <? else: ?>
-                <? if ($slot->note): ?>
-                    <?= htmlReady($slot->note) ?>
-                    <br>
-                <? endif; ?>
-                <?= htmlReady($slot->bookings->findOneBy('user_id', $GLOBALS['user']->id)->reason) ?>
-            <? endif; ?>
+                <?= $this->render_partial('consultation/slot-bookings.php', compact('slot')) ?>
             </td>
             <td class="actions">
                 <a href="<?= $controller->cancel($slot->block, $slot, 1) ?>" data-dialog="size=auto">

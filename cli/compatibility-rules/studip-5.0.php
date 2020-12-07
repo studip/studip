@@ -1,6 +1,8 @@
 <?php
 // "Rules"/definitions for critical changes in 5.0
 return [
+    'userMayAdministerRange' => '#{Changed} - Use #{yellow:userMayManageRange} instead',
+
     // https://develop.studip.de/trac/ticket/10806
     'SemesterData' => '#{red:Removed} - Use #{yellow:Semester model} instead',
 

@@ -26,7 +26,7 @@
         <?= Studip\Button::createAccept(_('Speichern')) ?>
         <?= Studip\LinkButton::createCancel(
             _('Abbrechen'),
-            $controller->url_for("consultation/admin#block-{$block->id}")
+            $controller->indexURL($page, "#block-{$block->id}")
         ) ?>
     </footer>
 </form>

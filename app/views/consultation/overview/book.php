@@ -1,6 +1,10 @@
 <form name="reason_form" action="<?= $controller->book($slot->block, $slot) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
+<? if ($slot->block->show_participants): ?>
+    <?= MessageBox::info(_('Bitte beachten Sie, dass Ihre Buchung öffentlich sichtbar sein wird'))->hideClose() ?>
+<? endif; ?>
+
     <fieldset>
         <legend><?= _('Sprechstundentermin reservieren') ?></legend>
 
@@ -14,10 +18,24 @@
             <?= htmlready($slot->block->room) ?>
         </label>
 
+    <? if ($slot->block->require_reason !== 'no'): ?>
         <label>
-            <?= _('Grund') ?>
-            <textarea name="reason"></textarea>
+            <span <? if ($slot->block->require_reason === 'yes') echo 'class="required"'; ?>><?= _('Grund') ?></span>
+            <textarea name="reason" <? if ($slot->block->require_reason === 'yes') echo 'required'; ?>></textarea>
         </label>
+    <? endif; ?>
+
+    <? if ($slot->block->confirmation_text): ?>
+        <label>
+            <?= _('Bitte lesen Sie sich den folgenden Hinweis durch:') ?>
+            <textarea disabled><?= htmlReady($slot->block->confirmation_text) ?></textarea>
+        </label>
+
+        <label>
+            <input type="checkbox" required>
+            <?= _('Ich habe den obigen Hinweis zur Kenntnis genommen') ?>
+        </label>
+    <? endif; ?>
     </fieldset>
 
 
@@ -25,7 +43,7 @@
         <?= Studip\Button::createAccept(_('Termin reservieren')) ?>
         <?= Studip\LinkButton::createCancel(
             _('Abbrechen'),
-            $controller->url_for("consultation/overview#block-{$slot->block_id}")
+            $controller->indexURL("#block-{$slot->block_id}")
         ) ?>
     </footer>
 </form>

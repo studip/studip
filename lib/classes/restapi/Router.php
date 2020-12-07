@@ -412,6 +412,7 @@ class Router
             'Activity',
             'Blubber',
             'Clipboard',
+            'Consultations',
             'Contacts',
             'Course',
             'Discovery',

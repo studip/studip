@@ -15,7 +15,7 @@
         <?= Studip\Button::createAccept(_('Speichern')) ?>
         <?= Studip\LinkButton::createCancel(
             _('Abbrechen'),
-            $controller->indexURL()
+            $controller->indexURL($page)
         ) ?>
     </footer>
 </form>

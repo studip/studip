@@ -47,7 +47,7 @@ class ConsultationBooking extends SimpleORMap implements PrivacyObject
             $event->category_intern = 1;
             $event->summary = sprintf(
                 _('Sprechstundentermin bei %s'),
-                $booking->slot->block->teacher->getFullName()
+                $booking->slot->block->range->getFullName()
             );
             $event->description = $booking->reason;
             $event->store();
@@ -55,6 +55,30 @@ class ConsultationBooking extends SimpleORMap implements PrivacyObject
             restoreLanguage();
 
             $booking->student_event_id = $event->id;
+        };
+
+        $config['registered_callbacks']['after_create'][] = function ($booking) {
+            ConsultationMailer::sendBookingMessageToUser($booking);
+
+            $responsible_persons = $booking->slot->block->responsible_persons;
+            if (!in_array($GLOBALS['user']->id, $responsible_persons)) {
+                ConsultationMailer::sendBookingMessageToTeacher($booking);
+            }
+        };
+
+        $config['registered_callbacks']['before_store'][] = function ($booking) {
+            if (!$booking->isNew() && $booking->isFieldDirty('reason')) {
+                if ($GLOBALS['user']->id !== $booking->user_id) {
+                    ConsultationMailer::sendReasonMessage($booking,$booking->user);
+                }
+
+                $responsible_persons = $booking->slot->block->responsible_persons;
+                if (!in_array($GLOBALS['user']->id, $responsible_persons)) {
+                    foreach ($responsible_persons as $user) {
+                        ConsultationMailer::sendReasonMessage($booking, $user);
+                    }
+                }
+            }
         };
 
         $config['registered_callbacks']['after_store'][] = function ($booking) {
@@ -71,6 +95,19 @@ class ConsultationBooking extends SimpleORMap implements PrivacyObject
         };
 
         parent::configure($config);
+    }
+
+    public function cancel($reason = '')
+    {
+        if ($GLOBALS['user']->id !== $this->user_id) {
+            ConsultationMailer::sendCancelMessageToUser($this, $reason);
+        }
+
+        if (!in_array($GLOBALS['user']->id, $this->slot->block->responsible_persons)) {
+            ConsultationMailer::sendCancelMessageToTeacher($this, $reason);
+        }
+
+        return $this->delete() ? 1 : 0;
     }
 
     /**

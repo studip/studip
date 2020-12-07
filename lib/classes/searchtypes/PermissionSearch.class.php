@@ -136,6 +136,7 @@ class PermissionSearch extends SQLSearch {
                             OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input
                             OR auth_user_md5.username LIKE :input
                           )
+                          AND auth_user_md5.user_id NOT IN (:exclude_user)
                           AND {$visibility_condition}
                         ORDER BY auth_user_md5.Nachname, auth_user_md5.Vorname, auth_user_md5.username";
             break;
@@ -195,7 +196,7 @@ class PermissionSearch extends SQLSearch {
     private function getDefaultData()
     {
         $data = [];
-        if (in_array($this->search, ['user', 'user_inst'])) {
+        if (in_array($this->search, ['user', 'user_in_sem', 'user_inst'])) {
             $data[':exclude_user'] = '';
         }
         if (in_array($this->search, ['user_not_already_in_sem', 'user_inst_not_already_in_sem'])) {

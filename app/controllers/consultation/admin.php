@@ -11,20 +11,21 @@ require_once __DIR__ . '/consultation_controller.php';
 class Consultation_AdminController extends ConsultationController
 {
     const SLOT_COUNT_THRESHOLD = 1000;
+
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
 
-        if ($this->current_user->id !== $GLOBALS['user']->id && $GLOBALS['user']->perms !== 'root') {
+        if (!$this->range->userMayEditRange()) {
             throw new AccessDeniedException();
         }
 
-        Navigation::activateItem('/profile/consultation/admin');
+        $this->activateNavigation('admin');
         PageLayout::setTitle(_('Verwaltung der Sprechstundentermine'));
 
-        $this->user_config = UserConfig::get($this->current_user->id);
+        $this->range_config = $this->range->getConfiguration();
 
-        $this->setupSidebar($action, $this->user_config);
+        $this->setupSidebar($action, $this->range_config);
     }
 
     private function groupSlots(array $slots)
@@ -42,70 +43,90 @@ class Consultation_AdminController extends ConsultationController
         return $blocks;
     }
 
-    public function index_action($page = 1)
+    public function index_action($page = 0)
     {
-        $this->count = ConsultationSlot::countByTeacher_id($this->current_user->id);
+        $this->count = ConsultationSlot::countByRange($this->range);
         $this->limit = Config::get()->ENTRIES_PER_PAGE;
 
-        if ($page > ceil($this->count / $this->limit)) {
-            $page = 1;
+        if ($page >= ceil($this->count / $this->limit)) {
+            $page = 0;
         }
 
-        $this->page = max($page, 1);
-        $this->blocks = $this->groupSlots(ConsultationSlot::findByTeacher_id(
-            $this->current_user->id,
-            "ORDER BY start ASC LIMIT " . (($this->page - 1) * $this->limit) . ", {$this->limit}"
-        ));
+        $this->page = max($page, 0);
+
+        if ($GLOBALS['user']->cfg->CONSULTATION_SHOW_GROUPED) {
+            $this->blocks = $this->groupSlots(ConsultationSlot::findByRange(
+                $this->range,
+                "ORDER BY start ASC LIMIT " . ($this->page * $this->limit) . ", {$this->limit}"
+            ));
+        } else {
+            $this->blocks = ConsultationBlock::findByRange(
+                $this->range,
+                'ORDER BY start ASC'
+            );
+            $this->slots = ConsultationSlot::findByRange(
+                $this->range,
+                "ORDER BY start ASC LIMIT " . ($this->page * $this->limit) . ", {$this->limit}"
+            );
+        }
+
+        $action = $GLOBALS['user']->cfg->CONSULTATION_SHOW_GROUPED ? 'index' : 'ungrouped';
+        $this->render_action($action);
     }
 
-    public function expired_action($page = 1)
+    public function expired_action($page = 0)
     {
-        $this->count = ConsultationSlot::countByTeacher_id(
-            $this->current_user->id,
-            true
-        );
+        $this->count = ConsultationSlot::countByRange($this->range, true);
         $this->limit = Config::get()->ENTRIES_PER_PAGE;
 
-        if ($page > ceil($this->count / $this->limit)) {
-            $page = 1;
+        if ($page >= ceil($this->count / $this->limit)) {
+            $page = 0;
         }
 
-        $this->page = max($page, 1);
-        $this->blocks = $this->groupSlots(ConsultationSlot::findByTeacher_id(
-            $this->current_user->id,
-            "ORDER BY start ASC LIMIT " . (($this->page - 1) * $this->limit) . ", {$this->limit}",
-            true
-        ));
+        $this->page = max($page, 0);
 
-        $this->render_action('index');
+        if ($GLOBALS['user']->cfg->CONSULTATION_SHOW_GROUPED) {
+            $this->blocks = $this->groupSlots(ConsultationSlot::findByRange(
+                $this->range,
+                "ORDER BY start ASC LIMIT " . ($this->page * $this->limit) . ", {$this->limit}",
+                true
+            ));
+        } else {
+            $this->blocks = ConsultationBlock::findByRange(
+                $this->range,
+                'ORDER BY start ASC',
+                true
+            );
+            $this->slots = ConsultationSlot::findByRange(
+                $this->range,
+                "ORDER BY start ASC LIMIT " . ($this->page * $this->limit) . ", {$this->limit}",
+                true
+            );
+        }
+
+        $action = $GLOBALS['user']->cfg->CONSULTATION_SHOW_GROUPED ? 'index' : 'ungrouped';
+        $this->render_action($action);
     }
 
     public function create_action()
     {
         PageLayout::setTitle(_('Neue Sprechstundenblöcke anlegen'));
 
-        $courses = $this->current_user->course_memberships->findBy('status', ['tutor', 'dozent']);
-        if (count($courses) > 0) {
-            $search_object = new MyCoursesSearch('Seminar_id', $this->current_user->perms, [
-                'userid'    => $this->current_user->id,
-                'semtypes'  => [],
-                'exclude'   => [],
-                'semesters' => array_keys(Semester::getAll()),
-            ]);
-            $this->course_search = new QuickSearch('course_id', $search_object);
-
-            if ($course_id = Request::option('course_id')) {
-                $this->course_search->defaultValue(
-                    $course_id,
-                    Course::find($course_id)->getFullName('number-name-semester')
-                );
-            }
-        }
+        $this->room = '';
+        $this->responsible = false;
 
         // TODO: inst_default?
-        $rooms = $this->current_user->institute_memberships->pluck('Raum');
-        $rooms = array_filter($rooms);
-        $this->room = $rooms ? reset($rooms) : '';
+        if ($this->range instanceof User) {
+            $rooms = $this->range->institute_memberships->pluck('Raum');
+            $rooms = array_filter($rooms);
+            $this->room = $rooms ? reset($rooms) : '';
+        } elseif ($this->range instanceof Course) {
+            $this->room = $this->range->ort;
+
+            $block = new ConsultationBlock();
+            $block->range = $this->range;
+            $this->responsible = $block->responsible_persons;
+        }
     }
 
     public function store_action()
@@ -126,7 +147,7 @@ class Consultation_AdminController extends ConsultationController
             }
 
             $blocks = ConsultationBlock::generateBlocks(
-                $this->current_user->id,
+                $this->range,
                 $this->getDateAndTime('start'),
                 $this->getDateAndTime('end'),
                 Request::int('day-of-week'),
@@ -135,11 +156,14 @@ class Consultation_AdminController extends ConsultationController
 
             $stored = 0;
             foreach ($blocks as $block) {
-                $block->room            = Request::get('room');
-                $block->calendar_events = (bool) Request::int('calender-events');
-                $block->note            = Request::get('note');
-                $block->size            = Request::int('size', 1);
-                $block->course_id       = Request::option('course_id') ?: null;
+                $block->room              = Request::get('room');
+                $block->calendar_events   = Request::bool('calender-events', false);
+                $block->show_participants = Request::bool('show-participants', false);
+                $block->require_reason    = Request::option('require-reason');
+                $block->confirmation_text = trim(Request::get('confirmation-text')) ?: null;
+                $block->note              = Request::get('note');
+                $block->size              = Request::int('size', 1);
+                $block->teacher_id        = Request::option('teacher_id') ?: null;
 
                 $block->createSlots(Request::int('duration'));
                 $stored += $block->store();
@@ -168,7 +192,7 @@ class Consultation_AdminController extends ConsultationController
         $this->relocate('consultation/admin');
     }
 
-    public function note_action($block_id, $slot_id = null, $page = 1)
+    public function note_action($block_id, $slot_id = null, $page = 0)
     {
         if ($slot_id) {
             PageLayout::setTitle(_('Anmerkung zu diesem Sprechstundentermin bearbeiten'));
@@ -209,7 +233,7 @@ class Consultation_AdminController extends ConsultationController
         }
     }
 
-    public function remove_action($block_id, $slot_id = null, $page = 1)
+    public function remove_action($block_id, $slot_id = null, $page = 0)
     {
         if (!Request::isPost()) {
             throw new MethodNotAllowedException();
@@ -261,7 +285,7 @@ class Consultation_AdminController extends ConsultationController
         }
     }
 
-    public function book_action($block_id, $slot_id, $page = 1)
+    public function book_action($block_id, $slot_id, $page = 0)
     {
         PageLayout::setTitle(_('Sprechstundentermin reservieren'));
 
@@ -273,16 +297,13 @@ class Consultation_AdminController extends ConsultationController
             $permissions[] = 'dozent';
         }
 
-        if ($this->slot->block->course_id) {
-            $this->search_object = new PermissionSearch('user_in_sem', '', 'user_id', [
-                'seminar_id' => $this->slot->block->course_id,
-                'sem_perm'   => $permissions,
+        $this->search_object = new PermissionSearch('user', _('Person suchen'));
+        if ($this->range instanceof Course) {
+            $this->search_object = new PermissionSearch('user_in_sem', _('Person suchen'), 'user_id', [
+                'seminar_id' => $this->range->getRangeId(),
+                'sem_perm'   => ['user', 'autor'],
             ]);
-        } else {
-            $this->search_object = new PermissionSearch('user', '', 'user_id', [
-                'permission'   => $permissions,
-                'exclude_user' => '',
-            ]);
+
         }
 
         if (Request::isPost()) {
@@ -297,32 +318,14 @@ class Consultation_AdminController extends ConsultationController
                 $booking->reason  = trim(Request::get('reason'));
                 $booking->store();
 
-                $this->sendMessage(
-                    $booking->user,
-                    $this->slot,
-                    _('Sprechstundentermin zugesagt'),
-                    $booking->reason,
-                    $this->slot->block->teacher
-                );
-
-                if ($GLOBALS['user']->id !== $this->slot->block->teacher_id) {
-                    $this->sendMessage(
-                        $this->slot->block->teacher,
-                        $this->slot,
-                        _('Sprechstundentermin zugesagt'),
-                        $booking->reason,
-                        $booking->user
-                    );
-                }
-
                 PageLayout::postSuccess(_('Der Sprechstundentermin wurde reserviert.'));
             }
 
-            $this->redirect("consultation/admin/index/{$page}#block-{$this->slot->block_id}");
+            $this->redirect("consultation/admin/index/{$page}#slot-{$slot->id}");
         }
     }
 
-    public function edit_room_action($block_id, $page = 1)
+    public function edit_room_action($block_id, $page = 0)
     {
         PageLayout::setTitle(_('Ort des Sprechstundenblocks bearbeiten'));
 
@@ -330,7 +333,7 @@ class Consultation_AdminController extends ConsultationController
         $this->page  = $page;
     }
 
-    public function store_room_action($block_id, $page = 1)
+    public function store_room_action($block_id, $page = 0)
     {
         CSRFProtection::verifyUnsafeRequest();
 
@@ -347,7 +350,7 @@ class Consultation_AdminController extends ConsultationController
         }
     }
 
-    public function cancel_block_action($block_id, $page = 1)
+    public function cancel_block_action($block_id, $page = 0)
     {
         PageLayout::setTitle(_('Sprechstundentermine absagen'));
 
@@ -360,25 +363,7 @@ class Consultation_AdminController extends ConsultationController
             $reason = trim(Request::get('reason'));
             foreach ($this->block->slots as $slot) {
                 foreach ($slot->bookings as $booking) {
-                    $this->sendMessage(
-                        $booking->user,
-                        $slot,
-                        _('Sprechstundentermin abgesagt'),
-                        $reason,
-                        $this->block->teacher
-                    );
-
-                    if ($GLOBALS['user']->id !== $slot->block->teacher_id) {
-                        $this->sendMessage(
-                            $slot->block->teacher,
-                            $slot,
-                            _('Sprechstundentermin abgesagt'),
-                            $reason,
-                            $booking->user
-                        );
-                    }
-
-                    $booking->delete();
+                    $booking->cancel($reason);
                 }
             }
 
@@ -387,7 +372,7 @@ class Consultation_AdminController extends ConsultationController
         }
     }
 
-    public function cancel_slot_action($block_id, $slot_id, $page = 1)
+    public function cancel_slot_action($block_id, $slot_id, $page = 0)
     {
         PageLayout::setTitle(_('Sprechstundentermin absagen'));
 
@@ -409,26 +394,7 @@ class Consultation_AdminController extends ConsultationController
                     continue;
                 }
 
-                $this->sendMessage(
-                    $booking->user,
-                    $this->slot,
-                    _('Sprechstundentermin abgesagt'),
-                    $reason,
-                    $this->slot->block->teacher
-                );
-
-                if ($GLOBALS['user']->id !== $this->slot->block->teacher_id) {
-                    $this->sendMessage(
-                        $this->slot->block->teacher,
-                        $this->slot,
-                        _('Sprechstundentermin abgesagt'),
-                        $reason,
-                        $booking->user
-                    );
-                }
-
-                $booking->delete();
-                $removed += 1;
+                $removed += $booking->cancel($reason);
             }
 
             if ($removed === count($this->slot->bookings)) {
@@ -441,11 +407,11 @@ class Consultation_AdminController extends ConsultationController
             } elseif ($removed === 1) {
                 PageLayout::postSuccess(_('Der Sprechstundentermin wurde für eine Person abgesagt.'));
             }
-            $this->redirect("consultation/admin/index/{$page}#block-{$block_id}");
+            $this->redirect("consultation/admin/index/{$page}#slot-{$this->slot->id}");
         }
     }
 
-    public function reason_action($block_id, $slot_id, $booking_id, $page = 1)
+    public function reason_action($block_id, $slot_id, $booking_id, $page = 0)
     {
         PageLayout::setTitle(_('Grund für die Sprechstundenbuchung bearbeiten'));
 
@@ -458,76 +424,127 @@ class Consultation_AdminController extends ConsultationController
             $this->booking->reason = trim(Request::get('reason'));
             $this->booking->store();
 
-            $this->sendMessage(
-                $this->booking->user,
-                $this->booking->slot,
-                _('Grund des Sprechstundentermins bearbeitet'),
-                $this->booking->reason,
-                $this->booking->slot->block->teacher
-            );
-
-            if ($GLOBALS['user']->id !== $this->booking->slot->block->teacher_id) {
-                $this->sendMessage(
-                    $this->booking->slot->block->teacher,
-                    $this->booking->slot,
-                    _('Grund des Sprechstundentermins bearbeitet'),
-                    $this->booking->reason,
-                    $this->booking->user
-                );
-            }
-
             PageLayout::postSuccess(_('Der Grund für die Sprechstundenbuchung wurde bearbeitet.'));
 
             if ($this->booking->slot->block->is_expired) {
-                $this->redirect("consultation/admin/expired/{$page}#block-{$this->booking->slot->block_id}");
+                $this->redirect("consultation/admin/expired/{$page}#slot-{$this->booking->slot->id}");
             } else {
-                $this->redirect("consultation/admin/index/{$page}#block-{$this->booking->slot->block_id}");
+                $this->redirect("consultation/admin/index/{$page}#slot-{$this->booking->slot->id}");
             }
         }
     }
 
-    public function toggle_action($what, $state)
+    public function toggle_action($what, $state, $expired = false)
     {
         if ($what === 'messages') {
-            $this->user_config->store(
+            // TODO: Applicable everywhere?
+            $GLOBALS['user']->cfg->store(
                 'CONSULTATION_SEND_MESSAGES',
+                (bool) $state
+            );
+        } elseif ($what === 'garbage') {
+            // TODO: Not available for course
+            $this->range_config->store(
+                'CONSULTATION_GARBAGE_COLLECT',
+                (bool) $state
+            );
+        } elseif ($what === 'grouped') {
+            $GLOBALS['user']->cfg->store(
+                'CONSULTATION_SHOW_GROUPED',
                 (bool) $state
             );
         }
 
-        $this->redirect('consultation/admin/');
+        $this->redirect('consultation/admin/' . ($expired ? 'expired' : 'index'));
     }
 
-    public function bulk_action($page, $expired)
+    public function bulk_action($page, $expired = false)
     {
         if (!Request::isPost()) {
             throw new MethodNotAllowedException();
         }
 
-        $deleted = 0;
-        $skipped = 0;
-        foreach ($this->getSlotsFromBulk() as $slot) {
-            if ($slot->is_expired || !$slot->has_bookings) {
-                $deleted += $slot->delete();
+        $this->slots = $this->getSlotsFromBulk();
+
+        if (count($this->slots) === 0) {
+            PageLayout::postInfo(_('Sie haben keine Sprechstundentermine gewählt.'));
+        } elseif (Request::submitted('delete')) {
+            $has_bookings = $this->slots->any(function ($slot) {
+                return !$slot->is_expired
+                    && $slot->has_bookings;
+            });
+
+            if (!$has_bookings) {
+                $deleted = 0;
+                foreach ($this->slots as $slot) {
+                    $deleted += $slot->delete();
+                }
+                PageLayout::postSuccess(_('Die Sprechstundentermine wurden gelöscht'));
+            } elseif (Request::option('delete') === 'skip') {
+                $deleted = 0;
+                foreach ($this->slots as $slot) {
+                    if ($slot->is_expired || !$slot->has_bookings) {
+                        $deleted += $slot->delete();
+                    }
+                }
+
+                if ($deleted === 1) {
+                    PageLayout::postSuccess(_('Der freie Sprechstundentermin wurde gelöscht'));
+                } elseif ($deleted > 0) {
+                    PageLayout::postSuccess(_('Die freien Sprechstundentermine wurden gelöscht'));
+                }
+            } elseif (Request::option('delete') === 'cancel' && Request::submitted('reason')) {
+                $reason = trim(Request::get('reason'));
+
+                $deleted = 0;
+                foreach ($this->slots as $slot) {
+                    if (!$slot->is_expired && $slot->has_bookings) {
+                        foreach ($slot->bookings as $booking) {
+                            $booking->cancel($reason);
+                        }
+                    }
+                    $deleted += $slot->delete();
+                }
+
+                PageLayout::postSuccess(_('Die Sprechstundentermine wurden gelöscht'));
             } else {
-                $skipped += 1;
+                PageLayout::setTitle(_('Sprechstundentermine löschen'));
+                $this->action = $this->bulk($page, $expired);
+                $this->allow_delete = true;
+                $this->mixed = $this->slots->any(function ($slot) {
+                    return !$slot->has_bookings;
+                });
+                $this->render_action('cancel_slots');
+                return;
+            }
+        } elseif (Request::submitted('cancel')) {
+            if (!Request::submitted('reason')) {
+                PageLayout::setTitle(_('Sprechstundentermine absagen'));
+                $this->action = $this->bulk($page, $expired);
+                $this->render_action('cancel_slots');
+                return;
+            } else {
+                $reason = trim(Request::get('reason'));
+
+                $canceled = 0;
+                foreach ($this->slots as $slot) {
+                    foreach ($slot->bookings as $booking) {
+                        $canceled += $booking->cancel($reason);
+                    }
+                }
+
+                if ($canceled === 1) {
+                    PageLayout::postSuccess(_('Der Sprechstundentermin wurde abgesagt.'));
+                } elseif ($canceled > 0) {
+                    PageLayout::postSuccess(_('Die Sprechstundentermine wurden abgesagt.'));
+                }
             }
         }
 
-        if ($deleted > 0) {
-            PageLayout::postSuccess(_('Die Sprechstundentermine wurden gelöscht'));
-        }
-        if ($skipped > 0) {
-            PageLayout::postInfo(
-                _('Einige Sprechstundentermine konnten nicht gelöscht werden, da sie belegt sind'),
-                [_('Sie müssen diese Termine erst absagen, bevor Sie sie löschen können.')]
-            );
-        }
-
         if ($expired) {
-            $this->redirect("consultation/admin/expired/{$page}");
+            $this->relocate("consultation/admin/expired/{$page}");
         } else {
-            $this->redirect("consultation/admin/index/{$page}");
+            $this->relocate("consultation/admin/index/{$page}");
         }
     }
 
@@ -544,8 +561,8 @@ class Consultation_AdminController extends ConsultationController
                 $slot->removeEvent();
                 $deleted[$index] += $slot->delete();
             },
-            'JOIN consultation_blocks USING (block_id) WHERE teacher_id = ?',
-            [$this->current_user->id]
+            "JOIN consultation_blocks USING (block_id) WHERE range_id = ? AND range_type = ?",
+            [$this->range->getRangeId(), $this->range->getRangeType()]
         );
 
         if (array_sum($deleted) > 0) {
@@ -630,6 +647,24 @@ class Consultation_AdminController extends ConsultationController
         ));
     }
 
+    public function tab_action($from_expired)
+    {
+        if (Request::isPost()) {
+            $this->range_config->store('CONSULTATION_TAB_TITLE', Request::i18n('tab_title'));
+
+            PageLayout::postSuccess(_('Der Name wurde gespeichert'));
+            if ($expired) {
+                $this->redirect('consultation/admin/expired');
+            } else {
+                $this->redirect('consultation/admin/index');
+            }
+            return;
+        }
+
+        $this->current_title = $this->range_config->getValue('CONSULTATION_TAB_TITLE');
+        $this->from_expired  = $from_expired;
+    }
+
     private function getSlotsFromBulk()
     {
         $slots = [];
@@ -653,7 +688,7 @@ class Consultation_AdminController extends ConsultationController
             }
         }
 
-        return $slots;
+        return SimpleCollection::createFromArray($slots);
     }
 
     private function setupSidebar($action, $config)
@@ -673,8 +708,13 @@ class Consultation_AdminController extends ConsultationController
         $actions = $sidebar->addWidget(new ActionsWidget());
         $actions->addLink(
             _('Sprechstundenblöcke anlegen'),
-            $this->url_for('consultation/admin/create'),
+            $this->createURL(),
             Icon::create('add')
+        )->asDialog('size=auto');
+        $actions->addLink(
+            _('Namen des Reiters ändern'),
+            $this->tabURL($action === 'expired'),
+            Icon::create('edit')
         )->asDialog('size=auto');
 
         $actions->addLink(
@@ -687,15 +727,32 @@ class Consultation_AdminController extends ConsultationController
         $options = $sidebar->addWidget(new OptionsWidget());
         $options->addCheckbox(
             _('Benachrichtungen über Buchungen'),
-            $config->CONSULTATION_SEND_MESSAGES,
-            $this->url_for("consultation/admin/toggle/messages/1"),
-            $this->url_for("consultation/admin/toggle/messages/0")
+            $GLOBALS['user']->cfg->CONSULTATION_SEND_MESSAGES,
+            $this->toggleURL('messages/1', $action === 'expired'),
+            $this->toggleURL('messages/0', $action === 'expired')
+        );
+        $options->addCheckbox(
+            _('Abgelaufene Sprechstundenblöcke automatisch löschen'),
+            $config->CONSULTATION_GARBAGE_COLLECT,
+            $this->toggleURL('garbage/1', $action === 'expired'),
+            $this->toggleURL('garbage/0', $action === 'expired')
+        );
+        $options->addCheckbox(
+            _('Termine gruppiert anzeigen'),
+            $GLOBALS['user']->cfg->CONSULTATION_SHOW_GROUPED,
+            $this->toggleURL('grouped/1', $action === 'expired'),
+            $this->toggleURL('grouped/0', $action === 'expired')
         );
 
         $export = $sidebar->addWidget(new ExportWidget());
         $export->addLink(
             _('Anmeldungen exportieren'),
             $this->url_for('consultation/export/bookings'),
+            Icon::create('file-excel+export')
+        );
+        $export->addLink(
+            _('Alle Termine exportieren'),
+            $this->url_for('consultation/export/all'),
             Icon::create('file-excel+export')
         );
     }

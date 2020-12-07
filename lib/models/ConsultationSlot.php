@@ -44,8 +44,8 @@ class ConsultationSlot extends SimpleORMap
         ];
 
         $config['registered_callbacks']['before_create'][] = function ($slot) {
-            if ($slot->block->calendar_events) {
-                $slot->teacher_event_id = $slot->createEvent($slot->block->teacher)->id;
+            if ($slot->block->calendar_events && $slot->block->range_type === 'user') {
+                $slot->teacher_event_id = $slot->createEvent($slot->block->range)->id;
                 $slot->updateEvent();
             }
         };
@@ -67,64 +67,73 @@ class ConsultationSlot extends SimpleORMap
     }
 
     /**
-     * Counts all slots of the given teacher.
+     * Counts all slots of the given range.
      *
-     * @param  string $teacher_id Id of the teacher
+     * @param  Range $range   Range
+     * @param  bool  $expired
      * @return int
      */
-    public static function countByTeacher_id($teacher_id, $expired = false)
+    public static function countByRange(Range $range, $expired = false)
     {
         $expired_condition = $expired
                            ? "end <= UNIX_TIMESTAMP()"
                            : "end > UNIX_TIMESTAMP()";
 
-        $condition = "JOIN consultation_blocks USING (block_id)
-                      WHERE teacher_id = :teacher_id
+        $condition = "JOIN `consultation_blocks` USING (`block_id`)
+                      WHERE `range_id` = :range_id
+                        AND `range_type` = :range_type
                         AND {$expired_condition}";
         return self::countBySQL($condition, [
-            ':teacher_id' => $teacher_id,
+            ':range_id'   => $range->getRangeId(),
+            ':range_type' => $range->getRangeType(),
         ]);
     }
 
     /**
      * Finds slots of the given teacher.
      *
-     * @param  string $teacher_id Id of the teacher
+     * @param Range  $range   Range
+     * @param string $order   Desired order of items
+     * @param bool   $expired Show expired items?
      * @return array
      */
-    public static function findByTeacher_id($teacher_id, $order = '', $expired = false)
+    public static function findByRange(Range $range, $order = '', $expired = false)
     {
         $expired_condition = $expired
                            ? "end <= UNIX_TIMESTAMP()"
                            : "end > UNIX_TIMESTAMP()";
 
         $condition = "JOIN consultation_blocks USING (block_id)
-                      WHERE teacher_id = :teacher_id
-                      AND {$expired_condition}
+                      WHERE range_id = :range_id
+                        AND range_type = :range_type
+                        AND {$expired_condition}
                       {$order}";
         return self::findBySQL($condition, [
-            ':teacher_id' => $teacher_id,
+            ':range_id'   => $range->getRangeId(),
+            ':range_type' => $range->getRangeType(),
         ]);
     }
 
     /**
      * Find all occupied slots for a given user and teacher combination.
      *
-     * @param  string $user_id    Id of the user
-     * @param  string $teacher_id Id of the teacher
+     * @param string $user_id Id of the user
+     * @param Range  $range   Range
      * @return array
      */
-    public static function findOccupiedSlotsByUserAndTeacher($user_id, $teacher_id)
+    public static function findOccupiedSlotsByUserAndRange($user_id, Range $range)
     {
         $condition = "JOIN consultation_blocks USING (block_id)
                       JOIN consultation_bookings USING (slot_id)
                       WHERE user_id = :user_id
-                        AND teacher_id = :teacher_id
+                        AND range_id = :range_id
+                        AND range_type = :range_type
                         AND end > UNIX_TIMESTAMP()
                       ORDER BY start_time ASC";
         return self::findBySQL($condition, [
             ':user_id'    => $user_id,
-            ':teacher_id' => $teacher_id,
+            ':range_id'   => $range->getRangeId(),
+            ':range_type' => $range->getRangeType(),
         ]);
     }
 
@@ -189,19 +198,23 @@ class ConsultationSlot extends SimpleORMap
      */
     public function updateEvent()
     {
+        if ($this->block->range_type !== 'user') {
+            return;
+        }
+
         if (count($this->bookings) === 0 && !$this->block->calendar_events) {
             return $this->removeEvent();
         }
 
         $event = $this->event;
         if (!$event) {
-            $event = $this->createEvent($this->block->teacher);
+            $event = $this->createEvent($this->block->range);
 
             $this->teacher_event_id = $event->id;
             $this->store();
         }
 
-        setTempLanguage($this->block->teacher_id);
+        setTempLanguage($this->block->range_id);
 
         if (count($this->bookings) > 0) {
             $event->category_intern = 1;

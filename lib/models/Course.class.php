@@ -531,7 +531,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
     /**
      * Decides whether the user may access the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      * @todo Check permissions
      */
@@ -546,7 +546,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
     /**
      * Decides whether the user may edit/alter the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      * @todo Check permissions
      */
@@ -559,18 +559,28 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
     }
 
     /**
-     * Decides whether the user may adminisiter the range.
+     * Decides whether the user may manage the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      * @todo Check permissions
      */
-    public function userMayAdministerRange($user_id = null)
+    public function userMayManageRange($user_id = null)
     {
         if ($user_id === null) {
             $user_id = $GLOBALS['user']->id;
         }
         return $GLOBALS['perm']->have_studip_perm('admin', $this->id, $user_id);
+    }
+
+    /**
+     * @param  string|null $user_id
+     * @return bool
+     * @deprecated
+     */
+    public function userMayAdministerRange($user_id = null)
+    {
+        return $this->userMayManageRange($user_id);
     }
 
     /**
@@ -732,7 +742,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
 
     public function getLink() : StudipLink
     {
- 	    return new StudipLink($this->getItemURL(), $this->name, Icon::create('seminar'));
+        return new StudipLink($this->getItemURL(), $this->name, Icon::create('seminar'));
     }
 
 

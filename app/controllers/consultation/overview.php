@@ -15,44 +15,41 @@ class Consultation_OverviewController extends ConsultationController
         parent::before_filter($action, $args);
 
         PageLayout::setTitle(sprintf(
-            _('Sprechstundentermine von %s'),
-            $this->current_user->getFullName()
+            '%s: %s',
+            $this->getConsultationTitle(),
+            $this->range->getFullName()
         ));
-
-        $this->setupSidebar();
     }
 
-    public function index_action($page = 1)
+    public function index_action($page = 0)
     {
-        Navigation::activateItem('/profile/consultation/overview');
+        $this->activateNavigation('overview');
+        $this->setupSidebar();
 
-        $this->count = ConsultationBlock::countVisibleForUserByTeacherId(
-            $GLOBALS['user']->id,
-            $this->current_user->id,
-            Request::option('course_id')
-        );
+        $this->count = ConsultationBlock::countByRange($this->range);
         $this->limit = Config::get()->ENTRIES_PER_PAGE;
 
-        if ($page > ceil($this->count / $this->limit)) {
-            $page = 1;
+        if ($page >= ceil($this->count / $this->limit)) {
+            $page = 0;
         }
 
-        $this->page   = $page;
-        $this->blocks = ConsultationBlock::findVisibleForUserByTeacherId(
-            $GLOBALS['user']->id,
-            $this->current_user->id,
-            Request::option('course_id'),
-            "LIMIT " . (($page - 1) * $this->limit) . ", {$this->limit}"
+        $this->page   = max($page, 0);
+        $this->blocks = ConsultationBlock::findbyRange(
+            $this->range,
+            "LIMIT " . ($this->page * $this->limit) . ", {$this->limit}"
         );
+
+        $action = $GLOBALS['user']->cfg->CONSULTATION_SHOW_GROUPED ? 'index' : 'ungrouped';
+        $this->render_action($action);
     }
 
-    public function booked_action($page = 1)
+    public function booked_action($page = 0)
     {
-        Navigation::activateItem('/profile/consultation/booked');
+        $this->activateNavigation('booked');
 
-        $this->slots = ConsultationSlot::findOccupiedSlotsByUserAndTeacher(
+        $this->slots = ConsultationSlot::findOccupiedSlotsByUserAndRange(
             $GLOBALS['user']->id,
-            $this->current_user->id
+            $this->range
         );
     }
 
@@ -69,16 +66,8 @@ class Consultation_OverviewController extends ConsultationController
                 $booking = new ConsultationBooking();
                 $booking->slot_id = $this->slot->id;
                 $booking->user_id = $GLOBALS['user']->id;
-                $booking->reason  = trim(Request::get('reason'));
+                $booking->reason  = trim(Request::get('reason')) ?: null;
                 $booking->store();
-
-                $this->sendMessage(
-                    $this->slot->block->teacher,
-                    $this->slot,
-                    _('Sprechstundentermin zugesagt'),
-                    $booking->reason,
-                    $booking->user
-                );
 
                 PageLayout::postSuccess(_('Der Sprechstundentermin wurde reserviert.'));
             }
@@ -100,15 +89,7 @@ class Consultation_OverviewController extends ConsultationController
             } else {
                 $booking = $this->slot->bookings->findOneBy('user_id', $GLOBALS['user']->id);
 
-                $this->sendMessage(
-                    $this->slot->block->teacher,
-                    $this->slot,
-                    _('Sprechstundentermin abgesagt'),
-                    trim(Request::get('reason')),
-                    $booking->user
-                );
-
-                $booking->delete();
+                $booking->cancel(Request::get('reason'));
 
                 PageLayout::postSuccess(_('Der Sprechstundentermin wurde abgesagt.'));
             }
@@ -121,26 +102,25 @@ class Consultation_OverviewController extends ConsultationController
         }
     }
 
+    public function toggle_action($what, $state = null)
+    {
+        if ($what === 'grouped') {
+            $GLOBALS['user']->cfg->store(
+                'CONSULTATION_SHOW_GROUPED',
+                $state === null ? !$GLOBALS['user']->cfg->CONSULTATION_SHOW_GROUPED : (bool) $state
+            );
+        }
+
+        $this->redirect('consultation/overview');
+    }
+
     private function setupSidebar()
     {
-        $courses = ConsultationBlock::findVisibleCoursesForUserByTeacherId(
-            $GLOBALS['user']->id,
-            $this->current_user->id
+        $options = Sidebar::get()->addWidget(new OptionsWidget());
+        $options->addCheckbox(
+            _('Termine gruppiert anzeigen'),
+            $GLOBALS['user']->cfg->CONSULTATION_SHOW_GROUPED,
+            $this->toggleURL('grouped')
         );
-
-        if (count($courses) === 0) {
-            return;
-        }
-
-        $options = ['' => _('Alle Sprechstunden anzeigen')];
-        foreach ($courses as $course) {
-            $options[$course->id] = $course->getFullName();
-        }
-
-        Sidebar::get()->addWidget(new SelectWidget(
-            _('Veranstaltungs-Filter'),
-            $this->url_for('consultation/overview'),
-            'course_id'
-        ))->setOptions($options);
     }
 }

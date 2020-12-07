@@ -52,7 +52,7 @@ class ProfileNavigation extends Navigation
         parent::initSubNavigation();
 
         $username = Request::username('username', $user->username);
-        $current_user = $username == $user->username ? $user : User::findByUsername($username);
+        $current_user = User::findByUsername($username);
 
         // profile
         $navigation = new Navigation(_('Profil'), 'dispatch.php/profile/index');
@@ -131,60 +131,11 @@ class ProfileNavigation extends Navigation
         }
 
         // Add consultations if appropriate
-        $navigation = $this->createConsultationNavigation($current_user);
-        if ($navigation) {
-            $this->addSubNavigation('consultation', $navigation);
+        if (Config::get()->CONSULTATION_ENABLED) {
+            $plugin = PluginEngine::getPlugin('ConsultationModule');
+            if ($plugin->isActivated($current_user->id, 'user')) {
+                $this->addSubNavigation('consultation', new ConsultationNavigation($current_user));
+            }
         }
-    }
-
-    /**
-     * Creates the consultation navigation if they are globally activated and
-     * should be visible to the current user.
-     *
-     * @param object $user User object of the user whose profile will be displayed
-     * @return mixed Navigation object or null
-     */
-    protected function createConsultationNavigation($user)
-    {
-        // Consultations are disabled
-        if (!Config::get()->CONSULTATION_ENABLED) {
-            return null;
-        }
-
-        // User is not allowed to have any consultations
-        if (!$GLOBALS['perm']->have_perm(Config::get()->CONSULTATION_REQUIRED_PERMISSION, $user->id)) {
-            return null;
-        }
-
-        // Visiting user is the user itself, create administrative navigation
-        if ($user->id === $GLOBALS['user']->id || $GLOBALS['user']->perms === 'root') {
-            $navigation = new Navigation(_('Sprechstunden'), 'dispatch.php/consultation/admin');
-            $navigation->addSubNavigation('admin', new Navigation(_('Verwaltung'), 'dispatch.php/consultation/admin'));
-            return $navigation;
-        }
-
-        // Permissions that are allowed to book reservervations
-        $allowed = ['user', 'autor', 'tutor'];
-        if (Config::get()->CONSULTATION_ALLOW_DOCENTS_RESERVING) {
-            $allowed[] = 'dozent';
-        }
-
-        // User does not have required permissions
-        if (!in_array($GLOBALS['user']->perms, $allowed)) {
-            return null;
-        }
-
-        // Teacher has no consultations defined
-        if (!ConsultationBlock::existForTeacherAndUser($user->id, $GLOBALS['user']->id)) {
-            return null;
-        }
-
-        // Create visitor navigation
-        $navigation = new Navigation(_('Sprechstunden'), 'dispatch.php/consultation/overview');
-        $navigation->addSubNavigation('overview', new Navigation(_('Übersicht'), 'dispatch.php/consultation/overview'));
-        if ($user->id !== $GLOBALS['user']->id) {
-            $navigation->addSubNavigation('booked', new Navigation(_('Meine Buchungen'), 'dispatch.php/consultation/overview/booked'));
-        }
-        return $navigation;
     }
 }

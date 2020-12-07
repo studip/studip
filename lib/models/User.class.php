@@ -172,6 +172,10 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             'order_by'          => 'ORDER BY name',
         ];
 
+        $config['additional_fields']['config']['get'] = function ($user) {
+            return UserConfig::get($user->id);
+        };
+
         $config['registered_callbacks']['after_delete'][] = 'cbRemoveFeedback';
 
         $info = new UserInfo();
@@ -1290,9 +1294,11 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         $statement->execute([$new_id, $old_id]);
 
         // Consultations
-        $query = "UPDATE IGNORE consultation_bookings SET user_id = ? WHERE user_id = ?";
+        $query = "UPDATE IGNORE consultation_blocks SET range_id = ? WHERE range_id = ? AND range_type = 'user'";
         DBManager::get()->execute($query, [$new_id, $old_id]);
         $query = "UPDATE IGNORE consultation_blocks SET teacher_id = ? WHERE teacher_id = ?";
+        DBManager::get()->execute($query, [$new_id, $old_id]);
+        $query = "UPDATE IGNORE consultation_bookings SET user_id = ? WHERE user_id = ?";
         DBManager::get()->execute($query, [$new_id, $old_id]);
 
         NotificationCenter::postNotification('UserDidMigrate', $old_id, $new_id);
@@ -1378,7 +1384,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
     /**
      * Decides whether the user may access the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      */
     public function userMayAccessRange($user_id = null)
@@ -1395,7 +1401,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
     /**
      * Decides whether the user may edit/alter the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      */
     public function userMayEditRange($user_id = null)
@@ -1408,14 +1414,24 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
     }
 
     /**
-     * Decides whether the user may administer the range.
+     * Decides whether the user may manage the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
+     */
+    public function userMayManageRange($user_id = null)
+    {
+        return $this->userMayEditRange($user_id);
+    }
+
+    /**
+     * @param  string|null $user_id
+     * @return bool
+     * @deprecated
      */
     public function userMayAdministerRange($user_id = null)
     {
-        return $this->userMayEditRange($user_id);
+        return $this->userMayManageRange($user_id);
     }
 
     /**

@@ -8,7 +8,7 @@
             <?= _('Termin' ) ?><br>
             <ul class="default">
             <? foreach ($block->slots as $slot): ?>
-                <? if (count($slot->bookings) > 0): ?>
+                <? if ($slot->has_bookings): ?>
                     <li>
                         <?= $this->render_partial('consultation/slot-details.php', compact('slot')) ?>
                     </li>
@@ -23,7 +23,7 @@
         </label>
 
         <label>
-            <?= _('Grund') ?>
+            <?= _('Grund der Absage') ?>
             <textarea name="reason"></textarea>
         </label>
     </fieldset>
@@ -32,7 +32,7 @@
         <?= Studip\Button::createAccept(_('Termine absagen')) ?>
         <?= Studip\LinkButton::createCancel(
             _('Abbrechen'),
-            $controller->url_for("consultation/admin#block-{$block->id}")
+            $controller->indexURL($page, "#block-{$block->id}")
         ) ?>
     </footer>
 </form>

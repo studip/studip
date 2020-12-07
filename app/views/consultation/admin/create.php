@@ -120,6 +120,19 @@ $intervals = [
                    min="1" max="50" value="<?= Request::int('size', 1) ?>">
         </label>
 
+    <? if ($responsible): ?>
+        <label>
+            <?= _('Durchführende Person') ?>
+            <select name="teacher_id">
+                <option value=""></option>
+            <? foreach ($responsible as $user): ?>
+                <option value="<?= htmlReady($user->id) ?>">
+                    <?= htmlReady($user->getFullName()) ?>
+                </option>
+            <? endforeach; ?>
+            </select>
+    <? endif; ?>
+
         <label>
             <?= _('Information zu den Terminen in diesem Block') ?>
             <textarea name="note"><?= htmlReady(Request::get('note')) ?></textarea>
@@ -127,17 +140,45 @@ $intervals = [
 
         <label>
             <input type="checkbox" name="calender-events" value="1"
-                    <? if (Request::int('calender-events')) echo 'checked'; ?>>
+                    <? if (Request::bool('calender-events')) echo 'checked'; ?>>
             <?= _('Die freien Sprechstundentermine auch im Kalender markieren') ?>
         </label>
 
-    <? if ($course_search): ?>
         <label>
-            <?= _('Zugewiesene Veranstaltung') ?>
-            <?= tooltipIcon(_('Wählen Sie hier eine Veranstaltung aus, damit die Sprechstundentermine nur für Teilnehmer der gewählten Veranstaltung sichtbar sind und auch nur von diesen belegt werden können.')) ?>
-            <?= $course_search->render() ?>
+            <input type="checkbox" name="show-participants" value="1"
+                    <? if (Request::bool('show-participants')) echo 'checked'; ?>>
+            <?= _('Namen der buchenden Personen sind öffentlich sichtbar') ?>
         </label>
-    <? endif; ?>
+
+        <label>
+            <?= _('Grund der Buchung abfragen') ?>
+        </label>
+        <div class="hgroup">
+            <label>
+                <input type="radio" name="require-reason" value="yes"
+                       <? if (Request::get('require-reason') === 'yes') echo 'checked'; ?>>
+                <?= _('Ja, zwingend erforderlich') ?>
+            </label>
+
+            <label>
+                <input type="radio" name="require-reason" value="optional"
+                       <? if (Request::get('require-reason', 'optional') === 'optional') echo 'checked'; ?>>
+                <?= _('Ja, optional') ?>
+            </label>
+
+            <label>
+                <input type="radio" name="require-reason" value="no"
+                       <? if (Request::get('require-reason') === 'no') echo 'checked'; ?>>
+                <?= _('Nein') ?>
+            </label>
+        </div>
+
+        <label>
+            <?= _('Bestätigung für folgenden Text einholen') ?>
+            (<?= _('optional') ?>)
+            <?= tooltipIcon(_('Wird hier ein Text eingegeben, so müssen Buchende bestätigen, dass sie diesen Text gelesen haben.')) ?>
+            <textarea name="confirmation-text"><?= htmlReady(Request::get('confirmation-text')) ?></textarea>
+        </label>
     </fieldset>
 
     <footer data-dialog-button>

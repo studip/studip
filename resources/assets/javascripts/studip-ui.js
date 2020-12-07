@@ -594,17 +594,21 @@
     }));
 
     // Attach global focus handler on date picker elements
-    $(document).on('focus', STUDIP.UI.Datepicker.selector, function () {
+    $(document).on('focus', STUDIP.UI.Datepicker.selector, () => {
         STUDIP.UI.Datepicker.init();
     });
 
     // Attach global focus handler on datetime picker elements
-    $(document).on('focus', STUDIP.UI.DateTimepicker.selector, function () {
+    $(document).on('focus', STUDIP.UI.DateTimepicker.selector, () => {
         STUDIP.UI.DateTimepicker.init();
     });
 
     // Attach global focus handler on time picker elements
-    $(document).on('focus', STUDIP.UI.Timepicker.selector, function () {
+    $(document).on('focus', STUDIP.UI.Timepicker.selector, (event) => {
+        if (!$(event.target).attr('pattern')) {
+            $(event.target).attr('pattern', '^[012]\d:[0-5]\d$');
+        }
+
         if (!$(event.target).attr('pattern')) {
             $(event.target).attr('pattern', '^[012]\\d:[0-5]\\d$');
         }

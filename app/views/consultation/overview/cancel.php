@@ -24,7 +24,7 @@
         <?= Studip\Button::createAccept(_('Termin absagen')) ?>
         <?= Studip\LinkButton::createCancel(
             _('Abbrechen'),
-            $controller->url_for("consultation/overview#block-{$slot->block_id}")
+            $controller->indexURL("#block-{$slot->block_id}")
         ) ?>
     </footer>
 </form>

@@ -269,7 +269,7 @@ class Institute extends SimpleORMap implements Range
     /**
      * Decides whether the user may access the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      * @todo Check permissions
      */
@@ -281,7 +281,7 @@ class Institute extends SimpleORMap implements Range
     /**
      * Decides whether the user may edit/alter the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      * @todo Check permissions
      */
@@ -296,13 +296,13 @@ class Institute extends SimpleORMap implements Range
     }
 
     /**
-     * Decides whether the user may administer the range.
+     * Decides whether the user may manage the range.
      *
-     * @param string $user_id Optional id of a user, defaults to current user
+     * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      * @todo Check permissions
      */
-    public function userMayAdministerRange($user_id = null)
+    public function userMayManageRange($user_id = null)
     {
         if ($user_id === null) {
             $user_id = $GLOBALS['user']->id;
@@ -310,5 +310,15 @@ class Institute extends SimpleORMap implements Range
         $member = $this->members->findOneBy('user_id', $user_id);
         return ($member && $member->status === 'admin')
             || User::find($user_id)->perms === 'root';
+    }
+
+    /**
+     * @param  string|null $user_id
+     * @return bool
+     * @deprecated
+     */
+    public function userMayAdministerRange($user_id = null)
+    {
+        return $this->userMayManageRange($user_id);
     }
 }

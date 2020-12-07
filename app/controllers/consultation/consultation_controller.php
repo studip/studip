@@ -12,10 +12,12 @@ abstract class ConsultationController extends AuthenticatedController
     {
         parent::before_filter($action, $args);
 
-        $this->current_user = User::findByUsername(Request::username('username', $GLOBALS['user']->username));
+        $this->range = Context::get() ?: User::findByUsername(Request::username('username', $GLOBALS['user']->username));
 
-        if ($this->current_user->id !== $GLOBALS['user']->id) {
-            URLHelper::addLinkParam('username', $this->current_user->username);
+        if ($this->range instanceof User) {
+            URLHelper::addLinkParam('username', $this->range->username);
+        } elseif ($this->range instanceof Course || $this->range instanceof Institute) {
+            URLHelper::addLinkParam('cid', $this->range->id);
         }
 
         // Restore request if present
@@ -27,47 +29,46 @@ abstract class ConsultationController extends AuthenticatedController
 
         // This defines the function to display a note. Not really a partial,
         // not a controller method. This has no real place...
-        $this->displayNote = function ($what, $length = 40) {
+        $this->displayNote = function ($what, $length = 40, $position = 'above') {
             $what = trim($what);
             if (!$what) {
                 return '';
             }
 
             if (mb_strlen($what)  < $length) {
-                return '<div class="consultation-note">' . htmlReady($what) . '</div>';
+                return '<div class="consultation-note consultation-note-' . $position . '">' . formatLinks($what) . '</div>';
             }
 
             return sprintf(
-                '<div class="consultation-note shortened" data-tooltip="%s">%s&hellip;</div>',
-                htmlReady($what),
+                '<div class="consultation-note consultation-note-%s shortened" data-tooltip=\'%s\'>%s&hellip;</div>',
+                $position,
+                json_encode(['html' => formatLinks($what)]),
                 htmlReady(substr($what, 0, $length))
             );
         };
     }
 
+    protected function activateNavigation($path)
+    {
+        $path = ltrim($path, '/');
+
+        if ($this->range instanceof User) {
+            Navigation::activateItem("/profile/consultation/{$path}");
+        } elseif ($this->range instanceof Course || $this->range instanceof Institute) {
+            Navigation::activateItem("/course/consultation/{$path}");
+        } else {
+            throw new Exception('Not implemented yet');
+        }
+    }
+
+    protected function getConsultationTitle()
+    {
+        return $this->range->getConfiguration()->CONSULTATION_TAB_TITLE;
+    }
+
     protected function keepRequest()
     {
         $this->flash['request'] = Request::getInstance()->getIterator()->getArrayCopy();
-    }
-
-    protected function sendMessage(User $user, ConsultationSlot $slot, $subject, $reason, User $sender = null)
-    {
-        // Don't send message if teacher doesn't want it
-        if ($user->id === $slot->block->teacher_id && !UserConfig::get($user->id)->CONSULTATION_SEND_MESSAGES) {
-            return;
-        }
-
-        setTempLanguage($user->id);
-
-        $message = $this->get_template_factory()->open('consultation/mail.php')->render([
-            'slot'   => $slot,
-            'reason' => $reason ?: _('Kein Grund angegeben'),
-        ]);
-
-        $messaging = new messaging;
-        $messaging->insert_message($message, $user->username, $sender ? $sender->id : '', '', '', '', '', $subject);
-
-        restoreLanguage();
     }
 
     protected function loadBlock($block_id)
@@ -78,7 +79,7 @@ abstract class ConsultationController extends AuthenticatedController
 
         $block = ConsultationBlock::find($block_id);
 
-        if ($block->teacher_id !== $this->current_user->id) {
+        if (!$block->range->userMayAccessRange()) {
             throw new AccessDeniedException();
         }
 

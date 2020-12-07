@@ -6,6 +6,8 @@
             count($slot->bookings),
             $slot->block->size
         ) ?>
+    <? elseif ($slot->isOccupied($GLOBALS['user']->id)): ?>
+        <?= _('Eigene Buchung') ?>
     <? else: ?>
         <?= _('belegt') ?>
     <? endif; ?>
@@ -14,8 +16,8 @@
     <span class="consultation-free">
     <? if ($slot->block->size > 1): ?>
         <?= sprintf(
-            _('%u von %u belegt'),
-            count($slot->bookings),
+            _('%u von %u frei'),
+            $slot->block->size - count($slot->bookings),
             $slot->block->size
         ) ?>
     <? else: ?>

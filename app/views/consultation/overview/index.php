@@ -27,7 +27,7 @@
             </th>
         </tr>
     <? foreach ($block->slots as $slot): ?>
-        <tr>
+        <tr id="<?= htmlReady($slot->id) ?>">
             <td>
                 <?= date('H:i', $slot->start_time) ?>
                 -
@@ -37,18 +37,8 @@
                 <?= $this->render_partial('consultation/slot-occupation.php', compact('slot')) ?>
             </td>
             <td>
-            <? if (!$slot->note && (count($slot->bookings) === 0 || !$slot->isOccupied($GLOBALS['user']->id))): ?>
-                &ndash;
-            <? else: ?>
-                <? if ($slot->note): ?>
-                    <?= htmlReady($slot->note) ?>
-                    <br>
-                <? endif; ?>
-                <? if ($slot->isOccupied($GLOBALS['user']->id)): ?>
-                    <?= _('Mein Grund der Buchung') ?>:
-                    <?= htmlReady($slot->bookings->findOneBy('user_id', $GLOBALS['user']->id)->reason) ?>
-                <? endif; ?>
-            <? endif; ?>
+                <?= $displayNote($slot->note, 2048) ?>
+                <?= $this->render_partial('consultation/slot-bookings.php', compact('slot')) ?>
             </td>
             <td class="actions">
             <? if ($slot->isOccupied($GLOBALS['user']->id)): ?>
@@ -69,12 +59,9 @@
     <tfoot>
         <tr>
             <td colspan="4">
-                <?= $GLOBALS['template_factory']->render('shared/pagechooser.php', [
-                    'num_postings' => $count,
-                    'perPage'      => $limit,
-                    'page'         => $page,
-                    'pagelink'     => str_replace('§u', '%u', str_replace('%', '%%', $controller->indexURL('§u'))),
-                ]) ?>
+                <?= Pagination::create($count, $page, $limit)->asLinks(function ($page) use ($controller) {
+                    return $controller->index($page);
+                }) ?>
             </td>
         </tr>
     </tfoot>

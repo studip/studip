@@ -87,6 +87,7 @@ import "./bootstrap/fullcalendar.js"
 import "./bootstrap/inline-editing.js"
 import "./bootstrap/gradebook.js"
 import "./bootstrap/blubber.js"
+import "./bootstrap/consultations.js"
 import "./bootstrap/scroll_to_top.js"
 
 import "./mvv_course_wizard.js"

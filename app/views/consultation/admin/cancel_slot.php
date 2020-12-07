@@ -35,7 +35,7 @@
     <? endif; ?>
 
         <label>
-            <?= _('Grund') ?>
+            <?= _('Grund der Absage') ?>
             <textarea name="reason"></textarea>
         </label>
     </fieldset>
@@ -44,7 +44,7 @@
         <?= Studip\Button::createAccept(_('Termin absagen')) ?>
         <?= Studip\LinkButton::createCancel(
             _('Abbrechen'),
-            $controller->url_for("consultation/admin#block-{$slot->block_id}")
+            $controller->indexURL($page, "#block-{$slot->block_id}")
         ) ?>
     </footer>
 </form>

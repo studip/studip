@@ -6,18 +6,23 @@
     date('H:i', $block->end)
 ) ?>
 
-(<?= htmlReady($block->room) ?>
-<? if ($block->course): ?>
-    /
-    <a href="<?= URLHelper::getLink('dispatch.php/course/details', ['sem_id' => $block->course_id]) ?>">
-        <?= htmlReady($block->course->getFullName()) ?>
-    </a>
+<? if ($block->teacher): ?>
+/
+<a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $block->teacher->username]) ?>">
+    <?= htmlReady($block->teacher->getFullName()) ?>
+</a>
 <? endif; ?>
-)
+
+(<?= formatLinks($block->room) ?>)
+
+<? if ($block->show_participants): ?>
+    - <?= _('öffentlich sichtbar') ?>
+    <?= tooltipIcon(_('Die Namen der buchenden Person sind sichtbar')) ?>
+<? endif; ?>
 
 <? if ($block->note): ?>
 <br>
 <small>
-    <?= htmlReady($block->note); ?>
+    <?= formatLinks($block->note); ?>
 </small>
 <? endif; ?>
