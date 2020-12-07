@@ -6,10 +6,10 @@ const eventBus = new Vue();
 Vue.mixin({
     methods: {
         globalEmit(...args) {
-            eventBus.emit(...args);
+            eventBus.$emit(...args);
         },
         globalOn(...args) {
-            eventBus.on(...args);
+            eventBus.$on(...args);
         },
     },
 });
