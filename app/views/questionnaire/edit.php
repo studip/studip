@@ -46,7 +46,7 @@
 
         <label>
             <input type="checkbox" name="questionnaire[copyable]" value="1"<?= $questionnaire['copyable'] ? " checked" : "" ?>>
-            <?= _("Frageboben zum Kopieren freigeben") ?>
+            <?= _("Fragebogen zum Kopieren freigeben") ?>
         </label>
 
         <label>
