@@ -12,6 +12,7 @@ Vue.mixin({
         globalOn(...args) {
             eventBus.$on(...args);
         },
+        t: aString => aString.toLocaleString(),
     },
 });
 
