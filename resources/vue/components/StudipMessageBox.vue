@@ -1,15 +1,20 @@
 <template>
     <div :class="classNames" v-if="!closed">
         <div class="messagebox_buttons">
-            <a v-if="!hideClose" class="close" href="" title="Nachrichtenbox schließen" @click.prevent="closed = true">
-                <span>Nachrichtenbox schließen</span>
+            <a v-if="hideDetails" class="details" href="" :title="t('Detailanzeige umschalten')" @click.prevent.stop="closedDetails = !closedDetails">
+                <span>{{ t('Detailanzeige umschalten') }}</span>
+            </a>
+            <a v-if="!hideClose" class="close" href="" :title="t('Nachrichtenbox schließen')" @click.prevent="closed = true">
+                <span>{{ t('Nachrichtenbox schließen') }}</span>
             </a>
         </div>
         <slot></slot>
-        <div v-if="details.length" class="messagebox_details">
-            <ul>
-                <li v-for="detail in details">{{ detail }}</li>
-            </ul>
+        <div v-if="showDetails" class="messagebox_details">
+            <slot name="details">
+                <ul>
+                    <li v-for="detail in details" v-html="detail"></li>
+                </ul>
+            </slot>
         </div>
     </div>
 </template>
@@ -21,10 +26,17 @@ export default {
         type: {
             type: String, // exception, error, success, info, warning
             default: 'info',
+            validator (type) {
+                return ['exception', 'error', 'warning', 'success', 'info'].indexOf(type) !== -1;
+            }
         },
         details: {
             type: Array,
             default: [],
+        },
+        hideDetails: {
+            type: Boolean,
+            default: false
         },
         hideClose: {
             type: Boolean,
@@ -36,13 +48,20 @@ export default {
             return {
                 messagebox: true,
                 [`messagebox_${this.type}`]: true,
-                details_hidden: this.closeDetails && this.details.length,
+                details_hidden: !this.showDetails,
             };
         },
+        hasDetails() {
+            return !!this.$slots.details || this.details.length > 0;
+        },
+        showDetails() {
+            return this.hasDetails && !this.closedDetails;
+        }
     },
     data() {
         return {
             closed: false,
+            closedDetails: this.hideDetails,
         };
     },
 };
