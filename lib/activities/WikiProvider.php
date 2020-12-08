@@ -70,6 +70,11 @@ class WikiProvider implements ActivityProvider
         $user_id = $GLOBALS['user']->id;
         $mkdate = time();
 
+
+        if ($event === 'WikiPageDidCreate' && $info['version'] > 1) {
+            $event = 'WikiPageDidUpdate';
+        }
+
         if ($event === 'WikiPageDidCreate') {
             $verb = 'created';
             if ($type === 'sem') {
