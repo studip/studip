@@ -1,4 +1,16 @@
 /*jslint esversion: 6*/
+import BlubberGlobalstream from '../../../vue/components/BlubberGlobalstream.vue';
+import BlubberPublicComposer from '../../../vue/components/BlubberPublicComposer.vue';
+import BlubberThread from '../../../vue/components/BlubberThread.vue';
+import BlubberThreadWidget from '../../../vue/components/BlubberThreadWidget.vue';
+
+const components = {
+    BlubberGlobalstream,
+    BlubberPublicComposer,
+    BlubberThread,
+    BlubberThreadWidget,
+};
+
 const Blubber = {
     App: null, //This app is not always available. The app is blubber with a widget and the threads next to it.
     threads: [],
@@ -37,7 +49,8 @@ const Blubber = {
                                 }
                             }
                         }
-                    }
+                    },
+                    components,
                 });
             });
 
@@ -91,7 +104,8 @@ const Blubber = {
                             threads_more_down: panel_data.threads_more_down,
                             waiting: false,
                             display_context_posting: 0
-                        }
+                        },
+                        components,
                     });
                 });
             });
@@ -192,7 +206,8 @@ const Blubber = {
                         clearUsers: function () {
                             this.users = [];
                         }
-                    }
+                    },
+                    components,
                 });
             });
         }

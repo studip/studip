@@ -267,7 +267,7 @@
             initial_sort: {
                 type: Object,
                 required: false,
-                default: {sortedBy: 'name', sortDirection: 'asc'}
+                default: () => ({sortedBy: 'name', sortDirection: 'asc'})
             }
         },
         data: function () {

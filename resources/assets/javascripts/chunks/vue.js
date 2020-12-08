@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import BaseComponents from '../../../vue/components/base-components.js';
 
 const eventBus = new Vue();
 
@@ -24,11 +25,9 @@ function createApp(options, ...args) {
 }
 
 function registerGlobalComponents() {
-    const files = require.context('../../../vue/components', true, /\.vue$/i);
-
-    files.keys().map((key) => {
-        Vue.component(key.split('/').pop().split('.')[0], files(key).default);
-    });
+    for (const [name, component] of Object.entries(BaseComponents)) {
+        Vue.component(name, component);
+    }
 }
 
 export { Vue, createApp, eventBus, store };

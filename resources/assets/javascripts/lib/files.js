@@ -1,6 +1,7 @@
 /*jslint esversion: 6*/
 
 import Dialog from './dialog.js';
+import FilesTable from '../../../vue/components/FilesTable.vue';
 
 const Files = {
     init () {
@@ -24,7 +25,8 @@ const Files = {
                             }
                             return false;
                         }
-                    }
+                    },
+                    components: { FilesTable, },
                 });
             });
         }
@@ -42,7 +44,8 @@ const Files = {
                             "folders":     jQuery(table).data("folders") || [],
                             "topfolder":   jQuery(table).data("topfolder"),
                             "breadcrumbs": jQuery(table).data("breadcrumbs") || []
-                        }
+                        },
+                        components: { FilesTable, },
                     });
                 });
             }
