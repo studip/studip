@@ -10,7 +10,7 @@ const BaseComponents = {
     StudipDateTime,
     StudipFileSize,
     StudipIcon,
-    StudipLoadingIndicator,
+//    StudipLoadingIndicator,
     StudipMessageBox,
 };
 
