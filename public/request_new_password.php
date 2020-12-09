@@ -137,7 +137,7 @@ if (Request::submitted('id')) {
 
     $show_reset_password = true;
 
-    if (Request::option('new_password')) {
+    if (Request::submitted('new_password')) {
 
         $show_reset_password = false;
         $requesting_user = User::find(Token::isValid($token));
@@ -192,7 +192,7 @@ if (!Request::int('step') && empty($step)) {
 $request_template = $GLOBALS['template_factory']->open('request_password');
 $request_template->set_attribute('step', intval($step));
 $request_template->set_attribute('messages', $msg);
-$request_template->set_attribute('link_startpage', sprintf(_("Zurück zur %sStartseite%s."), '<a href="./index.php?cancel_login=1">', '</a>'));
+$request_template->set_attribute('link_startpage', sprintf(_("Zurück zur %sStartseite%s."), '<a href="'. URLHelper::getLink('index.php?cancel_login=1') . '">', '</a>'));
 $request_template->set_attribute('email', $email);
 $request_template->set_attribute('show_reset_password', $show_reset_password);
 if ($show_reset_password) {
