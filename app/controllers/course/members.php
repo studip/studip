@@ -1345,7 +1345,6 @@ class Course_MembersController extends AuthenticatedController
             foreach (Request::getArray('aux') as $aux => $value) {
                 $datafield = $datafields->findOneBy('datafield_id', $aux);
                 if ($datafield) {
-                    var_dump($datafield->name);
                     $typed = $datafield->getTypedDatafield();
                     if ($typed->isEditable()) {
                         $typed->setValueFromSubmit($value);
@@ -1376,7 +1375,6 @@ class Course_MembersController extends AuthenticatedController
 
         $visibility = $member->visible;
         $status = $member->status;
-        #echo "<pre>"; var_dump($member); echo "</pre>";
         $result['visible_mode'] = false;
 
         if ($visibility) {
