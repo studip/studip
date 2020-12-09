@@ -274,7 +274,7 @@ abstract class DataFieldEntry
         $entry->content = $this->getValue();
 
         if ($entry->content == $this->model->default_value) {
-            $result = $entry->delete();
+            $result = $entry->isNew() ? 0 : $entry->delete();
         } else {
             $result = $entry->store();
         }
