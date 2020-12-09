@@ -371,7 +371,9 @@ class FileArchiveManager
         // $file_area_objects must be a non-empty array!
         // Otherwise we would return an empty Zip archive.
         if (!is_array($file_area_objects) || empty($file_area_objects)) {
-            return false;
+            throw new FileArchiveManagerException(
+                _('Es wurden keine Dateien ausgewählt!')
+            );
         }
 
         // We can create the Zip archive now since its path exists in the file system
@@ -462,7 +464,9 @@ class FileArchiveManager
         }
 
         //empty archive
-        return false;
+        throw new FileArchiveManagerException(
+            _('Das ZIP Archiv enthält keine Dateien!')
+        );
     }
 
     /**
