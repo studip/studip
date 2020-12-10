@@ -703,70 +703,74 @@ class Resources_BookingController extends AuthenticatedController
                 $this->resource_or_clipboard_id = $resource->id;
             }
 
-            if (count($this->resources) == 1) {
-                if ($this->booking_type == 3) {
-                    PageLayout::setTitle(
-                        sprintf(
-                            '%1$s: Geplante Buchung am %2$s bearbeiten',
-                            $this->resources[0]->getFullName(),
-                            $booking_date
-                        )
-                    );
-                } elseif ($this->booking_type == 2) {
-                    PageLayout::setTitle(
-                        sprintf(
-                            '%1$s: Sperrbuchung am %2$s bearbeiten',
-                            $this->resources[0]->getFullName(),
-                            $booking_date
-                        )
-                    );
-                } elseif ($this->booking_type == 1) {
-                    PageLayout::setTitle(
-                        sprintf(
-                            '%1$s: Reservierung am %2$s bearbeiten',
-                            $this->resources[0]->getFullName(),
-                            $booking_date
-                        )
-                    );
+            if ($mode == 'edit') {
+                if (count($this->resources) == 1) {
+                    if ($this->booking_type == 3) {
+                        PageLayout::setTitle(
+                            sprintf(
+                                _('%1$s: Geplante Buchung am %2$s bearbeiten'),
+                                $this->resources[0]->getFullName(),
+                                $booking_date
+                            )
+                        );
+                    } elseif ($this->booking_type == 2) {
+                        PageLayout::setTitle(
+                            sprintf(
+                                _('%1$s: Sperrbuchung am %2$s bearbeiten'),
+                                $this->resources[0]->getFullName(),
+                                $booking_date
+                            )
+                        );
+                    } elseif ($this->booking_type == 1) {
+                        PageLayout::setTitle(
+                            sprintf(
+                                _('%1$s: Reservierung am %2$s bearbeiten'),
+                                $this->resources[0]->getFullName(),
+                                $booking_date
+                            )
+                        );
+                    } else {
+                        PageLayout::setTitle(
+                            sprintf(
+                                _('%1$s: Buchung am %2$s bearbeiten'),
+                                $this->resources[0]->getFullName(),
+                                $booking_date
+                            )
+                        );
+                    }
                 } else {
-                    PageLayout::setTitle(
-                        sprintf(
-                            '%1$s: Buchung am %2$s bearbeiten',
-                            $this->resources[0]->getFullName(),
-                            $booking_date
-                        )
-                    );
+                    if ($this->booking_type == 3) {
+                        PageLayout::setTitle(
+                            sprintf(
+                                _('Geplante Buchung am %s bearbeiten'),
+                                $booking_date
+                            )
+                        );
+                    } elseif ($this->booking_type == 2) {
+                        PageLayout::setTitle(
+                            sprintf(
+                                _('Sperrbuchung am %s bearbeiten'),
+                                $booking_date
+                            )
+                        );
+                    } elseif ($this->booking_type == 1) {
+                        PageLayout::setTitle(
+                            sprintf(
+                                _('Reservierung am %s bearbeiten'),
+                                $booking_date
+                            )
+                        );
+                    } else {
+                        PageLayout::setTitle(
+                            sprintf(
+                                _('Buchung am %s bearbeiten'),
+                                $booking_date
+                            )
+                        );
+                    }
                 }
             } else {
-                if ($this->booking_type == 3) {
-                    PageLayout::setTitle(
-                        sprintf(
-                            'Geplante Buchung am %s bearbeiten',
-                            $booking_date
-                        )
-                    );
-                } elseif ($this->booking_type == 2) {
-                    PageLayout::setTitle(
-                        sprintf(
-                            'Sperrbuchung am %s bearbeiten',
-                            $booking_date
-                        )
-                    );
-                } elseif ($this->booking_type == 1) {
-                    PageLayout::setTitle(
-                        sprintf(
-                            'Reservierung am %s bearbeiten',
-                            $booking_date
-                        )
-                    );
-                } else {
-                    PageLayout::setTitle(
-                        sprintf(
-                            'Buchung am %s bearbeiten',
-                            $booking_date
-                        )
-                    );
-                }
+                PageLayout::setTitle(_('Buchung duplizieren'));
             }
         } else {
             //Invalid mode.
