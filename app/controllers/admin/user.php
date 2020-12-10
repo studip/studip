@@ -952,7 +952,8 @@ class Admin_UserController extends AuthenticatedController
         $GLOBALS['MAIL_VALIDATE_BOX'] = false;
         $UserManagement               = new UserManagement($user_id);
         if ($UserManagement->setPassword()) {
-            PageLayout::postSuccess(_('Das Passwort wurde neu gesetzt.'));
+            PageLayout::postSuccess(_('Es wurde eine Mail mit einem Link zum Neusetzen '
+                . 'des Passworts verschickt, das bestehende Passwort wurde nicht verändert.'));
         } else {
             $details = explode('§', str_replace(['msg§', 'info§', 'error§'], '', mb_substr($UserManagement->msg, 0, -1)));
             PageLayout::postError(_('Die Änderungen konnten nicht gespeichert werden.'), $details);
@@ -1582,7 +1583,7 @@ class Admin_UserController extends AuthenticatedController
         if ($this->user->auth_plugin !== null && ($GLOBALS['perm']->have_perm('root') || $GLOBALS['perm']->is_fak_admin() || !in_array($this->user->perms, words('root admin')))) {
             if (!StudipAuthAbstract::CheckField('auth_user_md5.password', $this->user->auth_plugin)) {
                 $user_actions->addLink(
-                    _('Neues Passwort setzen'),
+                    _('Passwortlink zusenden'),
                     $this->url_for("admin/user/change_password/{$this->user->id}"),
                     Icon::create('key')
                 );

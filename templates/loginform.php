@@ -37,6 +37,9 @@ if (!match_route('web_migrate.php')) {
                 )
             ]) ?>
         <? endif; ?>
+
+        <?= implode('', PageLayout::getMessages()); ?>
+
         <div class="index_main">
             <form class="default" name="login" method="post" action="<?= URLHelper::getLink(Request::url(), ['cancel_login' => NULL]) ?>">
                 <header>
@@ -71,7 +74,7 @@ if (!match_route('web_migrate.php')) {
 
             <div>
                 <? if (Config::get()->ENABLE_REQUEST_NEW_PASSWORD_BY_USER && in_array('Standard', $GLOBALS['STUDIP_AUTH_PLUGIN'])): ?>
-                    <a href="<?= URLHelper::getLink('request_new_password.php?cancel_login=1') ?>">
+                    <a href="<?= URLHelper::getLink('dispatch.php/new_password?cancel_login=1') ?>">
                 <? else: ?>
                     <a href="mailto:<?= $GLOBALS['UNI_CONTACT'] ?>?subject=<?= rawurlencode('Stud.IP Passwort vergessen - '.Config::get()->UNI_NAME_CLEAN) ?>&amp;body=<?= rawurlencode("Ich habe mein Passwort vergessen. Bitte senden Sie mir ein Neues.\nMein Nutzername: " . htmlReady($uname) . "\n") ?>">
                 <? endif; ?>

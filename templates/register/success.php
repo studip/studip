@@ -1,6 +1,6 @@
 <section class="contentbox">
     <header>
-        <h1><?=_('Herzlich Willkommen')?></h1>
+        <h1><?=_('Herzlich willkommen')?></h1>
     </header>
     <section>
         <p>

@@ -8,7 +8,6 @@ $mailbody = "This e-mail has been generated automatically by the Stud.IP System.
     . "One of the Stud.IP-Admins generated your account at " . $Zeit . "\n"
     . "You have been added with the following data:\n\n"
     . "Username: " . $this->user_data['auth_user_md5.username'] . "\n"
-    . "Password: " . $password . "\n"
     . "Status: " . $this->user_data['auth_user_md5.perms'] . "\n"
     . "Forename: " . $this->user_data['auth_user_md5.Vorname'] . "\n"
     . "Surname: " . $this->user_data['auth_user_md5.Nachname'] . "\n"

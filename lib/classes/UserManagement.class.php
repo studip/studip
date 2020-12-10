@@ -627,7 +627,7 @@ class UserManagement
     }
 
     /**
-    * Create a new password and mail it to the user
+    * Mail a password generation link to the user
     *
     * @return   bool Password change successful?
     */
@@ -659,25 +659,76 @@ class UserManagement
             return false;
         }
 
-        $password = $this->generate_password(8);
-        $this->user_data['auth_user_md5.password'] = self::getPwdHasher()->HashPassword($password);
-
-        if (!$this->storeToDatabase()) {
-            $this->msg .= 'info§' . _('Es wurden keine Veränderungen vorgenommen.') . '§';
-        }
-
-        $this->msg .= 'msg§' . _('Das Passwort wurde neu gesetzt.') . '§';
-
-        // include language-specific subject and mailbody
-        $user_language = getUserLanguagePath($this->user_data['auth_user_md5.user_id']);
-        $Zeit = strftime('%x, %X');
-        include "locale/$user_language/LC_MAILS/password_mail.inc.php";
-
-        // send mail
-        StudipMail::sendMessage($this->user_data['auth_user_md5.Email'], $subject, $mailbody);
-        StudipLog::log('USER_NEWPWD', $this->user_data['auth_user_md5.user_id']);
+        self::sendPasswordMail($this->user);
 
         return true;
+    }
+
+    public static function sendPasswordMail($user)
+    {
+        setTempLanguage($user->user_id);
+
+        // always generate a token, so root, admin and all other users profit from the abuse protection
+        $id = Token::create(24 * 60 * 60, $user->id);
+
+        // admin and root cannot reset their password via mail
+        // only users with auth-type standard cann reset their password
+        if ($user->perms == 'root' || $user->perms == 'admin' || $user->auth_plugin !== 'standard') {
+
+            // inform user, that their password cannot be reset via mail
+            $subject = sprintf(
+                _("[Stud.IP - %s] Passwortänderung angefordert"),
+                Config::get()->UNI_NAME_CLEAN
+            );
+
+            $mailbody = sprintf(
+                _("Dies ist eine Informationsmail des Stud.IP-Systems\n"
+                    ."(Studienbegleitender Internetsupport von Präsenzlehre)\n- %s -\n\n"
+                    . "Sie haben einen Link angefordert\n"
+                    . "um das Passwort zurückzusetzen.\n"
+                    . "Dies ist aber für den mit dieser Mail \n"
+                    . "verknüpften Account so nicht möglich.\n\n"
+                    . "Wenden sie sich bitte stattdessen an\n%s"
+                ),
+                Config::get()->UNI_NAME_CLEAN,
+                $user->username,
+                $GLOBALS['UNI_CONTACT']
+            );
+
+        } else {
+
+            $subject = sprintf(
+                _("[Stud.IP - %s] Neues Passwort setzen"),
+                Config::get()->UNI_NAME_CLEAN
+            );
+
+            $mailbody = sprintf(
+                _("Dies ist eine Bestätigungsmail des Stud.IP-Systems\n"
+                    ."(Studienbegleitender Internetsupport von Präsenzlehre)\n- %s -\n\n"
+                    ."Sie haben um die Zurücksetzung Ihres Passwortes gebeten.\n\n"
+                    ."Diese E-Mail wurde Ihnen zugesandt um sicherzustellen,\n"
+                    ."dass die angegebene E-Mail-Adresse tatsächlich Ihnen gehört.\n\n"
+                    ."Wenn Sie um die Zurücksetzung Ihres Passwortes gebeten haben,\n"
+                    ."dann öffnen Sie bitte folgenden Link\n\n"
+                    ."%s\n\n"
+                    ."in Ihrem Browser. Auf der Seite können Sie ein neues Passwort setzen.\n\n"
+                    ."Wahrscheinlich unterstützt Ihr E-Mail-Programm ein einfaches Anklicken des Links.\n"
+                    ."Ansonsten müssen Sie Ihren Browser öffnen und den Link komplett in die Zeile\n"
+                    ."\"Location\" oder \"URL\" kopieren.\n\n"
+                    ."Falls Sie nicht diese Mail nicht angefordert haben\n"
+                    ."oder überhaupt nicht wissen, wovon hier die Rede ist,\n"
+                    ."dann hat jemand Ihre E-Mail-Adresse fälschlicherweise verwendet!\n"
+                    ."Ignorieren Sie in diesem Fall diese E-Mail. Es werden dann keine\n"
+                    ."Änderungen an Ihren Zugangsdaten vorgenommen.\n\n"
+                ),
+                Config::get()->UNI_NAME_CLEAN,
+                $GLOBALS['ABSOLUTE_URI_STUDIP'] . 'dispatch.php/new_password/set/'. $id .'?cancel_login=1'
+            );
+        }
+
+        StudipMail::sendMessage($user->email, $subject, $mailbody);
+
+        restoreLanguage();
     }
 
     /**
@@ -1187,13 +1238,25 @@ class UserManagement
         $this->msg .= 'msg§' . _('Das Passwort wurde neu gesetzt.') . '§';
 
         // include language-specific subject and mailbody
-        $user_language = getUserLanguagePath($this->user_data['auth_user_md5.user_id']);
-        $Zeit = strftime('%x, %X');
-        include "locale/$user_language/LC_MAILS/password_mail.inc.php";
+        setTempLanguage($this->user_data['auth_user_md5.user_id']);
+
+        $subject = _("[Stud.IP - %s] Passwortänderung");
+
+        $mailbody = sprintf(
+            _("Dies ist eine Informationsmail des Stud.IP-Systems\n"
+                ."(Studienbegleitender Internetsupport von Präsenzlehre)\n- %s -\n\n"
+                ."Ihr Passwort wurde soben von einem/einer Administrator/in geändert.\n"
+            ),
+            Config::get()->UNI_NAME_CLEAN
+        );
 
         // send mail
         StudipMail::sendMessage($this->user_data['auth_user_md5.Email'], $subject, $mailbody);
 
-        return TRUE;
+        restoreLanguage();
+
+        StudipLog::log('USER_NEWPWD', $this->user_data['auth_user_md5.user_id']);
+
+        return true;
     }
 }

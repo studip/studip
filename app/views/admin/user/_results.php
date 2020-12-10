@@ -168,7 +168,7 @@
                             if (!StudipAuthAbstract::CheckField('auth_user_md5.password', $user->auth_plugin)) {
                                 $actionMenu->addLink(
                                     $controller->url_for("admin/user/change_password/{$user->id}", ['from_index' => 1]),
-                                    _('Neues Passwort setzen'),
+                                    _('Passwortlink zusenden'),
                                     Icon::create('key')
                                 );
                             }
