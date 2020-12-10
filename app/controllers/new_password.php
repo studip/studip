@@ -71,7 +71,6 @@ class NewPasswordController extends StudipController
             StudipMail::sendMessage($user->email, $subject, $mailbody);
 
             restoreLanguage();
-            return;
         }
 
         if ($user) {
