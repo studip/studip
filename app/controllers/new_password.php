@@ -59,7 +59,7 @@ class NewPasswordController extends StudipController
                     ."(Studienbegleitender Internetsupport von Präsenzlehre)\n- %s -\n\n"
                     . "Für die Mail-Adresse %s wurde ein Link angefordert\n"
                     . "um das Passwort zurückzusetzen.\n"
-                    . "Dieser Mail-Adresse sind jedoch mehrere Accounts zugeordnet,\n"
+                    . "Dieser Mail-Adresse sind jedoch mehrere Zugänge zugeordnet,\n"
                     . "deshalb ist es nicht möglich, das Passwort hierüber zurückzusetzen.\n"
                     . "Wenden sie sich bitte stattdessen an\n%s"
                 ),

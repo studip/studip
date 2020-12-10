@@ -664,6 +664,15 @@ class UserManagement
         return true;
     }
 
+    /**
+     * Send a mail to the user denoted by the passed user-object with a link
+     * to reset the password. For admin, root and non-standard-auth a notification
+     * is sent instead.
+     *
+     * @param  User $user
+     *
+     * @return void
+     */
     public static function sendPasswordMail($user)
     {
         setTempLanguage($user->user_id);
