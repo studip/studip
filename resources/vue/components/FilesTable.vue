@@ -5,7 +5,7 @@
         <caption>
             <div class="caption-container">
                 <div v-if="breadcrumbs && !table_title">
-                    <a v-if="breadcrumbs[0]" :href="breadcrumbs[0].url" :title="'Zum Hauptordner'.toLocaleString()">
+                    <a v-if="breadcrumbs[0]" :href="breadcrumbs[0].url" :title="t('Zum Hauptordner')">
                         <studip-icon shape="folder-home-full"
                                      role="clickable"
                                      class="text-bottom"
@@ -52,52 +52,39 @@
                            id="all_files_checkbox">
                     <label for="all_files_checkbox"></label>
                 </th>
-                <th @click="sort('mime_type')">
-                    {{ 'Typ'.toLocaleString() }}
-                    <studip-icon v-if="sortedBy == 'mime_type' && sortDirection == 'asc'" shape="arr_1down" role="clickable" size="16" class="text-bottom"></studip-icon>
-                    <studip-icon v-if="sortedBy == 'mime_type' && sortDirection == 'desc'" shape="arr_1up" role="clickable" size="16" class="text-bottom"></studip-icon>
+                <th @click="sort('mime_type')" :class="sortClasses('mime_type')">
+                    {{ t('Typ') }}
                 </th>
-                <th @click="sort('name')">
-                    {{ 'Name'.toLocaleString() }}
-                    <studip-icon v-if="sortedBy == 'name' && sortDirection == 'asc'" shape="arr_1down" role="clickable" size="16" class="text-bottom"></studip-icon>
-                    <studip-icon v-if="sortedBy == 'name' && sortDirection == 'desc'" shape="arr_1up" role="clickable" size="16" class="text-bottom"></studip-icon>
+                <th @click="sort('name')" :class="sortClasses('name')">
+                    {{ t('Name') }}
                 </th>
-                <th @click="sort('size')" class="responsive-hidden">
-                    {{ 'Größe'.toLocaleString() }}
-                    <studip-icon v-if="sortedBy == 'size' && sortDirection == 'asc'" shape="arr_1down" role="clickable" size="16" class="text-bottom"></studip-icon>
-                    <studip-icon v-if="sortedBy == 'size' && sortDirection == 'desc'" shape="arr_1up" role="clickable" size="16" class="text-bottom"></studip-icon>
+                <th @click="sort('size')" class="responsive-hidden" :class="sortClasses('size')">
+                    {{ t('Größe') }}
                 </th>
-                <th v-if="showdownloads" @click="sort('downloads')" class="responsive-hidden">
-                    {{ 'Downloads'.toLocaleString() }}
-                    <studip-icon v-if="sortedBy == 'downloads' && sortDirection == 'asc'" shape="arr_1down" role="clickable" size="16" class="text-bottom"></studip-icon>
-                    <studip-icon v-if="sortedBy == 'downloads' && sortDirection == 'desc'" shape="arr_1up" role="clickable" size="16" class="text-bottom"></studip-icon>
+                <th v-if="showdownloads" @click="sort('downloads')" class="responsive-hidden" :class="sortClasses('downloads')">
+                    {{ t('Downloads') }}
                 </th>
-                <th class="responsive-hidden" @click="sort('author_name')">
-                    {{ 'Autor/-in'.toLocaleString() }}
-                    <studip-icon v-if="sortedBy == 'author_name' && sortDirection == 'asc'" shape="arr_1down" role="clickable" size="16" class="text-bottom"></studip-icon>
-                    <studip-icon v-if="sortedBy == 'author_name' && sortDirection == 'desc'" shape="arr_1up" role="clickable" size="16" class="text-bottom"></studip-icon>
+                <th class="responsive-hidden" @click="sort('author_name')" :class="sortClasses('author_name')">
+                    {{ t('Autor/-in') }}
                 </th>
-                <th class="responsive-hidden" @click="sort('chdate')">
-                    {{ 'Datum'.toLocaleString() }}
-                    <studip-icon v-if="sortedBy == 'chdate' && sortDirection == 'asc'" shape="arr_1down" role="clickable" size="16" class="text-bottom"></studip-icon>
-                    <studip-icon v-if="sortedBy == 'chdate' && sortDirection == 'desc'" shape="arr_1up" role="clickable" size="16" class="text-bottom"></studip-icon>
+                <th class="responsive-hidden" @click="sort('chdate')" :class="sortClasses('chdate')">
+                    {{ t('Datum') }}
                 </th>
                 <th v-if="topfolder.additionalColumns"
                     v-for="(name, index) in topfolder.additionalColumns"
                     :key="index"
                     @click="sort(index)"
-                    class="responsive-hidden">
+                    class="responsive-hidden"
+                    :class="sortClasses(index)">
                     {{name}}
-                    <studip-icon v-if="sortedBy == index && sortDirection == 'asc'" shape="arr_1down" role="clickable" size="16" class="text-bottom"></studip-icon>
-                    <studip-icon v-if="sortedBy == index && sortDirection == 'desc'" shape="arr_1up" role="clickable" size="16" class="text-bottom"></studip-icon>
                 </th>
-                <th data-sort="false">{{ 'Aktionen'.toLocaleString() }}</th>
+                <th data-sort="false">{{ t('Aktionen') }}</th>
             </tr>
         </thead>
         <tbody class="subfolders">
             <tr v-if="files.length + folders.length == 0" class="empty">
                 <td :colspan="numberOfColumns">
-                    {{ 'Dieser Ordner ist leer'.toLocaleString() }}
+                    {{ t('Dieser Ordner ist leer') }}
                 </td>
             </tr>
             <tr v-for="folder in sortedFolders"
@@ -174,7 +161,7 @@
                                  shape="lock-locked"
                                  role="info"
                                  size="16"
-                                 :title="'Das Herunterladen dieser Datei ist nur eingeschränkt möglich.'.toLocaleString()"></studip-icon>
+                                 :title="t('Das Herunterladen dieser Datei ist nur eingeschränkt möglich.')"></studip-icon>
                 </td>
                 <td :data-sort-value="file.size"
                     class="responsive-hidden">
@@ -227,17 +214,13 @@
             folders: {
                 type: Array,
                 required: false,
-                default: function () {
-                    return [];
-                }
+                default: () => [],
             },
             files: Array,
             breadcrumbs: {
                 type: Array,
                 required: false,
-                default: function () {
-                    return [];
-                }
+                default: () => [],
             },
             showdownloads: {
                 type: Boolean,
@@ -270,7 +253,7 @@
                 default: () => ({sortedBy: 'name', sortDirection: 'asc'})
             }
         },
-        data: function () {
+        data () {
             return {
                 sortedBy: this.initial_sort.sortedBy,
                 sortDirection: this.initial_sort.sortDirection
@@ -283,6 +266,13 @@
                     this.sortDirection = oldDirection === "asc" ? "desc" : "asc";
                 }
                 this.sortedBy = column;
+            },
+            sortClasses (column) {
+                let classes = [];
+                if (this.sortedBy === column) {
+                    classes.push(this.sortDirection === 'asc' ? 'sortasc' : 'sortdesc');
+                }
+                return classes;
             },
             removeFile (id) {
                 this.files.forEach((file, i) => {
@@ -297,6 +287,41 @@
                         this.$delete(this.folders, i);
                     }
                 });
+            },
+            sortArray (array) {
+                if (!array.length) {
+                    return [];
+                }
+
+                // Determine whether the sorted array items have the key to sort by
+                const arrayHasKey = Object.keys(array.find(item => true)).indexOf(this.sortedBy) !== 1.
+
+                // Define sort direction by this factor
+                const directionFactor = this.sortDirection === "asc" ? 1 : -1;
+
+                // Default sort function by string comparison of field
+                let sortFunction = (a, b) => a[this.sortedBy].localeCompare(b[this.sortedBy]);
+
+                // Sort numerically by field
+                if (["size", "downloads", "chdate"].indexOf(this.sortedBy) !== -1 && arrayHasKey) {
+                    sortFunction = (a, b) => parseInt(a[this.sortedBy], 10) - parseInt(b[this.sortedBy], 10);
+                }
+
+                // Additional sorting
+                if (this.topfolder.additionalColumns.hasOwnProperty(this.sortedBy) && arrayHasKey) {
+                    const is_string = array.some(item => {
+                        return typeof item.additionalColumns[this.sortedBy].order === "string"
+                            && !isNaN(parseFloat(item.additionalColumns[this.sortedBy].order));
+                    });
+                    if (is_string) {
+                        sortFunction = (a, b) => a.additionalColumns[this.sortedBy].order.localeCompare(b.additionalColumns[this.sortedBy].order);
+                    } else {
+                        sortFunction = (a, b) => a.additionalColumns[this.sortedBy].order - b.additionalColumns[this.sortedBy].order;
+                    }
+                }
+
+                // Actual sort on copy of array
+                return array.concat().sort((a, b) => directionFactor * sortFunction(a, b));
             }
         },
         computed: {
@@ -306,87 +331,10 @@
                     + Object.keys(this.topfolder.additionalColumns).length;
             },
             sortedFiles () {
-                if (this.files.length == 0) {
-                    return this.files;
-                }
-                if (["mime_type", "name", "author_name"].indexOf(this.sortedBy) !== -1) {
-                    if (this.sortDirection === "asc") {
-                        return this.files.sort((a, b) => a[this.sortedBy].localeCompare(b[this.sortedBy]));
-                    } else {
-                        return this.files.sort((a, b) => b[this.sortedBy].localeCompare(a[this.sortedBy]));
-                    }
-                }
-                if (["size", "downloads", "chdate"].indexOf(this.sortedBy) !== -1) {
-                    if (this.sortDirection === "asc") {
-                        return this.files.sort((a, b) => parseInt(b[this.sortedBy], 10) - parseInt(a[this.sortedBy], 10));
-                    } else {
-                        return this.files.sort((a, b) => parseInt(a[this.sortedBy], 10) - parseInt(b[this.sortedBy], 10));
-                    }
-                }
-                if (typeof this.topfolder.additionalColumns[this.sortedBy] !== "undefined") {
-                    let is_string = false;
-                    for (let i in this.files) {
-                        if (typeof this.files[i].additionalColumns[this.sortedBy].order === "string" && !isNaN(parseFloat(this.files[i].additionalColumns[this.sortedBy].order))) {
-                            is_string = true;
-                            break;
-                        }
-                    }
-                    if (is_string) {
-                        if (this.sortDirection === "asc") {
-                            return this.files.sort((a, b) => a.additionalColumns[this.sortedBy].order.localeCompare(b.additionalColumns[this.sortedBy].order));
-                        } else {
-                            return this.files.sort((a, b) => b.additionalColumns[this.sortedBy].order.localeCompare(a.additionalColumns[this.sortedBy].order));
-                        }
-                    } else {
-                        if (this.sortDirection === "asc") {
-                            return this.files.sort((a, b) => b.additionalColumns[this.sortedBy].order - a.additionalColumns[this.sortedBy].order);
-                        } else {
-                            return this.files.sort((a, b) => a.additionalColumns[this.sortedBy].order - b.additionalColumns[this.sortedBy].order);
-                        }
-                    }
-                }
+                return this.sortArray(this.files);
             },
             sortedFolders () {
-                if (this.folders.length == 0) {
-                    return this.folders;
-                }
-                if (["mime_type", "name", "author_name"].indexOf(this.sortedBy) !== -1) {
-                    if (this.sortDirection === "asc") {
-                        return this.folders.sort((a, b) => a[this.sortedBy].localeCompare(b[this.sortedBy]));
-                    } else {
-                        return this.folders.sort((a, b) => b[this.sortedBy].localeCompare(a[this.sortedBy]));
-                    }
-                }
-                if (["chdate"].indexOf(this.sortedBy) !== -1) {
-                    if (this.sortDirection === "asc") {
-                        return this.folders.sort((a, b) => b[this.sortedBy] - a[this.sortedBy]);
-                    } else {
-                        return this.folders.sort((a, b) => a[this.sortedBy] - b[this.sortedBy]);
-                    }
-                }
-                if (typeof this.topfolder.additionalColumns[this.sortedBy] !== "undefined") {
-                    let is_string = false;
-                    for (let i in this.folders) {
-                        if (typeof this.folders[i].additionalColumns[this.sortedBy].order === "string" && !isNaN(parseFloat(this.folders[i].additionalColumns[this.sortedBy].order))) {
-                            is_string = true;
-                            break;
-                        }
-                    }
-                    if (is_string) {
-                        if (this.sortDirection === "asc") {
-                            return this.folders.sort((a, b) => a.additionalColumns[this.sortedBy].order.localeCompare(b.additionalColumns[this.sortedBy].order));
-                        } else {
-                            return this.folders.sort((a, b) => b.additionalColumns[this.sortedBy].order.localeCompare(a.additionalColumns[this.sortedBy].order));
-                        }
-                    } else {
-                        if (this.sortDirection === "asc") {
-                            return this.folders.sort((a, b) => parseInt(b.additionalColumns[this.sortedBy].order, 10) - parseInt(a.additionalColumns[this.sortedBy].order, 10));
-                        } else {
-                            return this.folders.sort((a, b) => parseInt(a.additionalColumns[this.sortedBy].order, 10) - parseInt(b.additionalColumns[this.sortedBy].order, 10));
-                        }
-                    }
-                }
-                return this.folders.sort((a, b) => a.name.localeCompare(b.name));
+                return this.sortArray(this.folders);
             }
         }
     }

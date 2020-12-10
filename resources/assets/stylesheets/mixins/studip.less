@@ -134,7 +134,7 @@
     }
 }
 
-.icon(@position, @icon, @role, @size: 16, @padding: 0) when (@position = "before") {
+.icon(@position, @icon, @role: "clickable", @size: 16, @padding: 0) when (@position = "before") {
     &::before {
         background-repeat: no-repeat;
         content: ' ';
@@ -147,7 +147,7 @@
     }
 }
 
-.icon(@position, @icon, @role, @size: 16, @padding: 0) when (@position = "after") {
+.icon(@position, @icon, @role: "clickable", @size: 16, @padding: 0) when (@position = "after") {
     &::after {
         background-repeat: no-repeat;
         content: ' ';

@@ -216,29 +216,18 @@ table {
 
 /* classes for sortable table headers --------------------------------------- */
 tr.sortable {
-    background-color: @dark-gray-color-5;
-
     th.sortasc,
     th.sortdesc {
         .tablesorter-header-inner {
             display: inline-block;
         }
-
-        &::after {
-            .square(16px);
-            background-position: center;
-            background-repeat: no-repeat;
-            content: ' ';
-            display: inline-block;
-            vertical-align: text-bottom;
-        }
     }
 
-    th.sortasc::after {
-        .retina-background-image('dreieck_up.png', 'dreieck_up@2x.png', 16px);
+    th.sortasc {
+        .icon('after', 'arr_1up');
     }
-    th.sortdesc::after {
-        .retina-background-image('dreieck_down.png', 'dreieck_down@2x.png', 16px);
+    th.sortdesc {
+        .icon('after', 'arr_1down');
     }
 }
 
