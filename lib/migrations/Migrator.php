@@ -290,9 +290,9 @@ class Migrator
         $migrations = $this->migrationClasses();
 
         // Determine correct target version
-        $this->target_version = $target_version === null
-                              ? $this->topVersion()
-                              : (int) $target_version;
+        $this->target_version = $target_version
+                              ? (int) $target_version
+                              : $this->topVersion();
 
         // Determine max version (might differ from max schema version in db in
         // development systems)
