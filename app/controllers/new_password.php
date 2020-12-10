@@ -47,6 +47,7 @@ class NewPasswordController extends StudipController
             $user = $users[0];
         } else if (sizeof($users) > 1) {
             setTempLanguage($users[0]->id);
+
             // there are mutliple accounts with this mail addresses!
             $subject = sprintf(
                 _("[Stud.IP - %s] Passwortänderung angefordert"),
@@ -63,7 +64,7 @@ class NewPasswordController extends StudipController
                     . "Wenden sie sich bitte stattdessen an\n%s"
                 ),
                 Config::get()->UNI_NAME_CLEAN,
-                $users[0]->mail,
+                $users[0]->email,
                 $GLOBALS['UNI_CONTACT']
             );
 
