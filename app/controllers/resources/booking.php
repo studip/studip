@@ -684,7 +684,7 @@ class Resources_BookingController extends AuthenticatedController
                     );
                 }
             }
-        } elseif ($mode == 'edit') {
+        } elseif (($mode == 'edit') || ($mode == 'duplicate')) {
             if (!$this->booking) {
                 return;
             }
@@ -817,7 +817,7 @@ class Resources_BookingController extends AuthenticatedController
                     }
                 }
             }
-        } elseif ($mode == 'edit') {
+        } elseif (($mode == 'edit') || ($mode == 'duplicate')) {
             if (!$this->booking->isSimpleBooking()) {
                 throw new AccessDeniedException(
                     _('Nur einfache Buchungen dürfen direkt bearbeitet werden!')
@@ -850,7 +850,7 @@ class Resources_BookingController extends AuthenticatedController
             $this->end = clone $this->begin;
             $this->repetition_end = clone $this->end;
             $this->begin->sub(new DateInterval('PT2H'));
-        } elseif ($mode == 'edit') {
+        } elseif (($mode == 'edit') || ($mode == 'duplicate')) {
             $this->begin = new DateTime();
             $this->begin->setTimestamp($this->booking->begin);
             $this->end = new DateTime();
@@ -964,7 +964,7 @@ class Resources_BookingController extends AuthenticatedController
             if (!$this->selected_semester) {
                 $this->selected_semester = Semester::findCurrent();
             }
-        } elseif ($mode == 'edit') {
+        } elseif (($mode == 'edit') || ($mode == 'duplicate')) {
             $begin = new DateTime();
             $begin->setTimestamp($this->booking->begin);
             $begin->setTime(0,0,0);
@@ -1002,7 +1002,7 @@ class Resources_BookingController extends AuthenticatedController
             $this->repetition_style = 'weekly';
             $this->repetition_interval = '1';
             $this->internal_comment = '';
-        } elseif ($mode == 'edit') {
+        } elseif (($mode == 'edit') || ($mode == 'duplicate')) {
             $this->preparation_time = $this->booking->preparation_time / 60;
             $this->block_booking = [];
             $interval = $this->booking->getRepetitionInterval();
@@ -1032,7 +1032,8 @@ class Resources_BookingController extends AuthenticatedController
             'assigned_user_id',
             $user_search
         );
-        if (($mode == 'edit') && ($this->booking->assigned_user instanceof User)
+        if ((($mode == 'edit') || ($mode == 'duplicate'))
+            && ($this->booking->assigned_user instanceof User)
             && !$this->save) {
             //Set assigned user:
             $this->assigned_user_search->defaultValue(
@@ -1262,7 +1263,7 @@ class Resources_BookingController extends AuthenticatedController
                     }
                 }
             }
-            
+
             $time_intervals = [];
 
             if ($block_booking_days) {
@@ -1406,7 +1407,7 @@ class Resources_BookingController extends AuthenticatedController
                 $errors,
                 $room_part_errors
             );
-            
+
             if (!$errors && Request::isXhr()) {
                 $this->response->add_header('X-Dialog-Close', '1');
                 $this->response->add_header('X-Location', URLHelper::getURL('', ['defaultDate'=> date('Y-m-d', $this->begin->getTimestamp())]));
@@ -1481,6 +1482,12 @@ class Resources_BookingController extends AuthenticatedController
     public function edit_action($booking_id = null)
     {
         $this->addEditHandler('edit');
+    }
+
+
+    public function duplicate_action($booking_id = null)
+    {
+        $this->addEditHandler('duplicate');
     }
 
 

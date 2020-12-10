@@ -2,6 +2,15 @@
 <? if (Request::isDialog()): ?>
     <div data-dialog-button>
         <?= \Studip\LinkButton::create(
+            _('Duplizieren'),
+            URLHelper::getURL(
+                'dispatch.php/resources/booking/duplicate/' . $booking->id
+            ),
+            [
+                'data-dialog' => '1'
+            ]
+        ) ?>
+        <?= \Studip\LinkButton::create(
             _('Kopieren'),
             URLHelper::getURL(
                 'dispatch.php/resources/booking/copy/' . $booking->id

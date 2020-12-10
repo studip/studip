@@ -1,9 +1,9 @@
 <? if ($show_form): ?>
     <form class="default create-booking-form" method="post"
           name="create_booking"
-          action="<?= $booking !== null
-                      ? URLHelper::getLink( 'dispatch.php/resources/booking/edit/'. $booking->id )
-                      : URLHelper::getLink( 'dispatch.php/resources/booking/add/' . $resource_or_clipboard_id . '/' . $booking_type );
+          action="<?= ($booking !== null) && ($mode == 'edit')
+                    ? URLHelper::getLink('dispatch.php/resources/booking/edit/'. $booking->id)
+                    : URLHelper::getLink('dispatch.php/resources/booking/add/' . $resource_or_clipboard_id . '/' . $booking_type);
                    ?>"
           data-dialog="<?= $no_reload ? 'size=auto' : 'reload-on-close' ?>">
         <input type="hidden" name="origin_url"
