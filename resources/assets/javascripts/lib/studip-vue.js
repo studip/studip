@@ -4,12 +4,12 @@ const load = async function () {
 
 const on = async function (...args) {
     const { eventBus } = await load();
-    eventBus.$on(...args);
+    eventBus.on(...args);
 };
 
 const emit = async function (...args) {
     const { eventBus } = await load();
-    eventBus.$emit(...args);
+    eventBus.emit(...args);
 };
 
 export default { load, on, emit };

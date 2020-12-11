@@ -23,6 +23,7 @@ import Dialog from './lib/dialog.js';
 import Dialogs from './lib/dialogs.js';
 import DragAndDropUpload from './lib/drag_and_drop_upload.js';
 import enrollment from './lib/enrollment.js';
+import eventBus from './lib/event-bus.js';
 import extractCallback from './lib/extract_callback.js';
 import Files from './lib/files.js';
 import FilesDashboard from './lib/files_dashboard.js';
@@ -104,6 +105,7 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     Dialogs,
     DragAndDropUpload,
     enrollment,
+    eventBus,
     extractCallback,
     Files,
     FilesDashboard,

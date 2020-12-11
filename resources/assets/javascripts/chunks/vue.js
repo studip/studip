@@ -1,16 +1,15 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import eventBus from '../lib/event-bus.js';
 import BaseComponents from '../../../vue/components/base-components.js';
-
-const eventBus = new Vue();
 
 Vue.mixin({
     methods: {
         globalEmit(...args) {
-            eventBus.$emit(...args);
+            eventBus.emit(...args);
         },
         globalOn(...args) {
-            eventBus.$on(...args);
+            eventBus.on(...args);
         },
         t: aString => aString.toLocaleString(),
     },
