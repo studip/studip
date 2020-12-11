@@ -576,7 +576,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
     /**
      * @param  string|null $user_id
      * @return bool
-     * @deprecated
+     * @deprecated since Stud.IP 5.0
      */
     public function userMayAdministerRange($user_id = null)
     {

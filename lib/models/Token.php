@@ -8,6 +8,11 @@
  */
 class Token extends SimpleORMap
 {
+    /**
+     * Configures the model
+     *
+     * @param array $config
+     */
     protected static function configure($config = [])
     {
         $config['db_table'] = 'user_token';
@@ -36,16 +41,33 @@ class Token extends SimpleORMap
         parent::configure($config);
     }
 
+    /**
+     * Creates a new token.
+     *
+     * @param  integer $duration Lifetime of the token
+     * @param  mixed   $user_id  Optional id of the user (defaults to current user)
+     * @return string the token
+     */
     public static function create($duration = 30, $user_id = null)
     {
         $token = new static();
-        $token->user_id    = $user_id ?: $GLOBALS['user']->id;
+        $token->user_id    = $user_id ?? $GLOBALS['user']->id;
         $token->expiration = strtotime("+{$duration} seconds");
         $token->store();
 
         return $token->token;
     }
 
+    /**
+     * Checks if a token is valid (for a given user).
+     *
+     * Based on the number of paremters this either returns the id of the user
+     * the token belongs to or a boolean if the id of a user was already given.
+     *
+     * @param  string  $token   Token to check
+     * @param  mixed   $user_id Optional id of a user
+     * @return mixed  User id of none was given or boolean
+     */
     public static function isValid($token, $user_id = null)
     {
         $token = static::find($token);
@@ -61,51 +83,13 @@ class Token extends SimpleORMap
 
         return func_num_args() === 1
              ? $token_user_id
-             : $token_user_id === ($user_id ?: $GLOBALS['user']->id);
+             : $token_user_id === ($user_id ?? $GLOBALS['user']->id);
     }
 
     /**
-     * Compatbility method for legacy plugins.
-     * @param  string  $token Token to check
-     * @return mixed used_id if valid, null otherwise
-     * @todo Remove for Stud.IP 5.0
-     * @deprecated
+     * Returns whether the token is expired
+     * @return boolean
      */
-    public static function is_valid($token)
-    {
-        return self::isValid($token);
-    }
-
-    /**
-     * Compatbility method for legacy plugins.
-     * @param  string  $user_id owner of this token
-     * @param  string  $duration validity duration
-     * @todo Remove for Stud.IP 5.0
-     * @deprecated
-     */
-    public function __construct($user_id = null, $duration = 30)
-    {
-        parent::__construct($user_id);
-
-        // assume user id if no token with this id exists
-        if (isset($user_id) && $this->isNew()) {
-            $this->user_id    = $user_id;
-            $this->expiration = strtotime("+{$duration} seconds");
-            $this->store();
-        }
-    }
-
-    /**
-     * Compatbility method for legacy plugins.
-     * @return string token value
-     * @todo Remove for Stud.IP 5.0
-     * @deprecated
-     */
-    public function get_token()
-    {
-        return $this->token;
-    }
-
     public function isExpired()
     {
         return $this->expiration < time();

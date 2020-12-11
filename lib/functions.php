@@ -1066,34 +1066,6 @@ function words($what) {
 }
 
 /**
- * Does not encode anything anymore and just returns the data it received.
- *
- * @deprecated
- *
- * @param mixed $data
- *
- * @return mixed unaltered input $data
- */
-function studip_utf8encode($data)
-{
-    return $data;
-}
-
-/**
- * Does not decode anything anymore and just returns the data it received.
- *
- * @deprecated
- *
- * @param mixed $data
- *
- * @return mixed unaltered input $data
- */
-function studip_utf8decode($data)
-{
-    return $data;
-}
-
-/**
  * Encodes a string or array from UTF-8 to Stud.IP encoding (WINDOWS-1252/ISO-8859-1 with numeric HTML-ENTITIES)
  *
  * @param mixed $data a string in UTF-8 or an array with all strings encoded in utf-8

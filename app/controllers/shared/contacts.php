@@ -237,7 +237,6 @@ class Shared_ContactsController extends MVVController
     protected function setSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage(Assets::image_path('sidebar/roles-sidebar.png'));
 
         $widget = new ActionsWidget();
         if (MvvPerm::get('MvvContactRange')->havePermCreate()) {
@@ -685,8 +684,8 @@ class Shared_ContactsController extends MVVController
 
         $this->render_json($res);
     }
-    
-    
+
+
     /**
      * Search for Studiengangteil by given search term.
      */

@@ -127,7 +127,6 @@ if ($level == "s" && Context::getId() && Context::isInstitute()) {
 }
 
 $sidebar = Sidebar::get();
-$sidebar->setImage('sidebar/seminar-sidebar.png');
 $semester = new SelectWidget(_("Semester:"), URLHelper::getURL(), 'select_sem');
 foreach (array_reverse(Semester::getAll()) as $one) {
     $semester->addElement(new SelectElement($one->id, $one->name, $one->id == $show_semester));

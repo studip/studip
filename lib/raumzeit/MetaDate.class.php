@@ -55,17 +55,6 @@ class MetaDate
     }
 
     /**
-     * art is no longer used and always 1
-     *
-     * @deprecated
-     * @return number
-     */
-    function getArt()
-    {
-        return 1;
-    }
-
-    /**
      * returns start week (Semesterwoche) for a cycledate
      * for compatibility the first cycledate is chosen if no one is specified
      *

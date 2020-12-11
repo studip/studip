@@ -224,7 +224,7 @@ if ($view === 'listall') {
 
         $keyword = deleteWikiPage($keyword, $version, Context::getId());
         $version = ''; // show latest version
-        
+
     } else if ($cmd === 'really_delete_all') {
         //
         // Delete all was confirmed -> delete entire page
@@ -258,7 +258,6 @@ if (in_array($cmd, words('show abortedit really_delete really_delete_all'))) {
     // redirect to normal view to avoid duplicate edits on reload or back/forward
     header('Location: ' . URLHelper::getURL('', compact('keyword')));
 } else {
-    Sidebar::get()->setImage('sidebar/wiki-sidebar.png');
     echo $layout->render();
 }
 

@@ -277,18 +277,6 @@ class CourseDate extends SimpleORMap implements PrivacyObject
     }
 
     /**
-     * Returns the full qualified name of this date
-     * raumzeit_send_cancel_message needs the toString()-Method in this class
-     *
-     * @deprecated since version 3.4
-     * @return String containing the full name of this date
-     */
-    public function toString()
-    {
-        return $this->getFullname();
-    }
-
-    /**
      * Converts a CourseDate Entry to a CourseExDate Entry
      * returns instance of the new CourseExDate or NULL
      *

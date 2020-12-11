@@ -617,7 +617,6 @@ class Materialien_FilesController extends MVVController
     protected function setSidebar()
     {
         $sidebar = Sidebar::get();
-        $sidebar->setImage(Assets::image_path('sidebar/files-sidebar.png'));
 
         $widget  = new ActionsWidget();
         if (MvvPerm::get('MvvFile')->havePermCreate()) {

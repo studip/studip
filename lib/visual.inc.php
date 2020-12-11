@@ -108,13 +108,9 @@ function quotes_encode($text, $author = '')
  * @access public
  * @param string  $text  Marked-up text.
  * @param boolean $trim  Trim leading and trailing whitespace, if TRUE.
- * @param boolean $extern         (deprecated, has no effect)
- * @param boolean $wiki           (deprecated, has no effect)
- * @param string  $show_comments  (deprecated, has no effect)
  * @return string        HTML code computed by applying markup-rules.
  */
-// TODO remove unused function arguments
-function formatReady($text, $trim = true, $extern = false, $wiki = false, $show_comments = 'icon')
+function formatReady($text, $trim = true)
 {
     $formatted = Markup::apply(new StudipFormat(), $text, $trim);
 
@@ -697,42 +693,6 @@ function TransformInternalLinks($str){
     } else {
         return $str;
     }
-}
-
-/**
-* creates a modal dialog ensuring that the user is really aware about the action to perform
-*
-* @param   string $question          question of the modal dialog
-* @param   array  $approveParams     an array of params for a link to be used on approval
-* @param   array  $disapproveParams  an array of params for a link to be used on disapproval
-* @param   string $baseUrl           if set, this url is used, PHP_SELF otherwise
-*
-* @return  string $dialog            text which contains the dialog
-*
-* @deprecated since Stud.IP 4.2, use QuestionBox oder PageLayout::postQuestion()
-*/
-function createQuestion($question, $approveParams, $disapproveParams = [], $baseUrl = '') {
-    return (string) QuestionBox::create(
-        $question,
-        URLHelper::getURL($baseUrl, $approveParams),
-        URLHelper::getURL($baseUrl, $disapproveParams)
-    );
-}
-
-/**
-* creates a modal dialog ensuring that the user is really aware about the action to perform with formulars
-*
-* @param   string $question          question of the modal dialog
-* @param   array  $approveParams     an array of params for a link to be used on approval
-* @param   array  $disapproveParams  an array of params for a link to be used on disapproval
-* @param   string $baseUrl           if set, this url is used, PHP_SELF otherwise
-*
-* @return  string $dialog            text which contains the dialog
-*
-* @deprecated since Stud.IP 4.2, use QuestionBox or PageLayout::postQuestion()
-*/
-function createQuestion2($question, $approveParams, $disapproveParams = [], $baseUrl = '') {
-    return createQuestion($question, $approveParams, $disapproveParams, $baseUrl);
 }
 
 /**

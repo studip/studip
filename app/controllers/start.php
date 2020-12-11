@@ -49,7 +49,6 @@ class StartController extends AuthenticatedController
         WidgetHelper::setActiveWidget(Request::get('activeWidget'));
 
         $sidebar = Sidebar::get();
-        $sidebar->setImage('sidebar/home-sidebar.png');
 
         $nav = $sidebar->addWidget(new NavigationWidget());
         $nav->setTitle(_('Sprungmarken'));

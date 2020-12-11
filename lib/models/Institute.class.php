@@ -315,7 +315,7 @@ class Institute extends SimpleORMap implements Range
     /**
      * @param  string|null $user_id
      * @return bool
-     * @deprecated
+     * @deprecated since Stud.IP 5.0
      */
     public function userMayAdministerRange($user_id = null)
     {

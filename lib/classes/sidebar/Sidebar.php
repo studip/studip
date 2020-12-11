@@ -18,42 +18,8 @@ class Sidebar extends WidgetContainer
         $this->setTitle();
     }
 
-    /**
-     * Contains an optional image for the container.
-     */
-    protected $image = false;
     protected $title = false;
     protected $context_avatar = null;
-
-    /**
-     * Set an image for the sidebar.
-     *
-     * @param String $image The image relative to assets/images
-     * @deprecated
-     */
-    public function setImage($image)
-    {
-    }
-
-    /**
-     * Returns the image for the sidebar.
-     *
-     * @return mixed Either the previously set image or false if no image
-     *               has been set.
-     * @deprecated
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
-     * Removes a previously set image.
-     */
-    public function removeImage()
-    {
-        $this->image = false;
-    }
 
     /**
      * Set a title of the sidebar.

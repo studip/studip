@@ -162,58 +162,6 @@ class DataField extends SimpleORMap implements PrivacyObject
     }
 
     /**
-     * Converts a camel cased field to it's snake case equivalent.
-     *
-     * @param String $field Field name as camel case
-     * @return String containing the snake cased equivalent
-     */
-    private function convertLegacyFields($field)
-    {
-        $field = preg_replace('/(?<=[a-z])([A-Z])/', '_$1', $field);
-        return mb_strtolower($field);
-    }
-
-    /**
-     * Specialized getter for values. Will try to obtain the value
-     * and if an error occurs, convert it to snake case and try again.
-     *
-     * @param String $field Field name
-     * @return mixed Contents of the variable with the key "$field"
-     * @throws InvalidArgumentException when the field is invalid
-     * @todo This should be removed after a while (today is 2015-11-19)
-     */
-    public function getValue($field)
-    {
-        try {
-            return parent::getValue($field);
-        } catch (Exception $e) {
-            $field = $this->convertLegacyFields($field);
-            return parent::getValue($field);
-        }
-    }
-
-    /**
-     * Specialized setter for values. Will try to set the value first
-     * and if an error occurs, convert the field name to snake case and try
-     * again.
-     *
-     * @param String $field Field name
-     * @param mixed  $value Field value
-     * @return mixed Whatever SimpleORMap::setValue() might return
-     * @throws InvalidArgumentException when the field is invalid
-     * @todo This should be removed after a while (today is 2015-11-19)
-     */
-    public function setValue($field, $value)
-    {
-        try {
-            return parent::setValue($field, $value);
-        } catch (Exception $e) {
-            $field = $this->convertLegacyFields($field);
-            return parent::setValue($field, $value);
-        }
-    }
-
-    /**
      * Legacy handler for access via [get|set]VariableName().
      *
      * @param String $method    Called method

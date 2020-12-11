@@ -956,7 +956,6 @@ class ExternModuleTemplateSemBrowse extends ExternModule {
             $cont['REGULAR_DATES']['START_WEEK'] = $meta->getStartWoche();
         }
 
-        //$cont['REGULAR_TYPE'] = $GLOBALS['TERMIN_TYP'][$meta->getArt()]['name'];
         $i = 0;
 
         $cycle_data = $meta->getCycleData();

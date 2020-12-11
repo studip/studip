@@ -1,6 +1,5 @@
 <?php
-// TODO: Remove PHP7 anonymous class for production
-return new class() extends Migration
+class MigrationsReloaded extends Migration
 {
     public function description()
     {
@@ -34,7 +33,6 @@ return new class() extends Migration
             }
         }
 
-       // TODO: Remove for production
        $query = "DROP TABLE IF EXISTS `schema_version`";
        DBManager::get()->exec($query);
     }
