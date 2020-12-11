@@ -47,7 +47,7 @@ if ($folder->isReadable($GLOBALS['user']->id)) {
 <? if ($show_downloads): ?>
     <td data-sort-value="-1000000" class="responsive-hidden"></td>
 <? endif; ?>
-    <td data-sort-value="<?= htmlReady($owner->getFullName('no_title')) ?>" class="responsive-hidden">
+    <td data-sort-value="<?= htmlReady($owner->getFullName('no_title_rev')) ?>" class="responsive-hidden">
     <? if ($owner->id !== $GLOBALS['user']->id) : ?>
         <a href="<?= URLHelper::getLink('dispatch.php/profile?username=' . $owner->username) ?>">
             <?= htmlReady($owner->getFullName('no_title_rev')) ?>

@@ -58,7 +58,7 @@ foreach ($topFolder->getAdditionalActionButtons() as $button) {
                  enable_table_filter="<?= $enable_table_filter ? 'true' : 'false' ?>"
                  table_title="<?= htmlReady($table_title) ?>"
                  pagination="<?= htmlReady($pagination_html) ?>"
-                 :initial_sort="{sortedBy:'chdate',sortDirection:'asc'}"
+                 :initial_sort="{sortedBy:'chdate',sortDirection:'desc'}"
     ></files-table>
 </form>
 
