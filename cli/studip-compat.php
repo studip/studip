@@ -37,7 +37,7 @@ if ($arg_stop !== false) {
 $verbose        = isset($opts['v']) || isset($opts['verbose']);
 $only_filenames = isset($opts['f']) || isset($opts['filenames']);
 $recursive      = !(isset($opts['n']) || isset($opts['non-recursive']));
-$no_colors      = isset($opts['c']) || isset($opts['no-color']);
+$no_colors      = isset($opts['c']) || isset($opts['no-color']) || !stream_isatty(STDOUT);
 $version        = null;
 $folders        = array_values($args) ?: [];
 
