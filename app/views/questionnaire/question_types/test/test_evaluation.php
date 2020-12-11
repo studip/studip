@@ -40,28 +40,17 @@ $labels = array_map(function ($answer) { return strip_tags(formatReady($answer['
          class="ct-chart"></div>
 
     <script>
-     <?= Request::isAjax()
-       ? 'jQuery(document).one("dialog-open", function () {'
-       : 'jQuery(function () {' ?>
-        var data = {
-            labels: <?= json_encode($labels) ?>,
-            series: [<?= json_encode($results) ?>]
-        };
-        <? if ($etask->task['type'] === 'multiple') : ?>
-            new Chartist.Bar(
-                '#questionnaire_<?= $vote->getId() ?>_chart',
-                data,
-                { onlyInteger: true, axisY: { onlyInteger: true } }
-            );
-        <? else : ?>
-            data.series = data.series[0];
-            new Chartist.Pie(
-                '#questionnaire_<?= $vote->getId() ?>_chart',
-                data,
-                { labelPosition: 'outside' }
-            );
-        <? endif ?>
-    });
+         STUDIP.Questionnaire.initTestEvaluation(
+             '#questionnaire_<?= $vote->getId() ?>_chart',
+             <?= json_encode(
+                 [
+                     "labels" => $labels,
+                     "series" => [$results],
+                 ]
+                 ) ?>,
+             <?= json_encode(Request::isAjax()) ?>,
+             <?= json_encode($etask->task['type'] === 'multiple') ?>
+         );
     </script>
 <? endif ?>
 <? if (in_array($GLOBALS['user']->id, $users) || is_array($anonAnswers)) : ?>

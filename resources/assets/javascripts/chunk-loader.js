@@ -25,6 +25,13 @@ STUDIP.loadChunk = (function () {
                 });
                 break;
 
+            case 'chartist':
+                promise = import(
+                    /* webpackChunkName: "chartist" */
+                    './chunks/chartist'
+                ).then(({ default: Chartist }) => Chartist);
+                break;
+
             case 'fullcalendar':
                 promise = import(
                     /* webpackChunkName: "fullcalendar" */

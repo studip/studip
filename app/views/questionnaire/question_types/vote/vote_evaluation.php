@@ -49,28 +49,17 @@ rsort($ordered_results);
          class="ct-chart"></div>
 
     <script>
-     <?= Request::isAjax()
-       ? 'jQuery(document).add(".questionnaire_results").one("dialog-open", function () {'
-       : 'jQuery(function () {' ?>
-        var data = {
-            labels: <?= json_encode($ordered_answer_options) ?>,
-            series: [<?= json_encode($ordered_results) ?>]
-        };
-        <? if ($etask->task['type'] === 'multiple') : ?>
-            new Chartist.Bar(
-                '#questionnaire_<?= $vote->getId() ?>_chart',
-                data,
-                { onlyInteger: true, axisY: { onlyInteger: true } }
-            );
-        <? else : ?>
-            data.series = data.series[0];
-            new Chartist.Pie(
-                '#questionnaire_<?= $vote->getId() ?>_chart',
-                data,
-                { labelPosition: 'outside' }
-            );
-        <? endif ?>
-    });
+         STUDIP.Questionnaire.initVoteEvaluation(
+             '#questionnaire_<?= $vote->getId() ?>_chart',
+             <?= json_encode(
+                 [
+                     "labels" => $ordered_answer_options,
+                     "series" => [$ordered_results],
+                 ]
+             ) ?>,
+             <?= json_encode(Request::isAjax()) ?>,
+             <?= json_encode($etask->task['type'] === 'multiple') ?>
+         );
     </script>
 <? endif ?>
 

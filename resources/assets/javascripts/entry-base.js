@@ -4,7 +4,6 @@ import './public-path.js'
 import 'es6-promise/auto'
 
 import "../stylesheets/studip-jquery-ui.less"
-import "chartist/dist/chartist.css"
 import "../stylesheets/studip.less"
 // Basic scss support
 import "../stylesheets/studip.scss"
@@ -13,9 +12,6 @@ import lodash from "lodash"
 window._ = lodash
 
 import "./l10n.js"
-
-import chartist from "chartist"
-window.Chartist = chartist
 
 import QRCode from "./vendor/qrcode-04f46c6.js"
 window.QRCode = QRCode

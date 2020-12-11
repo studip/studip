@@ -194,7 +194,37 @@ const Questionnaire = {
         thisquestion.insertAfter(downer);
         downer.hide().fadeIn();
         thisquestion.hide().fadeIn();
-    }
+    },
+    initVoteEvaluation: async function (el, data, isAjax, isMultiple) {
+
+        const Chartist = await STUDIP.loadChunk('chartist');
+
+        if (isAjax) {
+            jQuery(document).add(".questionnaire_results").one("dialog-open", enhance);
+        } else {
+            jQuery(enhance);
+        }
+
+        function enhance() {
+            if (isMultiple) {
+                new Chartist.Bar(
+                    el,
+                    data,
+                    { onlyInteger: true, axisY: { onlyInteger: true } }
+                );
+            } else {
+                data.series = data.series[0];
+                new Chartist.Pie(
+                    el,
+                    data,
+                    { labelPosition: 'outside' }
+                );
+            }
+        };
+    },
+    initTestEvaluation: async function (el, data, isAjax, isMultiple) {
+        this.initVoteEvaluation(el, data, isAjax, isMultiple);
+    },
 };
 
 export default Questionnaire;
