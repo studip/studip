@@ -3,6 +3,10 @@
 return [
     'userMayAdministerRange' => '#{Changed} - Use #{yellow:userMayManageRange} instead',
 
+    // UTF8-Encode/Decode legacy functions
+    'studip_utf8encode' => '#{red:Removed} - Removed. Use utf8_encode().',
+    'studip_utf8decode' => '#{red:Removed} - Removed. Use utf8_decode().',
+
     // https://develop.studip.de/trac/ticket/10806
     'SemesterData' => '#{red:Removed} - Use #{yellow:Semester model} instead',
 
