@@ -43,12 +43,17 @@
             <tr>
                 <td colspan="2">
                     <h3><?=_('Hinweis zur Nutzung und Weitergabe:')?></h3>
+                    <?= Icon::create($content_terms_of_use->icon, Icon::ROLE_INFO)->asImg(20) ?>
                     <article><?= htmlReady($content_terms_of_use->student_description) ?></article>
 
-                    <h3><?= _('Bedingung zum Herunterladen') ?></h3>
-                    <p>
-                        <?= htmlReady(ContentTermsOfUse::describeCondition($content_terms_of_use->download_condition)) ?>
-                    </p>
+                    <? if ($content_terms_of_use->download_condition) : ?>
+                        <h3><?= _('Bedingung zum Herunterladen') ?></h3>
+                        <p>
+                            <?= htmlReady(ContentTermsOfUse::describeCondition(
+                                $content_terms_of_use->download_condition
+                            )) ?>
+                        </p>
+                    <? endif ?>
                 </td>
             </tr>
             <? endif ?>
