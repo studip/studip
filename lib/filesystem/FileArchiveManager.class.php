@@ -88,6 +88,14 @@ class FileArchiveManager
             } else {
                 $file_contains_link = $file_type instanceof URLFile;
             }
+
+            // Increase download counter
+            if ($file_type instanceof StandardFile) {
+                $file_ref = $file_type->getFileRef();
+                $file_ref->downloads += 1;
+                $file_ref->store();
+            }
+
             if ($file_contains_link) {
                 //The FileType references a link:
                 //Put the URL into a file ending with .url:
