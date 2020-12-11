@@ -175,11 +175,7 @@ abstract class StudipController extends Trails_Controller
         $class_infos = [];
 
         if ($types === null) {
-            // TODO: Remove ternary operator when devboard runs completely on
-            //       PHP7
-            $types = count($args) > 0
-                   ? array_fill(0, count($args), 'option')
-                   : [];
+            $types = array_fill(0, count($args), 'option');
         }
 
         if ($this->has_action($this->current_action)) {

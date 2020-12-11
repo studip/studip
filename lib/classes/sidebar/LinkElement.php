@@ -188,11 +188,6 @@ class LinkElement extends WidgetElement implements ArrayAccess
      */
     public function render()
     {
-        // TODO: Remove this some versions after 4.3
-        if ($this->url !== html_entity_decode($this->url)) {
-            $this->url = html_entity_decode($this->url);
-        }
-
         $disabled = $this->isDisabled();
 
         if ($this->as_button && !$disabled) {

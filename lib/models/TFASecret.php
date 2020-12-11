@@ -14,21 +14,10 @@ class TFASecret extends SimpleORMap
     // Possible authentication types (email may require more tokens in a short
     // period of time with a larger window to accept them).
 
-    // TODO: Reactivate when we actually can use PHP7
-    // const TYPES = [
-    //     'email' => [
-    //         'window' => 30,
-    //         'period' => 1,
-    //     ],
-    //     'app' => [
-    //         'window' => 1,
-    //         'period' => 30,
-    //     ],
-    // ];
-    private static $types = [
+    const TYPES = [
         'email' => [
-            'window' => 60,
-            'period' => 5,
+            'window' => 30,
+            'period' => 1,
         ],
         'app' => [
             'window' => 1,
@@ -44,10 +33,10 @@ class TFASecret extends SimpleORMap
      */
     public static function getValidationDuration($type)
     {
-        if (!isset(self::$types[$type])) {
+        if (!isset(self::TYPES[$type])) {
             throw new InvalidArgumentException("Unknown tfa type {$type}");
         }
-        $t = self::$types[$type];
+        $t = self::TYPES[$type];
         return $t['window'] * $t['period'];
     }
 
@@ -79,7 +68,6 @@ class TFASecret extends SimpleORMap
      */
     public function setNew($is_new)
     {
-        // TODO: Remove second condition when we can actually use PHP7
         if ($is_new) {
             if (!$this->isNew()) {
                 return;
@@ -157,7 +145,7 @@ class TFASecret extends SimpleORMap
             return false;
         }
 
-        $window = self::$types[$this->type]['window'];
+        $window = self::TYPES[$this->type]['window'];
         if ($allow_reuse) {
             $window = 0;
         }
@@ -190,7 +178,7 @@ class TFASecret extends SimpleORMap
         return new TOTP(
             $this->user->email,
             $this->secret,
-            self::$types[$this->type]['period']
+            self::TYPES[$this->type]['period']
         );
     }
 
