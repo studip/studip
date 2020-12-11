@@ -63,9 +63,13 @@ if ($file->isDownloadable($GLOBALS['user']->id)) {
     <td data-sort-value="<?= htmlReady($author_name) ?>" class="responsive-hidden">
     <? $user_id = $file->getUserId() ?>
     <? if (($user_id !== null) && ($user_id !== $GLOBALS['user']->id)) : ?>
+        <? if (get_username($user_id) != "") : ?>
         <a href="<?= URLHelper::getLink('dispatch.php/profile?username=' . get_username($user_id)) ?>">
+        <? endif ?>
             <?= htmlReady($author_name) ?>
+        <? if (get_username($user_id) != "") : ?>
         </a>
+        <? endif ?>
     <? else: ?>
         <?= htmlReady($author_name) ?>
     <? endif; ?>
