@@ -129,6 +129,7 @@ INSERT INTO `colour_values` (`colour_id`, `description`, `value`, `mkdate`, `chd
 
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ACCESSKEY_ENABLE', '', 'boolean', 'user', '', 0, 0, 'Schaltet die Nutzung von Shortcuts für einen User ein oder aus, Systemdefault');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ADMIN_COURSES_SHOW_COMPLETE', '0', 'boolean', 'global', 'global', 1462287310, 1462287310, 'Definiert, ob auf der Admin-Veranstaltunggseite der Komplett-Status für Veranstaltungen aufgeführt sein soll');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ADMIN_COURSES_SIDEBAR_ACTIVE_ELEMENTS', '', 'string', 'user', '', 0, 0, 'Diese Einstellung legt fest, welche Elemente in der Seitenleiste der Veranstaltungsübersicht für Admins sichtbar sind.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ADMISSION_PRELIM_COMMENT_ENABLE', '0', 'boolean', 'global', '', 1153814966, 1153814966, 'Schaltet ein oder aus, ob ein Nutzer im Modus \"Vorläufiger Eintrag\" eine Bemerkung hinterlegen kann');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('AJAX_AUTOCOMPLETE_DISABLED', '0', 'boolean', 'global', '', 1293118060, 1293118060, 'Sollen alle QuickSearches deaktiviertes Autocomplete haben? Wenn es zu Performanceproblemen kommt, kann es sich lohnen, diese Variable auf true zu stellen.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ALLOW_ADMIN_USERACCESS', '1', 'boolean', 'global', 'permissions', 1240427632, 1240427632, 'Wenn eingeschaltet, dürfen Administratoren sensible persönliche Angaben wie z.B. Passwörter ändern.');
@@ -159,6 +160,7 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('CONSULTATION_SEND_MESSAGES', '1', 'boolean', 'user', 'Sprechstunden', 1557244743, 1557244743, 'Nachrichten empfangen über Buchungen/Stornierungen');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('CONVERT_IDNA_URL', '1', 'boolean', 'global', 'global', 1510849314, 1510849314, 'If true, urls with german \"umlauts\" are converted');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('COURSE_CALENDAR_ENABLE', '0', 'boolean', 'global', 'modules', 1326799692, 1326799692, 'Kalender als Inhaltselement in Veranstaltungen.');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('COURSE_LIBRARY_CITATION_STYLE', '', 'string', 'course', 'Library', 1607702429, 1607702429, 'Der standardmäßig genutzte Zitationsstil innerhalb der Veranstaltung.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('COURSE_NUMBER_FORMAT', '', 'string', 'global', 'global', 1510849314, 1510849314, 'Erlaubt das Eintragen eines regulären Ausdrucks zur Validierung einer Veranstaltungsnummer. Im Kommentarfeld kann ein entsprechender Hilfetext hinterlegt werden.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('COURSE_PUBLIC_TOPICS', '0', 'boolean', 'course', '', 1543856103, 1543856103, 'Über diese Option können Sie die Themen einer Veranstaltung öffentlich einsehbar machen.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('COURSE_SEARCH_IS_VISIBLE_NOBODY', '0', 'boolean', 'global', 'coursesearch', 1543856104, 1543856104, 'Soll die Veranstaltungssuche auch für nobody (ohne Anmeldung) sichtbar sein?');
@@ -212,6 +214,8 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('HELP_CONTENT_CURRENT_VERSION', '3.1', 'string', 'global', 'global', 1416496271, 1416496271, 'Aktuelle Version der Helpbar-Einträge in Stud.IP');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('HOMEPAGEPLUGIN_DEFAULT_ACTIVATION', '1', 'boolean', 'global', 'privacy', 1403258014, 1403258014, 'Sollen neu installierte Homepageplugins automatisch für Benutzer aktiviert sein?');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('HOMEPAGE_VISIBILITY_DEFAULT', 'VISIBILITY_STUDIP', 'string', 'global', 'privacy', 1293118059, 1293118059, 'Standardsichtbarkeit für Homepageelemente, falls der Benutzer nichts anderes eingestellt hat. Gültige Werte sind: VISIBILITY_ME, VISIBILITY_BUDDIES, VISIBILITY_DOMAIN, VISIBILITY_STUDIP, VISIBILITY_EXTERN');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('HTTP_PROXY', '', 'string', 'global', 'global', 1607702429, 1607702429, 'externe http Anfragen über proxy');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('HTTP_PROXY_IGNORE', '', 'string', 'global', 'global', 1607702429, 1607702429, 'Kommaseparierte Liste mit Hostnamen, die nicht über Proxy aufgerufen werden sollen');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ILIAS_INTERFACE_BASIC_SETTINGS', '{\"moduletitle\":\"ILIAS\",\"edit_moduletitle\":false,\"search_active\":true,\"show_offline\":false,\"cache\":true}', 'array', 'global', 'modules', 1557244743, 1557244743, '');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ILIAS_INTERFACE_ENABLE', '0', 'boolean', 'global', 'modules', 1557244743, 1557244743, '');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('ILIAS_INTERFACE_MODULETITLE', 'ILIAS', 'string', 'course', 'modules', 1557244743, 1557244743, '');
@@ -223,6 +227,7 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('JSONAPI_CORS_ORIGIN', '[]', 'array', 'global', 'global', 1591630777, 1591630777, 'Diese Einstellung definiert URIs, die mittels CORS auf die JSONAPI zugreifen dürfen.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('JSONAPI_DANGEROUS_ROUTES_ALLOWED', '0', 'boolean', 'global', 'global', 1591630776, 1591630776, 'Wenn diese Einstellung gesetzt ist, dürfen auch potentiell gefährliche JSONAPI-Routen genutzt werden. (Zum Beispiel dürfen dann root-Nutzer auch andere Nutzer löschen.)');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('LAST_LOGIN_TIMESTAMP', '0', 'integer', 'user', '', 1403258015, 1403258015, 'Zeitstempel des vorherigen Logins');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('LIBRARY_ADD_ITEM_ACTION_DESCRIPTION', 'Sie können digitale Originaldokumente direkt aus der Bibliothek (ggf. Name) beziehen. Sie erhalten Materialien mit geklärten Rechten und in hochwertiger Qualität. Bei Bedarf kann die Bibliothek zur Bereitstellung eingebunden werden.', 'string', 'global', 'Library', 1607702429, 1607702429, 'Der Beschreibungstext für die Aktion zum Hinzufügen eines Bibliothekseintrags in den Dateibereich.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('LITERATURE_ENABLE', '1', 'boolean', 'global', 'modules', 1293118059, 1293118059, 'Schaltet ein oder aus, ob die Literaturverwaltung global verfügbar ist.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('LOAD_EXTERNAL_MEDIA', 'deny', 'string', 'global', '', 1293118060, 1293118060, 'Sollen externe Medien über [img/flash/audio/video] eingebunden werden? deny=nicht erlaubt, allow=erlaubt, proxy=proxy benutzen.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('LOCK_RULE_ADMIN_PERM', 'admin', 'string', 'global', 'permissions', 1240427632, 1240427632, 'mit welchem Status dürfen Sperrebenen angepasst werden (admin, root)');
@@ -239,9 +244,9 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MEDIA_CACHE_MAX_LENGTH', '1000000', 'integer', 'global', 'global', 1510849314, 1510849314, 'Maximale Größe von Dateien, die im Media-Cache gecached werden (in Bytes)?');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MESSAGE_PRIORITY', '0', 'boolean', 'global', '', 1240427632, 1240427632, 'If enabled, messages of high priority are displayed reddish');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MESSAGING_SETTINGS', '{\"show_only_buddys\":false,\"delete_messages_after_logout\":false,\"timefilter\":\"30d\",\"opennew\":1,\"logout_markreaded\":false,\"openall\":false,\"addsignature\":false,\"save_snd\":true,\"sms_sig\":\"\",\"send_view\":false,\"confirm_reading\":3,\"send_as_email\":false,\"folder\":{\"in\":[\"dummy\"],\"out\":[\"dummy\"]}}', 'array', 'user', '', 1403258015, 1403258015, 'persönliche Einstellungen Nachrichtenbereich');
-INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MVV_ACCESS_ASSIGN_LVGRUPPEN', 'admin', 'string', 'global', 'modules', 1483462780, 1483462780, 'Ab welchem Rechtestatus können Veranstaltungen Modulen (LV-Gruppen) zugeordnet werden. Bei Angabe von fakadmin darf nur dieser Zuordnungen vornehmen.');
-INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MVV_ALLOW_CREATE_LVGRUPPEN_INDEPENDENTLY', '0', 'boolean', 'global', '', 1573236812, 1573236812, 'Soll das Anlegen von LV-Gruppen unabhängig von bestehenden Modulteilen auf der Verwaltungsseite für LV-Gruppen möglich sein?');
-INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MVV_OVERLAPPING_SHOW_VERSIONS_INSIDE_MULTIPLE_STUDY_COURSES', '0', 'boolean', 'global', 'global', 1591630777, 1591630777, 'Zeigt als zweite Auswahl bei Mehrfachstudiengängen nur Versionen der dazugehörigen Teilstudiengänge an.');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MVV_ACCESS_ASSIGN_LVGRUPPEN', 'admin', 'string', 'global', 'mvv', 1483462780, 1483462780, 'Ab welchem Rechtestatus können Veranstaltungen Modulen (LV-Gruppen) zugeordnet werden. Bei Angabe von fakadmin darf nur dieser Zuordnungen vornehmen.');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MVV_ALLOW_CREATE_LVGRUPPEN_INDEPENDENTLY', '0', 'boolean', 'global', 'mvv', 1573236812, 1573236812, 'Soll das Anlegen von LV-Gruppen unabhängig von bestehenden Modulteilen auf der Verwaltungsseite für LV-Gruppen möglich sein?');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MVV_OVERLAPPING_SHOW_VERSIONS_INSIDE_MULTIPLE_STUDY_COURSES', '0', 'boolean', 'global', 'mvv', 1591630777, 1591630777, 'Zeigt als zweite Auswahl bei Mehrfachstudiengängen nur Versionen der dazugehörigen Teilstudiengänge an.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MY_COURSES_DEFAULT_CYCLE', 'last', 'string', 'global', 'MeineVeranstaltungen', 1462287310, 1462287310, 'Standardeinstellung für den Semester-Filter, falls noch keine Auswahl getätigt wurde. (all, future, current, last)');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MY_COURSES_ENABLE_ALL_SEMESTERS', '1', 'boolean', 'global', 'MeineVeranstaltungen', 1416496224, 1416496224, 'Ermöglicht die Anzeige von allen Semestern unter meine Veranstaltungen.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('MY_COURSES_ENABLE_STUDYGROUPS', '0', 'boolean', 'global', 'MeineVeranstaltungen', 1416496224, 1416496224, 'Sollen Studiengruppen in einem eigenen Bereich angezeigt werden (Neues Navigationelement in Meine Veranstaltungen)?.');
@@ -331,12 +336,14 @@ INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `c
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('STUDYGROUP_ACCEPTANCE_TEXT', 'Die Moderatorinnen und Moderatoren der Studiengruppe können Ihren Aufnahmewunsch bestätigen oder ablehnen. Erst nach Bestätigung erhalten Sie vollen Zugriff auf die Gruppe.', 'string', 'global', 'studygroups', 1448561064, 1448561064, 'Text, der angezeigt wird, wenn man sich in eine zugriffsbeschränkte Studiengruppe eintragen möchte');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('STUDYGROUP_DEFAULT_INST', '', 'string', 'global', 'studygroups', 1258042892, 1258042892, 'Die Standardeinrichtung für Studiengruppen kann hier gesetzt werden.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('STUDYGROUP_TERMS', 'Mir ist bekannt, dass ich die Gruppe nicht zu rechtswidrigen Zwecken nutzen darf. Dazu zählen u.a. Urheberrechtsverletzungen, Beleidigungen und andere Persönlichkeitsdelikte.\n\nIch erkläre mich damit einverstanden, dass Admins die Inhalte der Gruppe zu Kontrollzwecken einsehen dürfen.', 'string', 'global', 'studygroups', 1257956185, 1257956185, 'Hier werden die Nutzungsbedinungen der Studiengruppen hinterlegt.');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('TERMS_CONFIG', '{\"compulsory\":false,\"denial_message\":\"\"}', 'array', 'global', 'global', 1607702429, 1607702429, 'In case the terms are not compulsory, user can deny them.if denial_message is not set, a default text is displayed.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('TFA_MAX_TRIES', '3', 'integer', 'global', 'Zwei-Faktor-Authentifizierung', 1573236813, 1573236813, 'Maximale Anzahl fehlerhafter Versuche innerhalb eines Zeitraums');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('TFA_MAX_TRIES_TIMESPAN', '300', 'integer', 'global', 'Zwei-Faktor-Authentifizierung', 1573236813, 1573236813, 'Zeitraum in Sekunden, nach dem fehlerhafte Versuche vergessen werden');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('TFA_PERMS', 'root', 'string', 'global', 'Zwei-Faktor-Authentifizierung', 1573236813, 1573236813, 'Systemrollen für die die Zwei-Faktor-Authentifizierung aktiviert ist (kommaseparierte Liste, mögliche Werte: autor, tutor, dozent, admin, root)');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('TOURS_ENABLE', '1', 'boolean', 'global', 'global', 1416496223, 1416496223, 'Aktiviert die Funktionen zum Anbieten von Touren in Stud.IP');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('UNI_NAME_CLEAN', 'Stud.IP', 'string', 'global', 'global', 1510849314, 1510849314, 'Name der Stud.IP-Installation bzw. Hochschule.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('USERNAME_REGULAR_EXPRESSION', '/^([a-zA-Z0-9_@.-]{4,})$/', 'string', 'global', 'global', 1510849314, 1510849314, 'Regex for allowed characters in usernames');
+INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('USER_LIBRARY_CITATION_STYLE', '', 'string', 'user', 'Library', 1607702429, 1607702429, 'Der präferierte Zitationsstil einer Person.');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('USER_VISIBILITY_CHECK', '0', 'boolean', 'global', 'global', 1510849314, 1510849314, 'Enable presentation of visibility decision texts for users after first login. see lib/include/header.php and lib/user_visible.inc.php for further info');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('USER_VISIBILITY_UNKNOWN', '1', 'boolean', 'global', 'privacy', 1153815901, 1153815901, 'Sollen Nutzer mit Sichtbarkeit \"unknown\" wie sichtbare behandelt werden?');
 INSERT INTO `config` (`field`, `value`, `type`, `range`, `section`, `mkdate`, `chdate`, `description`) VALUES('VOTE_ENABLE', '1', 'boolean', 'global', 'modules', 1293118059, 1293118059, 'Schaltet ein oder aus, ob die Umfragen global verfügbar sind.');
@@ -370,7 +377,7 @@ INSERT INTO `coursewizardsteps` (`id`, `name`, `classname`, `number`, `enabled`,
 INSERT INTO `coursewizardsteps` (`id`, `name`, `classname`, `number`, `enabled`, `mkdate`, `chdate`) VALUES('59405e754a753a21588d63eac75f0ccd', 'Studienbereiche', 'StudyAreasWizardStep', 2, 1, 1448561064, 1448561064);
 INSERT INTO `coursewizardsteps` (`id`, `name`, `classname`, `number`, `enabled`, `mkdate`, `chdate`) VALUES('6a7f6dfa33738438d332a85aaeadf230', 'LVGruppen', 'LVGroupsWizardStep', 3, 1, 1483462781, 1483462781);
 INSERT INTO `coursewizardsteps` (`id`, `name`, `classname`, `number`, `enabled`, `mkdate`, `chdate`) VALUES('e455df8d296d7dc46a5a27cb9bcc40b0', 'Grunddaten', 'BasicDataWizardStep', 1, 1, 1448561064, 1448561064);
-
+INSERT INTO `coursewizardsteps` (`id`, `name`, `classname`, `number`, `enabled`, `mkdate`, `chdate`) VALUES('ec7b6671be2d47e03e5863e5e5b75e14', 'Studienbereich oder LV-Gruppe', 'StudyAreasLVGroupsCombinedWizardStep', 3, 0, 1607702429, 1607702429);
 
 --
 -- Dumping data for table `cronjobs_schedules`
@@ -1569,16 +1576,29 @@ INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20192208);
 INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200108);
 INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200306);
 INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200307);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200414);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200423);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200514);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200515);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200522);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200713);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200811);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200909);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20200910);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20201002);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 20201103);
 INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 201908014);
 INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 201908015);
 INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 201908016);
 INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 201908017);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 202001291);
+INSERT INTO `schema_versions` (`domain`, `version`) VALUES('studip', 202011031);
 
 --
 -- Dumping data for table `semester_data`
 --
 
-INSERT INTO `semester_data` (`semester_id`, `name`, `description`, `semester_token`, `beginn`, `ende`, `vorles_beginn`, `vorles_ende`, `visible`, `external_id`) VALUES('322f640f3f4643ebe514df65f1163eb1', 'SS 2020', '', '', 1585692000, 1601503199, 1586815200, 1595023199, 1, '');
+INSERT INTO `semester_data` (`semester_id`, `name`, `description`, `semester_token`, `beginn`, `ende`, `vorles_beginn`, `vorles_ende`, `visible`, `external_id`) VALUES('322f640f3f4643ebe514df65f1163eb1', 'SS 2021', '', '', 1617228000, 1633039199, 1618178400, 1626472799, 1, '');
 INSERT INTO `semester_data` (`semester_id`, `name`, `description`, `semester_token`, `beginn`, `ende`, `vorles_beginn`, `vorles_ende`, `visible`, `external_id`) VALUES('4967f0a483e36554b77e3dc47aa58941', 'WS 2020/2021', '', '', 1601503200, 1617227999, 1603666800, 1613170799, 1, '');
 
 --
@@ -1662,41 +1682,3 @@ INSERT INTO `widget_default` (`pluginid`, `col`, `position`, `perm`) VALUES(3, 0
 INSERT INTO `widget_default` (`pluginid`, `col`, `position`, `perm`) VALUES(4, 0, 1, 'root');
 INSERT INTO `widget_default` (`pluginid`, `col`, `position`, `perm`) VALUES(5, 0, 0, 'root');
 INSERT INTO `widget_default` (`pluginid`, `col`, `position`, `perm`) VALUES(7, 0, 2, 'root');
-
-
---
--- Dumping data for table `widgets`
---
-
-INSERT INTO `widgets` (`widget_id`, `class`, `filename`, `enabled`, `mkdate`, `chdate`) VALUES(1, 'Widgets\\FilesDashboard\\MyPublicFilesWidget', 'app/widgets/files_dashboard/MyPublicFilesWidget.php', 1, 1530289049, 1530289049);
-INSERT INTO `widgets` (`widget_id`, `class`, `filename`, `enabled`, `mkdate`, `chdate`) VALUES(2, 'Widgets\\FilesDashboard\\LatestFilesWidget', 'app/widgets/files_dashboard/LatestFilesWidget.php', 1, 1530289049, 1530289049);
-
-
---
--- Dumping data for table `widget_containers`
---
-
-INSERT INTO `widget_containers` (`container_id`, `range_id`, `range_type`, `scope`, `parent_id`, `mkdate`, `chdate`) VALUES(1, 'user', 'user', 'dashboard', NULL, 1530289049, 1530289049);
-INSERT INTO `widget_containers` (`container_id`, `range_id`, `range_type`, `scope`, `parent_id`, `mkdate`, `chdate`) VALUES(2, 'autor', 'user', 'dashboard', NULL, 1530289049, 1530289049);
-INSERT INTO `widget_containers` (`container_id`, `range_id`, `range_type`, `scope`, `parent_id`, `mkdate`, `chdate`) VALUES(3, 'tutor', 'user', 'dashboard', NULL, 1530289049, 1530289049);
-INSERT INTO `widget_containers` (`container_id`, `range_id`, `range_type`, `scope`, `parent_id`, `mkdate`, `chdate`) VALUES(4, 'dozent', 'user', 'dashboard', NULL, 1530289049, 1530289049);
-INSERT INTO `widget_containers` (`container_id`, `range_id`, `range_type`, `scope`, `parent_id`, `mkdate`, `chdate`) VALUES(5, 'admin', 'user', 'dashboard', NULL, 1530289049, 1530289049);
-INSERT INTO `widget_containers` (`container_id`, `range_id`, `range_type`, `scope`, `parent_id`, `mkdate`, `chdate`) VALUES(6, 'root', 'user', 'dashboard', NULL, 1530289049, 1530289049);
-
-
---
--- Dumping data for table `widget_elements`
---
-
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(1, 1, 2, 0, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(2, 1, 1, 3, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(3, 2, 2, 0, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(4, 2, 1, 3, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(5, 3, 2, 0, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(6, 3, 1, 3, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(7, 4, 2, 0, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(8, 4, 1, 3, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(9, 5, 2, 0, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(10, 5, 1, 3, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(11, 6, 2, 0, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
-INSERT INTO `widget_elements` (`element_id`, `container_id`, `widget_id`, `x`, `y`, `width`, `height`, `locked`, `removable`, `options`, `mkdate`, `chdate`) VALUES(12, 6, 1, 3, 0, 3, 3, 1, 0, '[]', 1530289049, 1530289049);
