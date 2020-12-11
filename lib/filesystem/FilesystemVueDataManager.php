@@ -29,7 +29,7 @@ class FilesystemVueDataManager
         return [
             'id' => $file->getId(),
             'name' => $file->getFilename(),
-            'download_url' => $isDownloadable ? '$file->getDownloadURL()' : null,
+            'download_url' => $isDownloadable ? $file->getDownloadURL() : null,
             'downloads' => $file->getDownloads(),
             'mime_type' => $file->getMimeType(),
             'icon' => $file->getIcon($isDownloadable ? Icon::ROLE_CLICKABLE : Icon::ROLE_INFO)->getShape(),
