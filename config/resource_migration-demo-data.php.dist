@@ -1,5 +1,29 @@
 <?php
-
+//RESOURCE_CATEGORY_CLASS_MAPPING:
+//This setting can be used when migrating resource categories
+//from the old room and resource management system to the new one.
+//If the setting is set to null, the mapping will be done on best guess.
+//If the setting is an array, the class name to be used for a resource
+//category will be assigned by the content of the array.
+//The resource category name must be the array index and
+//the resource class name the corresponding value.
+//All resource categories not mentioned in the array will get the default
+//"Resource" class assigned to them.
+//The following SORM classes are available:
+//- Resource: A general resource with no specialisations.
+//- Room: A specialisation of the Resource class for rooms.
+//- Building: A specialisation of the Resource class for buildings.
+//- Location: A specialisation of the Resource class for locations.
+//Example:
+//You have three resource categories named "Standort", "Gebäude" and "Hörsaal".
+//The corresponding SORM classes are "Location", "Building" and "Room".
+//To map the resource categories to class names use the following
+//values in the array:
+//$GLOBALS['RESOURCE_CATEGORY_CLASS_MAPPING'] = [
+//    'Standort' => 'Location',
+//    'Gebäude' => 'Building',
+//    'Hörsaal' => 'Room'
+//];
 
 $GLOBALS['RESOURCE_CATEGORY_CLASS_MAPPING'] = [
     'Gebäude' => 'Building',
