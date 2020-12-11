@@ -171,9 +171,15 @@
                     class="responsive-hidden">
                     {{file.downloads}}
                 </td>
-                <td class="responsive-hidden">
-                    {{file.author_name}}
+                <td v-if="file.author_url" class="responsive-hidden" >
+                    <a :href="file.author_url">
+                        {{file.author_name}}
+                    </a>
                 </td>
+                <td v-else class="responsive-hidden">
+                        {{file.author_name}}
+                </td>
+
                 <td data-sort-value="file.chdate" class="responsive-hidden">
                     <studip-date-time :timestamp="file.chdate" :relative="true"></studip-date-time>
                 </td>
