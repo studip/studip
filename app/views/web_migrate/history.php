@@ -11,7 +11,7 @@
         <? endif; ?>
         </caption>
         <colgroup>
-        <? if (STUDIP\ENV === 'development'): ?>
+        <? if (STUDIP\ENV === 'development' && !$lock->isLocked($lock_data)): ?>
             <col style="width: 24px">
         <? endif; ?>
             <col style="width: 120px">
@@ -21,7 +21,7 @@
         </colgroup>
         <thead>
             <tr>
-            <? if (STUDIP\ENV === 'development'): ?>
+            <? if (STUDIP\ENV === 'development' && !$lock->isLocked($lock_data)): ?>
                 <th>
                     <input type="checkbox"
                            data-proxyfor="#migration-list tbody :checkbox"
@@ -37,7 +37,7 @@
         <tbody>
         <? foreach ($history as $number => $migration): ?>
             <tr>
-            <? if (STUDIP\ENV === 'development'): ?>
+            <? if (STUDIP\ENV === 'development' && !$lock->isLocked($lock_data)): ?>
                 <td>
                     <input type="checkbox"
                            name="versions[]" value="<?= htmlReady($number) ?>">
