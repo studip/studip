@@ -909,15 +909,6 @@ class DatabaseChangesTic9218 extends Migration
                   CHANGE COLUMN `chdate` `chdate` INT(11) UNSIGNED NOT NULL";
         DBManager::get()->exec($query);
 
-        $query = "ALTER TABLE `mvv_modul_user`
-                  CHANGE COLUMN `modul_id` `modul_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-                  CHANGE COLUMN `user_id` `user_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-                  CHANGE COLUMN `author_id` `author_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-                  CHANGE COLUMN `editor_id` `editor_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
-                  CHANGE COLUMN `mkdate` `mkdate` INT(11) UNSIGNED NOT NULL,
-                  CHANGE COLUMN `chdate` `chdate` INT(11) UNSIGNED NOT NULL";
-        DBManager::get()->exec($query);
-
         $query = "ALTER TABLE `mvv_ovl_conflicts`
                   CHANGE COLUMN `base_abschnitt_id` `base_abschnitt_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
                   CHANGE COLUMN `base_modulteil_id` `base_modulteil_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
