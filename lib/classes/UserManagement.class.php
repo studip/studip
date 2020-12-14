@@ -322,11 +322,9 @@ class UserManagement
         // include language-specific subject and mailbody
         $user_language = $this->user_data['user_info.preferred_language'] ?: Config::get()->DEFAULT_LANGUAGE;
 
-        $Zeit = strftime('%x, %X');
-        include "locale/{$GLOBALS['INSTALLED_LANGUAGES'][$user_language]['path']}/LC_MAILS/create_mail.inc.php";
-
-        // send mail
-        StudipMail::sendMessage($this->user_data['auth_user_md5.Email'], $subject, $mailbody);
+        // send mail with password generation link
+        self::sendPasswordMail($this->user, true);
+        $this->msg .= 'msg§' . _('Es wurde eine Mail mit Anweisungen zum Setzen des Passworts durch die/den Nutzer/in verschickt.') . '§';
 
         // add default visibility settings
         Visibility::createDefaultCategories($this->user_data['auth_user_md5.user_id']);
@@ -673,12 +671,38 @@ class UserManagement
      *
      * @return void
      */
-    public static function sendPasswordMail($user)
+    public static function sendPasswordMail($user, $new = false)
     {
         setTempLanguage($user->user_id);
 
         // always generate a token, so root, admin and all other users profit from the abuse protection
         $id = Token::create(24 * 60 * 60, $user->id);
+
+        // new users alawys receive a link to generate a password
+        if ($new) {
+            $subject = sprintf(
+                _("[Stud.IP - %s] Es wurde ein Zugang für sie erstellt - Setzen sie ein Passwort"),
+                Config::get()->UNI_NAME_CLEAN
+            );
+
+            $mailbody = sprintf(
+                _("Dies ist eine Bestätigungsmail des Stud.IP-Systems\n"
+                    ."(Studienbegleitender Internetsupport von Präsenzlehre)\n- %s -\n\n"
+                    ."Es wurde für sie ein Zugang zum System erstellt, Ihr Nutzername lautet:\n\n"
+                    ."%s\n\n"
+                    ."Um den Zugang nutzen zu können, müssen sie ein Passwort setzen.\n"
+                    ."Öffnen Sie dafür bitte folgenden Link\n\n"
+                    ."%s\n\n"
+                    ."in Ihrem Browser.\n\n"
+                    ."Wahrscheinlich unterstützt Ihr E-Mail-Programm ein einfaches Anklicken des Links.\n"
+                    ."Ansonsten müssen Sie Ihren Browser öffnen und den Link komplett in die Zeile\n"
+                    ."\"Location\" oder \"URL\" kopieren.\n\n"
+                ),
+                Config::get()->UNI_NAME_CLEAN,
+                $user->username,
+                $GLOBALS['ABSOLUTE_URI_STUDIP'] . 'dispatch.php/new_password/set/'. $id .'?cancel_login=1'
+            );
+        } else
 
         // admin and root cannot reset their password via mail
         // only users with auth-type standard cann reset their password
