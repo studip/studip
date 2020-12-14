@@ -18,7 +18,17 @@ class FixMissingConsultationEvents extends Migration
 
         LegacyConsultationSlot::findAndMapMany(
             function ($slot) {
-                $slot->updateEvent();
+                // This is wrapped in a try/catch block since we can only assure
+                // that the LegacyConsultationSlot is used for updating the event itself.
+                // In the subsequent procedure, the related bookings are stored as well
+                // which will trigger another update of the event - this time on the
+                // ConsultationSlot object itself, not on the legacy one. Since this
+                // has code changes for Stud.IP 5.0 this will fail but we can neglect
+                // that since the event is already updated.
+                try {
+                    $slot->updateEvent();
+                } catch (Exception $e) {
+                }
             },
             $ids
         );
