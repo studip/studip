@@ -779,46 +779,13 @@ class MessagesController extends AuthenticatedController {
                 PageLayout::postMessage(MessageBox::success(sprintf(_("Alle empfangenen Nachrichten wurden gelöscht.") )));
                 $this->redirect("messages/overview");
             } else if ($this->sndrec == 'snd') {
-                PageLayout::postMessage(MessageBox::success(sprintf(_("Alle gesendetet Nachrichten wurden gelöscht.") )));
+                PageLayout::postMessage(MessageBox::success(sprintf(_("Alle gesendeten Nachrichten wurden gelöscht.") )));
                 $this->redirect("messages/sent");
             }
         }
     }
 
-    protected function getMessagesToDelete($sndrec)
-    {
-        $this->sndrec = $sndrec;
-        $this->user = User::findCurrent()->id;
 
-        $messagesToDelete = DBManager::get()->prepare("
-            SELECT *
-            FROM message_user
-            WHERE snd_rec = :sndrec
-            AND user_id = :id
-            AND deleted != 1
-            ");
-
-        $messagesToDelete->execute([
-            'sndrec' => $this->sndrec,
-            'id' => $this->user
-        ]);
-
-        $messagesToDelete->setFetchMode(PDO::FETCH_ASSOC);
-        $messageArray = [];
-
-        foreach ($messagesToDelete as $data) {
-            $messageArray[] = $data;
-            /*
-            if (Request::isPost()) {
-                CSRFProtection::verifyUnsafeRequest();
-                //$this->deleteMessage($data['message_id']);
-
-            }
-            */
-        }
-
-        return $messageArray;
-    }
 
     protected function getMessages($received = true, $limit = 50, $offset = 0, $tag = null, $search = null)
     {
@@ -1033,13 +1000,16 @@ class MessagesController extends AuthenticatedController {
             ]
         );
 
+        $test = 'xyz';
         if ($action === 'overview') {
             if (MessageUser::findBySQL("snd_rec = 'rec' AND user_id = :id AND deleted != 1 LIMIT 1", ['id' => $this->user])) {
                 $actions->addLink(
-                    _('Alle Nachrichten im Posteingang löschen'),
+                    _('Nachrichten im Posteingang löschen'),
                     $this->url_for('messages/deleteInboxOutbox/rec'),
                     Icon::create('trash'),
-                    ['onclick' => 'return STUDIP.Dialog.confirmAsPost("Alles im Posteingang löschen?".toLocaleString(), this.href);']
+                    ['onclick' => 'return STUDIP.Dialog.confirmAsPost("Möchten Sie wirklich alle Nachrichten im Posteingang löschen? Es werden '
+                        . count(MessageUser::findBySQL("snd_rec = 'rec' AND user_id = :id AND deleted != 1", ['id' => $this->user]))
+                        . ' Nachrichten endgültig gelöscht.".toLocaleString(), this.href);']
                 );
             }
         }
@@ -1047,10 +1017,12 @@ class MessagesController extends AuthenticatedController {
         if ($action === 'sent') {
             if (MessageUser::findBySQL("snd_rec = 'snd' AND user_id = :id AND deleted != 1 LIMIT 1", ['id' => $this->user])) {
                 $actions->addLink(
-                    _('Alle Nachrichten im Postausgang löschen'),
+                    _('Nachrichten im Postausgang löschen'),
                     $this->url_for('messages/deleteInboxOutbox/snd'),
                     Icon::create('trash'),
-                    ['onclick' => 'return STUDIP.Dialog.confirmAsPost("Alles im Postausgang löschen?".toLocaleString(), this.href);']
+                    ['onclick' => 'return STUDIP.Dialog.confirmAsPost("Möchten Sie wirklich alle Nachrichten im Postausgang löschen? Es werden '
+                        . count(MessageUser::findBySQL("snd_rec = 'snd' AND user_id = :id AND deleted != 1", ['id' => $this->user]))
+                        . ' Nachrichten endgütlig gelöscht.".toLocaleString(), this.href);']
                 );
             }
         }
