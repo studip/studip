@@ -24,7 +24,7 @@
         <? if (count($themen)) : ?>
             <? foreach ($themen as $thema) : ?>
                 <h3>
-                    <?= Icon::create('topic', 'info')->asImg(20, ['class' => "text-bottom"]) ?>
+                    <?= Icon::create('topic', Icon::ROLE_INFO)->asImg(20, ['class' => "text-bottom"]) ?>
                     <?= htmlReady($thema['title']) ?>
                 </h3>
                 <div>
@@ -35,13 +35,19 @@
         <? else : ?>
             <?= _('Keine Beschreibung vorhanden') ?>
         <? endif ?>
+        <ul class="list-csv" style="text-align: center;">
+        <? foreach($termin['info'] as $type => $info): ?>
+            <? if (trim($info)) : ?>
+                <li>
+                    <small>
+                    <? if (!is_numeric($type)): ?>
+                        <em><?= htmlReady($type) ?>:</em>
+                    <? endif; ?>
+                        <?= htmlReady(trim($info)) ?>
+                    </small>
+                </li>
+            <? endif ?>
+        <? endforeach; ?>
+        </ul>
     </div>
-    <footer><? foreach($termin['info'] as $type => $info): ?>
-        <? if (trim($info)) : ?>
-            <? if (!is_numeric($type)): ?>
-                <em><?= htmlReady($type) ?>: </em>
-            <? endif; ?>
-            <?= htmlReady(trim($info)) ?>
-        <? endif ?>
-        <? endforeach; ?></footer>
 </article>
