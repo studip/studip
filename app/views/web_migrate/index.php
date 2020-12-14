@@ -35,7 +35,7 @@
                            data-activates="#migration-list tfoot .button">
                 </th>
             <? endif; ?>
-                <th style="text-align: right;"><?= _('Nr.') ?></th>
+                <th><?= _('Nr.') ?></th>
                 <th><?= _('Beschreibung') ?></th>
             </tr>
         </thead>
@@ -48,7 +48,7 @@
                            name="versions[]" value="<?= htmlReady($number) ?>">
                 </td>
             <? endif; ?>
-                <td style="text-align: right;">
+                <td>
                     <?= htmlReady($number) ?>
                 </td>
                 <td>
