@@ -491,10 +491,10 @@ class SiteinfoMarkupEngine {
         $indicator['user_autor'] = ["query" => "SELECT COUNT(*) FROM auth_user_md5 WHERE perms='autor'",
                                          "title" => _("registrierte Autoren"),
                                          "detail" => ""];
-        $indicator['document'] = ["query" => "SELECT COUNT(*) FROM files WHERE storage='disk'",
+        $indicator['document'] = ["query" => "SELECT COUNT(*) FROM files WHERE filetype='StandardFile'",
                                        "title" => _("Dokumente"),
                                        "detail" => ""];
-        $indicator['link'] = ["query" => "SELECT COUNT(*) FROM files WHERE storage='url'",
+        $indicator['link'] = ["query" => "SELECT COUNT(*) FROM files WHERE filetype='URLFile'",
                                    "title" => _("verlinkte Dateien"),
                                    "detail" => ""];
         $indicator['termin'] = ["count" => ['count_table_rows','termine'],
