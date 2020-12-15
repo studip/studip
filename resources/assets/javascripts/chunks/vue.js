@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import eventBus from '../lib/event-bus.js';
+import GetTextPlugin from 'vue-gettext';
+import { getLocale, getVueConfig } from '../lib/translate.js';
 import BaseComponents from '../../../vue/components/base-components.js';
 
 Vue.mixin({
@@ -11,9 +13,14 @@ Vue.mixin({
         globalOn(...args) {
             eventBus.on(...args);
         },
-        t: aString => aString.toLocaleString(),
     },
 });
+
+Vue.use(GetTextPlugin, getVueConfig());
+Vue.config.language = getLocale();
+eventBus.on('studip:set-locale', (locale) => {
+    Vue.config.language = locale;
+})
 
 registerGlobalComponents(Vue);
 

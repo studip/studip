@@ -5,6 +5,18 @@
 * @author  Stefan Suchi <suchi@data-quest.de>
 * @license GPL2 or any later version
 */
+
+$getInstalledLanguages = function () {
+    $languages = [];
+    foreach ($GLOBALS['INSTALLED_LANGUAGES'] as $key => $value) {
+        $languages[$key] = array_merge(
+            $value,
+            ['selected' => $_SESSION['_language'] === $key]
+        );
+    }
+
+    return $languages;
+};
 ?>
 <!DOCTYPE html>
 <html class="no-js">
@@ -31,6 +43,7 @@
             name: '<?=CSRFProtection::TOKEN?>',
             value: '<? try {echo CSRFProtection::token();} catch (SessionRequiredException $e){}?>'
         },
+        INSTALLED_LANGUAGES: <?= json_encode($getInstalledLanguages()) ?>,
         STUDIP_SHORT_NAME: "<?= htmlReady(Config::get()->STUDIP_SHORT_NAME) ?>",
         URLHelper: {
             base_url: "<?= $GLOBALS['ABSOLUTE_URI_STUDIP'] ?>",
