@@ -270,8 +270,7 @@ class FileController extends AuthenticatedController
         } else {
             $file_ref = FileRef::find($file_area_object_id);
             if ($file_ref) {
-                $class = $file_ref->file['filetype'];
-                $this->file = new $class($file_ref);
+                $this->file = $file_ref->getFileType();
             }
         }
 

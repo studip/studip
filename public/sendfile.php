@@ -66,10 +66,9 @@ $no_access = true;
 //download from course or institute or document is a message attachement
 if (in_array($type, [0, 6, 7])) {
     if ($file_ref = FileRef::find($file_id)) {
-        $class = $file_ref->file['filetype'];
-        $file = new $class($file_ref);
+        $file = $file_ref->getFileType();
         $folder = $file_ref->folder->getTypedFolder();
-        $no_access = !$folder->isFileDownloadable($file_ref, $GLOBALS['user']->id);
+        $no_access = !$file->isDownloadable($GLOBALS['user']->id);
     }
 }
 //download from archive, allowed if former participant

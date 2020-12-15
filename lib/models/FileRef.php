@@ -294,10 +294,17 @@ class FileRef extends SimpleORMap implements PrivacyObject, FeedbackRange
         }
     }
 
+    /**
+     * @returns FileType
+     */
     public function getFileType()
     {
         $filetype = $this->file->filetype;
-        return new $filetype($this);
+        if (class_exists($filetype) && is_subclass_of($filetype, 'FileType')) {
+            return new $filetype($this);
+        } else {
+            return new UnknownFileType($this);
+        }
     }
 
     public function getRangeName()
