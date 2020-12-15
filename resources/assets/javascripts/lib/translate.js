@@ -6,7 +6,7 @@ const DEFAULT_LANG = 'de_DE';
 const DEFAULT_LANG_NAME = 'Deutsch';
 
 const state = getInitialState();
-setLocale(state.locale);
+setLocale(getInitialLocale());
 
 const _ = translate.gettext.bind(translate);
 export default _;
@@ -19,7 +19,7 @@ function getLocale() {
 
 async function setLocale(locale) {
     if (!(locale in getInstalledLanguages())) {
-        throw new Error('TODO: Could not set locale to ' + locale);
+        throw new Error('Invalid locale: ' + locale);
     }
 
     state.locale = locale;
@@ -54,7 +54,6 @@ function getVueConfig() {
 }
 
 function getInitialState() {
-    const locale = getInitialLocale();
     const translations = Object.entries(getInstalledLanguages()).reduce((memo, [lang]) => {
         memo[lang] = lang === DEFAULT_LANG ? defaultTranslations : null;
 
@@ -62,7 +61,7 @@ function getInitialState() {
     }, {});
 
     return {
-        locale,
+        locale: DEFAULT_LANG,
         translations,
     };
 }

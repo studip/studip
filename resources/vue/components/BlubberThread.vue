@@ -60,7 +60,7 @@
         </div>
         <div class="writer" v-if="thread_data.thread_posting.commentable">
             <studip-icon shape="blubber" size="30" role="info"></studip-icon>
-            <textarea :placeholder="thread_data.thread_posting.content.trim() ? 'Kommentar schreiben. Enter zum Abschicken.'.toLocaleString() : 'Nachricht schreiben. Enter zum Abschicken'.toLocaleString()"
+            <textarea :placeholder="writerTextareaPlaceholder"
                       @keyup.enter.exact="submit"
                       @keyup.up.exact="editPreviousComment"
                       @keyup="saveCommentToSession" @change="saveCommentToSession"></textarea>
@@ -428,6 +428,11 @@
         computed: {
             sortedComments () {
                 return this.thread_data.comments.sort((a, b) => a.mkdate - b.mkdate);
+            },
+            writerTextareaPlaceholder() {
+                return this.thread_data.thread_posting.content.trim()
+                    ? this.$gettext('Kommentar schreiben. Enter zum Abschicken.')
+                    : this.$gettext('Nachricht schreiben. Enter zum Abschicken.');
             }
         },
         updated () {

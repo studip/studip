@@ -17,7 +17,6 @@ Vue.mixin({
 });
 
 Vue.use(GetTextPlugin, getVueConfig());
-Vue.config.language = getLocale();
 eventBus.on('studip:set-locale', (locale) => {
     Vue.config.language = locale;
 })
