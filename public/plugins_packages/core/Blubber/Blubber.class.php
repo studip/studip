@@ -51,7 +51,8 @@ class Blubber extends StudIPPlugin implements StandardPlugin
                         AND blubber_threads.context_id = :course_id
                         AND blubber_comments.mkdate >= :last_visit
                         AND blubber_comments.user_id != :me
-                        AND blubber_threads.visible_in_stream = 1";
+                        AND blubber_threads.visible_in_stream = 1
+                        ";
         $comments = BlubberComment::findBySQL($condition, [
             'course_id'  => $course_id,
             'last_visit' => $last_visit,
@@ -71,7 +72,11 @@ class Blubber extends StudIPPlugin implements StandardPlugin
                         AND context_id = :course_id
                         AND mkdate >= :last_visit
                         AND user_id != :me
-                        AND visible_in_stream = 1";
+                        AND visible_in_stream = 1
+                        AND (
+                            blubber_threads.display_class IS NOT NULL
+                            OR blubber_threads.`content` IS NOT NULL
+                        )";
         $threads = BlubberThread::findBySQL($condition, [
             'course_id'  => $course_id,
             'last_visit' => $last_visit,
