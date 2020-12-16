@@ -10,6 +10,7 @@
  *
  * Refer to the according function definitions for further info.
  * ------------------------------------------------------------------------ */
+import { _ } from './gettext.js';
 
 let active = false;
 let lastAjaxDuration = 200; //ms of the duration of an ajax-call
@@ -156,12 +157,12 @@ function poll(forced) {
                 JSUpdater.stop();
 
                 // Present appropriate message in dialog
-                var message = 'Bitte laden Sie die Seite neu, um fortzufahren'.toLocaleString(),
+                var message = _('Bitte laden Sie die Seite neu, um fortzufahren'),
                     buttons = {};
-                buttons['Neu laden'.toLocaleString()] = function() {
+                buttons[_('Neu laden')] = function() {
                     location.reload();
                 };
-                buttons['Schließen'.toLocaleString()] = function() {
+                buttons[_('Schließen')] = function() {
                     $(this).dialog('close');
                 };
 
@@ -175,7 +176,7 @@ function poll(forced) {
                         width: '50%',
                         modal: true,
                         buttons: buttons,
-                        title: 'Sie sind nicht mehr im System angemeldet.'.toLocaleString()
+                        title: _('Sie sind nicht mehr im System angemeldet.')
                     });
             } else {
                 registerNextPoll();

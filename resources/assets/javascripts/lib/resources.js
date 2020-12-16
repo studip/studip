@@ -1,3 +1,5 @@
+import { _ } from '../lib/gettext.js';
+
 class Resources
 {
 
@@ -189,7 +191,7 @@ class Resources
         var tbody = jQuery(row).parent();
 
         STUDIP.Dialog.confirm(
-            'Soll die ausgewählte Berechtigung wirklich entfernt werden?'.toLocaleString()
+            _('Soll die ausgewählte Berechtigung wirklich entfernt werden?')
         ).done(function () {
             jQuery(row).remove();
             if (jQuery(tbody).children().length < 3) {

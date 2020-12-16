@@ -1,4 +1,6 @@
 /*jslint esversion: 6*/
+import { _ } from './gettext.js';
+
 /* ------------------------------------------------------------------------
  * QuickSearch inputs
  * ------------------------------------------------------------------------ */
@@ -86,7 +88,7 @@ const QuickSearch = {
                             //an array of possible selections
 
                             if (!data.length) {
-                                add([{ value: '', label: 'Kein Ergebnis gefunden.'.toLocaleString(), disabled: true }]);
+                                add([{ value: '', label: _('Kein Ergebnis gefunden.'), disabled: true }]);
                                 return;
                             }
 
@@ -118,7 +120,7 @@ const QuickSearch = {
                             add([
                                 {
                                     value: '',
-                                    label: 'Fehler'.toLocaleString() + ': ' + jqxhr.responseText,
+                                    label: _('Fehler') + ': ' + jqxhr.responseText,
                                     disabled: true
                                 }
                             ]);
@@ -163,7 +165,7 @@ const QuickSearch = {
             if (input.is('[required]')) {
                 input.closest('form').submit(function (event) {
                     if (hidden.val() === '') {
-                        input[0].setCustomValidity('Bitte wählen Sie einen gültigen Wert aus!'.toLocaleString());
+                        input[0].setCustomValidity(_('Bitte wählen Sie einen gültigen Wert aus!'));
                         event.preventDefault();
                      }
                  });

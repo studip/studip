@@ -1,3 +1,5 @@
+import { _ } from './gettext.js';
+
 const Overlay = {
     delay: 300,
     element: null,
@@ -66,7 +68,7 @@ Overlay.hide = function(delay) {
 // Secure the overlay
 Overlay.securityHandler = function(event) {
     event = event || window.event || {};
-    event.returnValue = 'Ihre Eingaben wurden bislang noch nicht gespeichert.'.toLocaleString();
+    event.returnValue = _('Ihre Eingaben wurden bislang noch nicht gespeichert.');
     return event.returnValue;
 };
 

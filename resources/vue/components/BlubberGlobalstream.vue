@@ -20,8 +20,7 @@
                         <div class="content" v-html="blubber.html"></div>
                         <a class="link_to_comments"
                            :href="link(blubber.thread_id)"
-                           @click.prevent="changeActiveThread" v-html="'Zur Diskussion'.toLocaleString()">
-                        </a>
+                           @click.prevent="changeActiveThread" v-translate>Zur Diskussion</a>
                     </div>
                 </li>
 

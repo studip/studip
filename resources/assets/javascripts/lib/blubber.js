@@ -1,4 +1,5 @@
 /*jslint esversion: 6*/
+import { _ } from '../lib/gettext.js';
 import BlubberGlobalstream from '../../../vue/components/BlubberGlobalstream.vue';
 import BlubberPublicComposer from '../../../vue/components/BlubberPublicComposer.vue';
 import BlubberThread from '../../../vue/components/BlubberThread.vue';
@@ -41,7 +42,7 @@ const Blubber = {
                             }).always(() => {
                                 this.waiting = false;
                             }).fail(() => {
-                                window.alert("Konnte die Konversation nicht laden. Probieren Sie es nachher erneut.".toLocaleString());
+                                window.alert(_("Konnte die Konversation nicht laden. Probieren Sie es nachher erneut."));
                             });
                             for (let i in this.threads) {
                                 if (this.threads[i].thread_id === thread_id) {
@@ -65,7 +66,7 @@ const Blubber = {
                     }).always(() => {
                         this.waiting = false;
                     }).fail(() => {
-                        window.alert("Konnte die Suche nicht ausführen. Probieren Sie es nachher erneut.".toLocaleString());
+                        window.alert(_("Konnte die Suche nicht ausführen. Probieren Sie es nachher erneut."));
                     });
                 }
                 let parameters = search ? {"search": search} : {"modifier": "olderthan"};
@@ -77,7 +78,7 @@ const Blubber = {
                 }).always(() => {
                     this.waiting = false;
                 }).fail(() => {
-                    window.alert("Konnte die Suche nicht ausführen. Probieren Sie es nachher erneut.".toLocaleString());
+                    window.alert(_("Konnte die Suche nicht ausführen. Probieren Sie es nachher erneut."));
                 });
                 event.preventDefault();
                 return false;

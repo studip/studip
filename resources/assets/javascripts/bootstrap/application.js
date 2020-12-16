@@ -1,3 +1,5 @@
+import { _ } from '../lib/gettext.js';
+
 /*jslint browser: true, esversion: 6 */
 /*global window, $, jQuery, _ */
 /* ------------------------------------------------------------------------
@@ -162,10 +164,10 @@ STUDIP.domReady(function () {
         $('.more-dates-digits').toggle();
         if ($('.more-dates-infos').is(':visible')) {
             $('.more-dates').text('(weniger)');
-            $('.more-dates').attr('title', 'Blenden Sie die restlichen Termine aus'.toLocaleString());
+            $('.more-dates').attr('title', _('Blenden Sie die restlichen Termine aus'));
         } else {
             $('.more-dates').text('(mehr)');
-            $('.more-dates').attr('title', 'Blenden Sie die restlichen Termine ein'.toLocaleString());
+            $('.more-dates').attr('title', _('Blenden Sie die restlichen Termine ein'));
         }
     });
 
@@ -175,10 +177,10 @@ STUDIP.domReady(function () {
 
         if ($(this).closest('div').prev().is(':visible')) {
             $(this).text('(weniger)');
-            $(this).attr('title', 'Blenden Sie die restlichen Termine aus'.toLocaleString());
+            $(this).attr('title', _('Blenden Sie die restlichen Termine aus'));
         } else {
             $(this).text('(mehr)');
-            $(this).attr('title', 'Blenden Sie die restlichen Termine ein'.toLocaleString());
+            $(this).attr('title', _('Blenden Sie die restlichen Termine ein'));
         }
     });
 }(jQuery));
@@ -191,7 +193,7 @@ jQuery.ui.accordion.prototype.options.icons = {
     activeHeader: 'arrow_down'
 };
 jQuery.extend(jQuery.ui.dialog.prototype.options, {
-    closeText: 'Schliessen'.toLocaleString()
+    closeText: _('Schließen')
 });
 
 

@@ -1,3 +1,4 @@
+import { _ } from './gettext.js';
 import Markup from './markup.js';
 
 const Messages = {
@@ -205,7 +206,7 @@ const Messages = {
         if (jQuery('li.adressee').children('input[name^="message_to"]').length <= 1) {
             quicksearch.attr('required', 'required').attr('value', '');
             quicksearch[0].setCustomValidity(
-                'Sie haben nicht angegeben, wer die Nachricht empfangen soll!'.toLocaleString()
+                _('Sie haben nicht angegeben, wer die Nachricht empfangen soll!')
             );
             return true;
         } else {

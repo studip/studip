@@ -16,9 +16,7 @@
                 </div>
 
                 <div v-if="!thread_data.thread_posting.content.trim() && !thread_data.comments.length" class="empty_blubber_background">
-                    <div v-html="'Starte die Konversation jetzt!'.toLocaleString()">
-
-                    </div>
+                    <div v-translate>Starte die Konversation jetzt!</div>
                 </div>
 
                 <ol class="comments" aria-live="polite">
@@ -42,10 +40,10 @@
                         </div>
                         <div class="time">
                             <studip-date-time :timestamp="comment.mkdate" :relative="true"></studip-date-time>
-                            <a href="" v-if="comment.writable" @click.prevent="editComment" class="edit_comment" :title="'Bearbeiten.'.toLocaleString()">
+                            <a href="" v-if="comment.writable" @click.prevent="editComment" class="edit_comment" :title="$gettext('Bearbeiten.')">
                                 <studip-icon shape="edit" size="14" role="inactive"></studip-icon>
                             </a>
-                            <a href="" @click.prevent="answerComment" class="answer_comment" :title="'Hierauf antworten.'.toLocaleString()">
+                            <a href="" @click.prevent="answerComment" class="answer_comment" :title="$gettext('Hierauf antworten.')">
                                 <studip-icon shape="export" size="14" role="inactive"></studip-icon>
                             </a>
                         </div>
@@ -64,10 +62,10 @@
                       @keyup.enter.exact="submit"
                       @keyup.up.exact="editPreviousComment"
                       @keyup="saveCommentToSession" @change="saveCommentToSession"></textarea>
-            <a class="send" @click="submit" :title="'Abschicken'.toLocaleString()">
+            <a class="send" @click="submit" :title="$gettext('Abschicken')">
                 <studip-icon shape="arr_2up" size="30"></studip-icon>
             </a>
-            <label class="upload" :title="'Datei hochladen'.toLocaleString()">
+            <label class="upload" :title="$gettext('Datei hochladen')">
                 <input type="file" multiple style="display: none;" @change="upload">
                 <studip-icon shape="upload" size="30"></studip-icon>
             </label>

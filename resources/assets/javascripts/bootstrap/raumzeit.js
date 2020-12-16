@@ -1,3 +1,5 @@
+import { _ } from '../lib/gettext.js';
+
 STUDIP.Dialog.handlers.header['X-Raumzeit-Update-Times'] = function(json) {
     var info = $.parseJSON(json);
     $('.course-admin #course-' + info.course_id + ' .raumzeit').html(info.html);
@@ -101,7 +103,7 @@ $(document).on('click', '.bookable_rooms_action', function(event) {
                                     .trim();
                             });
                             select.title =
-                                'Nicht buchbare Räume:'.toLocaleString() + ' ' + not_bookable_rooms.join(', ');
+                                _('Nicht buchbare Räume:') + ' ' + not_bookable_rooms.join(', ');
                         } else {
                             select.title = '';
                         }
@@ -113,7 +115,7 @@ $(document).on('click', '.bookable_rooms_action', function(event) {
                     } else {
                         select.title = '';
                     }
-                    me.attr('title', 'Alle Räume anzeigen'.toLocaleString());
+                    me.attr('title', _('Alle Räume anzeigen'));
                     me.data('state', 'enabled');
                 }
             });
@@ -133,7 +135,7 @@ STUDIP.ready((event) => {
 $(document).on('change', '.datesBulkActions', function() {
     var $button = $(this).next('button');
     if ($(this).val() === 'delete') {
-        $button.attr('data-confirm', 'Wollen Sie die gewünschten Termine wirklich löschen?'.toLocaleString());
+        $button.attr('data-confirm', _('Wollen Sie die gewünschten Termine wirklich löschen?'));
     } else {
         if ($button.attr('data-confirm')) {
             $button.removeAttr('data-confirm');
@@ -152,9 +154,7 @@ $(document).on('change', '#edit-cycle', function() {
     if (changed && (start.value < start.defaultValue || end.value > end.defaultValue)) {
         $(this).attr(
             'data-confirm',
-            'Wenn Sie die regelmäßige Zeit ändern, ' +
-                'verlieren Sie die Raumbuchungen für alle in der Zukunft liegenden Termine! ' +
-                'Sind Sie sicher, dass Sie die regelmäßige Zeit ändern möchten?'.toLocaleString()
+            _('Wenn Sie die regelmäßige Zeit ändern, verlieren Sie die Raumbuchungen für alle in der Zukunft liegenden Termine! Sind Sie sicher, dass Sie die regelmäßige Zeit ändern möchten?')
         );
     } else {
         // remove security question - not necessary (any more)

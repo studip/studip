@@ -1,10 +1,10 @@
 <template>
     <div class="writer">
         <studip-icon shape="blubber" size="30" role="info"></studip-icon>
-        <textarea :placeholder="'Schreib was, frag was. Enter zum Abschicken.'.toLocaleString()"
+        <textarea :placeholder="$gettext('Schreib was, frag was. Enter zum Abschicken.')"
                   @keyup.enter.exact="submit"
                   @keyup="saveCommentToSession" @change="saveCommentToSession"></textarea>
-        <label class="upload" :title="'Datei hochladen'.toLocaleString()">
+        <label class="upload" :title="$gettext('Datei hochladen')">
             <input type="file" multiple style="display: none;" @change="upload">
             <studip-icon shape="upload" size="30"></studip-icon>
         </label>

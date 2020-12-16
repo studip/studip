@@ -1,3 +1,5 @@
+import { _ } from './lib/gettext.js';
+
 /*jslint browser: true */
 /*global jQuery, STUDIP */
 
@@ -31,61 +33,60 @@
         return;
     }
 
-    // Setup defaults and default locales (localizable by Stud.IP's JS
-    // localization method through String.toLocaleString())
+    // Setup defaults and default locales
     var defaults = {},
         locale = {
-            closeText: 'Schließen'.toLocaleString(),
-            prevText: 'Zurück'.toLocaleString(),
-            nextText: 'Vor'.toLocaleString(),
-            currentText: 'Jetzt'.toLocaleString(),
+            closeText: _('Schließen'),
+            prevText: _('Zurück'),
+            nextText: _('Vor'),
+            currentText: _('Jetzt'),
             monthNames: [
-                'Januar'.toLocaleString(),
-                'Februar'.toLocaleString(),
-                'März'.toLocaleString(),
-                'April'.toLocaleString(),
-                'Mai'.toLocaleString(),
-                'Juni'.toLocaleString(),
-                'Juli'.toLocaleString(),
-                'August'.toLocaleString(),
-                'September'.toLocaleString(),
-                'Oktober'.toLocaleString(),
-                'November'.toLocaleString(),
-                'Dezember'.toLocaleString()
+                _('Januar'),
+                _('Februar'),
+                _('März'),
+                _('April'),
+                _('Mai'),
+                _('Juni'),
+                _('Juli'),
+                _('August'),
+                _('September'),
+                _('Oktober'),
+                _('November'),
+                _('Dezember')
             ],
             monthNamesShort: [
-                'Jan'.toLocaleString(),
-                'Feb'.toLocaleString(),
-                'Mär'.toLocaleString(),
-                'Apr'.toLocaleString(),
-                'Mai'.toLocaleString(),
-                'Jun'.toLocaleString(),
-                'Jul'.toLocaleString(),
-                'Aug'.toLocaleString(),
-                'Sep'.toLocaleString(),
-                'Okt'.toLocaleString(),
-                'Nov'.toLocaleString(),
-                'Dez'.toLocaleString()
+                _('Jan'),
+                _('Feb'),
+                _('Mär'),
+                _('Apr'),
+                _('Mai'),
+                _('Jun'),
+                _('Jul'),
+                _('Aug'),
+                _('Sep'),
+                _('Okt'),
+                _('Nov'),
+                _('Dez')
             ],
             dayNames: [
-                'Sonntag'.toLocaleString(),
-                'Montag'.toLocaleString(),
-                'Dienstag'.toLocaleString(),
-                'Mittwoch'.toLocaleString(),
-                'Donnerstag'.toLocaleString(),
-                'Freitag'.toLocaleString(),
-                'Samstag'.toLocaleString()
+                _('Sonntag'),
+                _('Montag'),
+                _('Dienstag'),
+                _('Mittwoch'),
+                _('Donnerstag'),
+                _('Freitag'),
+                _('Samstag')
             ],
             dayNamesShort: [
-                'So'.toLocaleString(),
-                'Mo'.toLocaleString(),
-                'Di'.toLocaleString(),
-                'Mi'.toLocaleString(),
-                'Do'.toLocaleString(),
-                'Fr'.toLocaleString(),
-                'Sa'.toLocaleString()
+                _('So'),
+                _('Mo'),
+                _('Di'),
+                _('Mi'),
+                _('Do'),
+                _('Fr'),
+                _('Sa')
             ],
-            weekHeader: 'Wo',
+            weekHeader: _('Wo'),
             dateFormat: 'dd.mm.yy',
             firstDay: 1,
             isRTL: false,
@@ -93,17 +94,17 @@
             yearSuffix: '',
             changeMonth: true,
             changeYear: true,
-            timeOnlyTitle: 'Zeit wählen'.toLocaleString(),
-            timeText: 'Zeit'.toLocaleString(),
-            hourText: 'Stunde'.toLocaleString(),
-            minuteText: 'Minute'.toLocaleString(),
-            secondText: 'Sekunde'.toLocaleString(),
-            millisecText: 'Millisekunde'.toLocaleString(),
-            microsecText: 'Mikrosekunde'.toLocaleString(),
-            timezoneText: 'Zeitzone'.toLocaleString(),
-            timeFormat: 'HH:mm'.toLocaleString(),
-            amNames: ['vorm.'.toLocaleString(), 'AM', 'A'],
-            pmNames: ['nachm.'.toLocaleString(), 'PM', 'P']
+            timeOnlyTitle: _('Zeit wählen'),
+            timeText: _('Zeit'),
+            hourText: _('Stunde'),
+            minuteText: _('Minute'),
+            secondText: _('Sekunde'),
+            millisecText: _('Millisekunde'),
+            microsecText: _('Mikrosekunde'),
+            timezoneText: _('Zeitzone'),
+            timeFormat: _('HH:mm'),
+            amNames: [_('vorm.'), 'AM', 'A'],
+            pmNames: [_('nachm.'), 'PM', 'P']
         };
     // Set dayNamesMin to dayNamesShort since they are equal
     locale.dayNamesMin = locale.dayNamesShort;

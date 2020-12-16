@@ -1,3 +1,5 @@
+import { _ } from '../lib/gettext.js';
+
 /**
  * This file provides a set of global handlers.
  */
@@ -172,7 +174,7 @@ function confirmation_handler(event) {
                 element.data().confirm ||
                 element.attr('title') ||
                 element.find('[title]:first').attr('title') ||
-                'Wollen Sie die Aktion wirklich ausführen?'.toLocaleString();
+                _('Wollen Sie die Aktion wirklich ausführen?');
 
         STUDIP.Dialog.confirm(question).done(function() {
             var content = element.data().confirm;
@@ -212,7 +214,7 @@ $(document).on('change', 'input[data-must-equal]', function() {
             label = label || $('label[for="' + $(element).attr('id') + '"]').text();
             return $.trim(label.split(':')[0]);
         }),
-        error_message = 'Die beiden Werte "$1" und "$2" stimmen nicht überein. '.toLocaleString(),
+        error_message = _('Die beiden Werte "$1" und "$2" stimmen nicht überein. '),
         matches = error_message.match(/\$\d/g);
 
     $.each(matches, function(i) {

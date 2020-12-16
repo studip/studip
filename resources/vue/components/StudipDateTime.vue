@@ -43,10 +43,10 @@
                 let now = Date.now();
                 if (!force_absolute && this.relative && this.display_relative()) {
                     if (now - date < 1 * 60 * 1000) {
-                        return 'Jetzt'.toLocaleString();
+                        return this.$gettext('Jetzt');
                     }
                     if (now - date < 2 * 60 * 60 * 1000) {
-                        return 'Vor %s Minuten'.toLocaleString().replace('%s', Math.floor((now - date) / (1000 * 60)));
+                        return this.$gettext('Vor %s Minuten').replace('%s', Math.floor((now - date) / (1000 * 60)));
                     }
                     return pad(date.getHours()) + ':' + pad(date.getMinutes());
                 } else {

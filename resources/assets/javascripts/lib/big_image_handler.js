@@ -18,6 +18,8 @@
  * @license GPL2 or any later version
  * @since   Stud.IP 3.4
  */
+import { _ } from './gettext.js';
+
 var pixelRatio = window.devicePixelRatio || 1,
     dataAttribute = 'big-image-handled';
 
@@ -56,7 +58,7 @@ function oversizedHandler(img) {
             height = this.height,
             title =
                 $(this).prop('title') ||
-                'Dieses Bild wird verkleinert dargestellt. Klicken Sie für eine größere Darstellung.'.toLocaleString(),
+            _('Dieses Bild wird verkleinert dargestellt. Klicken Sie für eine größere Darstellung.'),
             highdpi_check = width / display_width === pixelRatio && height / display_height === pixelRatio;
         if (!highdpi_check && (width > display_width || height > display_height)) {
             $(img)

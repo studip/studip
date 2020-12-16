@@ -1,3 +1,5 @@
+import { _ } from './gettext.js';
+
 const Raumzeit = {
     disableBookableRooms: function(icon) {
         var select = $(icon).prev('select')[0];
@@ -10,7 +12,7 @@ const Raumzeit = {
             });
 
         me.attr('data-state', false);
-        me.attr('title', 'Nur buchbare Räume anzeigen'.toLocaleString());
+        me.attr('title', _('Nur buchbare Räume anzeigen'));
     }
 };
 

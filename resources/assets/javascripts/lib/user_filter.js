@@ -1,6 +1,7 @@
 /* ------------------------------------------------------------------------
  * Bedingungen zur Auswahl von Stud.IP-Nutzern
  * ------------------------------------------------------------------------ */
+import { _ } from './gettext.js';
 import Dialog from './dialog.js';
 
 const UserFilter = {
@@ -8,7 +9,7 @@ const UserFilter = {
 
     configureCondition: function(targetId, targetUrl) {
         Dialog.fromURL(targetUrl, {
-            title: 'Bedingung konfigurieren'.toLocaleString(),
+            title: _('Bedingung konfigurieren'),
             size: Math.min(Math.round(0.9 * $(window).width()), 850) + 'x400',
             method: 'post',
             id: 'configurecondition'
@@ -60,7 +61,7 @@ const UserFilter = {
                         .children('.userfilter')
                         .show();
                 } else if ($('#' + containerId).children('.ungrouped_conditions .condition_list').length > 0) {
-                    result += '<b>' + 'oder'.toLocaleString() + '</b>';
+                    result += '<b>' + _('oder') + '</b>';
                 }
                 result += data;
                 $('#' + containerId)

@@ -1,3 +1,4 @@
+import { _ } from './gettext.js';
 import Dialog from './dialog.js';
 
 const Folders = {
@@ -10,7 +11,7 @@ const Folders = {
                 folder_id +
                 '&js=1',
             {
-                title: 'Dokument hinzufügen'.toLocaleString()
+                title: _('Dokument hinzufügen')
             }
         );
     },

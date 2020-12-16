@@ -1,3 +1,5 @@
+import { _ } from '../lib/gettext.js';
+
 /*jslint esversion: 6*/
 
 /**
@@ -414,7 +416,7 @@ Dialog.show = function(content, options) {
         // Create 'close' button
         if (!dialog_options.buttons.hasOwnProperty('cancel')) {
             dialog_options.buttons.cancel = {
-                text: 'Schließen'.toLocaleString(),
+                text: _('Schließen'),
                 'class': 'cancel'
             };
         }
@@ -548,7 +550,7 @@ Dialog.calculateDimensions = function (instance, content, options) {
         if ((!options.hasOwnProperty('buttons') || options.button !== false)
             && $('[data-dialog-button] .button.cancel', helper).length === 0)
         {
-            var cancel = $('<button class="button cancel">').text('Schließen'.toLocaleString());
+            var cancel = $('<button class="button cancel">').text(_('Schließen'));
             $('[data-dialog-button]', helper).append(cancel);
         }
 
@@ -616,18 +618,18 @@ Dialog.confirm = function(question, yes_callback, no_callback) {
         } else {
             Dialog.show(_.escape(question), {
                 id: 'confirmation-dialog',
-                title: 'Bitte bestätigen Sie die Aktion'.toLocaleString(),
+                title: _('Bitte bestätigen Sie die Aktion'),
                 size: 'fit',
                 wikilink: false,
                 dialogClass: 'studip-confirmation',
                 buttons: {
                     accept: {
-                        text: 'Ja'.toLocaleString(),
+                        text: _('Ja'),
                         click: defer.resolve,
                         class: 'accept'
                     },
                     cancel: {
-                        text: 'Nein'.toLocaleString(),
+                        text: _('Nein'),
                         click: defer.reject,
                         class: 'cancel'
                     }

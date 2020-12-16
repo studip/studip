@@ -1,5 +1,5 @@
 /*jslint esversion: 6*/
-
+import { _ } from './gettext.js';
 import Dialog from './dialog.js';
 import FilesTable from '../../../vue/components/FilesTable.vue';
 
@@ -56,12 +56,12 @@ const Files = {
         var responsive_mode = jQuery('html').first().hasClass('responsive-display');
         if ($('.files_source_selector').length > 0) {
             Dialog.show($('.files_source_selector').html(), {
-                title: 'Dokument hinzufügen'.toLocaleString(),
+                title: _('Dokument hinzufügen'),
                 size: (responsive_mode ? undefined : 'auto')
             });
         } else {
             Dialog.fromURL(STUDIP.URLHelper.getURL('dispatch.php/file/add_files_window/' + folder_id), {
-                title: 'Dokument hinzufügen'.toLocaleString(),
+                title: _('Dokument hinzufügen'),
                 size: (responsive_mode ? undefined : 'auto')
             });
         }
@@ -119,17 +119,17 @@ const Files = {
             } else {
                 $('.file_upload_window .errorbox').show();
                 $('.file_upload_window .errorbox .errormessage').text(
-                    'Datei ist zu groß oder hat eine nicht erlaubte Endung.'.toLocaleString()
+                    _('Datei ist zu groß oder hat eine nicht erlaubte Endung.')
                 );
             }
         });
         if ($('.file_uploader').length > 0) {
             Dialog.show($('.file_uploader').html(), {
-                title: 'Datei hochladen'.toLocaleString()
+                title: _('Datei hochladen')
             });
         } else {
             Dialog.fromURL(STUDIP.URLHelper.getURL('dispatch.php/file/upload_window'), {
-                title: 'Datei hochladen'.toLocaleString()
+                title: _('Datei hochladen')
             });
         }
 

@@ -1,33 +1,35 @@
+import { _ } from './gettext.js';
+
 const Overlapping = {
-    
+
     /**
      * Initialize Select2 select boxes.
      * @returns {undefined}
      */
     init: function () {
         $('#base-version-select').select2({
-            placeholder: 'Studiengangteil suchen'.toLocaleString(),
+            placeholder: _('Studiengangteil suchen'),
             minimumInputLength: 3,
             ajax: {
                 url: STUDIP.URLHelper.getURL('dispatch.php/admin/overlapping/base_version'),
                 dataType: 'json'
             }
         });
-        
+
         $('#comp-versions-select').select2({
-            placeholder: 'Optional weitere Studiengangteile (max. 5)'.toLocaleString(),
+            placeholder: _('Optional weitere Studiengangteile (max. 5)'),
             minimumInputLength: 3,
             ajax: {
                 url: STUDIP.URLHelper.getURL('dispatch.php/admin/overlapping/comp_versions'),
                 dataType: 'json'
             }
         });
-        
+
         $('#fachsem-select').select2({
-            placeholder: 'Fachsemester auswählen (optional)'.toLocaleString()
+            placeholder: _('Fachsemester auswählen (optional)')
         });
         $('#semtype-select').select2({
-            placeholder: 'Veranstaltungstyp auswählen (optional)'.toLocaleString()
+            placeholder: _('Veranstaltungstyp auswählen (optional)')
         });
         $('#base-version-select').on('select2:select', function (e) {
             $('#comp-versions-select').val(null).trigger('change');
@@ -44,7 +46,7 @@ const Overlapping = {
                             inputlength = 0;
                         }
                         $('#comp-versions-select').select2({
-                            placeholder: 'Optional weitere Studiengangteile (max. 5)'.toLocaleString(),
+                            placeholder: _('Optional weitere Studiengangteile (max. 5)'),
                             minimumInputLength: inputlength,
                             ajax: {
                                 url: STUDIP.URLHelper.getURL('dispatch.php/admin/overlapping/comp_versions',
@@ -54,14 +56,14 @@ const Overlapping = {
                         });
                     } else {
                         $('#comp-versions-select').select2({
-                            placeholder: 'Keine weitere Auswahl möglich'.toLocaleString()
+                            placeholder: _('Keine weitere Auswahl möglich')
                         });
                         $('#comp-versions-select').prop('disabled', true).trigger('change');
                     }
                 }
             });
         });
-        
+
         $('span.mvv-overlapping-exclude').on('click', function () {
             var course_id = $(this).data('mvv-ovl-course');
             var selection_id = $(this).data('mvv-ovl-selection');
@@ -79,9 +81,9 @@ const Overlapping = {
                             $(this).toggleClass('mvv-overlapping-invisible');
                         }
                     });
-                    $('.mvv-overlapping-exclude').attr('title', 'Veranstaltung berücksichtigen'.toLocaleString());
-                    $('.mvv-overlapping-invisible').attr('title', 'Veranstaltung nicht berücksichtigen'.toLocaleString());
-                    
+                    $('.mvv-overlapping-exclude').attr('title', _('Veranstaltung berücksichtigen'));
+                    $('.mvv-overlapping-invisible').attr('title', _('Veranstaltung nicht berücksichtigen'));
+
                 }
             })
             return false;

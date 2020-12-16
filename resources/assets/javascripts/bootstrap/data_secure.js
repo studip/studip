@@ -1,3 +1,5 @@
+import { _ } from '../lib/gettext.js';
+
 /**
  * Secure forms or form elements by displaying a warning on page unload if
  * there are unsaved changes.
@@ -126,7 +128,7 @@ $(window).on('beforeunload', function(event) {
     }
 
     event = event || window.event || {};
-    event.returnValue = 'Ihre Eingaben wurden bislang noch nicht gespeichert.'.toLocaleString();
+    event.returnValue = _('Ihre Eingaben wurden bislang noch nicht gespeichert.');
     return event.returnValue;
 });
 
@@ -136,7 +138,7 @@ $(document).on('dialogbeforeclose', function(event) {
         return true;
     }
 
-    if (!window.confirm('Ihre Eingaben wurden bislang noch nicht gespeichert.'.toLocaleString())) {
+    if (!window.confirm(_('Ihre Eingaben wurden bislang noch nicht gespeichert.'))) {
         event.preventDefault();
         event.stopPropagation();
         return false;

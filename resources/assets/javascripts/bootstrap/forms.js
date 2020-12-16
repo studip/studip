@@ -1,3 +1,5 @@
+import { _ } from '../lib/gettext.js';
+
 // Allow fieldsets to collapse
 $(document).on(
     'click',
@@ -24,7 +26,7 @@ $(document).on('focus', 'form.default [maxlength]:not(.no-hint)', function() {
 
     $(this).wrap(wrap);
 
-    hint.text('Zeichen verbleibend: '.toLocaleString());
+    hint.text(_('Zeichen verbleibend: '));
 
     hint.append('<span class="length-hint-counter">');
     hint.insertBefore(this);
@@ -142,27 +144,27 @@ $.fn.select2.amd.define('select2/i18n/de', [], function() {
     return {
         inputTooLong: function(e) {
             var t = e.input.length - e.maximum;
-            return 'Bitte %u Zeichen weniger eingeben'.toLocaleString().replace('%u', t);
+            return _('Bitte %u Zeichen weniger eingeben').replace('%u', t);
         },
         inputTooShort: function(e) {
             var t = e.minimum - e.input.length;
-            return 'Bitte %u Zeichen mehr eingeben'.toLocaleString().replace('%u', t);
+            return _('Bitte %u Zeichen mehr eingeben').replace('%u', t);
         },
         loadingMore: function() {
-            return 'Lade mehr Ergebnisse...'.toLocaleString();
+            return _('Lade mehr Ergebnisse...');
         },
         maximumSelected: function(e) {
             var t = [
-                'Sie können nur %u Eintrag auswählen'.toLocaleString(),
-                'Sie können nur %u Einträge auswählen'.toLocaleString()
+                _('Sie können nur %u Eintrag auswählen'),
+                _('Sie können nur %u Einträge auswählen')
             ];
             return t[e.maximum === 1 ? 0 : 1].replace('%u', e.maximum);
         },
         noResults: function() {
-            return 'Keine Übereinstimmungen gefunden'.toLocaleString();
+            return _('Keine Übereinstimmungen gefunden');
         },
         searching: function() {
-            return 'Suche...'.toLocaleString();
+            return _('Suche...');
         }
     };
 });

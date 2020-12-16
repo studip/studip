@@ -11,8 +11,6 @@ import "../stylesheets/studip.scss"
 import lodash from "lodash"
 window._ = lodash
 
-import "./l10n.js"
-
 import QRCode from "./vendor/qrcode-04f46c6.js"
 window.QRCode = QRCode
 

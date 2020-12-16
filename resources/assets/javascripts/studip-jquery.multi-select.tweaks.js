@@ -1,3 +1,5 @@
+import { _ } from './lib/gettext.js';
+
 /*jslint browser: true */
 /*global jQuery */
 
@@ -51,7 +53,7 @@
             $option.text(chunks.join("\n"));
 
             if ($option.is(':disabled')) {
-                $option.attr('title', 'Die Person ist bereits eingetragen.'.toLocaleString());
+                $option.attr('title', _('Die Person ist bereits eingetragen.'));
             }
         }
 

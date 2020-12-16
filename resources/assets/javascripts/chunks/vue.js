@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import eventBus from '../lib/event-bus.js';
 import GetTextPlugin from 'vue-gettext';
-import { getLocale, getVueConfig } from '../lib/translate.js';
+import { getLocale, getVueConfig } from '../lib/gettext.js';
 import BaseComponents from '../../../vue/components/base-components.js';
 
 Vue.mixin({

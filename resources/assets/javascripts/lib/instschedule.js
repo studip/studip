@@ -1,3 +1,4 @@
+import { _ } from './gettext.js';
 import Dialog from './dialog.js';
 
 const Instschedule = {
@@ -9,7 +10,7 @@ const Instschedule = {
     showInstituteDetails: function(id) {
         jQuery.get(STUDIP.URLHelper.getURL('dispatch.php/calendar/instschedule/groupedentry/' + id), function(data) {
             Dialog.show(data, {
-                title: 'Detaillierte Veranstaltungsliste'.toLocaleString()
+                title: _('Detaillierte Veranstaltungsliste')
             });
         });
     }

@@ -75,6 +75,7 @@ import Table from './lib/table.js';
 import Toolbar from './lib/toolbar.js';
 import Tooltip from './lib/tooltip.js';
 import Tour from './lib/tour.js';
+import * as Gettext from './lib/gettext.js';
 import UserFilter from './lib/user_filter.js';
 import wysiwyg from './lib/wysiwyg.js';
 import ScrollToTop from './lib/scroll_to_top.js';
@@ -112,6 +113,7 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     Folders,
     Forms,
     Fullscreen,
+    Gettext,
     GlobalSearch,
     HeaderMagic,
     i18n,

@@ -1,3 +1,5 @@
+import { _ } from '../lib/gettext.js';
+
 $(document).on('click', '.consultation-delete-check:not(.ignore)', event => {
     const form       = $(event.target).closest('form');
     const checkboxes = form.find(':checkbox[name="slot-id[]"]:checked');
@@ -11,7 +13,7 @@ $(document).on('click', '.consultation-delete-check:not(.ignore)', event => {
         let bookings = 0;
         slots.forEach(slot => bookings += slot.booking_count);
         if (bookings === 0) {
-            STUDIP.Dialog.confirm('Wollen Sie diese Sprechstundentermine wirklich löschen?'.toLocaleString()).done(() => {
+            STUDIP.Dialog.confirm(_('Wollen Sie diese Sprechstundentermine wirklich löschen?')).done(() => {
                 $('<input type="hidden" name="delete" value="1"/>').appendTo(form);
                 form.submit();
             });

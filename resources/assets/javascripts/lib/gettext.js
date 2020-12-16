@@ -6,18 +6,16 @@ const DEFAULT_LANG = 'de_DE';
 const DEFAULT_LANG_NAME = 'Deutsch';
 
 const state = getInitialState();
-setLocale(getInitialLocale());
 
 const _ = translate.gettext.bind(translate);
-export default _;
 
-export { translate, getLocale, setLocale, getVueConfig };
+export { _, translate, getLocale, setLocale, getVueConfig };
 
 function getLocale() {
     return state.locale;
 }
 
-async function setLocale(locale) {
+async function setLocale(locale = getInitialLocale()) {
     if (!(locale in getInstalledLanguages())) {
         throw new Error('Invalid locale: ' + locale);
     }

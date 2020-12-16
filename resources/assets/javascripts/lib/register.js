@@ -1,3 +1,5 @@
+import { _ } from './gettext.js';
+
 const register = {
     re_username: null,
     re_name: null,
@@ -22,7 +24,7 @@ const register = {
         if (jQuery('input[name=username]').val().length < 4) {
             register.addError(
                 'username',
-                'Der Benutzername ist zu kurz, er sollte mindestens 4 Zeichen lang sein.'.toLocaleString()
+                _('Der Benutzername ist zu kurz, er sollte mindestens 4 Zeichen lang sein.')
             );
             document.login.username.focus();
             return false;
@@ -31,7 +33,7 @@ const register = {
         if (register.re_username.test(jQuery('input[name=username]').val()) === false) {
             register.addError(
                 'username',
-                'Der Benutzername enthält unzulässige Zeichen, er darf keine Sonderzeichen oder Leerzeichen enthalten.'.toLocaleString()
+                _('Der Benutzername enthält unzulässige Zeichen, er darf keine Sonderzeichen oder Leerzeichen enthalten.')
             );
             document.login.username.focus();
             return false;
@@ -47,7 +49,7 @@ const register = {
         if (jQuery('input[name=password]').val().length < 8) {
             register.addError(
                 'password',
-                'Das Passwort ist zu kurz. Es sollte mindestens 8 Zeichen lang sein.'.toLocaleString()
+                _('Das Passwort ist zu kurz. Es sollte mindestens 8 Zeichen lang sein.')
             );
             document.login.password.focus();
             checked = false;
@@ -62,7 +64,7 @@ const register = {
         if (jQuery('input[name=password]').val() !== jQuery('input[name=password2]').val()) {
             register.addError(
                 'password2',
-                'Das Passwort stimmt nicht mit dem Bestätigungspasswort überein!'.toLocaleString()
+                _('Das Passwort stimmt nicht mit dem Bestätigungspasswort überein!')
             );
             document.login.password2.focus();
             checked = false;
@@ -75,7 +77,7 @@ const register = {
 
         var checked = true;
         if (register.re_name.test(jQuery('input[name=Vorname]').val()) === false) {
-            register.addError('Vorname', 'Bitte geben Sie Ihren tatsächlichen Vornamen an.'.toLocaleString());
+            register.addError('Vorname', _('Bitte geben Sie Ihren tatsächlichen Vornamen an.'));
             document.login.Vorname.focus();
             checked = false;
         }
@@ -87,7 +89,7 @@ const register = {
 
         var checked = true;
         if (register.re_name.test(jQuery('input[name=Nachname]').val()) === false) {
-            register.addError('Nachname', 'Bitte geben Sie Ihren tatsächlichen Nachnamen an.'.toLocaleString());
+            register.addError('Nachname', _('Bitte geben Sie Ihren tatsächlichen Nachnamen an.'));
             document.login.Nachname.focus();
             checked = false;
         }
@@ -98,7 +100,8 @@ const register = {
         register.clearErrors('Email');
 
         var email = jQuery('input[name=Email]').val();
-        (domain = jQuery('select[name=emaildomain]').val()), (checked = false);
+        var domain = jQuery('select[name=emaildomain]').val();
+        var checked = false;
 
         if (domain) {
             email += '@' + domain;
@@ -109,7 +112,7 @@ const register = {
             .checkValidity();
 
         if (!checked) {
-            register.addError('Email', 'Die E-Mail-Adresse ist nicht korrekt!'.toLocaleString());
+            register.addError('Email', _('Die E-Mail-Adresse ist nicht korrekt!'));
             $('#Email').focus();
         }
 

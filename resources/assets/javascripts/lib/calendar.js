@@ -1,3 +1,5 @@
+import { _ } from '../lib/gettext.js';
+
 /* ------------------------------------------------------------------------
  * calendar gui
  * ------------------------------------------------------------------------ */
@@ -10,13 +12,13 @@ const Calendar = {
     click_in_progress: false,
 
     day_names: [
-        'Montag'.toLocaleString(),
-        'Dienstag'.toLocaleString(),
-        'Mittwoch'.toLocaleString(),
-        'Donnerstag'.toLocaleString(),
-        'Freitag'.toLocaleString(),
-        'Samstag'.toLocaleString(),
-        'Sonntag'.toLocaleString()
+        _('Montag'),
+        _('Dienstag'),
+        _('Mittwoch'),
+        _('Donnerstag'),
+        _('Freitag'),
+        _('Samstag'),
+        _('Sonntag')
     ],
 
     /**
