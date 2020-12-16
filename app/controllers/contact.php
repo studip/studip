@@ -78,6 +78,13 @@ class ContactController extends AuthenticatedController
         } else {
             $contacts = User::findCurrent()->contacts;
         }
+        $contacts = $contacts->filter(function($u) {
+            $visible = get_visibility_by_state($u->visible, $u->id);
+            if ($visible && ! get_local_visibility_by_id($u->id, 'email')) {
+                $u->email = '';
+            }
+            return $visible;
+        });
         $this->allContacts = $contacts;
 
         // Retrive first letter and store in that contactgroup

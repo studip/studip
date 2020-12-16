@@ -84,7 +84,7 @@ function get_visibility_by_state ($state, $user_id) {
 
     $same_domain = UserDomain::checkUserVisibility(
         User::find($user_id)->domains,
-        User::find($GLOBALS['user']->id)->domains
+        User::findCurrent()->domains
     );
 
     switch ($state) {

@@ -93,19 +93,21 @@ class StandardSearch extends SQLSearch
                 $this->extendedLayout = true;
                 return "SELECT DISTINCT auth_user_md5.username, CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname, ' (', auth_user_md5.username, ')'), auth_user_md5.perms " .
                         "FROM auth_user_md5 LEFT JOIN user_info ON (user_info.user_id = auth_user_md5.user_id) " .
+                        "LEFT JOIN user_visibility ON (user_visibility.user_id = auth_user_md5.user_id) " .
                         "WHERE (CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ') " .
                             "OR CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname) LIKE REPLACE(:input, ' ', '% ') " .
                             "OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input " .
-                            "OR auth_user_md5.username LIKE :input) AND " . get_vis_query() .
+                            "OR auth_user_md5.username LIKE :input) AND " . get_vis_query('auth_user_md5', 'search') .
                         " ORDER BY Nachname ASC, Vorname ASC";
             case "user_id":
                 $this->extendedLayout = true;
                 return "SELECT DISTINCT auth_user_md5.user_id, CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname, ' (', auth_user_md5.username, ')'), auth_user_md5.perms " .
                         "FROM auth_user_md5 LEFT JOIN user_info ON (user_info.user_id = auth_user_md5.user_id) " .
-                        "WHERE (CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ') " .
+                    "LEFT JOIN user_visibility ON (user_visibility.user_id = auth_user_md5.user_id) " .
+                    "WHERE (CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname) LIKE REPLACE(:input, ' ', '% ') " .
                             "OR CONCAT(auth_user_md5.Nachname, ' ', auth_user_md5.Vorname) LIKE REPLACE(:input, ' ', '% ') " .
                             "OR CONCAT(auth_user_md5.Nachname, ', ', auth_user_md5.Vorname) LIKE :input " .
-                            "OR auth_user_md5.username LIKE :input) AND " . get_vis_query() .
+                            "OR auth_user_md5.username LIKE :input) AND " . get_vis_query('auth_user_md5', 'search') .
                         " ORDER BY Nachname ASC, Vorname ASC";
             case "Seminar_id":
                 $semester = "CONCAT(' (',
