@@ -216,7 +216,7 @@ class SimpleCollection extends StudipArrayObject
         if (!preg_match('/[\200-\377]/', $text)) {
             return $text;
         }
-        $text = str_replace(['ä','A','ö','Ö','ü','Ü','ß'], ['a','A','o','O','u','U','s'], $text);
+        $text = str_replace(['ä','Ä','ö','Ö','ü','Ü','ß'], ['a','A','o','O','u','U','s'], $text);
         $text = str_replace(['À','Á','Â','Ã','Å','Æ'], 'A' , $text);
         $text = str_replace(['à','á','â','ã','å','æ'], 'a' , $text);
         $text = str_replace(['È','É','Ê','Ë'], 'E' , $text);
