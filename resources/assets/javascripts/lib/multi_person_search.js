@@ -1,4 +1,4 @@
-import { _ } from '../lib/gettext.js';
+import translate from '../lib/gettext.js';
 
 const MultiPersonSearch = {
     init: function() {
@@ -17,21 +17,21 @@ const MultiPersonSearch = {
     },
 
     dialog: function(name) {
-        var count_template = _.template(_('Sie haben <%= count %> Personen ausgewählt'));
+        var count_template = _.template(translate._('Sie haben <%= count %> Personen ausgewählt'));
 
         this.name = name;
 
         $('#' + name + '_selectbox').multiSelect({
-            selectableHeader: '<div>' + _('Suchergebnisse') + '</div>',
+            selectableHeader: '<div>' + translate._('Suchergebnisse') + '</div>',
             selectionHeader:
                 '<div>' + count_template({ count: "<span id='" + this.name + "_count'>0</span>" }) + '.</div>',
             selectableFooter:
                 '<a href="javascript:STUDIP.MultiPersonSearch.selectAll();">' +
-                _('Alle hinzufügen') +
+                translate._('Alle hinzufügen') +
                 '</a>',
             selectionFooter:
                 '<a href="javascript:STUDIP.MultiPersonSearch.unselectAll();">' +
-                _('Alle entfernen') +
+                translate._('Alle entfernen') +
                 '</a>'
         });
 
@@ -67,7 +67,7 @@ const MultiPersonSearch = {
         });
 
         if (count == 0) {
-            MultiPersonSearch.append('--', _(' Dieser Filter enthält keine (neuen) Personen.'), true);
+            MultiPersonSearch.append('--', translate._(' Dieser Filter enthält keine (neuen) Personen.'), true);
         }
 
         MultiPersonSearch.refresh();
@@ -85,7 +85,7 @@ const MultiPersonSearch = {
         var searchterm = $('#' + this.name + '_searchinput').val(),
             name = this.name,
             not_found_template = _.template(
-                _('Es wurden keine neuen Ergebnisse für "<%= needle %>" gefunden.')
+                translate._('Es wurden keine neuen Ergebnisse für "<%= needle %>" gefunden.')
             );
         $.getJSON(
             STUDIP.URLHelper.getURL('dispatch.php/multipersonsearch/ajax_search/' + this.name, { s: searchterm }),

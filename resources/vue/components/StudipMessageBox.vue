@@ -1,11 +1,11 @@
 <template>
     <div :class="classNames" v-if="!closed">
         <div class="messagebox_buttons">
-            <a v-if="hideDetails" class="details" href="" :title="t('Detailanzeige umschalten')" @click.prevent.stop="closedDetails = !closedDetails">
-                <span>{{ t('Detailanzeige umschalten') }}</span>
+            <a v-if="hideDetails" class="details" href="" :title="$gettext('Detailanzeige umschalten')" @click.prevent.stop="closedDetails = !closedDetails">
+                <span>{{ $gettext('Detailanzeige umschalten') }}</span>
             </a>
-            <a v-if="!hideClose" class="close" href="" :title="t('Nachrichtenbox schließen')" @click.prevent="closed = true">
-                <span>{{ t('Nachrichtenbox schließen') }}</span>
+            <a v-if="!hideClose" class="close" href="" :title="$gettext('Nachrichtenbox schließen')" @click.prevent="closed = true">
+                <span>{{ $gettext('Nachrichtenbox schließen') }}</span>
             </a>
         </div>
         <slot></slot>

@@ -5,7 +5,7 @@
         <caption>
             <div class="caption-container">
                 <div v-if="breadcrumbs && !table_title">
-                    <a v-if="breadcrumbs[0]" :href="breadcrumbs[0].url" :title="t('Zum Hauptordner')">
+                    <a v-if="breadcrumbs[0]" :href="breadcrumbs[0].url" :title="$gettext('Zum Hauptordner')">
                         <studip-icon shape="folder-home-full"
                                      role="clickable"
                                      class="text-bottom"
@@ -53,22 +53,22 @@
                     <label for="all_files_checkbox"></label>
                 </th>
                 <th @click="sort('mime_type')" :class="sortClasses('mime_type')">
-                    {{ t('Typ') }}
+                    {{ $gettext('Typ') }}
                 </th>
                 <th @click="sort('name')" :class="sortClasses('name')">
-                    {{ t('Name') }}
+                    {{ $gettext('Name') }}
                 </th>
                 <th @click="sort('size')" class="responsive-hidden" :class="sortClasses('size')">
-                    {{ t('Größe') }}
+                    {{ $gettext('Größe') }}
                 </th>
                 <th v-if="showdownloads" @click="sort('downloads')" class="responsive-hidden" :class="sortClasses('downloads')">
-                    {{ t('Downloads') }}
+                    {{ $gettext('Downloads') }}
                 </th>
                 <th class="responsive-hidden" @click="sort('author_name')" :class="sortClasses('author_name')">
-                    {{ t('Autor/-in') }}
+                    {{ $gettext('Autor/-in') }}
                 </th>
                 <th class="responsive-hidden" @click="sort('chdate')" :class="sortClasses('chdate')">
-                    {{ t('Datum') }}
+                    {{ $gettext('Datum') }}
                 </th>
                 <th v-if="topfolder.additionalColumns"
                     v-for="(name, index) in topfolder.additionalColumns"
@@ -78,13 +78,13 @@
                     :class="sortClasses(index)">
                     {{name}}
                 </th>
-                <th data-sort="false">{{ t('Aktionen') }}</th>
+                <th data-sort="false">{{ $gettext('Aktionen') }}</th>
             </tr>
         </thead>
         <tbody class="subfolders">
             <tr v-if="files.length + folders.length == 0" class="empty">
                 <td :colspan="numberOfColumns">
-                    {{ t('Dieser Ordner ist leer') }}
+                    {{ $gettext('Dieser Ordner ist leer') }}
                 </td>
             </tr>
             <tr v-for="folder in sortedFolders"
@@ -164,7 +164,7 @@
                                  shape="lock-locked"
                                  role="info"
                                  size="16"
-                                 :title="t('Das Herunterladen dieser Datei ist nur eingeschränkt möglich.')"></studip-icon>
+                                 :title="$gettext('Das Herunterladen dieser Datei ist nur eingeschränkt möglich.')"></studip-icon>
                 </td>
                 <td :data-sort-value="file.size"
                     class="responsive-hidden">
