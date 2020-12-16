@@ -3,6 +3,9 @@ $.widget('studip.quicksearch', $.ui.autocomplete, {
     _renderItem (ul, item) {
         let li = $('<li>');
         li.data('item.autocomplete', item);
+        if (item.disabled) {
+            li.addClass('ui-state-disabled');
+        }
         $('<a>').html(item.label).appendTo(li);
         li.appendTo(ul);
 

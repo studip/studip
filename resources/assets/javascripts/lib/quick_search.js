@@ -88,7 +88,11 @@ const QuickSearch = {
                             //an array of possible selections
 
                             if (!data.length) {
-                                add([{ value: '', label: _('Kein Ergebnis gefunden.'), disabled: true }]);
+                                add([{
+                                    value: '',
+                                    label: _('Kein Ergebnis gefunden.'),
+                                    disabled: true
+                                }]);
                                 return;
                             }
 
