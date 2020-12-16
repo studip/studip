@@ -56,6 +56,7 @@
                         _('Alle Ressourcen anzeigen'),
                         Icon::create('log'),
                         ['data-dialog' => 'size=auto'])
+                    ->conditionAll(true)
                     ->addLink(
                         $controller->url_for(
                             'resources/category/edit/' . $category->id
