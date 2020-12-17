@@ -297,6 +297,9 @@ class LtiLink
             $launch_params += $query_params;
         }
 
+        // posted form data will always use CR LF
+        $launch_params = preg_replace("/\r?\n/", "\r\n", $launch_params);
+
         // In OAuth, request parameters must be sorted by name
         ksort($launch_params);
         $launch_params = http_build_query($launch_params, '', '&', PHP_QUERY_RFC3986);

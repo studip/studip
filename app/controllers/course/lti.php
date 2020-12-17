@@ -331,8 +331,7 @@ class Course_LtiController extends StudipController
 
         $roles = $this->edit_perm ? 'Instructor' : 'Learner';
         $custom_parameters = explode("\n", $lti_data->getCustomParameters());
-        // posted form data must always use CR LF
-        $description = str_replace("\n", "\r\n", kill_format($lti_data->description));
+        $description = kill_format($lti_data->description);
         $lis_outcome_service_url = $this->url_for('course/lti/outcome/' . $lti_data->id, ['cid' => null]);
         $tc_profile_url = $this->url_for('course/lti/profile/' . $lti_data->id, ['cid' => null]);
 
