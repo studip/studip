@@ -828,7 +828,7 @@ function searchWiki($searchfor, $searchcurrentversions, $keyword, $localsearch)
         print("<tr>");
         // Pagename
         print($tdheadleft);
-        print("<a href=\"".URLHelper::getLink("?keyword=".$result['keyword']."&version=".$result['version']."&hilight=$searchfor&searchfor=$searchfor")."\">");
+        print("<a href=\"".URLHelper::getLink('?', ['keyword' => $result['keyword'], 'version' => $result['version'], 'hilight' => $searchfor, 'searchfor' => $searchfor])."\">");
         print(htmlReady($result['keyword'])."</a>");
         print($tdtail);
         // display hit previews
