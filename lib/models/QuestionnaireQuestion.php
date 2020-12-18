@@ -53,7 +53,7 @@ class QuestionnaireQuestion extends SimpleORMap
                 $class = $totalScore === 0 ? 'Vote' : 'Test';
             }
 
-            if (class_exists($class)) {
+            if (class_exists(ucfirst($class))) {
                 $questions[] = $class::buildExisting($questionnaire_data);
             }
         }
