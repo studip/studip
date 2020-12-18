@@ -40,13 +40,21 @@ class ZipArchive extends \ZipArchive
      * Create and open an archive. Will add .zip extension if missing.
      *
      * @static
+     *
      * @param String $filename Name of the zip archive
+     *
+     * @param bool $force_zip_extension Specifies whether the resulting ZIP file
+     *     shall have the .zip file extension (true) or not (false).
+     *     Defaults to false.
+     *
      * @return Studip\ZipArchive
      */
-    public static function create($filename)
+    public static function create($filename, $force_zip_extension = false)
     {
-        if (mb_strtolower(mb_substr($filename, -3)) !== 'zip') {
-            $filename = $filename . '.zip';
+        if ($force_zip_extension) {
+            if (mb_strtolower(mb_substr($filename, -3)) !== 'zip') {
+                $filename = $filename . '.zip';
+            }
         }
 
         $archive = new self();

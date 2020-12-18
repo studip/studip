@@ -736,7 +736,7 @@ class FileArchiveManager
         }
 
         //Put all the content of the folder inside an archive:
-        $archive = Studip\ZipArchive::create($archive_file_path);
+        $archive = Studip\ZipArchive::create($archive_file_path, true);
         $result = $archive->addFromPath($folder_path);
         $archive->close();
         return $result;
