@@ -1,4 +1,4 @@
-import { _ } from './gettext.js';
+import { $gettext } from './gettext.js';
 
 /* ------------------------------------------------------------------------
  * Stud.IP Tour
@@ -101,7 +101,7 @@ const Tour = {
                 },
                 fail: function() {
                     Tour.pending_ajax_request = false;
-                    alert(_('Fehler beim Aufruf des Tour-Controllers'));
+                    alert($gettext('Fehler beim Aufruf des Tour-Controllers'));
                 }
             });
         }

@@ -1,11 +1,11 @@
-import { _ } from '../lib/gettext.js';
+import { $gettext } from '../lib/gettext.js';
 
 STUDIP.domReady(() => {
     $.extend($.ui.multiselect, {
         locale: {
-            addAll: _('Alle hinzufügen'),
-            removeAll: _('Alle entfernen'),
-            itemsCount: _('ausgewählt')
+            addAll: $gettext('Alle hinzufügen'),
+            removeAll: $gettext('Alle entfernen'),
+            itemsCount: $gettext('ausgewählt')
         }
     });
 });

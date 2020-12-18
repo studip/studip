@@ -1,4 +1,4 @@
-import { _ } from './gettext.js';
+import { $gettext } from './gettext.js';
 import ToolbarButtonset from './toolbar_buttonset.js';
 import Dialog from './dialog.js';
 
@@ -51,9 +51,9 @@ const Toolbar = {
                 label: 'WYSIWYG',
                 evaluate: function() {
                     var question = [
-                        _('Soll der WYSIWYG Editor aktiviert werden?'),
+                        $gettext('Soll der WYSIWYG Editor aktiviert werden?'),
                         '',
-                        _('Die Seite muss danach neu geladen werden, um den WYSIWYG Editor zu laden.')
+                        $gettext('Die Seite muss danach neu geladen werden, um den WYSIWYG Editor zu laden.')
                     ].join('\n');
                     Dialog.confirm(question, function() {
                         var url = STUDIP.URLHelper.resolveURL('dispatch.php/wysiwyg/settings/users/current');
@@ -66,11 +66,11 @@ const Toolbar = {
                         }).fail(function(xhr) {
                             window.alert(
                                 [
-                                    _('Das Aktivieren des WYSIWYG Editors ist fehlgeschlagen.'),
+                                    $gettext('Das Aktivieren des WYSIWYG Editors ist fehlgeschlagen.'),
                                     '',
-                                    _('URL') + ': ' + url,
-                                    _('Status') + ': ' + xhr.status + ' ' + xhr.statusText,
-                                    _('Antwort') + ': ' + xhr.responseText
+                                    $gettext('URL') + ': ' + url,
+                                    $gettext('Status') + ': ' + xhr.status + ' ' + xhr.statusText,
+                                    $gettext('Antwort') + ': ' + xhr.responseText
                                 ].join('\n')
                             );
                         });

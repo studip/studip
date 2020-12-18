@@ -1,4 +1,4 @@
-import { _ } from '../lib/gettext.js';
+import { $gettext } from '../lib/gettext.js';
 
 STUDIP.ready(function() {
     //Event definitions:
@@ -859,7 +859,7 @@ STUDIP.ready(function() {
         "button[name='bulk-book-requests']",
         function(event) {
             STUDIP.Dialog.confirm(
-                _('Wollen Sie die im Plan gezeigten Anfragen wirklich buchen?')
+                $gettext('Wollen Sie die im Plan gezeigten Anfragen wirklich buchen?')
             ).done(function() {
                 STUDIP.Resources.bookAllCalendarRequests();
             });

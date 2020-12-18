@@ -1,5 +1,5 @@
 /*jslint esversion:6*/
-import { _ } from './gettext.js';
+import { $gettext } from './gettext.js';
 
 /**
  * Turns a select-box into an easy to use multiple select-box
@@ -20,12 +20,12 @@ const MultiSelect = {
         $(id).multiSelect({
             selectableHeader:
                 `<div class="header">
-                    <a href="#" class="button select-all">${_('Alle hinzufügen')}</a>
+                    <a href="#" class="button select-all">${$gettext('Alle hinzufügen')}</a>
                 </div>`,
             selectionHeader:
                 `<div class="header">
                     <div class="counter">${count_template({count: count})}.</div>
-                    <a href="#" class="button deselect-all">${_('Alle entfernen')}</a>
+                    <a href="#" class="button deselect-all">${$gettext('Alle entfernen')}</a>
                 </div>`,
             keepOrder: true,
             cssClass: ['studip-multi-select', options.cssClass || ''].join(' ').trim(),

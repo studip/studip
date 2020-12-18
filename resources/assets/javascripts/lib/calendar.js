@@ -1,4 +1,4 @@
-import { _ } from '../lib/gettext.js';
+import { $gettext } from '../lib/gettext.js';
 
 /* ------------------------------------------------------------------------
  * calendar gui
@@ -12,13 +12,13 @@ const Calendar = {
     click_in_progress: false,
 
     day_names: [
-        _('Montag'),
-        _('Dienstag'),
-        _('Mittwoch'),
-        _('Donnerstag'),
-        _('Freitag'),
-        _('Samstag'),
-        _('Sonntag')
+        $gettext('Montag'),
+        $gettext('Dienstag'),
+        $gettext('Mittwoch'),
+        $gettext('Donnerstag'),
+        $gettext('Freitag'),
+        $gettext('Samstag'),
+        $gettext('Sonntag')
     ],
 
     /**

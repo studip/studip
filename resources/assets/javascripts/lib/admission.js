@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------------
  * Anmeldeverfahren und -sets
  * ------------------------------------------------------------------------ */
-import { _ } from './gettext.js';
+import { $gettext } from './gettext.js';
 import Dialog from './dialog.js';
 import Dialogs from './dialogs.js';
 
@@ -20,7 +20,7 @@ const Admission = {
                 _.map($('input[name="institutes[]"]:checked'), 'value')
             )
         };
-        var loading = _('Wird geladen');
+        var loading = $gettext('Wird geladen');
         $('#instcourses').empty();
         $('<img/>', {
             src: STUDIP.ASSETS_URL + 'images/ajax_indicator_small.gif'
@@ -40,7 +40,7 @@ const Admission = {
         Dialog.fromURL(targetUrl, {
             method: 'post',
             width: 'auto',
-            title: _('Anmelderegel konfigurieren'),
+            title: $gettext('Anmelderegel konfigurieren'),
             id: 'configurerule',
             data: { ruleId: ruleId, rules: _.map($('#rules input[name="rules[]"]'), 'value') }
         });
@@ -50,7 +50,7 @@ const Admission = {
 
     selectRuleType: function(source) {
         Dialog.fromURL(source, {
-            title: _('Anmelderegel konfigurieren'),
+            title: $gettext('Anmelderegel konfigurieren'),
             size: 'auto',
             data: { rules: _.map($('#rules input[name="rules[]"]'), 'value') },
             method: 'post',
@@ -96,7 +96,7 @@ const Admission = {
         $('#' + targetId).remove();
         if (parent.children('div').length === 0) {
             parent.remove();
-            var norules = _('Sie haben noch keine Anmelderegeln festgelegt.');
+            var norules = $gettext('Sie haben noch keine Anmelderegeln festgelegt.');
             $('#' + containerId).prepend('<span id="norules">' + '<i>' + norules + '</i></span>');
         }
         Dialogs.closeConfirmDialog();
@@ -160,7 +160,7 @@ const Admission = {
         var parent = $('#user_' + userId).parent();
         $('#user_' + userId).remove();
         if (parent.children('li').length === 0) {
-            var nousers = _('Sie haben noch niemanden hinzugefügt.');
+            var nousers = $gettext('Sie haben noch niemanden hinzugefügt.');
             $(parent)
                 .parent()
                 .append('<span id="nousers">' + '<i>' + nousers + '</i></span>');

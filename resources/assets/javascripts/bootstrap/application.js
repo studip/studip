@@ -1,4 +1,4 @@
-import { _ } from '../lib/gettext.js';
+import { $gettext } from '../lib/gettext.js';
 
 /*jslint browser: true, esversion: 6 */
 /*global window, $, jQuery, _ */
@@ -164,10 +164,10 @@ STUDIP.domReady(function () {
         $('.more-dates-digits').toggle();
         if ($('.more-dates-infos').is(':visible')) {
             $('.more-dates').text('(weniger)');
-            $('.more-dates').attr('title', _('Blenden Sie die restlichen Termine aus'));
+            $('.more-dates').attr('title', $gettext('Blenden Sie die restlichen Termine aus'));
         } else {
             $('.more-dates').text('(mehr)');
-            $('.more-dates').attr('title', _('Blenden Sie die restlichen Termine ein'));
+            $('.more-dates').attr('title', $gettext('Blenden Sie die restlichen Termine ein'));
         }
     });
 
@@ -177,10 +177,10 @@ STUDIP.domReady(function () {
 
         if ($(this).closest('div').prev().is(':visible')) {
             $(this).text('(weniger)');
-            $(this).attr('title', _('Blenden Sie die restlichen Termine aus'));
+            $(this).attr('title', $gettext('Blenden Sie die restlichen Termine aus'));
         } else {
             $(this).text('(mehr)');
-            $(this).attr('title', _('Blenden Sie die restlichen Termine ein'));
+            $(this).attr('title', $gettext('Blenden Sie die restlichen Termine ein'));
         }
     });
 }(jQuery));
@@ -193,7 +193,7 @@ jQuery.ui.accordion.prototype.options.icons = {
     activeHeader: 'arrow_down'
 };
 jQuery.extend(jQuery.ui.dialog.prototype.options, {
-    closeText: _('Schließen')
+    closeText: $gettext('Schließen')
 });
 
 

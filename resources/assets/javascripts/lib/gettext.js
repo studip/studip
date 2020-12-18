@@ -7,9 +7,9 @@ const DEFAULT_LANG_NAME = 'Deutsch';
 
 const state = getInitialState();
 
-const _ = translate.gettext.bind(translate);
+const $gettext = translate.gettext.bind(translate);
 
-export { _, translate, getLocale, setLocale, getVueConfig };
+export { $gettext, translate, getLocale, setLocale, getVueConfig };
 
 function getLocale() {
     return state.locale;

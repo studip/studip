@@ -1,4 +1,4 @@
-import { _ } from '../lib/gettext.js';
+import { $gettext } from '../lib/gettext.js';
 
 /*jslint esversion: 6*/
 $(document).on('click', 'a.copyable-link', function (event) {
@@ -21,7 +21,7 @@ $(document).on('click', 'a.copyable-link', function (event) {
     // duplicate the functionality in the done() handler)
     (new Promise((resolve, reject) => {
         var confirmation = $('<div class="copyable-link-confirmation">');
-        confirmation.text(_('Link wurde kopiert'));
+        confirmation.text($gettext('Link wurde kopiert'));
         confirmation.insertBefore(this);
 
         $(this).parent().addClass('copyable-link-animation');

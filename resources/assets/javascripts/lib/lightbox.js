@@ -1,4 +1,4 @@
-import { _ } from './gettext.js';
+import { $gettext } from './gettext.js';
 import Dialog from './dialog.js';
 
 function sprintf(string) {
@@ -65,7 +65,7 @@ const Lightbox = {
         }
 
         if (this.images.length > 1) {
-            title.unshift(sprintf(_('Bild %u von %u'), this.current + 1, this.images.length));
+            title.unshift(sprintf($gettext('Bild %u von %u'), this.current + 1, this.images.length));
         }
         return title.join(': ');
     },

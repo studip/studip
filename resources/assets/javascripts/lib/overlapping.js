@@ -1,4 +1,4 @@
-import { _ } from './gettext.js';
+import { $gettext } from './gettext.js';
 
 const Overlapping = {
 
@@ -8,7 +8,7 @@ const Overlapping = {
      */
     init: function () {
         $('#base-version-select').select2({
-            placeholder: _('Studiengangteil suchen'),
+            placeholder: $gettext('Studiengangteil suchen'),
             minimumInputLength: 3,
             ajax: {
                 url: STUDIP.URLHelper.getURL('dispatch.php/admin/overlapping/base_version'),
@@ -17,7 +17,7 @@ const Overlapping = {
         });
 
         $('#comp-versions-select').select2({
-            placeholder: _('Optional weitere Studiengangteile (max. 5)'),
+            placeholder: $gettext('Optional weitere Studiengangteile (max. 5)'),
             minimumInputLength: 3,
             ajax: {
                 url: STUDIP.URLHelper.getURL('dispatch.php/admin/overlapping/comp_versions'),
@@ -26,10 +26,10 @@ const Overlapping = {
         });
 
         $('#fachsem-select').select2({
-            placeholder: _('Fachsemester auswählen (optional)')
+            placeholder: $gettext('Fachsemester auswählen (optional)')
         });
         $('#semtype-select').select2({
-            placeholder: _('Veranstaltungstyp auswählen (optional)')
+            placeholder: $gettext('Veranstaltungstyp auswählen (optional)')
         });
         $('#base-version-select').on('select2:select', function (e) {
             $('#comp-versions-select').val(null).trigger('change');
@@ -46,7 +46,7 @@ const Overlapping = {
                             inputlength = 0;
                         }
                         $('#comp-versions-select').select2({
-                            placeholder: _('Optional weitere Studiengangteile (max. 5)'),
+                            placeholder: $gettext('Optional weitere Studiengangteile (max. 5)'),
                             minimumInputLength: inputlength,
                             ajax: {
                                 url: STUDIP.URLHelper.getURL('dispatch.php/admin/overlapping/comp_versions',
@@ -56,7 +56,7 @@ const Overlapping = {
                         });
                     } else {
                         $('#comp-versions-select').select2({
-                            placeholder: _('Keine weitere Auswahl möglich')
+                            placeholder: $gettext('Keine weitere Auswahl möglich')
                         });
                         $('#comp-versions-select').prop('disabled', true).trigger('change');
                     }
@@ -81,8 +81,8 @@ const Overlapping = {
                             $(this).toggleClass('mvv-overlapping-invisible');
                         }
                     });
-                    $('.mvv-overlapping-exclude').attr('title', _('Veranstaltung berücksichtigen'));
-                    $('.mvv-overlapping-invisible').attr('title', _('Veranstaltung nicht berücksichtigen'));
+                    $('.mvv-overlapping-exclude').attr('title', $gettext('Veranstaltung berücksichtigen'));
+                    $('.mvv-overlapping-invisible').attr('title', $gettext('Veranstaltung nicht berücksichtigen'));
 
                 }
             })

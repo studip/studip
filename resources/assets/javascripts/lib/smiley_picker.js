@@ -19,7 +19,7 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  */
-import { _ } from './gettext.js';
+import { $gettext } from './gettext.js';
 import Dialog from './dialog.js';
 
 var initialized = false,
@@ -67,12 +67,12 @@ const SmileyPicker = {
                 width: 420, // needs to be hardcoded, unfortunately.
                 dialogClass: 'smiley-picker-dialog',
                 resizable: false,
-                title: _('Smileys'),
+                title: $gettext('Smileys'),
                 show: 'fade',
                 hide: 'fade',
                 buttons: [
                     {
-                        text: _('Zur Gesamtübersicht'),
+                        text: $gettext('Zur Gesamtübersicht'),
                         click: function() {
                             var url = STUDIP.URLHelper.getURL('dispatch.php/smileys');
                             picker_element.dialog('close');
@@ -80,7 +80,7 @@ const SmileyPicker = {
                         }
                     },
                     {
-                        text: _('Schliessen'),
+                        text: $gettext('Schliessen'),
                         click: function() {
                             picker_element.dialog('close');
                         }

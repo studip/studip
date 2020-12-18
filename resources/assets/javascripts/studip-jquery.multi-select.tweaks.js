@@ -1,4 +1,4 @@
-import { _ } from './lib/gettext.js';
+import { $gettext } from './lib/gettext.js';
 
 /*jslint browser: true */
 /*global jQuery */
@@ -53,7 +53,7 @@ import { _ } from './lib/gettext.js';
             $option.text(chunks.join("\n"));
 
             if ($option.is(':disabled')) {
-                $option.attr('title', _('Die Person ist bereits eingetragen.'));
+                $option.attr('title', $gettext('Die Person ist bereits eingetragen.'));
             }
         }
 

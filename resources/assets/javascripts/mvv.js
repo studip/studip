@@ -1,4 +1,4 @@
-import { _ } from './lib/gettext.js';
+import { $gettext } from './lib/gettext.js';
 
 jQuery(function ($) {
     $(document).on('click', 'a.mvv-load-in-new-row', function () {
@@ -97,7 +97,7 @@ jQuery(function ($) {
             }
 
             $('#search-file-select').select2({
-                placeholder: _('Dokument suchen'),
+                placeholder: $gettext('Dokument suchen'),
                 minimumInputLength: 3,
                 ajax: {
                     url: STUDIP.URLHelper.getURL('dispatch.php/materialien/files/search_file'),
@@ -106,7 +106,7 @@ jQuery(function ($) {
             });
 
             $('#search-file-studiengang-select').select2({
-                placeholder: _('Studiengang suchen'),
+                placeholder: $gettext('Studiengang suchen'),
                 minimumInputLength: 3,
                 ajax: {
                     url: STUDIP.URLHelper.getURL('dispatch.php/materialien/files/search_studiengang'),
@@ -114,7 +114,7 @@ jQuery(function ($) {
                 }
             });
             $('#search-file-modul-select').select2({
-                placeholder: _('Modul suchen'),
+                placeholder: $gettext('Modul suchen'),
                 minimumInputLength: 3,
                 ajax: {
                     url: STUDIP.URLHelper.getURL('dispatch.php/materialien/files/search_modul'),
@@ -122,7 +122,7 @@ jQuery(function ($) {
                 }
             });
             $('#search-file-abschlusskategorie-select').select2({
-                placeholder: _('AbschlussKategorie suchen'),
+                placeholder: $gettext('AbschlussKategorie suchen'),
                 minimumInputLength: 3,
                 ajax: {
                     url: STUDIP.URLHelper.getURL('dispatch.php/materialien/files/search_abschlusskategorie'),
@@ -173,7 +173,7 @@ STUDIP.MVV.Search = {
             item_id = jQuery('#'+qs_name+'_realvalue').val();
         jQuery('<img src="' + STUDIP.ASSETS_URL
             + 'images/icons/yellow/arr_2down.svg">')
-            .attr('alt', _("hinzufügen"))
+            .attr('alt', $gettext("hinzufügen"))
             .appendTo(add_button);
         if (item_id == '') {
             qs_item.siblings('.mvv-add-button').find('.mvv-add-item')
@@ -227,7 +227,7 @@ STUDIP.MVV.Search = {
         var reset_button = jQuery('<input type="image" />');
             reset_button.attr({
                 src: STUDIP.ASSETS_URL+'images/icons/blue/decline.svg',
-                title: _("Suche zurücksetzen")
+                title: $gettext("Suche zurücksetzen")
             }).addClass('mvv-search-reset');
         if (!_.isUndefined(do_submit)) {
             qs_select.change(function() {
@@ -301,7 +301,7 @@ STUDIP.MVV.Search = {
             if (_.isNull(d.name)) {
                 $('input[name="name"]').attr(
                     'placeholder',
-                    _('Keine Angabe beim Fach')
+                    $gettext('Keine Angabe beim Fach')
                 );
             } else {
                 $('input[name="name"]').attr({
@@ -313,7 +313,7 @@ STUDIP.MVV.Search = {
             if (_.isNull(d.name_en)) {
                 $('input[name="name_i18n[en_GB]"]').attr(
                     'placeholder',
-                    _('Keine Angabe beim Fach')
+                    $gettext('Keine Angabe beim Fach')
                 );
             } else {
                 $('input[name="name_i18n[en_GB]"]').attr('value', d.name_en);
@@ -321,7 +321,7 @@ STUDIP.MVV.Search = {
             if (_.isNull(d.name_kurz)) {
                 $('input[name="name_kurz"]').attr(
                     'placeholder',
-                    _('Keine Angabe beim Fach')
+                    $gettext('Keine Angabe beim Fach')
                 );
             } else {
                 $('input[name="name_kurz"]').attr('value', d.name_kurz);
@@ -329,7 +329,7 @@ STUDIP.MVV.Search = {
             if (_.isNull(d.name_kurz_en)) {
                 $('input[name="name_kurz_i18n[en_GB]"]').attr(
                     'placeholder',
-                    _('Keine Angabe beim Fach')
+                    $gettext('Keine Angabe beim Fach')
                 );
             } else {
                 $('input[name="name_kurz_i18n[en_GB]"]').attr('value', d.name_kurz_en);
@@ -600,7 +600,7 @@ STUDIP.MVV.Content = {
                 }
                 item.html(STUDIP.MVV.Content.deskriptor_data[field_id]['value']);
             } else {
-                item.html(_("Datenfeld in Original-Sprache nicht verfügbar."));
+                item.html($gettext("Datenfeld in Original-Sprache nicht verfügbar."));
                 item.css({
                     "color": "red",
                     "font-style": "italic"

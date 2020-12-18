@@ -1,4 +1,4 @@
-import { _ as t } from './gettext.js';
+import { $gettext } from './gettext.js';
 
 const MultiPersonSearch = {
     init: function() {
@@ -17,21 +17,21 @@ const MultiPersonSearch = {
     },
 
     dialog: function(name) {
-        var count_template = _.template(t('Sie haben <%= count %> Personen ausgewählt'));
+        var count_template = _.template($gettext('Sie haben <%= count %> Personen ausgewählt'));
 
         this.name = name;
 
         $('#' + name + '_selectbox').multiSelect({
-            selectableHeader: '<div>' + t('Suchergebnisse') + '</div>',
+            selectableHeader: '<div>' + $gettext('Suchergebnisse') + '</div>',
             selectionHeader:
                 '<div>' + count_template({ count: "<span id='" + this.name + "_count'>0</span>" }) + '.</div>',
             selectableFooter:
                 '<a href="javascript:STUDIP.MultiPersonSearch.selectAll();">' +
-                t('Alle hinzufügen') +
+                $gettext('Alle hinzufügen') +
                 '</a>',
             selectionFooter:
                 '<a href="javascript:STUDIP.MultiPersonSearch.unselectAll();">' +
-                t('Alle entfernen') +
+                $gettext('Alle entfernen') +
                 '</a>'
         });
 
@@ -67,7 +67,7 @@ const MultiPersonSearch = {
         });
 
         if (count == 0) {
-            MultiPersonSearch.append('--', t(' Dieser Filter enthält keine (neuen) Personen.'), true);
+            MultiPersonSearch.append('--', $gettext(' Dieser Filter enthält keine (neuen) Personen.'), true);
         }
 
         MultiPersonSearch.refresh();
@@ -85,7 +85,7 @@ const MultiPersonSearch = {
         var searchterm = $('#' + this.name + '_searchinput').val(),
             name = this.name,
             not_found_template = _.template(
-                t('Es wurden keine neuen Ergebnisse für "<%= needle %>" gefunden.')
+                $gettext('Es wurden keine neuen Ergebnisse für "<%= needle %>" gefunden.')
             );
         $.getJSON(
             STUDIP.URLHelper.getURL('dispatch.php/multipersonsearch/ajax_search/' + this.name, { s: searchterm }),

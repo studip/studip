@@ -1,5 +1,5 @@
 /*jslint esversion: 6*/
-import { _ as t } from './gettext.js';
+import { $gettext } from './gettext.js';
 
 /* ------------------------------------------------------------------------
  * QuickSearch inputs
@@ -90,7 +90,7 @@ const QuickSearch = {
                             if (!data.length) {
                                 add([{
                                     value: '',
-                                    label: t('Kein Ergebnis gefunden.'),
+                                    label: $gettext('Kein Ergebnis gefunden.'),
                                     disabled: true
                                 }]);
                                 return;
@@ -124,7 +124,7 @@ const QuickSearch = {
                             add([
                                 {
                                     value: '',
-                                    label: t('Fehler') + ': ' + jqxhr.responseText,
+                                    label: $gettext('Fehler') + ': ' + jqxhr.responseText,
                                     disabled: true
                                 }
                             ]);
@@ -169,7 +169,7 @@ const QuickSearch = {
             if (input.is('[required]')) {
                 input.closest('form').submit(function (event) {
                     if (hidden.val() === '') {
-                        input[0].setCustomValidity(t('Bitte wählen Sie einen gültigen Wert aus!'));
+                        input[0].setCustomValidity($gettext('Bitte wählen Sie einen gültigen Wert aus!'));
                         event.preventDefault();
                      }
                  });

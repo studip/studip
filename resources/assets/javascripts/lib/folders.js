@@ -1,4 +1,4 @@
-import { _ } from './gettext.js';
+import { $gettext } from './gettext.js';
 import Dialog from './dialog.js';
 
 const Folders = {
@@ -11,7 +11,7 @@ const Folders = {
                 folder_id +
                 '&js=1',
             {
-                title: _('Dokument hinzufügen')
+                title: $gettext('Dokument hinzufügen')
             }
         );
     },

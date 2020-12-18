@@ -1,4 +1,4 @@
-import { _ } from '../lib/gettext.js';
+import { $gettext } from '../lib/gettext.js';
 
 /**
  * Secure forms or form elements by displaying a warning on page unload if
@@ -128,7 +128,7 @@ $(window).on('beforeunload', function(event) {
     }
 
     event = event || window.event || {};
-    event.returnValue = _('Ihre Eingaben wurden bislang noch nicht gespeichert.');
+    event.returnValue = $gettext('Ihre Eingaben wurden bislang noch nicht gespeichert.');
     return event.returnValue;
 });
 
@@ -138,7 +138,7 @@ $(document).on('dialogbeforeclose', function(event) {
         return true;
     }
 
-    if (!window.confirm(_('Ihre Eingaben wurden bislang noch nicht gespeichert.'))) {
+    if (!window.confirm($gettext('Ihre Eingaben wurden bislang noch nicht gespeichert.'))) {
         event.preventDefault();
         event.stopPropagation();
         return false;

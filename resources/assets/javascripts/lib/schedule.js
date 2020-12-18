@@ -1,4 +1,4 @@
-import { _ } from './gettext.js';
+import { $gettext } from './gettext.js';
 import Calendar from './calendar.js';
 import Dialog from './dialog.js';
 
@@ -56,7 +56,7 @@ const Schedule = {
         if ($('#schedule_entry_new').length === 0) return;
 
         Dialog.show(template, {
-            title: _('Neuen Termin eintragen'),
+            title: $gettext('Neuen Termin eintragen'),
             origin: this
         });
 
@@ -126,7 +126,7 @@ const Schedule = {
             STUDIP.URLHelper.getURL('dispatch.php/calendar/schedule/entryajax/' + seminar_id + '/' + cycle_id),
             function(data) {
                 Dialog.show(data, {
-                    title: _('Veranstaltungsdetails')
+                    title: $gettext('Veranstaltungsdetails')
                 });
             }
         );
@@ -142,7 +142,7 @@ const Schedule = {
     showScheduleDetails: function(id) {
         jQuery.get(STUDIP.URLHelper.getURL('dispatch.php/calendar/schedule/entry/' + id), function(data) {
             Dialog.show(data, {
-                title: _('Termindetails bearbeiten')
+                title: $gettext('Termindetails bearbeiten')
             });
         });
 
@@ -159,7 +159,7 @@ const Schedule = {
             data
         ) {
             Dialog.show(data, {
-                title: _('Veranstaltungsdetails')
+                title: $gettext('Veranstaltungsdetails')
             });
         });
 

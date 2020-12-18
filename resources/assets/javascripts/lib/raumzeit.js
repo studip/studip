@@ -1,4 +1,4 @@
-import { _ } from './gettext.js';
+import { $gettext } from './gettext.js';
 
 const Raumzeit = {
     disableBookableRooms: function(icon) {
@@ -12,7 +12,7 @@ const Raumzeit = {
             });
 
         me.attr('data-state', false);
-        me.attr('title', _('Nur buchbare Räume anzeigen'));
+        me.attr('title', $gettext('Nur buchbare Räume anzeigen'));
     }
 };
 

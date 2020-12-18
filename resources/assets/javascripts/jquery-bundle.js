@@ -80,7 +80,7 @@ import 'blueimp-file-upload/js/jquery.iframe-transport.js';
 import './jquery/jquery.filtertable-1.5.7.js';
 import './jquery/autoresize.jquery.min.js';
 
-import { _ } from './lib/gettext.js';
+import { $gettext } from './lib/gettext.js';
 import Toolbar from './lib/toolbar.js';
 
 $.fn.extend({

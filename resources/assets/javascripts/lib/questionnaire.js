@@ -1,4 +1,4 @@
-import { _ } from '../lib/gettext.js';
+import { $gettext } from '../lib/gettext.js';
 
 const Questionnaire = {
     lastUpdate: null,
@@ -116,7 +116,7 @@ const Questionnaire = {
 
         if (!validated) {
             $(form).addClass("show_validation_hints");
-            STUDIP.Report.warning(_("Noch nicht komplett ausgefüllt."), _("Füllen Sie noch die rot markierten Stellen korrekt aus."));
+            STUDIP.Report.warning($gettext("Noch nicht komplett ausgefüllt."), $gettext("Füllen Sie noch die rot markierten Stellen korrekt aus."));
             return false;
         }
 

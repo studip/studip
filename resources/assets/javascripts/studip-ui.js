@@ -1,4 +1,4 @@
-import { _ } from './lib/gettext.js';
+import { $gettext } from './lib/gettext.js';
 
 /*jslint browser: true */
 /*global jQuery, STUDIP */
@@ -36,57 +36,57 @@ import { _ } from './lib/gettext.js';
     // Setup defaults and default locales
     var defaults = {},
         locale = {
-            closeText: _('Schließen'),
-            prevText: _('Zurück'),
-            nextText: _('Vor'),
-            currentText: _('Jetzt'),
+            closeText: $gettext('Schließen'),
+            prevText: $gettext('Zurück'),
+            nextText: $gettext('Vor'),
+            currentText: $gettext('Jetzt'),
             monthNames: [
-                _('Januar'),
-                _('Februar'),
-                _('März'),
-                _('April'),
-                _('Mai'),
-                _('Juni'),
-                _('Juli'),
-                _('August'),
-                _('September'),
-                _('Oktober'),
-                _('November'),
-                _('Dezember')
+                $gettext('Januar'),
+                $gettext('Februar'),
+                $gettext('März'),
+                $gettext('April'),
+                $gettext('Mai'),
+                $gettext('Juni'),
+                $gettext('Juli'),
+                $gettext('August'),
+                $gettext('September'),
+                $gettext('Oktober'),
+                $gettext('November'),
+                $gettext('Dezember')
             ],
             monthNamesShort: [
-                _('Jan'),
-                _('Feb'),
-                _('Mär'),
-                _('Apr'),
-                _('Mai'),
-                _('Jun'),
-                _('Jul'),
-                _('Aug'),
-                _('Sep'),
-                _('Okt'),
-                _('Nov'),
-                _('Dez')
+                $gettext('Jan'),
+                $gettext('Feb'),
+                $gettext('Mär'),
+                $gettext('Apr'),
+                $gettext('Mai'),
+                $gettext('Jun'),
+                $gettext('Jul'),
+                $gettext('Aug'),
+                $gettext('Sep'),
+                $gettext('Okt'),
+                $gettext('Nov'),
+                $gettext('Dez')
             ],
             dayNames: [
-                _('Sonntag'),
-                _('Montag'),
-                _('Dienstag'),
-                _('Mittwoch'),
-                _('Donnerstag'),
-                _('Freitag'),
-                _('Samstag')
+                $gettext('Sonntag'),
+                $gettext('Montag'),
+                $gettext('Dienstag'),
+                $gettext('Mittwoch'),
+                $gettext('Donnerstag'),
+                $gettext('Freitag'),
+                $gettext('Samstag')
             ],
             dayNamesShort: [
-                _('So'),
-                _('Mo'),
-                _('Di'),
-                _('Mi'),
-                _('Do'),
-                _('Fr'),
-                _('Sa')
+                $gettext('So'),
+                $gettext('Mo'),
+                $gettext('Di'),
+                $gettext('Mi'),
+                $gettext('Do'),
+                $gettext('Fr'),
+                $gettext('Sa')
             ],
-            weekHeader: _('Wo'),
+            weekHeader: $gettext('Wo'),
             dateFormat: 'dd.mm.yy',
             firstDay: 1,
             isRTL: false,
@@ -94,17 +94,17 @@ import { _ } from './lib/gettext.js';
             yearSuffix: '',
             changeMonth: true,
             changeYear: true,
-            timeOnlyTitle: _('Zeit wählen'),
-            timeText: _('Zeit'),
-            hourText: _('Stunde'),
-            minuteText: _('Minute'),
-            secondText: _('Sekunde'),
-            millisecText: _('Millisekunde'),
-            microsecText: _('Mikrosekunde'),
-            timezoneText: _('Zeitzone'),
-            timeFormat: _('HH:mm'),
-            amNames: [_('vorm.'), 'AM', 'A'],
-            pmNames: [_('nachm.'), 'PM', 'P']
+            timeOnlyTitle: $gettext('Zeit wählen'),
+            timeText: $gettext('Zeit'),
+            hourText: $gettext('Stunde'),
+            minuteText: $gettext('Minute'),
+            secondText: $gettext('Sekunde'),
+            millisecText: $gettext('Millisekunde'),
+            microsecText: $gettext('Mikrosekunde'),
+            timezoneText: $gettext('Zeitzone'),
+            timeFormat: $gettext('HH:mm'),
+            amNames: [$gettext('vorm.'), 'AM', 'A'],
+            pmNames: [$gettext('nachm.'), 'PM', 'P']
         };
     // Set dayNamesMin to dayNamesShort since they are equal
     locale.dayNamesMin = locale.dayNamesShort;

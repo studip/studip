@@ -1,4 +1,4 @@
-import { _ } from '../lib/gettext.js';
+import { $gettext } from '../lib/gettext.js';
 
 /*jslint browser: true, unparam: true */
 /*global jQuery, STUDIP */
@@ -67,7 +67,7 @@ const News = {
         $(`#${id}`).dialog({
             modal: true,
             height: News.dialog_height,
-            title: _('Dialog wird geladen...'),
+            title: $gettext('Dialog wird geladen...'),
             width: News.dialog_width,
             close () {
                 $(`#${id}`).remove();
@@ -85,7 +85,7 @@ const News = {
 
             News.init(id);
         }).fail(function () {
-            window.alert(_('Fehler beim Aufruf des News-Controllers'));
+            window.alert($gettext('Fehler beim Aufruf des News-Controllers'));
         });
     },
 
@@ -121,7 +121,7 @@ const News = {
                 News.init(id);
             }).fail(function () {
                 News.pending_ajax_request = false;
-                window.alert(_('Fehler beim Aufruf des News-Controllers'));
+                window.alert($gettext('Fehler beim Aufruf des News-Controllers'));
             });
         }
     },
