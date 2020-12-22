@@ -163,14 +163,7 @@ class RoomManagement_OverviewController extends StudipController
                     //Global resource admins can see all room requests.
                     //Get the 10 latest requests:
                     $this->room_requests = RoomRequest::findBySql(
-                        "INNER JOIN resources
-                        ON resource_requests.resource_id = resources.id
-                        INNER JOIN resource_categories
-                        ON resources.category_id = resource_categories.id
-                        WHERE
-                        resource_categories.class_name IN ( :room_class_names )
-                        AND
-                        resource_requests.closed = '0'
+                        "resource_requests.closed = '0'
                         ORDER BY chdate DESC
                         LIMIT 10",
                         ['room_class_names' => RoomManager::getAllRoomClassNames()]

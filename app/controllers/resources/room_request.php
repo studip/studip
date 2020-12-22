@@ -43,7 +43,8 @@ class Resources_RoomRequestController extends AuthenticatedController
 
             if (Request::get('reset_filter')) {
                 $this->filter = [
-                    'marked' => -1
+                    'marked' => -1,
+                    'own_requests' => 1
                 ];
             } else {
                 if (Request::option('institut_id')) {
@@ -56,6 +57,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     $GLOBALS['user']->cfg->MY_COURSES_SELECTED_CYCLE = Semester::findCurrent()->id;
                 }
                 $this->filter['marked'] = -1;
+                $this->filter['own_requests'] = 1;
                 if (Request::submitted('marked')) {
                     $this->filter['marked'] = Request::get('marked');
                 }
@@ -158,7 +160,7 @@ class Resources_RoomRequestController extends AuthenticatedController
 
             //At this point, only the "marked" filter is definetly set.
             //If more filters are set, we must show the reset button.
-            $this->show_filter_reset_button = count($this->filter) > 1;
+            $this->show_filter_reset_button = count($this->filter) > 2;
 
             //The following filters are special:
             $this->filter['semester'] = $GLOBALS['user']->cfg->MY_COURSES_SELECTED_CYCLE;
