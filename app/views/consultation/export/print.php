@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title><?= _('Sprechstundenliste') ?></title>
+    <title><?= _('Terminliste') ?></title>
     <style>
     body {
         padding: 0;
@@ -66,7 +66,7 @@
         </button>
 
         <?= sprintf(
-            _('Sprechstundenliste von %s'),
+            _('Terminliste von %s'),
             htmlReady($current_user->getFullName())
         ) ?>
     </h1>

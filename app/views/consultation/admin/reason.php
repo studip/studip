@@ -2,7 +2,7 @@
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
-        <legend><?= _('Grund für die Sprechstundenbuchung bearbeiten') ?></legend>
+        <legend><?= _('Grund für die Buchung bearbeiten') ?></legend>
 
         <label>
             <?= _('Grund') ?>

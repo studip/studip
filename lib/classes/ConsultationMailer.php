@@ -60,7 +60,7 @@ class ConsultationMailer
             self::sendMessage(
                 $user,
                 $booking,
-                sprintf(_('Sprechstundentermin von %s zugesagt'), $booking->user->getFullName()),
+                sprintf(_('Termin von %s zugesagt'), $booking->user->getFullName()),
                 $booking->reason
             );
         }
@@ -76,7 +76,7 @@ class ConsultationMailer
         self::sendMessage(
             $booking->user,
             $booking,
-            sprintf(_('Sprechstundentermin bei %s zugesagt'), $booking->slot->block->range_display),
+            sprintf(_('Termin bei %s zugesagt'), $booking->slot->block->range_display),
             $booking->reason
         );
     }
@@ -94,7 +94,7 @@ class ConsultationMailer
         self::sendMessage(
             $receiver,
             $booking->slot,
-            sprintf(_('Grund des Sprechstundentermins bei bearbeitet'), $booking->slot->block->range_display),
+            sprintf(_('Grund des Termins bei bearbeitet'), $booking->slot->block->range_display),
             $booking->reason
         );
     }
@@ -111,7 +111,7 @@ class ConsultationMailer
             self::sendMessage(
                 $user,
                 $booking,
-                sprintf(_('Sprechstundentermin von %s abgesagt'), $booking->user->getFullName()),
+                sprintf(_('Termin von %s abgesagt'), $booking->user->getFullName()),
                 trim($reason)
             );
         }
@@ -128,7 +128,7 @@ class ConsultationMailer
         self::sendMessage(
             $booking->user,
             $booking,
-            sprintf(_('Sprechstundentermin bei %s abgesagt'), $booking->slot->block->range_display),
+            sprintf(_('Termin bei %s abgesagt'), $booking->slot->block->range_display),
             trim($reason)
         );
     }

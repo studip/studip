@@ -46,7 +46,7 @@ class ConsultationBooking extends SimpleORMap implements PrivacyObject
             $event = $booking->slot->createEvent($booking->user);
             $event->category_intern = 1;
             $event->summary = sprintf(
-                _('Sprechstundentermin bei %s'),
+                _('Termin bei %s'),
                 $booking->slot->block->range->getFullName()
             );
             $event->description = $booking->reason;
@@ -121,7 +121,7 @@ class ConsultationBooking extends SimpleORMap implements PrivacyObject
         $bookings = self::findByUser_id($storage->user_id);
         if ($bookings) {
             $storage->addTabularData(
-                _('Sprechstundenbelegungen'),
+                _('Terminbelegungen'),
                 'consultation_bookings',
                 array_map(function ($booking) {
                     return $booking->toRawArray();

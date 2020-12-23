@@ -112,7 +112,7 @@ class ConsultationModule extends StudIPPlugin implements StandardPlugin, SystemP
     public function exportUserData(StoredUserData $storage)
     {
         $storage->addTabularData(
-            _('Sprechstunden-Blöcke'),
+            _('Terminblöcke'),
             'consultation_blocks',
             ConsultationBooking::findAndMapBySQL(
                 function ($block) {
@@ -123,7 +123,7 @@ class ConsultationModule extends StudIPPlugin implements StandardPlugin, SystemP
             )
         );
         $storage->addTabularData(
-            _('Sprechstunden-Buchungen'),
+            _('Terminbuchungen'),
             'consultation_bookings',
             ConsultationBooking::findAndMapBySQL(
                 function ($booking) {

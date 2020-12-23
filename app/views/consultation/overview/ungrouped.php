@@ -1,6 +1,6 @@
 <? if (count($blocks) === 0): ?>
 
-<?= MessageBox::info(_('Aktuell werden keine Sprechstunden angeboten.'))->hideClose() ?>
+<?= MessageBox::info(_('Aktuell werden keine Termine angeboten.'))->hideClose() ?>
 
 <? else: ?>
 
@@ -69,11 +69,11 @@
             <td class="actions">
             <? if ($slot->isOccupied($GLOBALS['user']->id)): ?>
                 <a href="<?= $controller->cancel($block, $slot) ?>" data-dialog="size=auto">
-                    <?= Icon::create('remove/consultation')->asImg(tooltip2(_('Sprechstundentermin absagen'))) ?>
+                    <?= Icon::create('remove/consultation')->asImg(tooltip2(_('Termin absagen'))) ?>
                 </a>
             <? elseif (!$slot->isOccupied()): ?>
                 <a href="<?= $controller->book($block, $slot) ?>" data-dialog="size=auto">
-                    <?= Icon::create('add/consultation')->asImg(tooltip2(_('Sprechstundentermin reservieren'))) ?>
+                    <?= Icon::create('add/consultation')->asImg(tooltip2(_('Termin reservieren'))) ?>
                 </a>
             <? endif; ?>
             </td>

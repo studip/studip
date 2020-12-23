@@ -21,7 +21,7 @@ class Consultation_AdminController extends ConsultationController
         }
 
         $this->activateNavigation('admin');
-        PageLayout::setTitle(_('Verwaltung der Sprechstundentermine'));
+        PageLayout::setTitle(_('Verwaltung der Termine'));
 
         $this->range_config = $this->range->getConfiguration();
 
@@ -110,7 +110,7 @@ class Consultation_AdminController extends ConsultationController
 
     public function create_action()
     {
-        PageLayout::setTitle(_('Neue Sprechstundenblöcke anlegen'));
+        PageLayout::setTitle(_('Neue Terminblöcke anlegen'));
 
         $this->room = '';
         $this->responsible = false;
@@ -187,7 +187,7 @@ class Consultation_AdminController extends ConsultationController
         if ($stored === 0) {
             PageLayout::postError(_('In dem von Ihnen gewählten Zeitraum konnten für den gewählten Wochentag keine Termine erzeugt werden.'));
         } else {
-            PageLayout::postSuccess(_('Die Sprechstundenblöcke wurden erfolgreich angelegt.'));
+            PageLayout::postSuccess(_('Die Terminblöcke wurden erfolgreich angelegt.'));
         }
         $this->relocate('consultation/admin');
     }
@@ -195,9 +195,9 @@ class Consultation_AdminController extends ConsultationController
     public function note_action($block_id, $slot_id = null, $page = 0)
     {
         if ($slot_id) {
-            PageLayout::setTitle(_('Anmerkung zu diesem Sprechstundentermin bearbeiten'));
+            PageLayout::setTitle(_('Anmerkung zu diesem Termin bearbeiten'));
         } else {
-            PageLayout::setTitle(_('Anmerkung zu diesem Sprechstundenblock bearbeiten'));
+            PageLayout::setTitle(_('Anmerkung zu diesem Block bearbeiten'));
         }
 
         $this->block   = $this->loadBlock($block_id);
@@ -222,7 +222,7 @@ class Consultation_AdminController extends ConsultationController
                 $changed = $this->block->store();
             }
             if ($changed) {
-                PageLayout::postSuccess(_('Der Sprechstundenblock wurde bearbeitet'));
+                PageLayout::postSuccess(_('Der Block wurde bearbeitet'));
             }
 
             if ($this->block->is_expired) {
@@ -255,12 +255,12 @@ class Consultation_AdminController extends ConsultationController
 
             if ($invalid > 0) {
                 PageLayout::postError(implode(' ', [
-                    _('Sie können mindestens einen Sprechstundentermin nicht löschen, da er bereits belegt ist.'),
+                    _('Sie können mindestens einen Termin nicht löschen, da er bereits belegt ist.'),
                     _('Bitte sagen Sie diese Termine erst ab.')
                 ]));
             } else {
                 $block->delete();
-                PageLayout::postSuccess(_('Die Sprechstundentermine wurden gelöscht'));
+                PageLayout::postSuccess(_('Die Termine wurden gelöscht'));
             }
 
         } else {
@@ -269,12 +269,12 @@ class Consultation_AdminController extends ConsultationController
 
             if (!$this->slot->is_expired && $this->slot->has_bookings) {
                 PageLayout::postError(implode(' ', [
-                    _('Sie können diesen Sprechstundentermin nicht löschen, da er bereits belegt ist.'),
+                    _('Sie können diesen Termin nicht löschen, da er bereits belegt ist.'),
                     _('Bitte sagen Sie den Termin erst ab.')
                 ]));
             } else {
                 $this->slot->delete();
-                PageLayout::postSuccess(_('Der Sprechstundentermin wurde gelöscht'));
+                PageLayout::postSuccess(_('Der Termin wurde gelöscht'));
             }
         }
 
@@ -287,7 +287,7 @@ class Consultation_AdminController extends ConsultationController
 
     public function book_action($block_id, $slot_id, $page = 0)
     {
-        PageLayout::setTitle(_('Sprechstundentermin reservieren'));
+        PageLayout::setTitle(_('Termin reservieren'));
 
         $this->slot = $this->loadSlot($block_id, $slot_id);
         $this->page = $page;
@@ -310,7 +310,7 @@ class Consultation_AdminController extends ConsultationController
             CSRFProtection::verifyUnsafeRequest();
 
             if ($this->slot->isOccupied()) {
-                PageLayout::postError(_('Dieser Sprechstundentermin ist bereits belegt.'));
+                PageLayout::postError(_('Dieser Termin ist bereits belegt.'));
             } else {
                 $booking = new ConsultationBooking();
                 $booking->slot_id = $this->slot->id;
@@ -318,7 +318,7 @@ class Consultation_AdminController extends ConsultationController
                 $booking->reason  = trim(Request::get('reason'));
                 $booking->store();
 
-                PageLayout::postSuccess(_('Der Sprechstundentermin wurde reserviert.'));
+                PageLayout::postSuccess(_('Der Termin wurde reserviert.'));
             }
 
             $this->redirect("consultation/admin/index/{$page}#slot-{$slot->id}");
@@ -327,7 +327,7 @@ class Consultation_AdminController extends ConsultationController
 
     public function edit_room_action($block_id, $page = 0)
     {
-        PageLayout::setTitle(_('Ort des Sprechstundenblocks bearbeiten'));
+        PageLayout::setTitle(_('Ort des Blocks bearbeiten'));
 
         $this->block = $this->loadBlock($block_id);
         $this->page  = $page;
@@ -341,7 +341,7 @@ class Consultation_AdminController extends ConsultationController
         $this->block->room = Request::get('room');
         $this->block->store();
 
-        PageLayout::postSuccess(_('Der Sprechstundenblock wurde gespeichert.'));
+        PageLayout::postSuccess(_('Der Block wurde gespeichert.'));
 
         if ($this->block->is_expired) {
             $this->redirect("consultation/admin/expired/{$page}#block-{$block_id}");
@@ -352,7 +352,7 @@ class Consultation_AdminController extends ConsultationController
 
     public function cancel_block_action($block_id, $page = 0)
     {
-        PageLayout::setTitle(_('Sprechstundentermine absagen'));
+        PageLayout::setTitle(_('Termine absagen'));
 
         $this->block = $this->loadBlock($block_id);
         $this->page  = $page;
@@ -367,14 +367,14 @@ class Consultation_AdminController extends ConsultationController
                 }
             }
 
-            PageLayout::postSuccess(_('Die Sprechstundentermine wurden abgesagt.'));
+            PageLayout::postSuccess(_('Die Termine wurden abgesagt.'));
             $this->redirect("consultation/admin/index/{$page}#block-{$block_id}");
         }
     }
 
     public function cancel_slot_action($block_id, $slot_id, $page = 0)
     {
-        PageLayout::setTitle(_('Sprechstundentermin absagen'));
+        PageLayout::setTitle(_('Termin absagen'));
 
         $this->slot = $this->loadSlot($block_id, $slot_id);
         $this->page = $page;
@@ -398,14 +398,14 @@ class Consultation_AdminController extends ConsultationController
             }
 
             if ($removed === count($this->slot->bookings)) {
-                PageLayout::postSuccess(_('Der Sprechstundentermin wurde abgesagt.'));
+                PageLayout::postSuccess(_('Der Termin wurde abgesagt.'));
             } elseif ($removed > 1) {
                 PageLayout::postSuccess(sprintf(
-                    _('Der Sprechstundentermin wurde für %u Personen abgesagt.'),
+                    _('Der Termin wurde für %u Personen abgesagt.'),
                     $removed
                 ));
             } elseif ($removed === 1) {
-                PageLayout::postSuccess(_('Der Sprechstundentermin wurde für eine Person abgesagt.'));
+                PageLayout::postSuccess(_('Der Termin wurde für eine Person abgesagt.'));
             }
             $this->redirect("consultation/admin/index/{$page}#slot-{$this->slot->id}");
         }
@@ -413,7 +413,7 @@ class Consultation_AdminController extends ConsultationController
 
     public function reason_action($block_id, $slot_id, $booking_id, $page = 0)
     {
-        PageLayout::setTitle(_('Grund für die Sprechstundenbuchung bearbeiten'));
+        PageLayout::setTitle(_('Grund für die Buchung bearbeiten'));
 
         $this->booking = $this->loadBooking($block_id, $slot_id, $booking_id);
         $this->page    = $page;
@@ -424,7 +424,7 @@ class Consultation_AdminController extends ConsultationController
             $this->booking->reason = trim(Request::get('reason'));
             $this->booking->store();
 
-            PageLayout::postSuccess(_('Der Grund für die Sprechstundenbuchung wurde bearbeitet.'));
+            PageLayout::postSuccess(_('Der Grund für die Buchung wurde bearbeitet.'));
 
             if ($this->booking->slot->block->is_expired) {
                 $this->redirect("consultation/admin/expired/{$page}#slot-{$this->booking->slot->id}");
@@ -467,7 +467,7 @@ class Consultation_AdminController extends ConsultationController
         $this->slots = $this->getSlotsFromBulk();
 
         if (count($this->slots) === 0) {
-            PageLayout::postInfo(_('Sie haben keine Sprechstundentermine gewählt.'));
+            PageLayout::postInfo(_('Sie haben keine Termine gewählt.'));
         } elseif (Request::submitted('delete')) {
             $has_bookings = $this->slots->any(function ($slot) {
                 return !$slot->is_expired
@@ -479,7 +479,7 @@ class Consultation_AdminController extends ConsultationController
                 foreach ($this->slots as $slot) {
                     $deleted += $slot->delete();
                 }
-                PageLayout::postSuccess(_('Die Sprechstundentermine wurden gelöscht'));
+                PageLayout::postSuccess(_('Die Termine wurden gelöscht'));
             } elseif (Request::option('delete') === 'skip') {
                 $deleted = 0;
                 foreach ($this->slots as $slot) {
@@ -489,9 +489,9 @@ class Consultation_AdminController extends ConsultationController
                 }
 
                 if ($deleted === 1) {
-                    PageLayout::postSuccess(_('Der freie Sprechstundentermin wurde gelöscht'));
+                    PageLayout::postSuccess(_('Der freie Termin wurde gelöscht'));
                 } elseif ($deleted > 0) {
-                    PageLayout::postSuccess(_('Die freien Sprechstundentermine wurden gelöscht'));
+                    PageLayout::postSuccess(_('Die freien Termine wurden gelöscht'));
                 }
             } elseif (Request::option('delete') === 'cancel' && Request::submitted('reason')) {
                 $reason = trim(Request::get('reason'));
@@ -506,9 +506,9 @@ class Consultation_AdminController extends ConsultationController
                     $deleted += $slot->delete();
                 }
 
-                PageLayout::postSuccess(_('Die Sprechstundentermine wurden gelöscht'));
+                PageLayout::postSuccess(_('Die Termine wurden gelöscht'));
             } else {
-                PageLayout::setTitle(_('Sprechstundentermine löschen'));
+                PageLayout::setTitle(_('Termine löschen'));
                 $this->action = $this->bulk($page, $expired);
                 $this->allow_delete = true;
                 $this->mixed = $this->slots->any(function ($slot) {
@@ -519,7 +519,7 @@ class Consultation_AdminController extends ConsultationController
             }
         } elseif (Request::submitted('cancel')) {
             if (!Request::submitted('reason')) {
-                PageLayout::setTitle(_('Sprechstundentermine absagen'));
+                PageLayout::setTitle(_('Termine absagen'));
                 $this->action = $this->bulk($page, $expired);
                 $this->render_action('cancel_slots');
                 return;
@@ -534,9 +534,9 @@ class Consultation_AdminController extends ConsultationController
                 }
 
                 if ($canceled === 1) {
-                    PageLayout::postSuccess(_('Der Sprechstundentermin wurde abgesagt.'));
+                    PageLayout::postSuccess(_('Der Termin wurde abgesagt.'));
                 } elseif ($canceled > 0) {
-                    PageLayout::postSuccess(_('Die Sprechstundentermine wurden abgesagt.'));
+                    PageLayout::postSuccess(_('Die Termine wurden abgesagt.'));
                 }
             }
         }
@@ -569,13 +569,13 @@ class Consultation_AdminController extends ConsultationController
             $message = [];
             if ($deleted['current'] > 0) {
                 PageLayout::postSuccess(sprintf(
-                    _('%u aktuelle Sprechstundentermine wurden gelöscht'),
+                    _('%u aktuelle Termine wurden gelöscht'),
                     $deleted['current']
                 ));
             }
             if ($deleted['expired'] > 0) {
                 PageLayout::postSuccess(sprintf(
-                    _('%u vergangene  Sprechstundentermine wurden gelöscht'),
+                    _('%u vergangene Termine wurden gelöscht'),
                     $deleted['expired']
                 ));
             }
@@ -619,10 +619,10 @@ class Consultation_AdminController extends ConsultationController
         $p_rec = array_unique($p_rec);
 
         // Get correct default subject
-        $default_subject = _('Sprechstundentermin');
+        $default_subject = _('Termin');
         if (count($timestamps) === 1) {
             $default_subject = sprintf(
-                _('Sprechstundentermin am %s um %s'),
+                _('Termin am %s um %s'),
                 strftime('%x', $timestamps[0]),
                 strftime('%R', $timestamps[0])
             );
@@ -632,7 +632,7 @@ class Consultation_AdminController extends ConsultationController
             }, $timestamps));
             if (count($days) === 1) {
                 $default_subject = sprintf(
-                    _('Sprechstundentermin am %s'),
+                    _('Termin am %s'),
                     $days[0]
                 );
             }
@@ -707,7 +707,7 @@ class Consultation_AdminController extends ConsultationController
 
         $actions = $sidebar->addWidget(new ActionsWidget());
         $actions->addLink(
-            _('Sprechstundenblöcke anlegen'),
+            _('Terminblöcke anlegen'),
             $this->createURL(),
             Icon::create('add')
         )->asDialog('size=auto');
@@ -718,10 +718,10 @@ class Consultation_AdminController extends ConsultationController
         )->asDialog('size=auto');
 
         $actions->addLink(
-            _('Alle Sprechstundentermine löschen'),
+            _('Alle Termine löschen'),
             $this->purgeURL(),
             Icon::create('trash'),
-            ['onclick' => 'return STUDIP.Dialog.confirmAsPost(' . json_encode(_('Wollen Sie wirklich alle Sprechstundentermine löschen?')) . ', this.href);']
+            ['onclick' => 'return STUDIP.Dialog.confirmAsPost(' . json_encode(_('Wollen Sie wirklich alle Termine löschen?')) . ', this.href);']
         );
 
         $options = $sidebar->addWidget(new OptionsWidget());
@@ -732,7 +732,7 @@ class Consultation_AdminController extends ConsultationController
             $this->toggleURL('messages/0', $action === 'expired')
         );
         $options->addCheckbox(
-            _('Abgelaufene Sprechstundenblöcke automatisch löschen'),
+            _('Abgelaufene Terminblöcke automatisch löschen'),
             $config->CONSULTATION_GARBAGE_COLLECT,
             $this->toggleURL('garbage/1', $action === 'expired'),
             $this->toggleURL('garbage/0', $action === 'expired')

@@ -1,6 +1,6 @@
 <? if (count($slots) === 0): ?>
 
-<?= MessageBox::info(_('Sie haben aktuell keine Sprechstunden gebucht.'))->hideClose() ?>
+<?= MessageBox::info(_('Sie haben aktuell keine Termine gebucht.'))->hideClose() ?>
 
 <? else: ?>
 
@@ -46,7 +46,7 @@
             </td>
             <td class="actions">
                 <a href="<?= $controller->cancel($slot->block, $slot, 1) ?>" data-dialog="size=auto">
-                    <?= Icon::create('trash')->asImg(tooltip2(_('Sprechstundentermin absagen'))) ?>
+                    <?= Icon::create('trash')->asImg(tooltip2(_('Termin absagen'))) ?>
                 </a>
             </td>
         </tr>

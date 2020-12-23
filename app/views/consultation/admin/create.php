@@ -21,12 +21,12 @@ $intervals = [
 
 <? if ($flash['confirm-many']): ?>
     <?= MessageBox::info(
-        _('Sie erstellen eine sehr große Anzahl an Sprechstunden.') . ' ' .
+        _('Sie erstellen eine sehr große Anzahl an Terminen.') . ' ' .
         _('Bitte bestätigen Sie diese Aktion.'),
         [
             '<label><input type="checkbox" name="confirmed" value="1">' .
             sprintf(
-                _('Ja, ich möchte wirklich %s Sprechstunden erstellen.'),
+                _('Ja, ich möchte wirklich %s Termine erstellen.'),
                 number_format($flash['confirm-many'], 0, ',', '.')
             ) .
             '</label>'
@@ -36,7 +36,7 @@ $intervals = [
 
     <fieldset>
         <legend>
-            <?= _('Neue Sprechstundenblöcke anlegen') ?>
+            <?= _('Neue Terminblöcke anlegen') ?>
         </legend>
 
         <label>
@@ -141,7 +141,7 @@ $intervals = [
         <label>
             <input type="checkbox" name="calender-events" value="1"
                     <? if (Request::bool('calender-events')) echo 'checked'; ?>>
-            <?= _('Die freien Sprechstundentermine auch im Kalender markieren') ?>
+            <?= _('Die freien Termine auch im Kalender markieren') ?>
         </label>
 
         <label>

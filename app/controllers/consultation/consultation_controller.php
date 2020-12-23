@@ -92,7 +92,7 @@ abstract class ConsultationController extends AuthenticatedController
         $slot  = $block->slots->find($slot_id);
 
         if (!$slot) {
-            throw new Exception(_('Dieser Sprechstundentermin existiert nicht'));
+            throw new Exception(_('Dieser Termin existiert nicht'));
         }
 
         return $slot;
@@ -104,7 +104,7 @@ abstract class ConsultationController extends AuthenticatedController
         $booking = $slot->bookings->find($booking_id);
 
         if (!$booking) {
-            throw new Exception(_('Diese Sprechstundenbuchung existiert nicht'));
+            throw new Exception(_('Diese Buchung existiert nicht'));
         }
 
         return $booking;

@@ -49,7 +49,7 @@ class Consultation_ExportController extends ConsultationController
             }
         }
 
-        $this->render_csv($csv, 'Sprechstunden-Anmeldungen-' . date('Ymd') . '.csv');
+        $this->render_csv($csv, 'Terminvergabe-Anmeldungen-' . date('Ymd') . '.csv');
     }
 
     public function all_action()
@@ -84,7 +84,7 @@ class Consultation_ExportController extends ConsultationController
             }
         }
 
-        $this->render_csv($csv, 'Sprechstunden-' . date('Ymd') . '.csv');
+        $this->render_csv($csv, 'Terminvergabe-' . date('Ymd') . '.csv');
     }
 
     public function print_action($block_id)

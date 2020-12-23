@@ -6,7 +6,7 @@
     })) ?>
 
     <fieldset>
-        <legend><?= _('Sprechstundentermine absagen') ?></legend>
+        <legend><?= _('Termine absagen') ?></legend>
 
     <? if ($allow_delete): ?>
         <p>

@@ -6,7 +6,7 @@
 <? endif; ?>
 
     <fieldset>
-        <legend><?= _('Sprechstundentermin reservieren') ?></legend>
+        <legend><?= _('Termin reservieren') ?></legend>
 
         <label>
             <?= _('Termin') ?><br>

@@ -10,9 +10,9 @@
     <fieldset>
         <legend>
         <? if ($slot_id): ?>
-            <?= _('Information zu diesem Sprechstundentermin bearbeiten') ?>
+            <?= _('Information zu diesem Termin bearbeiten') ?>
         <? else: ?>
-            <?= _('Information zu diesem Sprechstundenblock bearbeiten') ?>
+            <?= _('Information zu diesem Terminblock bearbeiten') ?>
         <? endif; ?>
         </legend>
 

@@ -188,7 +188,7 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
                     }
 
                     throw new OverlapException(
-                        _('Die Zeiten überschneiden sich mit anderen bereits definierten Sprechstunden'),
+                        _('Die Zeiten überschneiden sich mit anderen bereits definierten Terminen'),
                         $details
                     );
                 }
@@ -278,7 +278,7 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
         $blocks = self::findByRange($storage->user_id, 'user');
         if ($blocks) {
             $storage->addTabularData(
-                _('Sprechstundenblöcke'),
+                _('Terminblöcke'),
                 'consultation_blocks',
                 array_map(function ($block) {
                     return $block->toRawArray();
@@ -293,7 +293,7 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
             }
 
             if ($slots) {
-                $storage->addTabularData(_('Sprechstunden'), 'consultation_slots', $slots);
+                $storage->addTabularData(_('Terminvergabe'), 'consultation_slots', $slots);
             }
         }
     }

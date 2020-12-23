@@ -2,11 +2,11 @@
 
 <?= MessageBox::info(sprintf(
     implode('<br>', [
-        _('Derzeit sind keine Sprechstundentermine eingetragen.'),
+        _('Derzeit sind keine Termine eingetragen.'),
         '<a href="%s" class="button" data-dialog="size=auto">%s</a>',
     ]),
     $controller->create(),
-    _('Sprechstundenblöcke anlegen')
+    _('Terminblöcke anlegen')
 ))->hideClose() ?>
 
 <? else: ?>
@@ -71,16 +71,16 @@
                     ['data-dialog' => 'size=50%', 'class' => 'send-mail']
                 )->condition($block['block']->has_bookings && !$block['block']->is_expired)->addLink(
                     $controller->cancel_blockURL($block['block'], $page),
-                    _('Sprechstundentermine absagen'),
+                    _('Termine absagen'),
                     Icon::create('consultation+remove'),
                     ['data-dialog' => 'size=auto']
                 )->condition(!$block['block']->has_bookings || $block['block']->is_expired)->addButton(
                     'remove',
-                    _('Sprechstundentermine entfernen'),
+                    _('Termine entfernen'),
                     Icon::create('trash'),
                     [
                         'formaction'   => $controller->removeURL($block['block'], 0, $page),
-                        'data-confirm' => _('Wollen Sie diese Sprechstundentermine wirklich löschen?'),
+                        'data-confirm' => _('Wollen Sie diese Termine wirklich löschen?'),
                     ]
                 ) ?>
             </th>
@@ -139,7 +139,7 @@
                     ['data-dialog' => 'size=auto']
                 )->condition(!$slot->is_expired && count($slot->bookings) < $slot->block->size)->addLink(
                     $controller->bookURL($block['block'], $slot, $page),
-                    _('Sprechstundentermin reservieren'),
+                    _('Termin reservieren'),
                     Icon::create('consultation+add'),
                     ['data-dialog' => 'size=auto']
                 )->condition($slot->has_bookings)->addLink(
@@ -154,16 +154,16 @@
                     ['data-dialog' => 'size=50%', 'class' => 'send-mail']
                 )->condition($slot->has_bookings && !$slot->is_expired)->addLink(
                     $controller->cancel_slotURL($block['block'], $slot, $page),
-                    _('Sprechstundentermin absagen'),
+                    _('Termin absagen'),
                     Icon::create('consultation+remove'),
                     ['data-dialog' => 'size=auto']
                 )->condition(!$slot->has_bookings || $slot->is_expired)->addButton(
                     'delete',
-                    _('Sprechstundentermin entfernen'),
+                    _('Termin entfernen'),
                     Icon::create('trash'),
                     [
                         'formaction'   => $controller->removeURL($block['block'], $slot, $page),
-                        'data-confirm' => _('Wollen Sie diesen Sprechstundentermin wirklich entfernen?'),
+                        'data-confirm' => _('Wollen Sie diesen Termin wirklich entfernen?'),
                     ]
                 ) ?>
             </td>
@@ -185,7 +185,6 @@
                     ]) ?>
                 <?= Studip\Button::create(_('Löschen'), 'delete', [
                     'class'        => 'consultation-delete-check',
-//                    'data-confirm' => _('Wollen Sie diese Sprechstundentermine wirklich löschen?'),
                     'data-dialog'  => 'size=auto',
                 ]) ?>
 

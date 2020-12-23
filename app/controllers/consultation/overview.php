@@ -61,7 +61,7 @@ class Consultation_OverviewController extends ConsultationController
             CSRFProtection::verifyUnsafeRequest();
 
             if ($this->slot->isOccupied()) {
-                PageLayout::postError(_('Dieser Sprechstundentermin ist bereits belegt.'));
+                PageLayout::postError(_('Dieser Termin ist bereits belegt.'));
             } else {
                 $booking = new ConsultationBooking();
                 $booking->slot_id = $this->slot->id;
@@ -69,7 +69,7 @@ class Consultation_OverviewController extends ConsultationController
                 $booking->reason  = trim(Request::get('reason')) ?: null;
                 $booking->store();
 
-                PageLayout::postSuccess(_('Der Sprechstundentermin wurde reserviert.'));
+                PageLayout::postSuccess(_('Der Termin wurde reserviert.'));
             }
 
             $this->redirect("consultation/overview#block-{$block_id}");
@@ -85,13 +85,13 @@ class Consultation_OverviewController extends ConsultationController
             CSRFProtection::verifyUnsafeRequest();
 
             if (!$this->slot->isOccupied($GLOBALS['user']->id)) {
-                PageLayout::postError(_('Dieser Sprechstundentermin ist nicht von Ihnen belegt.'));
+                PageLayout::postError(_('Dieser Termin ist nicht von Ihnen belegt.'));
             } else {
                 $booking = $this->slot->bookings->findOneBy('user_id', $GLOBALS['user']->id);
 
                 $booking->cancel(Request::get('reason'));
 
-                PageLayout::postSuccess(_('Der Sprechstundentermin wurde abgesagt.'));
+                PageLayout::postSuccess(_('Der Termin wurde abgesagt.'));
             }
 
             if ($from_booked) {

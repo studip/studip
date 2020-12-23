@@ -223,13 +223,13 @@ class ConsultationSlot extends SimpleORMap
                 $booking = $this->bookings->first();
 
                 $event->summary = sprintf(
-                    _('Sprechstundentermin mit %s'),
+                    _('Termin mit %s'),
                     $booking->user->getFullName()
                 );
                 $event->description = $booking->reason;
             } else {
                 $event->summary = sprintf(
-                    _('Sprechstundentermin mit %u Personen'),
+                    _('Termin mit %u Personen'),
                     count($this->bookings)
                 );
                 $event->description = implode("\n\n----\n\n", $this->bookings->map(function ($booking) {
@@ -238,8 +238,8 @@ class ConsultationSlot extends SimpleORMap
             }
         } else {
             $event->category_intern = 9;
-            $event->summary         = _('Freier Sprechstundentermin');
-            $event->description     = _('Dieser Sprechstundentermin ist noch nicht belegt.');
+            $event->summary         = _('Freier Termin');
+            $event->description     = _('Dieser Termin ist noch nicht belegt.');
         }
 
         restoreLanguage();

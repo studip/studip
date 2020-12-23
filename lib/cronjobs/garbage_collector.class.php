@@ -20,7 +20,7 @@ class GarbageCollectorJob extends CronJob
     {
         return _('Entfernt endgültig gelöschte Nachrichten, nicht zugehörige Dateianhänge, abgelaufene Ankündigungen, '
                . 'alte Aktivitäten, veraltete Plugin-Assets sowie veraltete OAuth-Servernonces und abgelaufene '
-               . 'Sprechstundenblöcke');
+               . 'Terminblöcke');
     }
 
     public static function getParameters()
@@ -177,7 +177,7 @@ class GarbageCollectorJob extends CronJob
                       HAVING COUNT(`slot_id`) = SUM(`end_time` < UNIX_TIMESTAMP())";
         $removed = ConsultationBlock::deleteBySQL($condition);
         if ($removed > 0 && $parameters['verbose']) {
-            printf(_('Gelöschte Sprechstundenblöcke: %u') . "\n", $removed);
+            printf(_('Gelöschte Terminblöcke: %u') . "\n", $removed);
         }
     }
 }

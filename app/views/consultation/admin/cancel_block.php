@@ -2,7 +2,7 @@
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
-        <legend><?= _('Sprechstundentermine absagen') ?></legend>
+        <legend><?= _('Termine absagen') ?></legend>
 
         <label>
             <?= _('Termin' ) ?><br>

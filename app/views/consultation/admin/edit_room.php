@@ -2,7 +2,7 @@
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
-        <legend><?= _('Ort des Sprechstundenblocks bearbeiten') ?></legend>
+        <legend><?= _('Ort des Terminblocks bearbeiten') ?></legend>
 
         <label>
             <span class="required"><?= _('Ort') ?></span>

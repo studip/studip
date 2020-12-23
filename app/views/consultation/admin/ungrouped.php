@@ -2,18 +2,18 @@
 
 <?= MessageBox::info(sprintf(
     implode('<br>', [
-        _('Derzeit sind keine Sprechstundentermine eingetragen.'),
+        _('Derzeit sind keine Termine eingetragen.'),
         '<a href="%s" class="button" data-dialog="size=auto">%s</a>',
     ]),
     $controller->create(),
-    _('Sprechstundenblöcke anlegen')
+    _('Terminblöcke anlegen')
 ))->hideClose() ?>
 
 <? else: ?>
 
 <form action="<?= $controller->bulk($page, $current_action === 'expired') ?>" method="post">
 <table class="default consultation-overview block-overview">
-    <caption><?= _('Sprechstundenblöcke') ?></caption>
+    <caption><?= _('Terminblöcke') ?></caption>
     <colgroup>
         <col style="width: 24px">
         <col>
@@ -92,16 +92,16 @@
                     ['data-dialog' => 'size=50%', 'class' => 'send-mail']
                 )->condition($block->has_bookings && !$block->is_expired)->addLink(
                     $controller->cancel_blockURL($block, $page),
-                    _('Sprechstundentermine absagen'),
+                    _('Termine absagen'),
                     Icon::create('consultation+remove'),
                     ['data-dialog' => 'size=auto']
                 )->condition(!$block->has_bookings || $block->is_expired)->addButton(
                     'remove',
-                    _('Sprechstundentermine entfernen'),
+                    _('Termine entfernen'),
                     Icon::create('trash'),
                     [
                         'formaction'   => $controller->removeURL($block, 0, $page),
-                        'data-confirm' => _('Wollen Sie diese Sprechstundentermine wirklich löschen?'),
+                        'data-confirm' => _('Wollen Sie diese Termine wirklich löschen?'),
                     ]
                 ) ?>
             </td>
@@ -117,7 +117,7 @@
                     'formaction'               => $controller->mailURL('bulk'),
                 ]) ?>
                 <?= Studip\Button::create(_('Löschen'), 'delete', [
-                    'data-confirm' => _('Wollen Sie diese Sprechstundentermine wirklich löschen?'),
+                    'data-confirm' => _('Wollen Sie diese Termine wirklich löschen?'),
                 ]) ?>
             </td>
         </tr>
@@ -125,7 +125,7 @@
 </table>
 
 <table class="default consultation-overview slot-overview">
-    <caption><?= _('Sprechstundentermine') ?></caption>
+    <caption><?= _('Termine') ?></caption>
     <colgroup>
         <col width="24px">
         <col width="15%">
@@ -223,7 +223,7 @@
                     ['data-dialog' => 'size=auto']
                 )->condition(!$slot->is_expired && count($slot->bookings) < $slot->block->size)->addLink(
                     $controller->bookURL($slot->block, $slot, $page),
-                    _('Sprechstundentermin reservieren'),
+                    _('Termin reservieren'),
                     Icon::create('consultation+add'),
                     ['data-dialog' => 'size=auto']
                 )->condition($slot->has_bookings)->addLink(
@@ -238,16 +238,16 @@
                     ['data-dialog' => 'size=50%', 'class' => 'send-mail']
                 )->condition($slot->has_bookings && !$slot->is_expired)->addLink(
                     $controller->cancel_slotURL($slot->block, $slot, $page),
-                    _('Sprechstundentermin absagen'),
+                    _('Termin absagen'),
                     Icon::create('consultation+remove'),
                     ['data-dialog' => 'size=auto']
                 )->condition(!$slot->has_bookings || $slot->is_expired)->addButton(
                     'delete',
-                    _('Sprechstundentermin entfernen'),
+                    _('Termin entfernen'),
                     Icon::create('trash'),
                     [
                         'formaction'   => $controller->removeURL($slot->block, $slot, $page),
-                        'data-confirm' => _('Wollen Sie diesen Sprechstundentermin wirklich entfernen?'),
+                        'data-confirm' => _('Wollen Sie diesen Termin wirklich entfernen?'),
                     ]
                 ) ?>
             </td>
@@ -263,7 +263,7 @@
                     'formaction'               => $controller->mailURL('bulk'),
                 ]) ?>
                 <?= Studip\Button::create(_('Löschen'), 'delete', [
-                    'data-confirm'             => _('Wollen Sie diese Sprechstundentermine wirklich löschen?'),
+                    'data-confirm'             => _('Wollen Sie diese Termine wirklich löschen?'),
                     'data-activates-condition' => '.slot-overview tbody tr:not(.is-occupied):has(:checkbox:checked)',
                 ]) ?>
 

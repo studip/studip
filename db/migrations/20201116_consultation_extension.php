@@ -20,17 +20,17 @@ class ConsultationExtension extends Migration
                     `mkdate`, `chdate`,
                     `description`
                   ) VALUES (
-                    'CONSULTATION_GARBAGE_COLLECT', '0', 'boolean', 'range', 'Sprechstunden',
+                    'CONSULTATION_GARBAGE_COLLECT', '0', 'boolean', 'range', 'Terminvergabe',
                     UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-                    'Sollen abgelaufene Sprechstundentermine automatisch abgeräumt werden?'
+                    'Sollen abgelaufene Termine automatisch abgeräumt werden?'
                   ), (
-                    'CONSULTATION_SHOW_GROUPED', '1', 'boolean', 'user', 'Sprechstunden',
+                    'CONSULTATION_SHOW_GROUPED', '1', 'boolean', 'user', 'Terminvergabe',
                     UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-                    'Sollen die Sprechstunden nach Blöcken sortiert angezeigt werden?'
+                    'Sollen die Termine nach Blöcken sortiert angezeigt werden?'
                   ), (
-                    'CONSULTATION_TAB_TITLE', 'Sprechstunden', 'i18n', 'range', 'Sprechstunden',
+                    'CONSULTATION_TAB_TITLE', 'Terminvergabe', 'i18n', 'range', 'Terminvergabe',
                     UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
-                    'Der Name des Reiters für die Sprechstunden/Terminvergabe'
+                    'Der Name des Reiters für die Terminvergabe'
                   )";
         DBManager::get()->exec($query);
 
