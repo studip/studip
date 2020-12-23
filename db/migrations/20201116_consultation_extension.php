@@ -34,6 +34,11 @@ class ConsultationExtension extends Migration
                   )";
         DBManager::get()->exec($query);
 
+        $query = "UPDATE `config`
+                  SET `section` = 'Terminvergabe'
+                  WHERE `section` = 'Sprechstunden'";
+        DBManager::get()->exec($query);
+
         // Allow participants to be visible to other participants
         $query = "ALTER TABLE `consultation_blocks`
                   ADD COLUMN `show_participants` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 AFTER `calendar_events`,
