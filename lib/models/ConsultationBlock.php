@@ -82,6 +82,12 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
                 return $block->range->getMembersWithStatus('tutor dozent', true)->pluck('user');
             }
 
+            if ($block->range instanceof Institute) {
+                return $block->range->members->filter(function ($member) {
+                    return in_array($member->inst_perms, ['tutor', 'dozent']);
+                })->pluck('user');
+            }
+
             throw new Exception('Not implemented yet');
         };
 

@@ -126,6 +126,10 @@ class Consultation_AdminController extends ConsultationController
             $block = new ConsultationBlock();
             $block->range = $this->range;
             $this->responsible = $block->responsible_persons;
+        } elseif ($this->range instanceof Institute) {
+            $block = new ConsultationBlock();
+            $block->range = $this->range;
+            $this->responsible = $block->responsible_persons;
         }
     }
 
