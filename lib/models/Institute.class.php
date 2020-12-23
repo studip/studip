@@ -291,7 +291,7 @@ class Institute extends SimpleORMap implements Range
             $user_id = $GLOBALS['user']->id;
         }
         $member = $this->members->findOneBy('user_id', $user_id);
-        return ($member && in_array($member->status, ['tutor', 'dozent', 'admin']))
+        return ($member && in_array($member->inst_perms, ['tutor', 'dozent', 'admin']))
             || User::find($user_id)->perms === 'root';
     }
 
