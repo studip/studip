@@ -607,10 +607,6 @@ import { $gettext } from './lib/gettext.js';
     // Attach global focus handler on time picker elements
     $(document).on('focus', STUDIP.UI.Timepicker.selector, (event) => {
         if (!$(event.target).attr('pattern')) {
-            $(event.target).attr('pattern', '^[012]\d:[0-5]\d$');
-        }
-
-        if (!$(event.target).attr('pattern')) {
             $(event.target).attr('pattern', '^[012]\\d:[0-5]\\d$');
         }
 
