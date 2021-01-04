@@ -1,3 +1,46 @@
+__15.01.2021 V 4.6__
+- Grafisches Tool zum Auflösen von Raumanfragen
+- Entfernung von Literaturlisten, Ersatz: Literaturobjekte im Dateibereich
+- Direkte Anbindung Dateibereich an Katalogsuche
+- Bibliotheksarbeitsplatz inkl. Ticketsystem
+- Semesterapparate 2.0
+- Gallerieansicht für Bilder im Dateibereich
+- Überarbeitetes Datei-Dashboards
+- Fragebögen: Pflichtfragen, Sortierung von Fragen
+- Informationsseite für Studiengänge
+- Mehrsprachige Ankündigungen
+- Nachrichtenversand an alle Personen in einem Modul
+- Massenlöschen von Sprechstundenterminen und Kontakten
+- Back to Top-Element
+- Verbessertes Passwortmanagement
+- Übernahme von Schlagworten beim Versand von Nachrichten
+- Verbesserungen an der JSON-API
+
+__25.06.2020 V 4.5__
+- Integration einer Lehrveranstaltungsplanungskomponente
+- Feedback-Element
+- Check auf Überschneidungsfreiheit von Veranstaltungen an Studiengangteilversionen
+- Beschreibungen zu Studiengängen in der Modulverwaltung
+- Neugestaltungen Blubber als Messenger
+- Raumverwaltung 2.0
+- JSON-API
+- Ansprechperosnen an Studiengangsteilen
+- Optionen zur Zuordnung von eigenen Kursen in der ILIAS-Schnittstelle
+- Neue Dateiordnertypen für Plugins
+- Anmelderegeln für Auswahlbedingungen für Studiengangsteile
+- Downloadcounter an Dateien wieder eingeführt
+- Kernintegration der Ask-a-lot-Funktion
+- WYSIWYG-Konfiguration ist jetzt verfügbar
+- Verbesserte Übersicht Studiengangswidget
+- Anzeige von Plugin-Inhalten auf Details-Seite einer Verastaltung
+- Durchführende Lehrende und Raumauswahl bei Blockterminen
+- Leicht geänderte Navigation
+- Löschtermine für abgelaufene Ankündigungen
+
+__19.11.2019 V 4.4__
+- Integration eines Gradebook
+- Zahlreiche Verbesserungen unter der Oberfläche
+
 __03.06.2019 V 4.3__
 - Neu entwickelte ILIAS-Schnittstelle
 - Datenschutzkonforme Archivierungslösung
