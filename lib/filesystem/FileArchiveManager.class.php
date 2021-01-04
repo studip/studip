@@ -92,8 +92,7 @@ class FileArchiveManager
             // Increase download counter
             if ($file_type instanceof StandardFile) {
                 $file_ref = $file_type->getFileRef();
-                $file_ref->downloads += 1;
-                $file_ref->store();
+                $file_ref->incrementDownloadCounter();
             }
 
             if ($file_contains_link) {
