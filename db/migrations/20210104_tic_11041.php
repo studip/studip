@@ -10,7 +10,7 @@ class Tic11041 extends Migration
     public function up()
     {
         $query = "ALTER TABLE `lti_tool`
-                  ADD COLUMN `oauth_signature_method` VARCHAR(10) CHARACTER SET latin1 COLLATE latin1_bin NULL DEFAULT 'sha1'";
+                  ADD COLUMN `oauth_signature_method` VARCHAR(10) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'sha1'";
         DBManager::get()->exec($query);
     }
 
