@@ -25,6 +25,7 @@ class LtiLink
     protected $launch_url;
     protected $consumer_key;
     protected $consumer_secret;
+    protected $oauth_signature_method;
 
     // launch parameters and variables
     protected $parameters = [];
@@ -37,11 +38,12 @@ class LtiLink
      * @param string $consumer_key     consumer key of the LTI link
      * @param string $consumer_secret  consumer secret of the LTI link
      */
-    public function __construct($launch_url, $consumer_key, $consumer_secret)
+    public function __construct($launch_url, $consumer_key, $consumer_secret, $oauth_signature_method = 'sha1')
     {
         $this->launch_url = $launch_url;
         $this->consumer_key = $consumer_key;
         $this->consumer_secret = $consumer_secret;
+        $this->oauth_signature_method = $oauth_signature_method;
 
         // Basic LTI uses OAuth to sign requests
         // OAuth Core 1.0 spec: http://oauth.net/core/1.0/
@@ -52,7 +54,7 @@ class LtiLink
             'oauth_version' => '1.0',
             'oauth_nonce' => uniqid('lti', true),
             'oauth_timestamp' => time(),
-            'oauth_signature_method' => 'HMAC-SHA1',
+            'oauth_signature_method' => 'HMAC-' . strtoupper($this->oauth_signature_method),
             'tool_consumer_info_product_family_code' => 'studip',
             'tool_consumer_info_version' => $GLOBALS['SOFTWARE_VERSION'],
             'tool_consumer_instance_guid' => Config::get()->STUDIP_INSTALLATION_ID,
@@ -306,6 +308,6 @@ class LtiLink
         $base_string = 'POST&' . rawurlencode($launch_url) . '&' . rawurlencode($launch_params);
         $secret = rawurlencode($this->consumer_secret) . '&';
 
-        return base64_encode(hash_hmac('sha1', $base_string, $secret, true));
+        return base64_encode(hash_hmac($this->oauth_signature_method, $base_string, $secret, true));
     }
 }

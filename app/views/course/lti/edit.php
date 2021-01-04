@@ -57,6 +57,14 @@
             </label>
 
             <label>
+                <?= _('OAuth Signatur Methode des LTI-Tools') ?>
+                <select name="oauth_signature_method">
+                    <option value="sha1">HMAC-SHA1</option>
+                    <option value="sha256" <?=$lti_data->options['oauth_signature_method'] === 'sha256' ? 'selected' : '' ?>>HMAC-SHA256</option>
+                </select>
+            </label>
+
+            <label>
                 <input type="checkbox" name="send_lis_person" value="1" <?= $lti_data->options['send_lis_person'] ? ' checked' : '' ?>>
                 <?= _('Nutzerdaten an LTI-Tool senden') ?>
                 <?= tooltipIcon(_('Nutzerdaten dürfen nur an das externe Tool gesendet werden, wenn es keine Datenschutzbedenken gibt. Mit Setzen des Hakens bestätigen Sie, dass die Übermittlung der Daten zulässig ist.')) ?>

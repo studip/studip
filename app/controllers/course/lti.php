@@ -179,6 +179,7 @@ class Course_LtiController extends StudipController
             $options['consumer_key'] = trim(Request::get('consumer_key'));
             $options['consumer_secret'] = trim(Request::get('consumer_secret'));
             $options['send_lis_person'] = Request::int('send_lis_person', 0);
+            $options['oauth_signature_method'] = Request::get('oauth_signature_method', 'sha1');
         } else {
             $lti_data->launch_url = trim(Request::get('custom_url'));
         }
@@ -228,7 +229,7 @@ class Course_LtiController extends StudipController
         $content_item_return_url = $this->url_for('course/lti/save_link/' . $tool_id);
 
         // set up ContentItemSelectionRequest
-        $lti_link = new LtiLink($tool->launch_url, $tool->consumer_key, $tool->consumer_secret);
+        $lti_link = new LtiLink($tool->launch_url, $tool->consumer_key, $tool->consumer_secret, $tool->oauth_signature_method);
         $lti_link->setUser($GLOBALS['user']->id, 'Instructor', $tool->send_lis_person);
         $lti_link->setCourse($this->course_id);
         $lti_link->addLaunchParameters([
@@ -328,6 +329,7 @@ class Course_LtiController extends StudipController
         $launch_url = $lti_data->getLaunchURL();
         $consumer_key = $lti_data->getConsumerKey();
         $consumer_secret = $lti_data->getConsumerSecret();
+        $oauth_signature_method = $lti_data->getOauthSignatureMethod();
 
         $roles = $this->edit_perm ? 'Instructor' : 'Learner';
         $custom_parameters = explode("\n", $lti_data->getCustomParameters());
@@ -336,7 +338,7 @@ class Course_LtiController extends StudipController
         $tc_profile_url = $this->url_for('course/lti/profile/' . $lti_data->id, ['cid' => null]);
 
         // set up launch request
-        $lti_link = new LtiLink($launch_url, $consumer_key, $consumer_secret);
+        $lti_link = new LtiLink($launch_url, $consumer_key, $consumer_secret, $oauth_signature_method);
         $lti_link->setResource($lti_data->id, $lti_data->title, $description);
         $lti_link->setUser($GLOBALS['user']->id, $roles, $lti_data->getSendLisPerson());
         $lti_link->setCourse($lti_data->course_id);

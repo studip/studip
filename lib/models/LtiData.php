@@ -103,6 +103,18 @@ class LtiData extends SimpleORMap
     }
 
     /**
+     * Get the oauth_signature_method of this entry.
+     */
+    public function getOauthSignatureMethod()
+    {
+        if ($this->tool_id) {
+            return $this->tool->oauth_signature_method;
+        }
+
+        return $this->options['oauth_signature_method'];
+    }
+
+    /**
      * Get the custom_parameters of this entry.
      */
     public function getCustomParameters()

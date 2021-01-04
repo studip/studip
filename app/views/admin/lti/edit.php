@@ -34,6 +34,14 @@
         </label>
 
         <label>
+            <?= _('OAuth Signatur Methode') ?>
+            <select name="oauth_signature_method">
+                <option value="sha1">HMAC-SHA1</option>
+                <option value="sha256" <?=$tool->oauth_signature_method === 'sha256' ? 'selected' : '' ?>>HMAC-SHA256</option>
+            </select>
+        </label>
+
+        <label>
             <input type="checkbox" name="allow_custom_url" value="1" <?= $tool->allow_custom_url ? ' checked' : '' ?>>
             <?= _('Eingabe einer abweichenden URL im Kurs erlauben') ?>
         </label>

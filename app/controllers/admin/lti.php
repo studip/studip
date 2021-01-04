@@ -71,6 +71,7 @@ class Admin_LtiController extends AuthenticatedController
         $tool->allow_custom_url = Request::int('allow_custom_url', 0);
         $tool->deep_linking = Request::int('deep_linking', 0);
         $tool->send_lis_person = Request::int('send_lis_person', 0);
+        $tool->oauth_signature_method = Request::get('oauth_signature_method', 'sha1');
 
         if ($tool->store()) {
             PageLayout::postSuccess(sprintf(
