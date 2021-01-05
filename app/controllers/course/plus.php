@@ -64,10 +64,6 @@ class Course_PlusController extends AuthenticatedController
             $_SESSION['plugin_toggle'] = [];
         }
 
-        if (Config::get()->RESOURCES_ENABLED && !checkAvailableResources($id)) {
-            unset($this->registered_modules['resources']);
-        }
-
         $this->setupSidebar();
         $this->available_modules = $this->getSortedList($this->sem);
 
@@ -306,14 +302,15 @@ class Course_PlusController extends AuthenticatedController
                 if (!array_key_exists($indcat, $cat_index)) {
                     array_push($cat_index, $indcat);
                 }
-
+                $plugin_id = 'plugin_' . $plugin->getPluginId();
+                $displayname = mb_strtolower(isset($info['displayname']) ? $info['displayname'] : $plugin->getPluginname());
                 if ($_SESSION['plus']['displaystyle'] != 'category') {
 
-                    $key = isset($info['displayname']) ? $info['displayname'] : $plugin->getPluginname();
 
-                    $list['Funktionen von A-Z'][mb_strtolower($key)]['object'] = $plugin;
-                    $list['Funktionen von A-Z'][mb_strtolower($key)]['type'] = 'plugin';
-                    $list['Funktionen von A-Z'][mb_strtolower($key)]['moduleclass'] = get_class($plugin);
+                    $list['Funktionen von A-Z'][$plugin_id]['object'] = $plugin;
+                    $list['Funktionen von A-Z'][$plugin_id]['type'] = 'plugin';
+                    $list['Funktionen von A-Z'][$plugin_id]['moduleclass'] = get_class($plugin);
+                    $list['Funktionen von A-Z'][$plugin_id]['sorter'] = $displayname;
 
                 } else {
 
@@ -323,16 +320,14 @@ class Course_PlusController extends AuthenticatedController
                         $_SESSION['plus']['Kategorie'][$cat] = 1;
                     }
 
-                    $key = isset($info['displayname']) ? $info['displayname'] : $plugin->getPluginname();
+                    $list[$cat][$plugin_id]['object'] = $plugin;
+                    $list[$cat][$plugin_id]['moduleclass'] = get_class($plugin);
+                    $list[$cat][$plugin_id]['type'] = 'plugin';
+                    $list[$cat][$plugin_id]['sorter'] = $displayname;
 
-
-                    $list[$cat][mb_strtolower($key)]['object'] = $plugin;
-                    $list[$cat][mb_strtolower($key)]['moduleclass'] = get_class($plugin);
-                    $list[$cat][mb_strtolower($key)]['type'] = 'plugin';
                 }
             }
         }
-
 
         foreach ($this->registered_modules as $key => $val) {
 
@@ -356,10 +351,12 @@ class Course_PlusController extends AuthenticatedController
 
                 if ($_SESSION['plus']['displaystyle'] != 'category') {
 
-                    $list['Funktionen von A-Z'][mb_strtolower($val['name'])]['object'] = $val;
-                    $list['Funktionen von A-Z'][mb_strtolower($val['name'])]['moduleclass'] = $mod;
-                    $list['Funktionen von A-Z'][mb_strtolower($val['name'])]['type'] = 'modul';
-                    $list['Funktionen von A-Z'][mb_strtolower($val['name'])]['modulkey'] = $key;
+                    $list['Funktionen von A-Z'][$key]['object'] = $val;
+                    $list['Funktionen von A-Z'][$key]['moduleclass'] = $mod;
+                    $list['Funktionen von A-Z'][$key]['type'] = 'modul';
+                    $list['Funktionen von A-Z'][$key]['modulkey'] = $key;
+                    $list['Funktionen von A-Z'][$key]['sorter'] = mb_strtolower($info['displayname'] ?: $val['name']);
+
 
                 } else {
 
@@ -367,10 +364,11 @@ class Course_PlusController extends AuthenticatedController
 
                     if (!isset($_SESSION['plus']['Kategorie'][$cat])) $_SESSION['plus']['Kategorie'][$cat] = 1;
 
-                    $list[$cat][mb_strtolower($val['name'])]['object'] = $val;
-                    $list[$cat][mb_strtolower($val['name'])]['moduleclass'] = $mod;
-                    $list[$cat][mb_strtolower($val['name'])]['type'] = 'modul';
-                    $list[$cat][mb_strtolower($val['name'])]['modulkey'] = $key;
+                    $list[$cat][$key]['object'] = $val;
+                    $list[$cat][$key]['moduleclass'] = $mod;
+                    $list[$cat][$key]['type'] = 'modul';
+                    $list[$cat][$key]['modulkey'] = $key;
+                    $list[$cat][$key]['sorter'] = mb_strtolower($info['displayname'] ?: $val['name']);
 
                 }
             }
@@ -381,7 +379,7 @@ class Course_PlusController extends AuthenticatedController
         $sortedcats['Inhalte und Aufgabenstellungen'] = [];
 
         foreach ($list as $cat_key => $cat_val) {
-            ksort($cat_val);
+            uasort($cat_val, function ($a, $b) {return strcmp($a['sorter'], $b['sorter']);});
             $list[$cat_key] = $cat_val;
             if ($cat_key != 'Sonstiges')  {
                 $sortedcats[$cat_key] = $list[$cat_key];
