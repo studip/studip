@@ -665,42 +665,42 @@ INSERT INTO `help_tours` (`global_tour_id`, `tour_id`, `name`, `description`, `t
 -- Dumping data for table `help_tour_settings`
 --
 
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('05434e40601a9a2a7f5fa8208ae148c1', 1, 'standard');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('05434e40601a9a2a7f5fa8208ae148c1', 1, 'autostart_once');
 INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('0b542c6c891af499763356f2c7218f7f', 1, 'autostart_once');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('154e711257d4d32d865fb8f5fb70ad72', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('19ac063e8319310d059d28379139b1cf', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('1badcf28ab5b206d9150b2b9683b4cb6', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('21f487fa74e3bfc7789886f40fe4131a', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('25e7421f286fc5bdf9e41beadb484ffa', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('3629493a16bf2680de64361f07cab096', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('3a717a468afb0822cb1455e0ae6b6fce', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('3dbe7099f82dcdbba4580acb1105a0d6', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('44f859c50648d3410c39207048ddd833', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('49604a77654617a745e29ad6b253e491', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('4d41c9760a3248313236af202275107a', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('4d41c9760a3248313236af202275107b', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('4d41c9760a3248313236af202275107c', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('588effa83da976a889a68c152bcabc90', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('5d41c9760a3248313236af202275107a', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('5d41c9760a3248313236af202275107b', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('5d41c9760a3248313236af202275107c', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('6849293baa05be5bef8ff438dc7c438b', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('7af1e1fb7f53c910ba9f42f43a71c723', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('7cccbe3b22dfa745c17cb776fb04537c', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('83dc1d25e924f2748ee3293aaf0ede8e', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('89786eac42f52ac316790825b4f5c0b2', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('96ea422f286fb5bbf9e41beadb484a9a', 1, 'standard');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('154e711257d4d32d865fb8f5fb70ad72', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('19ac063e8319310d059d28379139b1cf', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('1badcf28ab5b206d9150b2b9683b4cb6', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('21f487fa74e3bfc7789886f40fe4131a', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('25e7421f286fc5bdf9e41beadb484ffa', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('3629493a16bf2680de64361f07cab096', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('3a717a468afb0822cb1455e0ae6b6fce', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('3dbe7099f82dcdbba4580acb1105a0d6', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('44f859c50648d3410c39207048ddd833', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('49604a77654617a745e29ad6b253e491', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('4d41c9760a3248313236af202275107a', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('4d41c9760a3248313236af202275107b', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('4d41c9760a3248313236af202275107c', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('588effa83da976a889a68c152bcabc90', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('5d41c9760a3248313236af202275107a', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('5d41c9760a3248313236af202275107b', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('5d41c9760a3248313236af202275107c', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('6849293baa05be5bef8ff438dc7c438b', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('7af1e1fb7f53c910ba9f42f43a71c723', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('7cccbe3b22dfa745c17cb776fb04537c', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('83dc1d25e924f2748ee3293aaf0ede8e', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('89786eac42f52ac316790825b4f5c0b2', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('96ea422f286fb5bbf9e41beadb484a9a', 1, 'autostart_once');
 INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('977f41c5c5239c4e86f04c3df27fae38', 0, 'autostart_once');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('9e9dca9b1214294b9605824bfe90fba1', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('b74f8459dce2437463096d56db7c73b9', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('c89ce8e097f212e75686f73cc5008711', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('d9913517f9c81d2c0fa8362592ce5d0e', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('de1fbce508d01cbd257f9904ff8c3b43', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('e41611616675b218845fe9f55bc11cf6', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('edfcf78c614869724f93488c4ed09582', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('ef5092ba722c81c37a5a6bd703890bd9', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('f0aeb0f6c4da3bd61f48b445d9b30dc1', 1, 'standard');
-INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('fa963d2ca827b28e0082e98aafc88765', 1, 'standard');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('9e9dca9b1214294b9605824bfe90fba1', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('b74f8459dce2437463096d56db7c73b9', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('c89ce8e097f212e75686f73cc5008711', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('d9913517f9c81d2c0fa8362592ce5d0e', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('de1fbce508d01cbd257f9904ff8c3b43', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('e41611616675b218845fe9f55bc11cf6', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('edfcf78c614869724f93488c4ed09582', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('ef5092ba722c81c37a5a6bd703890bd9', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('f0aeb0f6c4da3bd61f48b445d9b30dc1', 1, 'autostart_once');
+INSERT INTO `help_tour_settings` (`tour_id`, `active`, `access`) VALUES('fa963d2ca827b28e0082e98aafc88765', 1, 'autostart_once');
 
 --
 -- Dumping data for table `help_tour_steps`
