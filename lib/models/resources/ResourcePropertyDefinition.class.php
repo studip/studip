@@ -233,6 +233,19 @@ class ResourcePropertyDefinition extends SimpleORMap
             );
 
             return $template->render();
+        } elseif ($type == 'user') {
+            $search = new QuickSearch($input_name, new StandardSearch('user_id'));
+            $search->defaultValue($value, ($value ? get_fullname($value, 'full_rev_username') : ''));
+            return sprintf(
+                '<label %1$s>%2$s%3$s</label>',
+                (
+                    $label_html_classes
+                    ? 'class="' . htmlReady($label_html_classes) . '"'
+                    : ''
+                ),
+                $this->__toString(),
+                $search->render()
+            );
         } else {
             $input_type = 'text';
             if ($type == 'num') {
