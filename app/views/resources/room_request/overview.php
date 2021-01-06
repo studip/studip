@@ -5,7 +5,7 @@
             <caption>
                 <?= sprintf(
                     ngettext(
-                        'Anfragenliste',
+                        'Anfragenliste (%d Anfrage)',
                         'Anfragenliste (%d Anfragen)',
                         count($requests)
                     ),
