@@ -2,6 +2,16 @@
     <form class="default" method="post"
           action="<?= $controller->link_for('room_request/assign') ?>">
         <table class="default sortable-table request-list" data-sortlist="[[8, 0]]">
+            <caption>
+                <?= sprintf(
+                    ngettext(
+                        'Anfragenliste',
+                        'Anfragenliste (%d Anfragen)',
+                        count($requests)
+                    ),
+                    count($requests)
+                ) ?>
+            </caption>
             <thead>
                 <tr>
                     <th data-sort="htmldata">
