@@ -9,7 +9,6 @@
  *
  * @author André Noack <noack@data-quest>, Suchi & Berg GmbH <info@data-quest.de>
  * @author Jan-Hendrik Willms <tleilax+studip@gmail.com>
- * @access public
  *
  * @property string scm_id database column
  * @property string id alias column for scm_id
@@ -41,6 +40,15 @@ class StudipScmEntry extends SimpleORMap
 
         $config['i18n_fields']['tab_name'] = true;
         $config['i18n_fields']['content'] = true;
+
+        $config['registered_callbacks']['before_create'][] = function ($scm) {
+            $query = "SELECT MAX(`position`)
+                      FROM `scm`
+                      WHERE `range_id` = ?";
+            $max_pos = DBManager::get()->fetchColumn($query, [$scm->range_id]);
+
+            $scm->position = $max_pos + 1;
+        };
 
         parent::configure($config);
     }

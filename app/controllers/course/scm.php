@@ -20,6 +20,7 @@
 class Course_ScmController extends AuthenticatedController
 {
     protected $allow_nobody = true;
+    protected $_autobind = true;
 
     /**
      * Sets the page title. Page title always includes the course name.
@@ -113,7 +114,7 @@ class Course_ScmController extends AuthenticatedController
         $this->scm->user_id = $GLOBALS['user']->id;
         $this->scm->chdate  = time();
 
-        $this->first_entry = StudipScmEntry::countBySql('range_id = ?', [Context::getId()]) == 0;
+        $this->first_entry = StudipScmEntry::countBySql('range_id = ?', [Context::getId()]) === 0;
 
         $this->set_title(_('Neue Informationsseite anlegen'));
 
@@ -126,37 +127,26 @@ class Course_ScmController extends AuthenticatedController
      * @param mixed $id Id of the page to edit; a new page will be created if
      *                  this parameter is omitted.
      */
-    public function edit_action($id = null)
+    public function edit_action(StudipScmEntry $scm = null)
     {
         if (Request::submitted('submit')) {
             CSRFProtection::verifyUnsafeRequest();
-
-            $scm = new StudipScmEntry($id);
 
             $scm->tab_name = Request::i18n('tab_name');
             $scm->content  = Studip\Markup::purifyHtml(Request::i18n('content'));
             $scm->user_id  = $GLOBALS['user']->id;
             $scm->range_id = Context::getId();
 
-            if ($scm->isNew()) {
-                $temp = StudipScmEntry::findByRange_id(Context::getId(), 'ORDER BY position ASC');
-                $scms = SimpleORMapCollection::createFromArray($temp);
-                $max  = count($scms) > 0 ? max($scms->pluck('position')) : 0;
-
-                $scm->position = $max + 1;
-            }
-
             if ($scm->store() !== false) {
                 PageLayout::postsuccess(_('Die Änderungen wurden übernommen.'));
             }
 
             $this->redirect('course/scm/' . $scm->id);
+            return;
         }
 
-        $this->scm = new StudipScmEntry($id);
-
-        $this->set_title(_('Informationsseite bearbeiten') . ': ' . $this->scm->tab_name);
-        Navigation::activateItem('/course/scm/' . $this->scm->id);
+        $this->set_title(_('Informationsseite bearbeiten') . ': ' . $scm->tab_name);
+        Navigation::activateItem('/course/scm/' . $scm->id);
     }
 
     /**
@@ -165,13 +155,12 @@ class Course_ScmController extends AuthenticatedController
      *
      * @param String $id Id of the page to move
      */
-    public function move_action($id)
+    public function move_action(StudipScmEntry $scm)
     {
-        $scm = new StudipScmEntry($id);
-        if (!$scm->isNew() && $scm->range_id == Context::getId()){
-            $query = "UPDATE scm
-                      SET position = position + 1
-                      WHERE range_id = :range_id AND position < :position";
+        if ($scm->range_id == Context::getId()){
+            $query = "UPDATE `scm`
+                      SET `position` = `position` + 1
+                      WHERE `range_id` = :range_id AND `position` < :position";
             $statement = DBManager::get()->prepare($query);
             $statement->bindValue(':range_id', $scm->range_id);
             $statement->bindValue(':position', $scm->position);
@@ -182,7 +171,7 @@ class Course_ScmController extends AuthenticatedController
                 PageLayout::postSuccess(_('Der Eintrag wurde an die erste Position verschoben.'));
             }
         }
-        $this->redirect('course/scm/' . $id);
+        $this->redirect('course/scm/' . $scm->id);
     }
 
     /**
@@ -190,12 +179,11 @@ class Course_ScmController extends AuthenticatedController
      *
      * @param String $id Id of the page to delete
      */
-    public function delete_action($id)
+    public function delete_action(StudipScmEntry $scm)
     {
         $ticket = Request::option('studip_ticket');
         if ($ticket && check_ticket($ticket)) {
-            $scm = new StudipScmEntry($id);
-            if (!$scm->isNew() && $scm->range_id == Context::getId()){
+            if ($scm->range_id == Context::getId()){
                 $scm->delete();
                 PageLayout::postSuccess(_('Der Eintrag wurde gelöscht.'));
             }
@@ -206,6 +194,6 @@ class Course_ScmController extends AuthenticatedController
         PageLayout::postError(
             _('Es ist ein Fehler aufgetreten.') . ' ' . _('Bitte versuchen Sie erneut, diese Seite zu löschen.')
         );
-        $this->redirect('course/scm/' . $id);
+        $this->redirect('course/scm/' . $scm->id);
     }
 }
