@@ -550,13 +550,6 @@ class Fullcalendar
                     }
                 }
             },
-            columnHeaderHtml (date) {
-                if ($("*[data-fullcalendar='1']").hasClass('institute-plan')) {
-                    return '<a href="' + STUDIP.URLHelper.getURL('dispatch.php/admin/courseplanning/weekday/' + date.getDay()) + '">' + date.toLocaleDateString('de-DE', config.columnHeaderFormat) + '</a>';
-                } else {
-                    return date.toLocaleDateString('de-DE', config.columnHeaderFormat);
-                }
-            },
             resourceRender (renderInfo) {
                 if ($(renderInfo.view.context.calendar.el).hasClass('room-group-booking-plan')) {
                     var action = $(renderInfo.view.context.calendar.el).hasClass('semester-plan') ? 'semester' : 'booking';
@@ -596,6 +589,19 @@ class Fullcalendar
                 }
             }
         }, config);
+
+        //Special treatment: If a general column header format is set,
+        //in the configuration, it shall be used for all columns in all views
+        //by using a special columnHeaderHtml function.
+        if (config.columnHeaderFormat) {
+            config.columnHeaderHtml = function (date) {
+                if ($("*[data-fullcalendar='1']").hasClass('institute-plan')) {
+                    return '<a href="' + STUDIP.URLHelper.getURL('dispatch.php/admin/courseplanning/weekday/' + date.getDay()) + '">' + date.toLocaleDateString('de-DE', config.columnHeaderFormat) + '</a>';
+                } else {
+                    return date.toLocaleDateString('de-DE', config.columnHeaderFormat);
+                }
+            };
+        }
 
         config = $.extend({}, config, additional_config);
 
