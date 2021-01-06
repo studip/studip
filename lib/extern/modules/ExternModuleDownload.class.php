@@ -260,7 +260,7 @@ class ExternModuleDownload extends ExternModule {
 
         foreach ($data as $db) {
 
-            preg_match("/^.+\.([a-z1-9_\-]+)$/i", $db["filename"], $file_suffix);
+            preg_match("/^.+\.([a-z1-9_-]+)$/i", $db["filename"], $file_suffix);
 
             // choose the icon for the given file format
             $icon = "";

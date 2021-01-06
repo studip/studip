@@ -206,7 +206,7 @@ class LtiLink
     public function addCustomParameter($name, $value)
     {
         $name = strtolower(preg_replace('/\W/', '_', $name));
-        $value = preg_replace_callback('/\$([\w\.]*\w)/', function($matches) {
+        $value = preg_replace_callback('/\$([\w.]*\w)/', function($matches) {
             return $this->variables[$matches[1]] ?: $matches[0];
         }, $value);
 
