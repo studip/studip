@@ -118,7 +118,7 @@ class TextHelper {
    *
    * @return void
    */
-  function reset_cycle($name = 'default') {
+  public static function reset_cycle($name = 'default') {
     $cycle = self::get_cycle($name);
     if (isset($cycle)) {
       $cycle->reset();
@@ -181,4 +181,3 @@ class TextHelperCycle {
     return $this->cycle();
   }
 }
-
