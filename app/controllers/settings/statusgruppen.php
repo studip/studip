@@ -406,8 +406,6 @@ class Settings_StatusgruppenController extends Settings_SettingsController
             if (count($errors) > 0) {
                 PageLayout::postWarning(_('Bei der Verarbeitung sind allerdings folgende Fehler aufgetreten'), $errors);
             }
-        } elseif (count($errors) === 1) {
-            PageLayout::postError($errors);
         } elseif (count($errors) > 0) {
             PageLayout::postError(_('Fehler bei der Speicherung Ihrer Daten. Bitte überprüfen Sie Ihre Angaben.'), $errors);
         }
