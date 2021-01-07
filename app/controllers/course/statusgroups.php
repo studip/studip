@@ -1005,6 +1005,19 @@ class Course_StatusgroupsController extends AuthenticatedController
                         }
 
                         break;
+                    case 'write_message':
+                        //Send the group-IDs of the selected groups
+                        //to messages/write:
+                        $this->redirect(
+                            URLHelper::getURL(
+                                'dispatch.php/messages/write',
+                                [
+                                    'default_subject' => $this->course_title,
+                                    'group_ids' => $groups
+                                ]
+                            )
+                        );
+                        break;
                     case 'delete':
                         PageLayout::setTitle(_('Gruppe(n) löschen?'));
                         $this->askdelete = true;

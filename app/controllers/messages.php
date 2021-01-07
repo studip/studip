@@ -209,28 +209,36 @@ class MessagesController extends AuthenticatedController {
         }
 
         //check if the message shall be sent to all members of a status group:
+        $group_ids = [];
         if (Request::option('group_id')) {
+            $group_ids[] = Request::option('group_id');
+        } elseif (Request::submitted('group_ids')) {
+            $group_ids = Request::getArray('group_ids');
+        }
+        if ($group_ids) {
             $this->default_message->receivers = [];
-            $group  = Statusgruppen::find(Request::option('group_id'));
+            $groups = Statusgruppen::findMany($group_ids);
 
-            // Exclude hidden course members from mails if not at least tutor
-            $hidden = [];
-            $course = Course::find($group->range_id);
-            if ($course && !$GLOBALS['perm']->have_studip_perm('tutor', $course->id)) {
-                $hidden = $course->members->findBy('visible', 'no')->pluck('user_id');
-            }
+            foreach ($groups as $group) {
+                // Exclude hidden course members from mails if not at least tutor
+                $hidden = [];
+                $course = Course::find($group->range_id);
+                if ($course && !$GLOBALS['perm']->have_studip_perm('tutor', $course->id)) {
+                    $hidden = $course->members->findBy('visible', 'no')->pluck('user_id');
+                }
 
-            if ($group['range_id'] === $GLOBALS['user']->id
-                || $GLOBALS['perm']->have_studip_perm('autor', $group['range_id']))
-            {
-                foreach ($group->members as $member) {
-                    if (in_array($member->user_id, $hidden)) {
-                        continue;
+                if ($group['range_id'] === $GLOBALS['user']->id
+                    || $GLOBALS['perm']->have_studip_perm('autor', $group['range_id']))
+                {
+                    foreach ($group->members as $member) {
+                        if (in_array($member->user_id, $hidden)) {
+                            continue;
+                        }
+
+                        $user = new MessageUser();
+                        $user->setData(['user_id' => $member['user_id'], 'snd_rec' => 'rec']);
+                        $this->default_message->receivers[] = $user;
                     }
-
-                    $user = new MessageUser();
-                    $user->setData(['user_id' => $member['user_id'], 'snd_rec' => 'rec']);
-                    $this->default_message->receivers[] = $user;
                 }
             }
         }

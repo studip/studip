@@ -32,6 +32,7 @@
                     <select name="groups_action" id="batch-groups-action" disabled>
                         <option value="edit_size"><?= _('Gruppengröße bearbeiten') ?></option>
                         <option value="edit_selfassign"><?= _('Selbsteintrag bearbeiten') ?></option>
+                        <option value="write_message"><?= _('Nachricht schreiben') ?></option>
                         <option value="delete"><?= _('Löschen') ?></option>
                     </select>
                 </label>
