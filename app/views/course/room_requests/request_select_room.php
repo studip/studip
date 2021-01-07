@@ -46,6 +46,7 @@
                                 ) ?>
                             <? endif ?>
                             <input type="radio" name="selected_room_id"
+                                   data-activates="button[type='submit'][name='select_room']"
                                    value="<?= htmlReady($room->id) ?>">
                             <?= htmlReady(mb_substr($room->name, 0, 50)); ?>
                             <? if ($room->properties): ?>

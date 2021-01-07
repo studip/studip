@@ -953,4 +953,95 @@ class RoomManager
         }
         return $room_class_names;
     }
+
+
+    /**
+     * This method creates the SQL data for the methods countRequestableRooms
+     * and findRequestableRooms.
+     *
+     * @param array time_ranges[][] The time ranges in which a requestable room
+     *     must be available to be included in the result set. This is a
+     *     two-dimensional array where the second dimension is an associative
+     *     array with two indexes: "begin" and "end". These can either be
+     *     timestamps or DateTime objects representing the begin and end
+     *     of the time range, respectively.
+     *
+     * @returns array An associative array with two indexes:
+     *     - sql: The SQL query as string.
+     *     - sql_params: An associative array with all parameters for the query.
+     */
+    protected static function getRequestableRoomsSqlData(array $time_ranges = [])
+    {
+        $sql = "INNER JOIN `resource_categories` rc
+                ON `resources`.`category_id` = rc.id ";
+        if ($time_ranges) {
+            $sql .= "INNER JOIN `resource_booking_intervals` rbi
+                     ON `resources`.`id` = rbi.`resource_id` ";
+        }
+        $sql .= "WHERE `rc`.`class_name` IN ( :room_class_names )
+                 AND `resources`.`requestable` > '0' ";
+
+        $sql_params = [
+            'room_class_names' => self::getAllRoomClassNames()
+        ];
+
+        if (!$time_ranges) {
+            $sql .= 'GROUP BY `resources`.`id` ORDER BY `resources`.`name` ASC';
+            return [
+                'sql' => $sql,
+                'sql_params' => $sql_params
+            ];
+        }
+
+        $sql .= "AND (";
+
+        $i = 1;
+        foreach ($time_ranges as $time_range) {
+            if (!is_array($time_range)) {
+                continue;
+            }
+            if ($time_range['begin'] >= $time_range['end']) {
+                continue;
+            }
+
+            $begin = $time_range['begin'];
+            if ($time_range['begin'] instanceof DateTime) {
+                $begin = $time_range['begin']->getTimestamp();
+            }
+            $end = $time_range['end'];
+            if ($time_range['end'] instanceof DateTime) {
+                $end = $time_range['end']->getTimestamp();
+            }
+
+            if ($i > 1) {
+                $sql .= 'AND ';
+            }
+            $sql .= "(rbi.`begin` NOT BETWEEN :begin$i AND :end$i
+                     AND rbi.`end` NOT BETWEEN :begin$i AND :end$i)";
+            $sql_params["begin$i"] = $begin;
+            $sql_params["end$i"] = $end;
+
+            $i++;
+        }
+        $sql .= ') GROUP BY `resources`.`id` ORDER BY `resources`.`name` ASC';
+
+        return [
+            'sql' => $sql,
+            'sql_params' => $sql_params
+        ];
+    }
+
+
+    public static function countRequestableRooms(array $time_ranges = [])
+    {
+        $sql_data = self::getRequestableRoomsSqlData($time_ranges);
+        return Room::countBySql($sql_data['sql'], $sql_data['sql_params']);
+    }
+
+
+    public static function findRequestableRooms(array $time_ranges = [])
+    {
+        $sql_data = self::getRequestableRoomsSqlData($time_ranges);
+        return Room::findBySql($sql_data['sql'], $sql_data['sql_params']);
+    }
 }

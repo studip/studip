@@ -328,6 +328,14 @@ class Course_RoomRequestsController extends AuthenticatedController
             }
             $this->request->course_id = $this->course_id;
         }
+        $available_rooms = RoomManager::countRequestableRooms();
+        if (($available_rooms < 51) && !Request::submitted('select_properties')) {
+            //Redirect to the room selection page:
+            $session_data['request_id'] = $this->request_id;
+            $this->redirect(
+                'course/room_requests/request_select_room/' . $this->request_id
+            );
+        }
 
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
@@ -577,15 +585,27 @@ class Course_RoomRequestsController extends AuthenticatedController
                 null
             ];
         }
-        //Search rooms by the selected properties:
-        $this->available_rooms = RoomManager::findRooms(
-            $this->room_name,
-            null,
-            null,
-            $search_properties,
-            $this->request->getTimeIntervals(),
-            'name ASC, mkdate ASC'
-        );
+        if (!$this->room_name && !$this->selected_properties) {
+            //Load all requestable rooms:
+            $this->available_rooms = RoomManager::findRooms(
+                '',
+                null,
+                null,
+                [],
+                $this->request->getTimeIntervals(),
+                'name ASC, mkdate ASC'
+            );
+        } else {
+            //Search rooms by the selected properties:
+            $this->available_rooms = RoomManager::findRooms(
+                $this->room_name,
+                null,
+                null,
+                $search_properties,
+                $this->request->getTimeIntervals(),
+                'name ASC, mkdate ASC'
+            );
+        }
 
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
