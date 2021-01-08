@@ -203,7 +203,6 @@ class Course_StatusgroupsController extends AuthenticatedController
 
             $this->nogroupmembers = $nogroupmembers;
 
-            $members = [];
             if ($this->sort_group == 'nogroup') {
                 $members = $this->allmembers->findby('user_id', $nogroupmembers);
                 $members = StatusgroupsModel::sortGroupMembers($members, $this->sort_by, $this->order);
@@ -215,13 +214,15 @@ class Course_StatusgroupsController extends AuthenticatedController
                 );
             }
 
-            foreach ($members as $member) {
-                //Note: $member is a CourseMember object here.
-                if ($this->is_tutor || ($member->user_id == $GLOBALS['user']->id) ||
-                    ($member->visible != 'no')) {
-                    $groupdata['members'][] = $member;
-                } else {
-                    $groupdata['invisible_users']++;
+            if(!empty($members)) {
+                foreach ($members as $member) {
+                    //Note: $member is a CourseMember object here.
+                    if ($this->is_tutor || ($member->user_id == $GLOBALS['user']->id) ||
+                        ($member->visible != 'no')) {
+                        $groupdata['members'][] = $member;
+                    } else {
+                        $groupdata['invisible_users']++;
+                    }
                 }
             }
             $this->groups[] = $groupdata;
@@ -522,8 +523,6 @@ class Course_StatusgroupsController extends AuthenticatedController
 
         CSRFProtection::verifyUnsafeRequest();
 
-        $warn = false;
-
         /*
          * Check if a valid end time was given.
          */
@@ -532,7 +531,6 @@ class Course_StatusgroupsController extends AuthenticatedController
             $starttime = strtotime(Request::get('selfassign_start', 'now'));
             if ($endtime <= $starttime) {
                 $endtime = 0;
-                $warn = true;
             }
         }
         $position = Statusgruppen::find($group_id)->position;
@@ -547,11 +545,13 @@ class Course_StatusgroupsController extends AuthenticatedController
         if (!$group_id) {
             PageLayout::postSuccess(sprintf(
                 _('Die Gruppe "%s" wurde angelegt.'),
-                htmlReady($group->name)));
+                htmlReady($group->name))
+            );
         } else {
             PageLayout::postSuccess(sprintf(
                 _('Die Daten der Gruppe "%s" wurden gespeichert.'),
-                htmlReady($group->name)));
+                htmlReady($group->name))
+            );
         }
 
         $thread = BlubberStatusgruppeThread::findByStatusgruppe_id($group->id);
@@ -564,7 +564,7 @@ class Course_StatusgroupsController extends AuthenticatedController
             $thread['visible_in_stream'] = 1;
             $thread['display_class'] = "BlubberStatusgruppeThread";
             $thread['commentable'] = 1;
-            $thread['metadata'] = array('statusgruppe_id' => $group->id);
+            $thread['metadata'] = ['statusgruppe_id' => $group->id];
             $thread->store();
         } elseif(!Request::get("blubber") && $thread) {
             $thread->delete();
@@ -590,7 +590,8 @@ class Course_StatusgroupsController extends AuthenticatedController
         $group->delete();
         PageLayout::postSuccess(sprintf(
             _('Die Gruppe "%s" wurde gelöscht.'),
-            htmlReady($groupname)));
+            htmlReady($groupname))
+        );
         $this->relocate('course/statusgroups');
     }
 
@@ -613,21 +614,25 @@ class Course_StatusgroupsController extends AuthenticatedController
             if ($user_id == $GLOBALS['user']->id) {
                 PageLayout::postSuccess(sprintf(
                     _('Sie wurden aus der Gruppe %s ausgetragen.'),
-                    htmlReady($g->name)));
+                    htmlReady($g->name))
+                );
             } else {
                 PageLayout::postSuccess(sprintf(
                     _('%s wurde aus der Gruppe %s ausgetragen.'),
-                    htmlReady($name), htmlReady($g->name)));
+                    htmlReady($name), htmlReady($g->name))
+                );
             }
         } else {
             if ($user_id == $GLOBALS['user']->id) {
                 PageLayout::postError(sprintf(
                     _('Sie konnten nicht aus der Gruppe %s ausgetragen werden.'),
-                    htmlReady($g->name)));
+                    htmlReady($g->name))
+                );
             } else {
                 PageLayout::postError(sprintf(
                     _('%s konnte nicht aus der Gruppe %s ausgetragen werden.'),
-                    htmlReady($name), htmlReady($g->name)));
+                    htmlReady($name), htmlReady($g->name))
+                );
             }
         }
         $this->relocate('course/statusgroups');
@@ -710,10 +715,12 @@ class Course_StatusgroupsController extends AuthenticatedController
         $s->statusgruppe_id = $group_id;
         if ($s->store()) {
             PageLayout::postSuccess(sprintf(
-                _('Sie wurden als Mitglied der Gruppe %s eingetragen.'), htmlReady($g->name)));
+                _('Sie wurden als Mitglied der Gruppe %s eingetragen.'), htmlReady($g->name)
+            ));
         } else {
             PageLayout::postError(sprintf(
-                _('Sie konnten nicht als Mitglied der Gruppe %s eingetragen werden.'), htmlReady($g->name)));
+                _('Sie konnten nicht als Mitglied der Gruppe %s eingetragen werden.'), htmlReady($g->name)
+            ));
         }
 
         $this->relocate('course/statusgroups');
@@ -735,10 +742,12 @@ class Course_StatusgroupsController extends AuthenticatedController
         $s = StatusgruppeUser::find([$group_id, $GLOBALS['user']->id]);
         if ($s->delete()) {
             PageLayout::postSuccess(sprintf(
-                _('Sie wurden aus der Gruppe %s ausgetragen.'), htmlReady($g->name)));
+                _('Sie wurden aus der Gruppe %s ausgetragen.'), htmlReady($g->name)
+            ));
         } else {
             PageLayout::postError(sprintf(
-                _('Sie konnten nicht aus der Gruppe %s ausgetragen werden.'), htmlReady($g->name)));
+                _('Sie konnten nicht aus der Gruppe %s ausgetragen werden.'), htmlReady($g->name)
+            ));
         }
 
         $this->relocate('course/statusgroups');
@@ -767,13 +776,17 @@ class Course_StatusgroupsController extends AuthenticatedController
                 $numbering = Request::int('startnumber', 1);
             }
             for ($i = 0 ; $i < Request::int('number') ; $i++) {
-                $group = StatusgroupsModel::updateGroup('', Request::get('prefix').' '.
-                    $numbering++,
-                    null, $this->course_id, Request::int('size', 0),
+                $group = StatusgroupsModel::updateGroup(
+                    '',
+                    Request::get('prefix').' '. $numbering++,
+                    null,
+                    $this->course_id,
+                    Request::int('size', 0),
                     Request::int('selfassign', 0) + Request::int('exclusive', 0),
                     strtotime(Request::get('selfassign_start', 'now')),
                     strtotime(Request::get('selfassign_end', 0)),
-                    Request::int('makefolder', 0));
+                    Request::int('makefolder', 0)
+                );
                 $counter++;
             }
 
@@ -793,8 +806,12 @@ class Course_StatusgroupsController extends AuthenticatedController
                     })->orderBy('priority');
 
                     foreach ($topics as $t) {
-                        $group = StatusgroupsModel::updateGroup('', _('Thema:') . ' ' . $t->title,
-                            null, $this->course_id, Request::int('size', 0),
+                        $group = StatusgroupsModel::updateGroup(
+                            '',
+                            _('Thema:') . ' ' . $t->title,
+                            null,
+                            $this->course_id,
+                            Request::int('size', 0),
                             Request::int('selfassign', 0) + Request::int('exclusive', 0),
                             strtotime(Request::get('selfassign_start', 'now')),
                             strtotime(Request::get('selfassign_end', 0)),
@@ -807,7 +824,6 @@ class Course_StatusgroupsController extends AuthenticatedController
                             $d->statusgruppen->append($group);
                             $d->store();
                         }
-
                         $counter++;
                     }
 
@@ -815,10 +831,10 @@ class Course_StatusgroupsController extends AuthenticatedController
 
                 // Create groups per (regular and irregular) dates.
                 case 'dates':
-
                     // Find regular cycles first and create corresponding groups.
                     $cycles = SimpleCollection::createFromArray(
-                        SeminarCycleDate::findBySeminar_id($this->course_id));
+                        SeminarCycleDate::findBySeminar_id($this->course_id)
+                    );
 
                     foreach ($cycles as $c) {
                         $cd = new CycleData($c);
@@ -832,12 +848,14 @@ class Course_StatusgroupsController extends AuthenticatedController
 
                         // Get name of most used room and append to group title.
                         if ($rooms = $cd->getPredominantRoom()) {
+                            $room_keys = array_keys($rooms);
                             $room_name = DBManager::get()->fetchOne(
                                 "SELECT `name` FROM `resources` WHERE `id` = ?",
-                                [array_pop(array_keys($rooms))]);
+                                [array_pop($room_keys)]);
                             $name .= ' (' . $room_name['name'] . ')';
                         } else {
-                            $room = trim(array_pop(array_keys($cd->getFreeTextPredominantRoom())));
+                            $free_text_predominant_rooms = array_keys($cd->getFreeTextPredominantRoom());
+                            $room = trim(array_pop($free_text_predominant_rooms));
                             if ($room) {
                                 $name .= ' (' . $room . ')';
                             }
@@ -965,10 +983,10 @@ class Course_StatusgroupsController extends AuthenticatedController
 
                         // Check for diverging values on all groups.
                         foreach ($this->groups as $group) {
-                            if ($group->selfassign = 1) {
+                            if ((int)$group->selfassign === 1) {
                                 $selfassign++;
                             }
-                            if ($group->selfassign == 2) {
+                            if ((int)$group->selfassign === 2) {
                                 $selfassign++;
                                 $exclusive++;
                             }
@@ -987,7 +1005,8 @@ class Course_StatusgroupsController extends AuthenticatedController
                         // Selfassign start time set for all selected groups?
                         if (count($selfassign_start) <= 1) {
                             // Just one entry, take it as value for all.
-                            $start = array_pop(array_keys($selfassign_start));
+                            $selfassign_starts = array_keys($selfassign_start);
+                            $start = array_pop($selfassign_starts);
                             $this->selfassign_start = $start ? date('d.m.Y H:i', $start) : '';
                         } else {
                             // Different entries, mark this.
@@ -997,7 +1016,8 @@ class Course_StatusgroupsController extends AuthenticatedController
                         // Selfassign end time set for all selected groups?
                         if (count($selfassign_end) <= 1) {
                             // Just one entry, take it as value for all.
-                            $end = array_pop(array_keys($selfassign_end));
+                            $selfassign_ends = array_keys($selfassign_end);
+                            $end = array_pop($selfassign_ends);
                             $this->selfassign_end = $end ? date('d.m.Y H:i', $end) : '';
                         } else {
                             // Different entries, mark this.

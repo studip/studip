@@ -36,6 +36,7 @@ class StudipAuthShib extends StudipAuthSSO
             if (isset($this->local_domain)) {
                 $this->userdata['username'] =
                     str_replace('@'.$this->local_domain, '', $this->userdata['username']);
+                $this->local_domain = str_replace('mail.', '', $this->local_domain);
             }
         }
     }
