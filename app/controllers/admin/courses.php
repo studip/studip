@@ -895,6 +895,41 @@ class Admin_CoursesController extends AuthenticatedController
         }
     }
 
+    /**
+     * Changes the notice for a course.
+     *
+     * @param  string $course_id
+     */
+    public function notice_action(Course $course)
+    {
+        $notice_datafield = $course->datafields->filter(function ($datafield) {
+            return $datafield->name === 'Notiz zu einer Veranstaltung';
+        })->first() ?? DataFieldEntry::createDataFieldEntry(
+            DataField::findOneByName('Notiz zu einer Veranstaltung'),
+            $course->id,
+            ''
+        );
+
+        if (Request::isPost()) {
+            $notice_datafield->content = trim(Request::get('notice'));
+            $notice_datafield->store();
+
+            if (Request::isXhr()) {
+                $this->response->add_header('X-Dialog-Notice', json_encode([
+                    'id'     => $course->id,
+                    'notice' => $notice_datafield->content,
+                ]));
+                $this->render_nothing();
+            } else {
+                $this->redirect($this->indexURL("#course-{$course_id}"));
+            }
+            return;
+        }
+
+        $this->course = $course;
+        $this->notice = $notice_datafield->content;
+    }
+
     public function get_subcourses_action($course_id)
     {
         // get courses only if institutes available
@@ -956,19 +991,22 @@ class Admin_CoursesController extends AuthenticatedController
                 'name'      => _('Sperrebene'),
                 'title'     => _('Sperrebenen'),
                 'url'       => 'dispatch.php/admin/courses/set_lockrule',
-                'multimode' => true
+                'multimode' => true,
+                'partial'   => 'lock.php',
             ],
             9 => [
                 'name'      => _('Sichtbarkeit'),
                 'title'     => _('Sichtbarkeit'),
                 'url'       => 'dispatch.php/admin/courses/set_visibility',
-                'multimode' => true
+                'multimode' => true,
+                'partial'   => 'visibility.php',
             ],
             10 => [
                 'name'      => _('Zusatzangaben'),
                 'title'     => _('Zusatzangaben'),
                 'url'       => 'dispatch.php/admin/courses/set_aux_lockrule',
-                'multimode' => true
+                'multimode' => true,
+                'partial'   => 'aux-select.php',
             ],
             11 => [
                 'name'       => _('Veranstaltung kopieren'),
@@ -983,16 +1021,18 @@ class Admin_CoursesController extends AuthenticatedController
                 'attributes' => ['data-dialog' => 'size=big'],
             ],
             16 => [
-                'name'       => _('Löschen'),
-                'title'      => _('Löschen'),
-                'url'        => 'dispatch.php/course/archive/confirm',
-                'multimode'  => true
+                'name'      => _('Löschen'),
+                'title'     => _('Löschen'),
+                'url'       => 'dispatch.php/course/archive/confirm',
+                'multimode' => true,
+                'partial'   => 'add_to_archive.php',
             ],
             17 => [
                 'name'      => _('Gesperrte Veranstaltungen'),
                 'title'     => _('Einstellungen speichern'),
                 'url'       => 'dispatch.php/admin/courses/set_locked',
-                'multimode' => true
+                'multimode' => true,
+                'partial'   => 'admission_locked.php',
             ],
             18 => [
                 'name'       => _('Startsemester'),
@@ -1005,6 +1045,13 @@ class Admin_CoursesController extends AuthenticatedController
                 'title'      => _('LV-Gruppen'),
                 'url'        => 'dispatch.php/course/lvgselector?cid=%s&from=admin/courses',
                 'attributes' => ['data-dialog' => 'size=big'],
+            ],
+            20 => [
+                'name'       => _('Notiz'),
+                'title'      => _('Notiz'),
+                'url'        => $this->noticeURL('%s'),
+                'attributes' => ['data-dialog' => 'size=auto'],
+                'partial'    => 'notice-action.php',
             ],
         ];
 

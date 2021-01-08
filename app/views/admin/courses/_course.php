@@ -165,27 +165,13 @@ if (!$values['parent_course'] || !in_array($values['parent_course'], array_keys(
                 <? endif ?>
             <? endforeach ?>
         <? endforeach ?>
-        <td style="text-align: right;" class="actions">
-            <? if ($actions[$selected_action]['multimode'] && is_numeric($selected_action)) : ?>
-                <? if ($GLOBALS['perm']->have_studip_perm('tutor', $semid)) : ?>
-                    <? switch ($selected_action) {
-                        case 8 :
-                            echo $this->render_partial('admin/courses/lock.php', compact('values', 'semid'));
-                            break;
-                        case 9:
-                            echo $this->render_partial('admin/courses/visibility.php', compact('values', 'semid'));
-                            break;
-                        case 10:
-                            echo $this->render_partial('admin/courses/aux-select.php', compact('values', 'semid'));
-                            break;
-                        case 16:
-                            echo $this->render_partial('admin/courses/add_to_archive', compact('values', 'semid'));
-                            break;
-                        case 17:
-                            echo $this->render_partial('admin/courses/admission_locked', compact('values', 'semid'));
-                            break;
-                    } ?>
-                <? endif ?>
+        <td class="actions">
+            <? if (isset($actions[$selected_action]['partial']) && is_numeric($selected_action) && $GLOBALS['perm']->have_studip_perm('tutor', $semid)) : ?>
+                <?= $this->render_partial("admin/courses/{$actions[$selected_action]['partial']}", [
+                    'course' => $course,
+                    'values' => $values,
+                    'action' => $actions[$selected_action],
+                ]) ?>
             <? elseif (!is_numeric($selected_action)) : ?>
                 <? $plugin = PluginManager::getInstance()->getPlugin($selected_action) ?>
                 <? $template = $plugin->getAdminCourseActionTemplate($semid, $values) ?>

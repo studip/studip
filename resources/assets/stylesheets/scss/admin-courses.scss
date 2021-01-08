@@ -1,0 +1,42 @@
+.button.has-notice,
+.button.has-no-notice {
+    &::before,
+    &::after {
+        vertical-align: sub;
+    }
+    &::before {
+        margin-right: 0.5ex;
+    }
+    &::after {
+        margin-left: 0.5ex;
+        transition: opacity 300ms;
+    }
+    &:not(:hover)::after {
+        opacity: 0.5;
+    }
+}
+
+.button.has-notice {
+    &::before {
+        content: url("#{$image-path}/icons/blue/file-text.svg");
+    }
+    &:hover::before {
+        content: url("#{$image-path}/icons/white/file-text.svg");
+    }
+
+    &::after {
+        content: url("#{$image-path}/icons/green/accept.svg");
+    }
+}
+.button.has-no-notice {
+    &::before {
+        content: url("#{$image-path}/icons/blue/file.svg");
+    }
+    &:hover::before {
+        content: url("#{$image-path}/icons/white/file.svg");
+    }
+
+    &::after {
+        content: url("#{$image-path}/icons/red/decline.svg");
+    }
+}
