@@ -1,4 +1,7 @@
 <div style="font-style: italic">
+    <div>
+        <?= _('Den zeitgesteuerten Ordner sehen Teilnehmende in einem von lehrenden Personen bestimmten Zeitraum. Ob Teilnehmende die Ordnerinhalte herunterladen und/oder hochladen können, kann eingestellt werden.') ?>
+    </div>
 <? if ($folder->start_time && !$folder->end_time) : ?>
     <strong>
         <?= sprintf(_('Sichtbar ab %s'),
