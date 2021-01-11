@@ -117,7 +117,7 @@ class SRULibrarySearch extends LibrarySearch
         $query_parameters['maximumRecords'] = $limit;
         $query_parameters['query'] = $query_string;
         $data = $this->requestData($this->request_base_url, $query_parameters);
-        if ($data === null) {
+        if (!$data) {
             //There are no data we can retrieve.
             return [];
         }

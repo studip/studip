@@ -119,20 +119,7 @@ abstract class LibrarySearch
             $full_url .= '?' . http_build_query($url_parameters);
         }
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_URL, $full_url);
-
-        //var_dump($full_url);
-
-        $data = curl_exec($curl);
-        if ($data === false) {
-            return false;
-        }
-        $response_code = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
-        if ($response_code != 200) {
-            return false;
-        }
+        $data = file_get_contents($full_url, false, get_default_http_stream_context($base_url));
         return $data;
     }
 
