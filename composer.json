@@ -2,9 +2,6 @@
     "name": "studip/core",
     "description": "Stud.IP ist ein Campus- und Lernmanagementsystem für Hochschulen, Schulen, Unternehmen, Verbände und Behörden.",
     "config": {
-        "platform": {
-            "php": "7.2"
-        },
         "vendor-dir": "composer"
     },
     "repositories": [
@@ -45,7 +42,7 @@
         "codeception/module-asserts": "^1.1"
     },
     "require": {
-        "php": "^7.0",
+        "php": "^7.2",
         "guzzlehttp/psr7": "~1.4.2",
         "neomerx/json-api": "~1.0.9",
         "slim/slim": "~3.12.3",
@@ -65,6 +62,14 @@
         "gossi/docblock": "^1.6",
         "phpxmlrpc/extras": "^0.6.2",
         "algo26-matthias/idna-convert": "^3.0",
-        "caxy/php-htmldiff": "^0.1.9"
+        "caxy/php-htmldiff": "^0.1.9",
+        "ext-gd": "^7.2",
+        "ext-gettext": "^7.2",
+        "ext-pdo_mysql": "^7.2",
+        "ext-session": "^7.2",
+        "ext-curl": "^7.2",
+        "ext-zip": "^1.15",
+        "ext-json": "^1.6",
+        "ext-pcre": "^7.2"
     }
 }
