@@ -28,8 +28,12 @@ domReady(() => {
         });
     });
 
+    const submit_button = document.querySelector('form button[type="submit"].button');
+    submit_button.disabled = true;
+
     function next() {
         if (requests.length === 0) {
+            submit_button.disabled = false;
             return;
         }
         const current = requests.shift();

@@ -258,8 +258,7 @@ class Admin_InstallController extends Trails_Controller
             } else {
                 try {
                     foreach ($_SESSION['STUDIP_INSTALLATION']['files'] as $file) {
-                        $queries = explode(';', file_get_contents($GLOBALS['STUDIP_BASE_PATH'] . '/db/' . $file));
-                        foreach ($queries as $query) {
+                        foreach ($this->getQueriesFromFile($file) as $query) {
                             $pdo->exec($query);
                         }
                     }
@@ -465,8 +464,7 @@ class Admin_InstallController extends Trails_Controller
             foreach ($files as $file) {
                 $this->sendEventSourceEvent('file', $file);
 
-                $queries = explode(';', file_get_contents($GLOBALS['STUDIP_BASE_PATH'] . '/db/' . $file));
-                foreach ($queries as $query) {
+                foreach ($this->getQueriesFromFile($file) as $query) {
                     $pdo->exec($query);
                     $current += 1;
 
@@ -499,5 +497,16 @@ class Admin_InstallController extends Trails_Controller
             in_array($_SERVER['SERVER_PORT'], [80, 443]) ? '' : ":{$_SERVER['SERVER_PORT']}",
             dirname($_SERVER['SCRIPT_NAME'])
         );
+    }
+
+    private function getQueriesFromFile($file)
+    {
+        $queries = explode(";\n", file_get_contents($GLOBALS['STUDIP_BASE_PATH'] . '/db/' . $file));
+        foreach ($queries as $query) {
+            $query = trim($query);
+            if ($query) {
+                yield $query;
+            }
+        }
     }
 }

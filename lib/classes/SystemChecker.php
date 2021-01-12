@@ -67,6 +67,13 @@ final class SystemChecker
         ];
     }
 
+    private function getPDO($dsn, $user, $password)
+    {
+        $pdo = new PDO($dsn, $user, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        return $pdo;
+    }
+
     public function getMySQLConnection($host, $user, $password, $database, $create_database = false)
     {
         try {
@@ -76,17 +83,16 @@ final class SystemChecker
             }
             $dsn .= ";charset=utf8mb4";
 
-            return new PDO($dsn, $user, $password);
+            return $this->getPDO($dsn, $user, $password);
         } catch (Exception $e) {
             if (!$create_database || strpos($e->getMessage(), '[1049]') === false) {
                 throw $e;
             }
 
             $dsn = "mysql:host={$host};charset=utf8mb4";
-            $pdo = new PDO($dsn, $user, $password);
-
-            $pdo->exec("CREATE DATABASE {$database}");
-            $pdo->exec("USE {$database}");
+            $pdo = $this->getPDO($dsn, $user, $password);
+            $pdo->exec("CREATE DATABASE `{$database}`");
+            $pdo->exec("USE `{$database}`");
             return $pdo;
         }
     }
