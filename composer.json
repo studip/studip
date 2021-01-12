@@ -70,6 +70,7 @@
         "ext-curl": "^7.2",
         "ext-zip": "^1.15",
         "ext-json": "^1.6",
-        "ext-pcre": "^7.2"
+        "ext-pcre": "^7.2",
+        "ext-pdo": "^7.2"
     }
 }
