@@ -424,6 +424,9 @@ class Course_RoomRequestsController extends AuthenticatedController
             }
             $this->category = $this->request->category;
             $this->category_id = $this->request->category_id;
+            $this->seats = $this->request->seats;
+            $this->comment = $this->request->comment;
+            $this->reply_lecturers = $this->request->reply_recipients == 'lecturer';
         } else {
             //It is a new request. Create the request object and do nothing else.
             $this->request = $this->getRequestInstanceFromSession($this->request_id);
@@ -515,6 +518,12 @@ class Course_RoomRequestsController extends AuthenticatedController
                     $this->request->properties->delete();
                 }
                 $this->request->preparation_time = $this->preparation_time * 60;
+                $this->request->comment = Request::get('comment');
+                if (Request::get('reply_lecturers')) {
+                    $this->request->reply_recipients = 'lecturer';
+                } else {
+                    $this->request->reply_recipients = 'requester';
+                }
 
                 $storing_successful = false;
                 if ($this->request->isDirty()) {
@@ -572,6 +581,10 @@ class Course_RoomRequestsController extends AuthenticatedController
         if (!($this->request instanceof RoomRequest)) {
             //It is a new request. Create the request object and do nothing else.
             $this->request = $this->getRequestInstanceFromSession($this->request_id);
+        } else {
+            $this->seats = $this->request->seats;
+            $this->comment = $this->request->comment;
+            $this->reply_lecturers = $this->request->reply_recipients == 'lecturer';
         }
 
         $search_properties = $this->selected_properties;
@@ -676,6 +689,8 @@ class Course_RoomRequestsController extends AuthenticatedController
                 //category is reset:
                 $session_data['selected_properties'] = [];
                 $session_data['selected_room_id'] = $this->selected_room_id;
+                $session_data['category_id'] = '';
+                $session_data['room_name'] = '';
                 $this->redirect('course/room_requests/request_start/' . $this->request_id);
             } elseif (Request::submitted('save') || Request::submitted('save_and_close')) {
                 $session_data['selected_properties'] = Request::getArray('selected_properties');
@@ -694,6 +709,12 @@ class Course_RoomRequestsController extends AuthenticatedController
                     ? $this->selected_room_id
                     : ''
                 );
+                $this->request->comment = Request::get('comment');
+                if (Request::get('reply_lecturers')) {
+                    $this->request->reply_recipients = 'lecturer';
+                } else {
+                    $this->request->reply_recipients = 'requester';
+                }
 
                 if ($this->request->isNew()) {
                     //Set the requester:
@@ -863,7 +884,7 @@ class Course_RoomRequestsController extends AuthenticatedController
                     $this->request->category_id = $this->selected_room->category_id;
                 } else {
                     $this->request->resource_id = '';
-                    $this->request->category_id = $session_data['category_id'];
+                    $this->request->category_id = $this->category_id;
                 }
 
                 $storing_successful = false;
