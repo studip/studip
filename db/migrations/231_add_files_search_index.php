@@ -18,8 +18,11 @@ class AddFilesSearchIndex extends Migration
     public function up()
     {
         $this->createTables();
-        $this->registerWidgets();
-        $this->setupDefaultWidgets();
+
+        if ($this->registerWidgets()) {
+            $this->setupDefaultWidgets();
+        }
+
         $this->installCronjob();
     }
 
@@ -83,9 +86,15 @@ class AddFilesSearchIndex extends Migration
         ];
 
         foreach ($widgets as $path => $class) {
+            if (!file_exists($path)) {
+                return false;
+            }
+
             require $path;
             \Widgets\Widget::registerWidget(new $class());
         }
+
+        return true;
     }
 
     private function setupDefaultWidgets()
