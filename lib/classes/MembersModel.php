@@ -349,6 +349,26 @@ class MembersModel
     }
 
     /**
+     * Get user informations by email for csv-import
+     * @param String $email
+     * @return Array
+     */
+    public function getMemberByEmail($email)
+    {
+        $query = "SELECT a.user_id, username,
+                        perms, b.Seminar_id AS is_present
+                 FROM auth_user_md5 AS a
+                 LEFT JOIN user_info USING (user_id)
+                 LEFT JOIN seminar_user AS b ON (b.user_id = a.user_id AND b.Seminar_id = ?)
+                 WHERE perms IN ('autor', 'tutor', 'dozent')
+                 AND a.visible <> 'never'
+                   AND email LIKE ?
+                 ORDER BY Nachname, Vorname";
+        return DBManager::get()->fetchAll($query, [$this->course_id, $email]);
+
+    }
+
+    /**
      * Get user informations by generic datafields for csv-import
      * @param String $nachname
      * @param String $datafield_id

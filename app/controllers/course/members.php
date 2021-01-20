@@ -617,7 +617,7 @@ class Course_MembersController extends AuthenticatedController
         $csv_count_multiple = 0;
         $datafield_id = null;
 
-        if (Request::get('csv_import_format') && !in_array(Request::get('csv_import_format'), words('realname username'))) {
+        if (Request::get('csv_import_format') && !in_array(Request::get('csv_import_format'), words('realname username email'))) {
             foreach (DataField::getDataFields('user', 1 | 2 | 4 | 8, true) as $df) {
                 if ($df->accessAllowed() && in_array($df->getId(), $GLOBALS['TEILNEHMER_IMPORT_DATAFIELDS']) && $df->getId() == Request::quoted('csv_import_format')) {
                     $datafield_id = $df->getId();
@@ -641,6 +641,8 @@ class Course_MembersController extends AuthenticatedController
                         $csv_users = $this->members->getMemberByIdentification($csv_nachname, $csv_vorname);
                     } elseif (Request::quoted('csv_import_format') == 'username') {
                         $csv_users = $this->members->getMemberByUsername($csv_nachname);
+                    } elseif (Request::quoted('csv_import_format') == 'email') {
+                        $csv_users = $this->members->getMemberByEmail($csv_nachname);
                     } else {
                         $csv_users = $this->members->getMemberByDatafield($csv_nachname, $datafield_id);
                     }

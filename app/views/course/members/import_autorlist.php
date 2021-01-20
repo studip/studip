@@ -17,11 +17,13 @@
                 die in die Veranstaltung aufgenommen werden sollen. Wählen Sie in der Auswahlbox das gewünschte Format, in dem Sie die Namen eingeben möchten.<br />
                 <strong>Eingabeformat</strong><br/>
                 <strong>Nachname, Vorname &crarr;</strong><br />Geben Sie dazu in jede Zeile den Nachnamen und (optional) den Vornamen getrennt durch ein Komma oder ein Tabulatorzeichen ein.<br />
-                <strong>Nutzername &crarr;</strong><br />Geben Sie dazu in jede Zeile den Stud.IP Nutzernamen ein.'), htmlReady($status_groups['autor'])));?>
+                <strong>Nutzername &crarr;</strong><br />Geben Sie dazu in jede Zeile den Stud.IP Nutzernamen ein.<br />
+                <strong>Email &crarr;</strong><br />Geben Sie dazu in jede Zeile die Email Adresse ein.'), htmlReady($status_groups['autor'])));?>
 
             <select name="csv_import_format">
                 <option value="realname"><?=_("Nachname, Vorname")?> &crarr;</option>
                 <option value="username"><?=_("Nutzername")?> &crarr;</option>
+                <option value="email"><?=_("Email")?> &crarr;</option>
                 <? if(!empty($accessible_df)) : ?>
                     <? foreach ($accessible_df as $df) : ?>
                         <option value="<?=$df->getId()?>" <?=(Request::get('csv_import_format') ==  $df->getId()? 'selected="selected"': '')?>><?= htmlReady($df->getName())?> &crarr;</option>
