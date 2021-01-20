@@ -230,13 +230,12 @@ class RolePersistence
                           UNION
 
                           SELECT `roleid`, '' AS institut_id, 0 AS explicit
-                          FROM `auth_user_md5` AS aum
-                          JOIN `roles_studipperms` AS rsp
-                            ON aum.`perms` = rsp.`permname`
-                            WHERE aum.`user_id` = :user_id
+                          FROM `roles_studipperms`
+                          WHERE `permname` = :perm
                       ) AS tmp";
             $statement = DBManager::get()->prepare($query);
             $statement->bindValue(':user_id', $user_id);
+            $statement->bindValue(':perm', $GLOBALS['perm']->get_perm($user_id));
             $statement->execute();
             $statement->setFetchMode(PDO::FETCH_ASSOC);
 
