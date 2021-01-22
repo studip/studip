@@ -613,12 +613,15 @@ class RoomManagement_PlanningController extends AuthenticatedController
 
         //Get all available semesters:
         $this->available_semesters = Semester::getAll();
+        $this->sem_week_selected = false;
+        $this->selected_sem_week = 1;
 
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
             if (Request::submitted('select_rooms') || Request::submitted('step1')) {
                 $this->step = 2;
-            } elseif (Request::submitted('test_copy') || Request::submitted('step2')) {
+            } elseif (Request::submitted('test_copy') || Request::submitted('step2')
+                      || Request::submitted('download_booking_list')) {
                 $this->step = 3;
             } elseif (Request::submitted('copy')) {
                 $this->step = 4;
@@ -628,6 +631,8 @@ class RoomManagement_PlanningController extends AuthenticatedController
         if ($this->step >= 2) {
             //Step 2: Select and verify bookings and semester
             $this->source_semester_id = Request::get('source_semester_id');
+            $this->sem_week_selected = Request::get('sem_week_selected');
+            $this->selected_sem_week = Request::get('selected_sem_week');
             $this->selected_room_ids = Request::getArray('selected_room_ids');
             if (!$this->source_semester_id) {
                 PageLayout::postError(
@@ -643,6 +648,18 @@ class RoomManagement_PlanningController extends AuthenticatedController
                 );
                 $this->step = 1;
                 return;
+            }
+            if ($this->sem_week_selected) {
+                $last_sem_week_number = $this->source_semester->getSemWeekNumber(
+                    $this->source_semester->vorles_ende
+                );
+                if (($this->selected_sem_week < 1) || ($this->selected_sem_week > $last_sem_week_number)) {
+                    PageLayout::postError(
+                        _('Die gewählte Semesterwoche liegt außerhalb des gewählten Semesters!')
+                    );
+                    $this->step = 1;
+                    return;
+                }
             }
             if (!$this->selected_room_ids) {
                 PageLayout::postError(
@@ -690,15 +707,35 @@ class RoomManagement_PlanningController extends AuthenticatedController
 
             $unfiltered_bookings = [];
             foreach ($this->selected_rooms as $room) {
-                $room_bookings = ResourceBooking::findByResourceAndTimeRanges(
-                    $room,
-                    [
+                $room_bookings = [];
+                if ($this->sem_week_selected) {
+                    $selected_week_begin = $this->source_semester->vorles_beginn;
+                    if ($this->selected_sem_week > 1) {
+                        $selected_week_begin = strtotime(
+                            sprintf('+%d weeks', $this->selected_sem_week),
+                            $this->source_semester->vorles_beginn
+                        );
+                    }
+                    $room_bookings = ResourceBooking::findByResourceAndTimeRanges(
+                        $room,
                         [
-                            'begin' => $this->source_semester->beginn,
-                            'end' => $this->source_semester->ende
+                            [
+                                'begin' => $selected_week_begin,
+                                'end' => $this->source_semester->ende
+                            ]
                         ]
-                    ]
-                );
+                    );
+                } else {
+                    $room_bookings = ResourceBooking::findByResourceAndTimeRanges(
+                        $room,
+                        [
+                            [
+                                'begin' => $this->source_semester->beginn,
+                                'end' => $this->source_semester->ende
+                            ]
+                        ]
+                    );
+                }
                 if ($room_bookings) {
                     $unfiltered_bookings = array_merge(
                         $unfiltered_bookings,
@@ -733,6 +770,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
         }
         if ($this->step >= 3) {
             //Step 3: Test copying into the target semester
+            $this->show_copy_button = false;
             $this->target_semester_id = Request::get('target_semester_id');
             $this->selected_booking_ids = Request::getArray('selected_booking_ids');
             if (!$this->target_semester_id) {
@@ -798,17 +836,28 @@ class RoomManagement_PlanningController extends AuthenticatedController
 
             //Loop over each booking and do the following:
             //1. Calculate the week number and the week day of the booking
-            //   in the semester.
+            //   in the semester, unless the week number has been explicitly
+            //   specified in step 1.
             //2. Calculate the date for the copy of the booking and store it
             //   in an array.
             //3. Check if the resource of the booking is available on the
             //   calculcated date in the time range of the original booking.
             //4. Add the availability information to the array
             //   with the booking copies.
+            //5. Count the number of bookings and how many of them can be
+            //   copied in the target semester. If more that 50% of bookings
+            //   cannot be copied, do not show the copy action and instead
+            //   provide a download button to download the list of bookings.
+
+            $available_booking_c = 0;
             foreach ($this->selected_bookings as $booking) {
-                $begin_sem_week_number = $this->source_semester->getSemWeekNumber(
-                    $booking->begin
-                );
+                $begin_sem_week_number = 0;
+                if ($this->sem_week_selected) {
+                    $begin_sem_week_number = $this->selected_sem_week +
+                                             $this->source_semester->getSemWeekNumber($booking->begin) - 1;
+                } else {
+                    $begin_sem_week_number = $this->source_semester->getSemWeekNumber($booking->begin);
+                }
                 if (!$begin_sem_week_number) {
                     PageLayout::postError(
                         sprintf(
@@ -829,6 +878,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
                 $booking_begin->setTimestamp($booking->begin);
                 $booking_end = new DateTime();
                 $booking_end->setTimestamp($booking->end);
+
                 $duration = $booking_begin->diff($booking_end);
                 $booking_repeat_end = new DateTime();
                 $booking_repeat_end->setTimestamp($booking->repeat_end);
@@ -866,7 +916,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
                 //booking is the same timestamp as the course end of the
                 //source semester.
                 $target_repeat_end = clone $target_end;
-                if ($booking->repeat_end == $this->source_semester->vorles_ende) {
+                if ($booking->repeat_end >= $this->source_semester->vorles_ende) {
                     $target_repeat_end->setTimestamp(
                         $this->target_semester->vorles_ende
                     );
@@ -874,6 +924,11 @@ class RoomManagement_PlanningController extends AuthenticatedController
                     $target_repeat_end = $target_repeat_end->add(
                         $repeat_duration
                     );
+                    if ($target_repeat_end >= $this->target_semester->vorles_ende) {
+                        $target_repeat_end->setTimestamp(
+                            $this->target_semester->vorles_ende
+                        );
+                    }
                 }
 
                 $copy_data = [
@@ -905,16 +960,68 @@ class RoomManagement_PlanningController extends AuthenticatedController
                     //since it is automatically called before storing.
                     //Furthermore, the availability flag isn't important
                     //anymore after step 3.
+                    $time_intervals = $copy->calculateTimeIntervals();
+                    if (!$time_intervals) {
+                        //The copied booking will have no time intervals.
+                        //So we can skip to the next one.
+                        continue;
+                    }
                     $copy_data['time_intervals'] = $copy->calculateTimeIntervals();
                     try {
                         $copy->validate();
                         $copy_data['available'] = true;
+                        $available_booking_c++;
                     } catch (Exception $e) {
                         $copy_data['available'] = false;
                     }
                 }
                 $copy_data['copy'] = $copy;
                 $this->booking_copy_data[$booking->id] = $copy_data;
+            }
+            if (Request::submitted('download_booking_list')) {
+                $csv_data = [
+                    [
+                        _('Buchungsnummer'),
+                        _('Buchungszeitraum'),
+                        _('Raum'),
+                        _('Verfügbar')
+                    ]
+                ];
+                $booking_c = 1;
+                foreach ($this->booking_copy_data as $data) {
+                    foreach ($data['time_intervals'] as $interval) {
+                        $time_range = sprintf(
+                            '%1$s - %2$s',
+                            date('d.m.Y H:i', $interval['begin']),
+                            date('d.m.Y H:i', $interval['end'])
+                        );
+                        $csv_data[] = [
+                            $booking_c,
+                            $time_range,
+                            $data['original']->resource->name,
+                            $data['available'] ? _('ja') : _('nein')
+                        ];
+                    }
+                    $booking_c++;
+                }
+                $filename = sprintf(
+                    _('Zu kopierende Buchungen am %s') . '.csv',
+                    date('d.m.Y')
+                );
+                $this->render_csv($csv_data, $filename);
+                return;
+            } elseif ($this->step < 4) {
+                $booking_c = count($this->selected_bookings);
+                if ($booking_c) {
+                    if (($available_booking_c / $booking_c) < 0.5) {
+                        PageLayout::postInfo(
+                            _('Weniger als die Hälfte der Buchungen können in das Zielsemester kopiert werden!')
+                        );
+                        return;
+                    } else {
+                        $this->show_copy_button = true;
+                    }
+                }
             }
         }
         if ($this->step >= 4) {

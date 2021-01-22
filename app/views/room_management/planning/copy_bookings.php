@@ -51,6 +51,14 @@
                         <? endforeach ?>
                     </select>
                 </label>
+                <label>
+                    <input type="checkbox" name="sem_week_selected" value="1"
+                           data-activates="input[type='number'][name='selected_sem_week']"
+                           <?= $sem_week_selected ? 'checked="checked"' : ''?>>
+                       <?= _('Buchungen sollen erst ab der folgenden Semesterwoche kopiert werden:') ?>
+                       <input type="number" min="1" max="53" name="selected_sem_week"
+                              value="<?= htmlReady($selected_sem_week) ?>">
+                </label>
             </fieldset>
             <div data-dialog-button="1">
                 <?= \Studip\Button::create(
@@ -74,6 +82,10 @@
         <? endforeach ?>
         <input type="hidden" name="source_semester_id"
                value="<?= htmlReady($source_semester_id)?>">
+        <input type="hidden" name="sem_week_selected"
+               value="<?= htmlReady($sem_week_selected) ?>">
+        <input type="hidden" name="selected_sem_week"
+               value="<?= htmlReady($selected_sem_week) ?>">
         <fieldset>
             <legend><?= _('Buchungen') ?></legend>
             <table class="default">
@@ -153,6 +165,10 @@
         <? endforeach ?>
         <input type="hidden" name="source_semester_id"
                value="<?= htmlReady($source_semester_id)?>">
+        <input type="hidden" name="sem_week_selected"
+               value="<?= htmlReady($sem_week_selected) ?>">
+        <input type="hidden" name="selected_sem_week"
+               value="<?= htmlReady($selected_sem_week) ?>">
         <? foreach ($selected_booking_ids as $booking_id): ?>
             <input type="hidden" name="selected_booking_ids[]"
                    value="<?= htmlReady($booking_id) ?>">
@@ -212,13 +228,20 @@
             <?= \Studip\Button::create(
                 _('Zurück'),
                 'step2',
-                ['data-dialog' => 'size=auto']
+                ['data-dialog' => 'size=normal']
             ) ?>
-            <?= \Studip\Button::create(
-                _('Kopieren'),
-                'copy',
-                ['data-dialog' => 'size=auto']
-            ) ?>
+            <? if ($show_copy_button) : ?>
+                <?= \Studip\Button::create(
+                    _('Kopieren'),
+                    'copy',
+                    ['data-dialog' => 'size=normal']
+                ) ?>
+            <? else : ?>
+                <?= \Studip\Button::create(
+                    _('Liste mit Buchungen herunterladen'),
+                    'download_booking_list'
+                ) ?>
+            <? endif ?>
         </div>
     </form>
 <? endif ?>
