@@ -25,7 +25,7 @@
             <th>
                 <input type="checkbox" id="checkbox-proxy"
                        class="studip-checkbox"
-                       data-proxyfor=".consultation-overview tbody :checkbox"
+                       data-proxyfor=".consultation-overview tbody th :checkbox"
                        data-activates=".consultation-overview tfoot button">
                 <label for="checkbox-proxy"></label>
             </th>
@@ -40,10 +40,10 @@
     <tbody id="block-<?= htmlReady($block['block']->id) ?>" <? if ($block['block']->is_expired) echo 'class="block-is-expired"'; ?>>
         <tr class="<? if ($block['block']->has_bookings) echo 'is-occupied'; ?>">
             <th>
-                <input type="checkbox" id="slots-<?= htmLReady($block['block']->id) ?>"
+                <input type="checkbox" id="slots-<?= htmLReady($block['block']->id) ?>-checkbox"
                        class="studip-checkbox"
                        data-proxyfor="#block-<?= htmlReady($block['block']->id) ?> :checkbox[name^=slot]">
-                <label for="slots-<?= htmlReady($block['block']->id) ?>"></label>
+                <label for="slots-<?= htmlReady($block['block']->id) ?>-checkbox"></label>
             </th>
             <th colspan="3">
                 <?= $this->render_partial('consultation/block-description.php', ['block' => $block['block']]) ?>
@@ -88,10 +88,10 @@
     <? foreach ($block['slots'] as $slot): ?>
         <tr id="slot-<?= htmlReady($slot->id) ?>" class="<? if ($slot->is_expired) echo 'slot-is-expired'; ?>  <? if (count($slot->bookings) > 0) echo 'is-occupied'; ?>">
             <td>
-                <input type="checkbox" name="slot-id[]" id="slot-<?= htmLReady($slot->id) ?>"
+                <input type="checkbox" name="slot-id[]" id="slot-<?= htmlReady($slot->id) ?>-checkbox"
                        class="studip-checkbox"
                        value="<?= htmlReady($block['block']->id) ?>-<?= htmlReady($slot->id) ?>">
-                <label for="slot-<?= htmlReady($slot->id) ?>"></label>
+                <label for="slot-<?= htmlReady($slot->id) ?>-checkbox"></label>
             </td>
             <td>
                 <?= strftime('%R', $slot->start_time) ?>
