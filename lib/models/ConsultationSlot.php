@@ -202,6 +202,11 @@ class ConsultationSlot extends SimpleORMap
             return;
         }
 
+        // If no range is associated, remove the event
+        if (!$this->block->range) {
+            return $this->removeEvent();
+        }
+
         if (count($this->bookings) === 0 && !$this->block->calendar_events) {
             return $this->removeEvent();
         }
