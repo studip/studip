@@ -152,7 +152,7 @@ class Course_PlusController extends AuthenticatedController
 
     private function deleteContent($plugmodlist)
     {
-        $name = Request::Get('name');
+        $name = Request::get('name');
 
         foreach ($plugmodlist as $key => $val) {
             if (array_key_exists($name, $val)) {
@@ -223,8 +223,8 @@ class Course_PlusController extends AuthenticatedController
                 }
             }
         }
-        if (Request::Get('mode') != null) $_SESSION['plus']['View'] = Request::Get('mode');
-        if (Request::Get('displaystyle') != null) $_SESSION['plus']['displaystyle'] = Request::Get('displaystyle');
+        if (Request::get('mode') != null) $_SESSION['plus']['View'] = Request::get('mode');
+        if (Request::get('displaystyle') != null) $_SESSION['plus']['displaystyle'] = Request::get('displaystyle');
 
         $sidebar = Sidebar::get();
 
@@ -233,7 +233,7 @@ class Course_PlusController extends AuthenticatedController
 
         foreach ($_SESSION['plus']['Kategorie'] as $key => $val) {
 
-            if (Request::Get(md5('cat_' . $key)) != null) $_SESSION['plus']['Kategorie'][$key] = Request::Get(md5('cat_' . $key));
+            if (Request::get(md5('cat_' . $key)) != null) $_SESSION['plus']['Kategorie'][$key] = Request::get(md5('cat_' . $key));
 
             if ($_SESSION['plus']['displaystyle'] == 'alphabetical') {
                 $_SESSION['plus']['Kategorie'][$key] = 1;
@@ -241,12 +241,12 @@ class Course_PlusController extends AuthenticatedController
 
             if ($key == 'Sonstiges') continue;
             $widget->addCheckbox($key, $_SESSION['plus']['Kategorie'][$key],
-                URLHelper::getLink('?', [md5('cat_' . $key) => 1, 'displaystyle' => 'category']), URLHelper::getLink('?', [md5('cat_' . $key) => 0, 'displaystyle' => 'category']));
+                URLHelper::getURL('?', [md5('cat_' . $key) => 1, 'displaystyle' => 'category']), URLHelper::getURL('?', [md5('cat_' . $key) => 0, 'displaystyle' => 'category']));
 
         }
 
         $widget->addCheckbox(_('Sonstiges'), $_SESSION['plus']['Kategorie']['Sonstiges'],
-            URLHelper::getLink('?', [md5('cat_Sonstiges') => 1, 'displaystyle' => 'category']), URLHelper::getLink('?', [md5('cat_Sonstiges') => 0, 'displaystyle' => 'category']));
+            URLHelper::getURL('?', [md5('cat_Sonstiges') => 1, 'displaystyle' => 'category']), URLHelper::getURL('?', [md5('cat_Sonstiges') => 0, 'displaystyle' => 'category']));
 
         $sidebar->addWidget($widget, "Kategorien");
 

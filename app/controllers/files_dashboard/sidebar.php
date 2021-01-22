@@ -73,7 +73,7 @@ trait Sidebar
 
         $addElement(
             _('Alle Ergebnisse'),
-            \URLHelper::getLink(
+            \URLHelper::getURL(
                 'dispatch.php/files_dashboard/search',
                 [
                     'q' => $query,
@@ -86,7 +86,7 @@ trait Sidebar
         foreach (Filter::getCategories() as $type => $label) {
             $addElement(
                 $label,
-                \URLHelper::getLink(
+                \URLHelper::getURL(
                     'dispatch.php/files_dashboard/search',
                     [
                         'q' => $query,

@@ -15,7 +15,7 @@
 $sidebar = Sidebar::get();
 
 if (ForumPerm::has('search', $seminar_id)) {
-    $search = new SearchWidget(PluginEngine::getLink('coreforum/index/search?backend=search'));
+    $search = new SearchWidget(PluginEngine::getURL('coreforum/index/search?backend=search'));
     $search->setId('tutorSearchInfobox');
     $search->addNeedle(_('Beiträge durchsuchen'), 'searchfor', true);
     $search->addFilter(_('Titel'), 'search_title');
@@ -46,7 +46,7 @@ if ($section == 'index') {
 
     if (ForumPerm::has('close_thread', $seminar_id) && $constraint['depth'] > 1) {
         if ($constraint['closed'] == 0) {
-            $close_url = PluginEngine::getLink('coreforum/index/close_thread/'
+            $close_url = PluginEngine::getURL('coreforum/index/close_thread/'
                             . $constraint['topic_id'] .'/'. $constraint['topic_id'] .'/'. ForumHelpers::getPage());
             $close = new LinkElement(
                 _('Thema schließen'),
@@ -60,7 +60,7 @@ if ($section == 'index') {
             );
             $actions->addElement($close, 'closethread');
         } else {
-            $open_url = PluginEngine::getLink('coreforum/index/open_thread/'
+            $open_url = PluginEngine::getURL('coreforum/index/open_thread/'
                             . $constraint['topic_id'] .'/'. $constraint['topic_id'] .'/'. ForumHelpers::getPage());
             $open = new LinkElement(
                 _('Thema öffnen'),
@@ -78,7 +78,7 @@ if ($section == 'index') {
 
     if (ForumPerm::has('make_sticky', $seminar_id) && $constraint['depth'] > 1) {
         if ($constraint['sticky'] == 0) {
-            $emphasize_url = PluginEngine::getLink('coreforum/index/make_sticky/'
+            $emphasize_url = PluginEngine::getURL('coreforum/index/make_sticky/'
                                 . $constraint['topic_id'] .'/'. $constraint['topic_id'] .'/'. ForumHelpers::getPage());
             $emphasize = new LinkElement(
                 _('Thema hervorheben'),
@@ -92,7 +92,7 @@ if ($section == 'index') {
             );
             $actions->addElement($emphasize, 'emphasize');
         } else {
-            $unemphasize_url = PluginEngine::getLink('coreforum/index/make_unsticky/'
+            $unemphasize_url = PluginEngine::getURL('coreforum/index/make_unsticky/'
                                 . $constraint['topic_id'] .'/'. $constraint['topic_id'] .'/'. ForumHelpers::getPage());
             $emphasize = new LinkElement(
                 _('Hervorhebung aufheben'),
@@ -182,7 +182,7 @@ if ($section === 'index' && ForumPerm::has('pdfexport', $seminar_id)) {
             <? endif ?>
 
             <? if (ForumPerm::has('pdfexport', $seminar_id) && $section == 'index') : ?>
-                <?= Studip\LinkButton::create(_('Beiträge als PDF exportieren'), PluginEngine::getLink('coreforum/index/pdfexport'), ['target' => '_blank']) ?>
+                <?= Studip\LinkButton::create(_('Beiträge als PDF exportieren'), PluginEngine::getURL('coreforum/index/pdfexport'), ['target' => '_blank']) ?>
             <? endif ?>
         </div>
     </div>
@@ -213,13 +213,13 @@ if ($section === 'index' && ForumPerm::has('pdfexport', $seminar_id)) {
                 <? if (ForumPerm::has('close_thread', $seminar_id) && $constraint['depth'] > 1) : ?>
                     <? if ($constraint['closed'] == 0): ?>
                     <?= Studip\LinkButton::create(_('Thema schließen'),
-                            PluginEngine::getLink('coreforum/index/close_thread/' . $topic_id .'/'. $topic_id .'/'. ForumHelpers::getPage()), [
+                            PluginEngine::getURL('coreforum/index/close_thread/' . $topic_id .'/'. $topic_id .'/'. ForumHelpers::getPage()), [
                                 'onClick' => 'STUDIP.Forum.closeThreadFromThread("'. $topic_id .'"); return false;',
                                 'class' => 'closeButtons']
                         ) ?>
                     <? else: ?>
                     <?= Studip\LinkButton::create(_('Thema öffnen'),
-                        PluginEngine::getLink('coreforum/index/open_thread/' . $topic_id .'/'. $topic_id .'/'. ForumHelpers::getPage()), [
+                        PluginEngine::getURL('coreforum/index/open_thread/' . $topic_id .'/'. $topic_id .'/'. ForumHelpers::getPage()), [
                             'onClick' => 'STUDIP.Forum.openThreadFromThread("'. $topic_id .'"); return false;',
                             'class' => 'closeButtons']
                         ) ?>
@@ -233,7 +233,7 @@ if ($section === 'index' && ForumPerm::has('pdfexport', $seminar_id)) {
                 <? endif ?>
 
                 <? if (ForumPerm::has('pdfexport', $seminar_id)) : ?>
-                <?= Studip\LinkButton::create(_('Beiträge als PDF exportieren'), PluginEngine::getLink('coreforum/index/pdfexport/' . $topic_id), ['target' => '_blank']) ?>
+                <?= Studip\LinkButton::create(_('Beiträge als PDF exportieren'), PluginEngine::getURL('coreforum/index/pdfexport/' . $topic_id), ['target' => '_blank']) ?>
                 <? endif ?>
             </div>
         </div>

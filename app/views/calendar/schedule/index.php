@@ -65,11 +65,11 @@ $sidebar->addWidget($options, 'calendar/schedule/options');
 ?>
 <div style="text-align: center; font-weight: bold; font-size: 1.2em">
     <? if ($inst_mode) : ?>
-        <?= $institute_name ?>: <?= _('Stundenplan im') ?>
+        <?= htmlReady($institute_name) ?>: <?= _('Stundenplan im') ?>
     <? else : ?>
         <?= _('Mein Stundenplan im') ?>
     <? endif ?>
-    <?= $current_semester['name'] ?>
+    <?= htmlReady($current_semester['name']) ?>
 </div>
 
 <? if ($show_entry) : ?>

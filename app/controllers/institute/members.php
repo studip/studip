@@ -547,27 +547,27 @@ class Institute_MembersController extends AuthenticatedController
         if ($this->admin_view) {
             $widget->addRadioButton(
                 _('Funktion'),
-                $this->link_for('institute/members/function'),
+                $this->url_for('institute/members/function'),
                 $this->type === 'function'
             );
             $widget->addRadioButton(
                 _('Status'),
-                $this->link_for('institute/members/status'),
+                $this->url_for('institute/members/status'),
                 $this->type === 'status'
             );
             $widget->addRadioButton(
                 _('keine'),
-                $this->link_for('institute/members/list'),
+                $this->url_for('institute/members/list'),
                 $this->type === 'list');
         } else {
             $widget->addRadioButton(
                 _('Nach Funktion gruppiert'),
-                $this->link_for('institute/members/function'),
+                $this->url_for('institute/members/function'),
                 $this->type === 'function'
             );
             $widget->addRadioButton(
                 _('Alphabetische Liste'),
-                $this->link_for('institute/members/list'),
+                $this->url_for('institute/members/list'),
                 $this->type === 'list'
             );
         }

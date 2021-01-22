@@ -132,8 +132,8 @@ class ProfileModulesController extends AuthenticatedController
                 $widget->addCheckbox(
                     $key,
                     !in_array($key, $config['hidden']),
-                    $this->link_for('profilemodules', ['show' => $key]),
-                    $this->link_for('profilemodules', ['hide' => $key])
+                    $this->url_for('profilemodules', ['show' => $key]),
+                    $this->url_for('profilemodules', ['hide' => $key])
                 );
             }
         }

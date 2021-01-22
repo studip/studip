@@ -87,26 +87,26 @@ function export_form_sidebar($range_id, $ex_type = "", $filename = "", $format =
     global $output_formats, $xslt_filename;
     $filename = $xslt_filename;
     require_once ("lib/export/export_xslt_vars.inc.php");
-    $export_string .= "<form class=\"default\" action=\"" .$GLOBALS['ABSOLUTE_URI_STUDIP']. "export.php\" method=\"post\">";
+    $export_string .= "<form class=\"default\" action=\"" . URLHelper::getLink('export.php') . "\" method=\"post\">";
     $export_string .= CSRFProtection::tokenTag();
     $export_string .= "<select name=\"format\">";
     foreach ($output_formats as $key => $val)
     {
-        $export_string .= "<option value=\"" . $key . "\"";
+        $export_string .= "<option value=\"" . htmlReady($key) . "\"";
         if ($format==$key) {
             $export_string .= " selected";
         }
-        $export_string .= ">" . my_substr($val, 0, 20) . "</option>";
+        $export_string .= ">" . htmlReady(my_substr($val, 0, 20)) . "</option>";
     }
     $export_string .= "</select>";
 
     $export_string .= Button::create(_('Export'), 'export', ['title' => _('Daten Exportieren')]);
-    $export_string .= "<input type=\"hidden\" name=\"range_id\" value=\"$range_id\">";
+    $export_string .= "<input type=\"hidden\" name=\"range_id\" value=\"" . htmlReady($range_id) . "\">";
     $export_string .= "<input type=\"hidden\" name=\"o_mode\" value=\"choose\">";
     $export_string .= "<input type=\"hidden\" name=\"page\" value=\"1\">";
-    $export_string .= "<input type=\"hidden\" name=\"ex_type\" value=\"$ex_type\">";
-    $export_string .= "<input type=\"hidden\" name=\"filter\" value=\"$filter\">";
-    $export_string .= "<input type=\"hidden\" name=\"xslt_filename\" value=\"$filename\">";
+    $export_string .= "<input type=\"hidden\" name=\"ex_type\" value=\"" . htmlReady($ex_type) . "\">";
+    $export_string .= "<input type=\"hidden\" name=\"filter\" value=\"" . htmlReady($filter) . "\">";
+    $export_string .= "<input type=\"hidden\" name=\"xslt_filename\" value=\"" . htmlReady($filename) . "\">";
     $export_string .= "</form>";
     return $export_string;
 }

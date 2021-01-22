@@ -1038,7 +1038,7 @@ class MessagesController extends AuthenticatedController {
 
         $sidebar->addWidget($actions);
 
-        $search = new SearchWidget(URLHelper::getLink('?'));
+        $search = new SearchWidget(URLHelper::getURL('?'));
         $search->addNeedle(_('Nachrichten durchsuchen'), 'search', true);
         $search->addFilter(_('Betreff'), 'search_subject');
         $search->addFilter(_('Inhalt'), 'search_content');

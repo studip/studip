@@ -889,7 +889,7 @@ function searchWiki($searchfor, $searchcurrentversions, $keyword, $localsearch)
     echo "</tbody></table><p>&nbsp;</p>";
 
     // search
-    $widget = new SearchWidget(URLHelper::getLink('?view=search&keyword=' . urlencode($keyword)));
+    $widget = new SearchWidget(URLHelper::getURL('?view=search&keyword=' . urlencode($keyword)));
     $widget->addNeedle(_('Im Wiki suchen'), 'searchfor', true);
     //$widget->addFilter(_('Nur in aktuellen Versionen'), 'searchcurrentversions');
     Sidebar::get()->addWidget($widget);

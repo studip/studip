@@ -280,7 +280,7 @@ class Admin_PluginController extends AuthenticatedController
         $links->setTitle(_('Verweise'));
         $links->addLink(
             _('Alle Plugins im Plugin-Marktplatz'),
-            'http://plugins.studip.de/',
+            'https://plugins.studip.de/',
             Icon::create('export'),
             ['target' => '_blank', 'rel' => 'noopener noreferrer']
         );

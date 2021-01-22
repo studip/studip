@@ -87,11 +87,11 @@ class Admin_CoursesController extends AuthenticatedController
                 $checkboxWidget->addCheckbox(
                     _('Feld gesetzt'),
                     Request::bool('df_'.$datafield->id, false),
-                    URLHelper::getLink(
+                    URLHelper::getURL(
                         'dispatch.php/admin/courses/index',
                         ['df_'.$datafield->id => '1']
                     ),
-                    URLHelper::getLink(
+                    URLHelper::getURL(
                         'dispatch.php/admin/courses/index'
                     )
                 );
@@ -1548,7 +1548,7 @@ class Admin_CoursesController extends AuthenticatedController
     private function setSearchWiget()
     {
         $sidebar = Sidebar::Get();
-        $search = new SearchWidget(URLHelper::getLink('dispatch.php/admin/courses'));
+        $search = new SearchWidget(URLHelper::getURL('dispatch.php/admin/courses'));
         $search->addNeedle(_('Freie Suche'), 'search', true, null, null, $GLOBALS['user']->cfg->ADMIN_COURSES_SEARCHTEXT);
         $sidebar->addWidget($search, 'filter_search');
     }

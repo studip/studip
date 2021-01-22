@@ -27,7 +27,7 @@ class LinkButton extends Interactable
      */
     protected function initialize($label, $url, $attributes)
     {
-        $this->attributes['href'] = $url ?: @\URLHelper::getURL();
+        $this->attributes['href'] = $url ?: \URLHelper::getURL();
     }
 
     /**

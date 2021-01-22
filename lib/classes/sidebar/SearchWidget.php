@@ -131,12 +131,12 @@ class SearchWidget extends SidebarWidget
         $query = parse_url($this->url, PHP_URL_QUERY);
         if ($query) {
             $this->url = str_replace('?' . $query, '', $this->url);
-            parse_str(html_entity_decode($query) ?: '', $query_params);
+            parse_str($query ?: '', $query_params);
         } else {
             $query_params = [];
         }
 
-        $this->template_variables['url']        = URLHelper::getLink($this->url);
+        $this->template_variables['url']        = URLHelper::getURL($this->url);
         $this->template_variables['url_params'] = $query_params;
 
         $this->template_variables['method'] = $this->method;

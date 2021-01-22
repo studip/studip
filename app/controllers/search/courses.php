@@ -84,8 +84,8 @@ class Search_CoursesController extends AuthenticatedController
         $widget->addElement($search_element);
         $widget->addCheckbox(_('Erweiterte Suche anzeigen'),
         $_SESSION['sem_browse_data']['cmd'] == "xts",
-        URLHelper::getLink('?level='.$level.'&cmd=xts&sset=0&option='),
-        URLHelper::getLink('?level='.$level.'&cmd=qs&sset=0&option='));
+        URLHelper::getURL('?level='.$level.'&cmd=xts&sset=0&option='),
+        URLHelper::getURL('?level='.$level.'&cmd=qs&sset=0&option='));
         $sidebar->addWidget($widget);
 
         SemBrowse::setSemesterSelector($this->url_for('search/courses/index'));
@@ -105,7 +105,7 @@ class Search_CoursesController extends AuthenticatedController
             foreach ($this->sem_browse_obj->group_by_fields as $i => $field) {
                 $grouping->addRadioButton(
                     $field['name'],
-                    URLHelper::getLink('?', ['group_by' => $i,
+                    URLHelper::getURL('?', ['group_by' => $i,
                         'keep_result_set' => 1]),
                     $_SESSION['sem_browse_data']['group_by'] == $i
                 );

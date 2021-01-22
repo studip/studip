@@ -29,17 +29,11 @@ class OptionsWidget extends ListWidget
      */
     public function addCheckbox($label, $state, $toggle_url, $toggle_url_off = null, array $attributes = [])
     {
-        // Prepare attributes
-        $attr = [];
-        foreach ($attributes as $key => $value) {
-            $attr[] = sprintf('%s="%s"', $key, htmlReady($value));
-        }
-
         $content = sprintf(
             '<a href="%s" class="options-checkbox options-%s" %s>%s</a>',
             htmlReady($state && $toggle_url_off !== null ? $toggle_url_off : $toggle_url),
             $state ? 'checked' : 'unchecked',
-            implode(' ', $attr),
+            arrayToHtmlAttributes($attributes),
             htmlReady($label)
         );
         $this->addElement(new WidgetElement($content));

@@ -168,6 +168,7 @@ class SelectWidget extends SidebarWidget
 
     /**
      * Converts the given array to a list of hidden inputs
+     * FIXME this duplicates what addHiddenFields() does.
      * @param  array $array   Array to convert
      * @param  string $prefix Optional prefix for the input name
      * @return string list of hidden inputs as html
