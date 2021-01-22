@@ -3,7 +3,7 @@
     <?= $reset_search ?>
 </div>
 <? endif; ?>
-<form action="<?= $url ?>" method="<?= $method ?>" <? if (isset($id)) printf('id="%s"', htmlReady($id)); ?> class="sidebar-search">
+<form action="<?= htmlReady($url) ?>" method="<?= $method ?>" <? if (isset($id)) printf('id="%s"', htmlReady($id)); ?> class="sidebar-search">
 <? foreach ($url_params as $key => $value): ?>
     <?=addHiddenFields($key,$value)?>
 <? endforeach; ?>

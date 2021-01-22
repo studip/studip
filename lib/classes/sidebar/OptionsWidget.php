@@ -37,7 +37,7 @@ class OptionsWidget extends ListWidget
 
         $content = sprintf(
             '<a href="%s" class="options-checkbox options-%s" %s>%s</a>',
-            ($state && $toggle_url_off !== null) ? $toggle_url_off : $toggle_url,
+            htmlReady($state && $toggle_url_off !== null ? $toggle_url_off : $toggle_url),
             $state ? 'checked' : 'unchecked',
             implode(' ', $attr),
             htmlReady($label)
@@ -52,10 +52,12 @@ class OptionsWidget extends ListWidget
      */
     public function addRadioButton($label, $url, $checked = false)
     {
-        $content = sprintf('<a href="%s" class="options-radio options-%s">%s</a>',
-                           $url,
-                           $checked ? 'checked' : 'unchecked',
-                           htmlReady($label));
+        $content = sprintf(
+            '<a href="%s" class="options-radio options-%s">%s</a>',
+            htmlReady($url),
+            $checked ? 'checked' : 'unchecked',
+            htmlReady($label)
+        );
         $this->addElement(new WidgetElement($content));
     }
 

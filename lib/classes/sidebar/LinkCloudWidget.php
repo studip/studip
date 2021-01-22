@@ -28,10 +28,12 @@ class LinkCloudWidget extends LinksWidget
      */
     public function &addLink($label, $url, $icon = null, $attributes = [], $index = null)
     {
-        $content = sprintf('<a href="%s" class="%s">%s</a>',
-                           $url,
-                           'weigh-'.((int) $icon > 0 ? (int) $icon : 1),
-                           htmlReady($label));
+        $content = sprintf(
+            '<a href="%s" class="%s">%s</a>',
+            htmlReady($url),
+            'weigh-'.((int) $icon > 0 ? (int) $icon : 1),
+            htmlReady($label)
+        );
 
         $element = new WidgetElement($content);
         $this->addElement($element, 'cloudlink-' . md5(uniqid('link', true)));
