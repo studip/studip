@@ -708,7 +708,7 @@ class FileManager
             return [_('Ordnertyp des Quellordners konnte nicht ermittelt werden!')];
         }
 
-        if (!$source_folder->isReadable($user->id) || !$destination_folder->isWritable($user->id)) {
+        if (!$source_folder->isReadable($user->id) || !$source->isWritable($user->id) || !$destination_folder->isWritable($user->id)) {
             //the user is not permitted to read the source folder
             //or to write to the destination folder!
             return [
@@ -998,7 +998,7 @@ class FileManager
             return $source_folder;
         }
 
-        if (!$destination_folder->isWritable($user->id)) {
+        if (!$destination_folder->isWritable($user->id) || !$source_folder->isEditable($user->id)) {
             return [sprintf(
                 _('Unzureichende Berechtigungen zum Verschieben von Ordner %s in Ordner %s!'),
                 $source_folder->name,
