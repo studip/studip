@@ -48,28 +48,8 @@ STUDIP.loadChunk = (function () {
 
             case 'mathjax':
                 if (mathjax_promise === null) {
-                    //setup the configuration for MathJax 3.x or later:
-                    window.MathJax = {
-                        loader: {
-                            load: ['[tex]/mhchem', '[tex]/physics']
-                        },
-                        tex: {
-                            inlineMath: [
-                                ['$', '$'],
-                                ['\\(', '\\)'],
-                                ['[tex]', '[/tex]']
-                            ],
-                            packages: {
-                                '[+]': ['mhchem', 'physics']
-                            }
-                        },
-                        svg: {
-                            fontCache: 'global'
-                        }
-                    };
-
                     mathjax_promise = STUDIP.loadScript(
-                        'javascripts/mathjax/es5/tex-svg.js'
+                        'javascripts/mathjax/MathJax.js?config=TeX-AMS_HTML,default'
                     ).then(() => {
                         (function (origPrint) {
                             window.print = function () {
