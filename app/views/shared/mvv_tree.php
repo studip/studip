@@ -5,7 +5,7 @@
     <? endif; ?>
         <label for="<?= htmlReady($current['id'] . $id_sfx->c++) ?>"></label>
     <? if ($current['class'] == 'StgteilabschnittModul') : ?>
-        <a data-dialog title="<?= htmlReady($current['name']) ?>" href="<?= URLHelper::getLink('dispatch.php/shared/modul/overview/' . $current['id']) ?>">
+        <a data-dialog title="<?= htmlReady($current['name']) ?>" href="<?= URLHelper::getLink('dispatch.php/shared/modul/overview/' . $current['id'] . '/' . $course->start_semester->id) ?>">
             <?= htmlReady($current['name']) ?>
         </a>
         <a data-dialog title="<?= htmlReady($current['name']) ?>" href="<?= URLHelper::getLink('dispatch.php/shared/modul/description/' . $current['id']) ?>">

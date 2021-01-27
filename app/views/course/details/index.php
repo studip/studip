@@ -404,7 +404,7 @@ if ($mvv_tree) : ?>
             <ul class="list-unstyled">
                 <? foreach ($mvv_pathes as $mvv_path) : ?>
                 <li>
-                    <a data-dialog href="<?= URLHelper::getScriptLink('dispatch.php/search/module/overview/' . reset(array_keys($mvv_path)) . '/', ['sem_select' => $mvv_end_semester_id]) ?>">
+                    <a data-dialog href="<?= URLHelper::getScriptLink('dispatch.php/search/module/overview/' . reset(array_keys($mvv_path)) . '/' . $course->start_semester->id) ?>">
                         <?= htmlReady(implode(' > ', reset(array_values($mvv_path)))) ?>
                     </a>
                 </li>
