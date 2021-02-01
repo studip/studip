@@ -84,20 +84,20 @@
         <td>
             <input type="checkbox" class="select-resource"
                    value="<?= htmlReady($resource->id) ?>"
-                   <?= arrayToHtmlAttributes($checkbox_data) ?>>
+                <?= arrayToHtmlAttributes($checkbox_data) ?>>
         </td>
     <? endif ?>
     <td>
         <a href="<?= (
-                 $booking_plan_link_on_name
-                 ? $resource->getActionLink('booking_plan')
-                 : $resource->getActionLink('show')
-                 ) ?>"
-           <?= $user_has_booking_rights ? '' : 'data-dialog' ?>
+        $booking_plan_link_on_name
+            ? $resource->getActionLink('booking_plan')
+            : $resource->getActionLink('show')
+        ) ?>"
+            <?= $user_has_booking_rights ? '' : 'data-dialog' ?>
            data-id="<?= htmlReady($resource->id) ?>"
            data-range_type="<?= $clipboard_range_type
-                              ? htmlReady($clipboard_range_type)
-                              : 'Resource' ?>"
+               ? htmlReady($clipboard_range_type)
+               : 'Resource' ?>"
            data-name="<?= htmlReady($resource->name) ?>"
            class="clipboard-draggable-item">
             <? if ($show_picture): ?>
@@ -111,8 +111,8 @@
                 <span class="text-bottom">
                     <?= htmlReady(
                         $show_full_name
-                        ? $resource->getFullName()
-                        : $resource->name
+                            ? $resource->getFullName()
+                            : $resource->name
                     ) ?>
                 </span>
             <? else: ?>
@@ -150,8 +150,8 @@
         <? endforeach ?>
     <? endif ?>
     <? if ($show_user_actions || $show_autor_actions
-           || $show_tutor_actions || $show_admin_actions
-           || $show_global_admin_actions || $additional_actions): ?>
+        || $show_tutor_actions || $show_admin_actions
+        || $show_global_admin_actions || $additional_actions): ?>
         <td class="actions">
             <?
             //Build the actions as array. Ordering is done by array indexes.
@@ -209,7 +209,7 @@
                         _('Buchen'),
                         Icon::create('lock-locked'),
                         [
-                            'data-dialog' => 'size=auto'
+                            'data-dialog' => 'size=big'
                         ]
                     ];
                     if ($show_global_admin_actions) {
@@ -239,8 +239,8 @@
                     _('Dateien anzeigen'),
                     Icon::create(
                         $resource->hasFiles()
-                        ? 'folder-full'
-                        : 'folder-empty'
+                            ? 'folder-full'
+                            : 'folder-empty'
                     ),
                     []
                 ];
