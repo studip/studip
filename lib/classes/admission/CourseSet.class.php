@@ -478,6 +478,15 @@ class CourseSet
     }
 
     /**
+     * Returns the date of the last change.
+     * @return int
+     */
+    public function getChdate()
+    {
+        return $this->chdate;
+    }
+
+    /**
      * Retrieves the priorities given to the courses in this set.
      *
      * @return Array

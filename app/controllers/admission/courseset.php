@@ -731,6 +731,25 @@ class Admission_CoursesetController extends AuthenticatedController
         return $ret;
     }
 
-}
+    /**
+     * Performs bulk operation on a set of coursesets.
+     */
+    public function bulk_action()
+    {
+        if (!Request::isPost()) {
+            throw new MethodNotAllowedException();
+        }
 
-?>
+        $ids = Request::optionArray('ids');
+        if (Request::submitted('delete')) {
+            foreach ($ids as $id) {
+                $courseset = new CourseSet($id);
+                $courseset->delete();
+            }
+            PageLayout::postSuccess(_('Die Anmeldesets wurden gelöscht.'));
+        }
+
+        $this->redirect('admission/courseset');
+    }
+
+}
