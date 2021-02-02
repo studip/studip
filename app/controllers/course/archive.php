@@ -183,7 +183,7 @@ class Course_ArchiveController extends AuthenticatedController
             if ($GLOBALS['perm']->have_perm('admin')){
                 $this->redirect('admin/courses/index');
             } else {
-                $this->redirect('my_courses');
+                $this->redirect(URLHelper::getURL('dispatch.php/my_courses', [], true));
             }
         }
 

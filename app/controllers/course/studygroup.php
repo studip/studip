@@ -961,9 +961,9 @@ class Course_StudygroupController extends AuthenticatedController
                 // Weiterleitung auf die "meine Seminare", wenn es kein Admin
                 // ist, ansonsten auf die Studiengruppenseite
                 if (!$perm->have_perm('root')) {
-                    $this->redirect(URLHelper::getURL('dispatch.php/my_courses'));
+                    $this->redirect(URLHelper::getURL('dispatch.php/my_courses', [], true));
                 } else {
-                    $this->redirect(URLHelper::getURL('dispatch.php/studygroup/browse'));
+                    $this->redirect(URLHelper::getURL('dispatch.php/studygroup/browse', [], true));
                 }
                 return;
             } elseif (!$approveDelete) {
