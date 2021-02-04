@@ -92,6 +92,7 @@
                                 <select name="members_action[<?= $group->id ?>]"
                                         id="members-action-<?= $group->id ?>">
                                     <option value="move"><?= _('In andere Gruppe verschieben') ?></option>
+                                    <option value="copy"><?= _('In andere Gruppe kopieren') ?></option>
                                 <? if ($group->id != 'nogroup') : ?>
                                     <option value="delete"><?= _('Aus dieser Gruppe entfernen') ?></option>
                                 <? endif ?>

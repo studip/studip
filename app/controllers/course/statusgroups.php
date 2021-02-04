@@ -1057,8 +1057,14 @@ class Course_StatusgroupsController extends AuthenticatedController
 
             switch ($action) {
                 case 'move':
-                    PageLayout::setTitle(_('Gruppenmitglieder verschieben'));
-                    $this->movemembers = true;
+                case 'copy':
+                    if ($action === 'move') {
+                        PageLayout::setTitle(_('Gruppenmitglieder verschieben'));
+                        $this->movemembers = true;
+                    } else {
+                        PageLayout::setTitle(_('Gruppenmitglieder kopieren'));
+                        $this->copymembers = true;
+                    }
                     $this->source_group = $group_id;
                     // Find possible target groups.
                     $this->target_groups = SimpleCollection::createFromArray(
@@ -1232,6 +1238,44 @@ class Course_StatusgroupsController extends AuthenticatedController
             PageLayout::postError(sprintf(ngettext('%u Person konnte nicht in die Gruppe %s verschoben werden.',
                 '%u Personen konnten nicht in die Gruppe %s verschoben werden.',
                 $error), $error, htmlReady($groupname)));
+        }
+
+        $this->relocate('course/statusgroups');
+    }
+
+    /**
+     * Copies selected group members to another group.
+     *
+     * @throws AccessDeniedException if access not allowed with current permission level.
+     */
+    public function batch_copy_members_action()
+    {
+        if (!$this->is_tutor) {
+            throw new AccessDeniedException();
+        }
+
+        CSRFProtection::verifyUnsafeRequest();
+        $success = 0;
+        $members = Request::optionArray('members');
+        foreach ($members as $m) {
+
+            // Add user to target statusgroup (if not already in there).
+            if (!StatusgruppeUser::exists(array(Request::option('target_group'), $m))) {
+                $s = new StatusgruppeUser();
+                $s->user_id = $m;
+                $s->statusgruppe_id = Request::option('target_group');
+                if ($s->store()) {
+                    $success++;
+                }
+            }
+        }
+        $groupname = Statusgruppen::find(Request::option('target_group'))->name;
+
+        // Everything completed successfully => success message.
+        if ($success) {
+            PageLayout::postSuccess(sprintf(ngettext('%u Person wurde in die Gruppe %s kopiert.',
+                '%u Personen wurden in die Gruppe %s kopiert.',
+                $success), $success, htmlReady($groupname)));
         }
 
         $this->relocate('course/statusgroups');

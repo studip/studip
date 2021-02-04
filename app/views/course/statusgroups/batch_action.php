@@ -10,6 +10,11 @@
             'course/statusgroups/_move_members',
             compact('target_groups', 'members', 'source_group')
         );
+    } elseif ($copymembers) {
+        echo $this->render_partial(
+            'course/statusgroups/_copy_members',
+            compact('target_groups', 'members', 'source_group')
+        );
     } elseif ($deletemembers) {
         echo $this->render_partial(
             'course/statusgroups/_askdelete_members',
