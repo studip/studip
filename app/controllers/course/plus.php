@@ -340,6 +340,9 @@ class Course_PlusController extends AuthenticatedController
 
                 if ($this->sem_class) {
                     $studip_module = $this->sem_class->getModule($mod);
+                    if (method_exists($studip_module, 'isActivatableForContext') && !$studip_module->isActivatableForContext($context)) {
+                        continue;
+                    }
                 }
 
                 $info = ($studip_module instanceOf StudipModule) ? $studip_module->getMetadata() : ($val['metadata'] ? $val['metadata'] : []);
@@ -439,7 +442,8 @@ class Course_PlusController extends AuthenticatedController
                         $mod = $this->sem_class->getSlotModule($key);
 
                         //skip the modules that are not changeable
-                        if ($mod && (!$this->sem_class->isModuleAllowed($mod) || $this->sem_class->isModuleMandatory($mod))) {
+                        if ($mod && (!$this->sem_class->isModuleAllowed($mod) || $this->sem_class->isModuleMandatory($mod)) ||
+                            method_exists($studip_module, 'isActivatableForContext') && !$studip_module->isActivatableForContext($this->sem)) {
                             continue;
                         }
                     }
