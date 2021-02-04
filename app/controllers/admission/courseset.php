@@ -257,7 +257,7 @@ class Admission_CoursesetController extends AuthenticatedController
      * new course set
      */
     public function save_action($coursesetId='') {
-        if (!$this->instant_course_set_view && (!Request::submitted('submit') || !Request::get('name') || !Request::getArray('institutes'))) {
+        if (!Request::submitted('submit') || !Request::get('name') || !$this->instant_course_set_view && !Request::getArray('institutes')) {
             $this->flash['name'] = Request::get('name');
             $this->flash['institutes'] = Request::getArray('institutes');
             $this->flash['courses'] = Request::getArray('courses');
@@ -285,27 +285,21 @@ class Admission_CoursesetController extends AuthenticatedController
                 $courseset->setUserId($GLOBALS['user']->id);
             }
             $courseset->setName(Request::get('name'));
-            if (Request::submitted('institutes')) {
-                $courseset->setInstitutes(Request::getArray('institutes'));
-            }
-            if (Request::submitted('semester')) {
+            $courseset->setInstitutes(Request::getArray('institutes'));
+            if (Request::option('semester')) {
                 $courseset->setCourses(Request::getArray('courses'));
             }
-            if (Request::submitted('userlists')) {
-                $courseset->setUserLists(Request::getArray('userlists'));
-            }
+            $courseset->setUserLists(Request::getArray('userlists'));
             if (!$this->instant_course_set_view && $courseset->isUserAllowedToEdit($GLOBALS['user']->id)) {
                 $courseset->setPrivate((bool) Request::get('private'));
             }
-            if (Request::submitted('infotext')) {
-                $courseset->setInfoText(Request::get('infotext'));
-            }
+            $courseset->setInfoText(Request::get('infotext'));
             $courseset->clearAdmissionRules();
             foreach (Request::getManyObjects('rules', 'AdmissionRule') as $rule) {
                 $courseset->addAdmissionRule($rule);
             }
             $courseset->store();
-            if (Request::submitted('semester')) {
+            if (Request::option('semester')) {
                 $_SESSION['_default_sem'] = Request::option('semester');
             }
             PageLayout::postMessage(MessageBox::success(sprintf(_("Das Anmeldeset: %s wurde gespeichert"), htmlReady($courseset->getName()))));

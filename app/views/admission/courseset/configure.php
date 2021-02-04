@@ -53,7 +53,7 @@ if ($flash['error']) {
         <label for="institutes">
             <span class="required"><?= _('Einrichtungszuordnung') ?></span>
         </label>
-        <? if (!$instant_course_set_view) : ?>
+        <? if ($GLOBALS['perm']->have_perm('admin') || $GLOBALS['perm']->have_perm('dozent') && get_config('ALLOW_DOZENT_COURSESET_ADMIN')) : ?>
             <div id="institutes">
             <?php if ($myInstitutes) { ?>
                 <?php if ($instSearch) { ?>
