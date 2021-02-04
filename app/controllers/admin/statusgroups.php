@@ -13,8 +13,6 @@
  * @category    Stud.IP
  */
 
-require_once 'lib/statusgruppe.inc.php';
-
 class Admin_StatusgroupsController extends AuthenticatedController
 {
     /**
@@ -265,7 +263,7 @@ class Admin_StatusgroupsController extends AuthenticatedController
     }
 
     /**
-     * Delete a group
+     * Sort a group
      */
     public function sortAlphabetic_action($group_id)
     {
@@ -276,6 +274,17 @@ class Admin_StatusgroupsController extends AuthenticatedController
             $this->group->sortMembersAlphabetic();
             $this->redirect('admin/statusgroups/index#group-' . $group_id);
         }
+    }
+
+    /**
+     * Sort list of subgroups
+     */
+    public function sortGroupsAlphabetical_action($group_id)
+    {
+        $this->check('edit');
+        $this->group = new Statusgruppen($group_id);
+        $this->group->sortSubGroupsAlphabetic();
+        $this->redirect('admin/statusgroups/index#group-' . $group_id);
     }
 
     /**

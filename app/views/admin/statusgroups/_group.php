@@ -39,6 +39,12 @@
             <a data-dialog="size=auto" title="<?= _('Gruppe alphabetisch sortieren') ?>" href="<?= $controller->url_for("admin/statusgroups/sortAlphabetic/{$group->id}") ?>">
                 <?= Icon::create('arr_2down', 'clickable', ['title' => _('Gruppe alphabetisch sortieren')])->asImg() ?>
             </a>
+            <? if ($group->children): ?>
+                <a title="<?= _('Untergruppen alphabetisch sortieren') ?>" href="<?= $controller->link_for("admin/statusgroups/sortGroupsAlphabetical/{$group->id}") ?>"
+                   data-confirm="<?= _('Sollen die Untergruppen dieser Gruppe alphabetisch sortiert werden?') ?>">
+                    <?= Icon::create('filter2') ?>
+                </a>
+            <? endif ?>
         <? else: ?>
             <? if ($type['needs_self_assign']): ?>
                 <? if ($group->isMember() && $group->selfassign): ?>

@@ -495,6 +495,18 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
             $statusgruppenuser->store();
         }
     }
+    /**
+     * Sorts subgroups alphabetical
+     */
+    public function sortSubGroupsAlphabetic()
+    {
+        $groups = self::findBySQL('range_id = ? ORDER BY name', [$this->id]);
+
+        foreach ($groups as $position => $group) {
+            $group->position = $position;
+            $group->store();
+        }
+    }
 
     /**
      * Checks if there is free space in this group
