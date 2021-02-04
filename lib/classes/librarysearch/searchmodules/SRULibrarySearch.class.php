@@ -27,14 +27,24 @@ class SRULibrarySearch extends LibrarySearch
      * the real field names.
      */
     protected static $field_replacements = [
-        LibrarySearch::TITLE       => 'pica.tit',
-        LibrarySearch::AUTHOR      => 'pica.per',
-        LibrarySearch::YEAR        => 'pica.jhr',
-        LibrarySearch::NUMBER      => 'pica.num',
-        LibrarySearch::ISBN        => 'pica.isb',
-        LibrarySearch::ISSN        => 'pica.iss',
-        LibrarySearch::PUBLICATION => 'pica.gti',
-        LibrarySearch::SIGNATURE   => 'pica.sga'
+        'pica' => [
+            LibrarySearch::TITLE       => 'pica.tit',
+            LibrarySearch::AUTHOR      => 'pica.per',
+            LibrarySearch::YEAR        => 'pica.jhr',
+            LibrarySearch::NUMBER      => 'pica.num',
+            LibrarySearch::ISBN        => 'pica.isb',
+            LibrarySearch::ISSN        => 'pica.iss',
+            LibrarySearch::PUBLICATION => 'pica.gti',
+            LibrarySearch::SIGNATURE   => 'pica.sga'
+        ],
+        'cql' => [
+            LibrarySearch::TITLE       => 'dc.title',
+            LibrarySearch::AUTHOR      => 'dc.creator',
+            LibrarySearch::YEAR        => 'dc.date',
+            LibrarySearch::NUMBER      => 'dc.identifier',
+            LibrarySearch::ISBN        => 'dc.identifier',
+            LibrarySearch::ISSN        => 'dc.identifier'
+        ]
     ];
 
 
@@ -47,10 +57,15 @@ class SRULibrarySearch extends LibrarySearch
             return [];
         }
 
+        $query_format = 'pica';
+        if ($this->settings['query_format'] == 'cql') {
+            $query_format = 'cql';
+        }
+
         $translated_fields = [];
         foreach ($query_fields as $key => $value) {
-            if (in_array($key, array_keys(self::$field_replacements))) {
-                $new_key = self::$field_replacements[$key];
+            if (in_array($key, array_keys(self::$field_replacements[$query_format]))) {
+                $new_key = self::$field_replacements[$query_format][$key];
                 $translated_fields[$new_key] = $value;
             } else {
                 $translated_fields[$key] = $value;
@@ -77,17 +92,21 @@ class SRULibrarySearch extends LibrarySearch
         //search parameter names before being added to the query string.
         $search_parameters = $this->translateQueryFields($search_parameters);
         $query_string = '';
+        $query_format = 'pica';
+        if ($this->settings['query_format'] == 'cql') {
+            $query_format = 'cql';
+        }
         foreach ($search_parameters as $key => $value) {
             if (!empty($query_string)) {
                 $query_string .= ' and ';
             }
-            if ($key == self::$field_replacements[LibrarySearch::NUMBER]) {
+            if ($key == self::$field_replacements[$query_format][LibrarySearch::NUMBER]) {
                 $query_string .= sprintf(
                     '(%1$s="%2$s" or %3$s="%2$s" or %4$s="%2$s")',
-                    self::$field_replacements[LibrarySearch::ISBN],
+                    self::$field_replacements[$query_format][LibrarySearch::ISBN],
                     $value,
-                    self::$field_replacements[LibrarySearch::ISSN],
-                    self::$field_replacements[LibrarySearch::NUMBER]
+                    self::$field_replacements[$query_format][LibrarySearch::ISSN],
+                    self::$field_replacements[$query_format][LibrarySearch::NUMBER]
                 );
             } else {
                 //TODO: escape colon in data!
@@ -100,11 +119,18 @@ class SRULibrarySearch extends LibrarySearch
         $query_parameters['operation'] = 'searchRetrieve';
         $query_parameters['recordSchema'] = 'marcxml';
         if ($this->settings['sru_version'] == '1.2') {
+            $query_parameters['version'] = '1.2';
             //Use SRU/SRW 1.2
             if ($order_by == self::ORDER_BY_RELEVANCE) {
-                $query_string .= ' sortby relevance/descending';
+                if ($query_format != 'cql') {
+                    $query_string .= ' sortby relevance/descending';
+                }
             } elseif ($order_by == self::ORDER_BY_YEAR) {
-                $query_string .= ' sortby year/descending';
+                if ($query_format == 'cql') {
+                    $query_string .= ' sortBy dc.date/sort.descending';
+                } else {
+                    $query_string .= ' sortby year/descending';
+                }
             }
         } else {
             //Use SRU/SRW 1.1
