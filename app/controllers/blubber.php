@@ -41,7 +41,8 @@ class BlubberController extends AuthenticatedController
         }
 
         if (!$this->thread) {
-            $this->thread = array_pop(array_reverse($this->threads));
+            $threads = array_reverse($this->threads);
+            $this->thread = array_pop($threads);
         }
 
         if ($this->thread) {
@@ -401,9 +402,10 @@ class BlubberController extends AuthenticatedController
         }
         PageLayout::setTitle(_("Studiengruppe aus Konversation erstellen"));
         if (Request::isPost() && count(studygroup_sem_types())) {
+            $studgroup_sem_types = studygroup_sem_types();
             $course = new Course();
             $course['name'] = Request::get('name');
-            $course['status'] = array_shift(studygroup_sem_types());
+            $course['status'] = array_shift($studgroup_sem_types);
             $course['start_time'] = Semester::findCurrent()->beginn;
             $course->store();
 

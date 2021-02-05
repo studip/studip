@@ -149,7 +149,7 @@ class DatafieldEntryModel extends SimpleORMap implements PrivacyObject
                         [
                             $row['datafield_id'],
                             $range_id,
-                            (string) $second_range_id
+                            (string) $sec_range_id
                         ]);
             }
             $ret[$c]->setData($row, true);
@@ -185,7 +185,8 @@ class DatafieldEntryModel extends SimpleORMap implements PrivacyObject
             throw new InvalidArgumentException('Language not configured.');
         }
 
-        if ($language == reset(array_keys(Config::get()->CONTENT_LANGUAGES))) {
+        $content_languages = array_keys(Config::get()->CONTENT_LANGUAGES);
+        if ($language == reset($content_languages)) {
             $language = '';
         }
 

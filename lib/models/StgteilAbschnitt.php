@@ -136,9 +136,11 @@ class StgteilAbschnitt extends ModuleManagementModelTreeItem
                 return false;
             }
         }
-        $abschnitt_modul = StgteilabschnittModul::findBySQL(
-                'abschnitt_id = ? AND modul_id = ?', [$this->id, $modul->id]);
-        if (!$abschnitt_id) {
+        $abschnitt_modul = StgteilabschnittModul::findOneBySQL(
+            'abschnitt_id = ? AND modul_id = ?',
+            [$this->id, $modul->id]
+        );
+        if (!$abschnitt_modul) {
             $abschnitt_modul = new StgteilabschnittModul();
             $abschnitt_modul->abschnitt_id = $this->id;
             $abschnitt_modul->modul_id = $modul->id;

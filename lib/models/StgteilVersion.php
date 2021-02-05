@@ -486,7 +486,8 @@ class StgteilVersion extends ModuleManagementModelTreeItem
      */
     public function getResponsibleInstitutes()
     {
-        $parent = reset($this->getParents());
+        $parents = $this->getParents();
+        $parent = reset($parents);
         if ($parent) {
             return $parent->getResponsibleInstitutes();
         }

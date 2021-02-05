@@ -31,10 +31,10 @@ class Course_StudygroupController extends AuthenticatedController
         } else {
             throw new Exception(_("Die von Ihnen gewählte Option ist im System nicht aktiviert."));
         }
-
-        if (Context::getId()) {
-            $this->view = $this->getView(Context::getId());
-            URLHelper::bindLinkParam('cid', Context::getId());
+        $context_id = Context::getId();
+        if ($context_id) {
+            $this->view = $this->getView($context_id);
+            URLHelper::bindLinkParam('cid', $context_id);
         }
     }
 

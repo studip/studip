@@ -506,7 +506,8 @@ class SeminarCycleDate extends SimpleORMap
 
         // The currently existing singledates for the by metadate_id denoted  regular time-entry
         //$existingSingleDates =& $this->cycles[$metadate_id]->getSingleDates();
-        $existingSingleDates =& $this->getAllDates();
+        $all_dates = $this->getAllDates();
+        $existingSingleDates =& $all_dates;
 
         $start_woche = $this->week_offset;
         $turnus_offset = 0;

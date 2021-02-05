@@ -158,7 +158,8 @@ class Settings_SettingsController extends AuthenticatedController
      */
     public function shallChange($field, $attribute = null, $value = null)
     {
-        $column = end(explode('.', $field));
+        $fields = explode('.', $field);
+        $column = end($fields);
         $attribute = $attribute ?: mb_strtolower($column);
 
         $global_mapping = [

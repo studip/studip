@@ -345,8 +345,8 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
     public function findLecturers()
     {
         $lecturers = [];
-        foreach ($this->dates as $d) {
-            foreach ($d->dozenten as $d) {
+        foreach ($this->dates as $dates) {
+            foreach ($dates->dozenten as $d) {
                 // Assign topics with ID as key so we get unique entries.
                 $lecturers[$d->id] = $d;
             }

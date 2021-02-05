@@ -286,8 +286,6 @@ class OpenGraphURL extends SimpleORMap
             foreach ($meta as $key => $value) {
                 switch ($key) {
                     case "og:{$type}:url":
-                        $media[] = $value;
-                        break;
                     case "og:{$type}":
                         $media[] = $value;
                         break;

@@ -960,7 +960,7 @@ class Modul extends ModuleManagementModelTreeItem
                 WHERE mm.stat IN (:stat)
                     AND msv.stat IN (:stat) LIMIT 1
             ');
-            $stmt->execute([':term' => $term, ':stat' => $public_status]);
+            $stmt->execute([':stat' => $public_status]);
             return (bool)$stmt->fetchColumn();
         }
         return false;

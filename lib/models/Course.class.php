@@ -438,7 +438,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         $old = $this->study_areas->pluck('sem_tree_id');
         $added = array_diff($ids, $old);
         $removed = array_diff($old, $ids);
-
+        $success = false;
         if ($added || $removed) {
 
             $this->study_areas = SimpleCollection::createFromArray(StudipStudyArea::findMany($ids));

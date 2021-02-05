@@ -29,7 +29,7 @@
  * @author      Arne Schröder <schroeder@data-quest>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
- * 
+ *
  * @property string tour_id database column
  * @property string step database column
  * @property string title database column
@@ -53,22 +53,20 @@ class HelpTourStep extends SimpleORMap
             'class_name'  => 'HelpTour',
             'foreign_key' => 'tour_id',
         ];
-        
+
         parent::configure($config);
     }
 
     /**
      * checks, if tour step data is complete
-     * 
+     *
      * @todo Das Model sollte nix über PageLayout wissen, das sollte anders raus transportiert werden
      * @return boolean true or false
      */
-    function validate() {
-        if ($this->isNew()) {
-        }
+    public function validate() {
         if (!$this->orientation)
             $this->orientation = 'B';
-        if (!$this->title AND !$this->tip) {
+        if (!$this->title && !$this->tip) {
             PageLayout::postMessage(MessageBox::error(_('Der Schritt muss einen Titel oder Inhalt besitzen.')));
             return false;
         }

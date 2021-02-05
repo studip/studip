@@ -470,8 +470,10 @@ class Admin_UserController extends AuthenticatedController
                 $change_versions = Request::getArray('change_version');
                 foreach ($change_versions as $fach_id => $abschluesse) {
                     foreach ($abschluesse as $abschluss_id => $version_id) {
-                        $version = reset(StgteilVersion::findByFachAbschluss(
-                            $fach_id, $abschluss_id, $version_id));
+                        $version = StgteilVersion::findByFachAbschluss(
+                            $fach_id, $abschluss_id, $version_id
+                        );
+                        $version = reset($version);
                         if ($version && $version->hasPublicStatus('genehmigt')) {
                             $user_stc = UserStudyCourse::find([
                                 $user_id,

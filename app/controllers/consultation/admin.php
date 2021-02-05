@@ -608,14 +608,16 @@ class Consultation_AdminController extends ConsultationController
         // Get user names and timestamps
         $p_rec = [];
         $timestamps = [];
-        foreach ($slots as $slot) {
-            if (count($slot->bookings) === 0) {
-                continue;
-            }
+        if(!empty($slots)) {
+            foreach ($slots as $slot) {
+                if (count($slot->bookings) === 0) {
+                    continue;
+                }
 
-            $timestamps[] = $slot->start_time;
-            foreach ($slot->bookings as $booking) {
-                $p_rec[] = $booking->user->username;
+                $timestamps[] = $slot->start_time;
+                foreach ($slot->bookings as $booking) {
+                    $p_rec[] = $booking->user->username;
+                }
             }
         }
 

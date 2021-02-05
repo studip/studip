@@ -94,11 +94,9 @@ class StudiengangStgteil extends ModuleManagementModel
      * @param string $order ASC or DESC direction of order.
      * @return SimpleORMapCollection A collection of StudiengangStgteile.
      */
-    public static function findByStudiengang($studiengang_id,
-            $sort = 'position', $order = 'ASC')
+    public static function findByStudiengang($studiengang_id, $sortby = 'position', $order = 'ASC')
     {
-        $sortby = self::createSortStatement($sortby, $order, 'position',
-                ['count_faecher']);
+        $sortby = self::createSortStatement($sortby, $order, 'position', ['count_faecher']);
         return parent::getEnrichedByQuery('SELECT mst.*, msb.*, '
                 . 'COUNT(fach_id) as `count_faecher` '
                 . 'FROM mvv_stgteil mst '
@@ -106,7 +104,7 @@ class StudiengangStgteil extends ModuleManagementModel
                 . 'LEFT JOIN mvv_stgteil_bez msb USING(stgteil_bez_id) '
                 . 'WHERE studiengang_id = ? '
                 . 'GROUP BY mss.stgteil_id '
-                . 'ORDER BY ' . $sort, [$studiengang_id]);
+                . 'ORDER BY ' . $sortby, [$studiengang_id]);
     }
 
     /**

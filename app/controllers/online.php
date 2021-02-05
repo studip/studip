@@ -187,7 +187,8 @@ class OnlineController extends AuthenticatedController
 
             $name_format = $GLOBALS['user']->cfg->ONLINE_NAME_FORMAT;
             if (!isset($GLOBALS['_fullname_sql'][$name_format])) {
-                $name_format = reset(array_keys($GLOBALS['_fullname_sql']));
+                $name_format = array_keys($GLOBALS['_fullname_sql']);
+                $name_format = reset($name_format);
             }
 
             $query = "SELECT user_id, statusgruppen.position, name, statusgruppen.statusgruppe_id

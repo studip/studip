@@ -160,16 +160,17 @@ class Course_RoomRequestsController extends AuthenticatedController
      */
     protected function &getRequestSessionData($request_id = null)
     {
-        if (!$request_id) {
-            return null;
+        $result = null;
+        if ($request_id) {
+            if (!$_SESSION['course_room_request']) {
+                $_SESSION['course_room_request'] = [];
+            }
+            if (!$_SESSION['course_room_request'][$request_id]) {
+                $_SESSION['course_room_request'][$request_id] = [];
+            }
+            $result = $_SESSION['course_room_request'][$request_id];
         }
-        if (!$_SESSION['course_room_request']) {
-            $_SESSION['course_room_request'] = [];
-        }
-        if (!$_SESSION['course_room_request'][$request_id]) {
-            $_SESSION['course_room_request'][$request_id] = [];
-        }
-        return $_SESSION['course_room_request'][$request_id];
+        return $result;
     }
 
 

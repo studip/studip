@@ -49,7 +49,7 @@ class Course_BasicdataController extends AuthenticatedController
             'value' => $data['subtitle'],
             'locked' => LockRules::Check($course_id, 'Untertitel')
         ];
-
+        $changable = true;
         $this->attributes[] = [
             'title'     => _('Typ der Veranstaltung'),
             'name'      => 'course_status',
@@ -57,7 +57,7 @@ class Course_BasicdataController extends AuthenticatedController
             'type'      => 'select',
             'value'     => $data['status'],
             'locked'    => LockRules::Check($course_id, 'status'),
-            'choices'   => $this->_getTypes($sem, $data, $changable = true),
+            'choices'   => $this->_getTypes($sem, $data, $changable),
             'changable' => $changable,
         ];
 

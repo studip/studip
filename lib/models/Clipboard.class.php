@@ -223,7 +223,7 @@ class Clipboard extends SimpleORMap
                     'id' => $item->id,
                     'range_type' => $item->range_type,
                     'range_id' => $item->range_id,
-                    'name' => $item->__toString($long_item_name)
+                    'name' => $item->__toString()
                 ];
             }
         }

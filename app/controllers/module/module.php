@@ -445,11 +445,11 @@ class Module_ModuleController extends MVVController
     {
         // find the latest version of the given module
         $modul = Modul::find($modul_id);
-        $this->modul = reset(Modul::findBySql('LEFT JOIN semester_data '
-                . 'ON start = semester_id '
-                . "WHERE modul_id = ? OR quelle = ? AND stat = 'genehmigt' "
-                . 'ORDER BY beginn DESC LIMIT 1',
-                [$modul->id, $modul->quelle]));
+        $this->modul = Modul::findOneBySql('LEFT JOIN semester_data '
+            . 'ON start = semester_id '
+            . "WHERE modul_id = ? OR quelle = ? AND stat = 'genehmigt' "
+            . 'ORDER BY beginn DESC LIMIT 1',
+            [$modul->id, $modul->quelle]);
         if (!$this->modul) {
             PageLayout::postError(_('Unbekanntes Modul'));
         } else {

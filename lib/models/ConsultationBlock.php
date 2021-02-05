@@ -58,7 +58,7 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
         ];
         $config['additional_fields']['range_display']['get'] = function ($block) {
             if ($block->range instanceof User) {
-                return $block->range->getFullName() . ' <' . $slot->block->range->email . '>';
+                return $block->range->getFullName() . ' <' . $block->range->email . '>';
             }
             if ($block->range instanceof Course) {
                 $display = $block->range->getFullName();
@@ -270,7 +270,7 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
      */
     public function isVisibleForUser($user_id = null)
     {
-        return $range->userMayAccessRange();
+        return $this->range->userMayAccessRange();
     }
 
     /**

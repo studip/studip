@@ -305,15 +305,17 @@ class ProfileModulesController extends AuthenticatedController
             ];
 
             if (isset($metadata['screenshot'])) {
-                $ext = end(explode('.', $metadata['screenshot']));
-                $title  = str_replace('_', ' ', basename($metatdata['screenshot'], ".{$ext}"));
+                $screenshots = explode('.', $metadata['screenshot']);
+                $ext = end($screenshots);
+                $title  = str_replace('_', ' ', basename($metadata['screenshot'], ".{$ext}"));
                 $source = "{$plugin->getPluginURL()}/{$metadata['screenshot']}";
 
                 $item['screenshots'][] = compact('title', 'source');
             }
             if (isset($metadata['additionalscreenshots'])) {
                 foreach ($metadata['additionalscreenshots'] as $picture) {
-                    $ext = end(explode('.', $picture));
+                    $pictures = explode('.', $picture);
+                    $ext = end($pictures);
                     $title  = str_replace('_', ' ', basename($picture, ".{$ext}"));
                     $source = "{$plugin->getPluginURL()}/{$picture}";
 
