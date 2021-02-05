@@ -1,8 +1,5 @@
 <? if ($show_question): ?>
-    <form class="default" method="post"
-          action="<?= URLHelper::getLink(
-                  'dispatch.php/resources/booking/delete/' . $booking->id
-                  ) ?>"
+    <form class="default" method="post" action="<?= $controller->link_for('resources/booking/delete/' . $booking->id) ?>"
           data-dialog="reload-on-close">
         <?= CSRFProtection::tokenTag() ?>
         <?= MessageBox::warning(
@@ -18,6 +15,13 @@
             ) ?>
         <? endif ?>
         <div data-dialog-button>
+            <?= \Studip\LinkButton::create(
+                _('Zurück'),
+                $controller->url_for('resources/booking/edit/' . $booking->id),
+                [
+                    'data-dialog' => '1'
+                ]
+            ) ?>
             <?= \Studip\Button::create(
                 _('Löschen'),
                 'confirm'

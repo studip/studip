@@ -149,25 +149,18 @@
     <? if ((Request::isDialog() || $make_comment_editable) && !$hide_buttons): ?>
         <div data-dialog-button>
             <? if ($make_comment_editable): ?>
-                <?= \Studip\Button::create(
-                    _('Speichern'),
-                    'save'
-                ) ?>
+                <?= \Studip\Button::create(_('Speichern'), 'save') ?>
                 <? if (!$booking->isReadOnlyForUser($current_user)): ?>
                     <?= \Studip\LinkButton::create(
                         _('Bearbeiten'),
-                        URLHelper::getURL(
-                            'dispatch.php/resources/booking/edit/' . $booking->id
-                        ),
+                        $controller->url_for('resources/booking/edit/' . $booking->id),
                         [
                             'data-dialog' => '1'
                         ]
                     ) ?>
                     <?= \Studip\LinkButton::create(
                         _('Löschen'),
-                        URLHelper::getURL(
-                            'dispatch.php/resources/booking/delete/' . $booking->id
-                        ),
+                        $controller->url_for('resources/booking/delete/' . $booking->id),
                         [
                             'data-dialog' => '1'
                         ]

@@ -12,7 +12,7 @@
                         <?= tooltipIcon(_('In welche Ressource soll die Buchung verschoben werden?')) ?>
                     <? endif ?>
 
-                    <select name="selected_resource_id">
+                    <select name="selected_resource_id" class="nested-select">
                         <? foreach ($available_resources as $resource): ?>
                             <? if ($resource->id == $booking->resource->id) continue; ?>
                             <option value="<?= htmlReady($resource->id) ?>"
@@ -31,6 +31,13 @@
                 ]
             ) ?>
             <div data-dialog-button>
+                <?= \Studip\LinkButton::create(
+                    _('Zurück'),
+                    $controller->url_for('resources/booking/edit/' . $booking->id),
+                    [
+                        'data-dialog' => '1'
+                    ]
+                ) ?>
                 <?= \Studip\Button::create(_('Verschieben'), 'save') ?>
             </div>
         </form>
