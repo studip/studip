@@ -141,7 +141,7 @@ class CourseTopicFolder extends PermissionEnabledFolder implements FolderType
      */
     public function copySettings()
     {
-        return false;
+        return ['description' => $this->description];
     }
 
 }

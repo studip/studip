@@ -139,7 +139,10 @@ class PermissionEnabledFolder extends StandardFolder
      */
     public function copySettings()
     {
-        return true;
+        return [
+            'description' => $this->description,
+            'data_content' => $this->data_content
+        ];
     }
 
 }

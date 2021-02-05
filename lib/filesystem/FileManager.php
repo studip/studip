@@ -961,8 +961,8 @@ class FileManager
         $new_folder->description = $source_folder->description;
 
         // Copy settings if applicable.
-        if ($source_folder->copySettings()) {
-            $new_folder->data_content = $source_folder->data_content;
+        foreach ($source_folder->copySettings() as $field => $content) {
+            $new_folder->$field = $content;
         }
 
         $new_folder = $destination_folder->createSubfolder($new_folder);

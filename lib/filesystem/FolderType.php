@@ -266,8 +266,8 @@ interface FolderType
     public function getAdditionalActionButtons();
 
     /**
-     * Specifies if a folder copy contains the extra settings (= data_content) from source folder, too
-     * @return boolean
+     * Returns (perhaps only a subset of) description and data_content of the folder for copying
+     * @return array
      */
     public function copySettings();
 }
