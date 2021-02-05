@@ -117,7 +117,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     );
                     return;
                 }
-                if (!$room->userHasPermission($this->current_user, 'autor', [], true)) {
+                if (!$room->userHasPermission($this->current_user, 'autor', [])) {
                     PageLayout::postError(
                         sprintf(
                             _('Die Berechtigungen für den Raum %s sind nicht ausreichend, um die Anfrageliste anzeigen zu können!'),
@@ -646,9 +646,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         if (!$this->resource->userHasRequestRights($current_user)) {
             throw new AccessDeniedException();
         }
-        $this->form_action_link = $this->link_for(
-                'resources/room_request/add/' . $this->resource->id
-        );
+        $this->form_action_link = $this->link_for('resources/room_request/add/' . $this->resource->id);
         if (!($this->resource instanceof Room)) {
             PageLayout::postError(
                 _('Die angegebene Ressource ist kein Raum!')
@@ -1314,7 +1312,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             foreach ($previously_selected_rooms as $room) {
                 $room = $room->getDerivedClassInstance();
                 if ($room instanceof Room) {
-                    if ($room->userHasPermission($this->current_user, 'autor', [], true)) {
+                    if ($room->userHasPermission($this->current_user, 'autor', [])) {
                         $this->alternative_rooms[] = $room;
                     }
                 }
@@ -1359,7 +1357,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                         //in the list of alternative rooms:
                         $resource = $resource->getDerivedClassInstance();
                         if ($resource instanceof Room) {
-                            if ($resource->userHasPermission($this->current_user, 'autor', [], true)) {
+                            if ($resource->userHasPermission($this->current_user, 'autor', [])) {
                                 $room_group_rooms[] = $resource;
                             }
                         }
@@ -1377,7 +1375,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     if ($room) {
                         $room = $room->getDerivedClassInstance();
                         if ($room instanceof Room) {
-                            if ($room->userHasPermission($this->current_user, 'autor', [], true)) {
+                            if ($room->userHasPermission($this->current_user, 'autor', [])) {
                                 $this->alternative_rooms[] = $room;
                                 $this->room_search->defaultValue($room->id, $room->name);
                             }
@@ -1531,11 +1529,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                             null,
                             0,
                             $course_date->end_time,
-                            $this->request->preparation_time,
-                            '',
-                            '',
-                            0,
-                            false
+                            $this->request->preparation_time
                         );
                         if ($booking instanceof ResourceBooking) {
                             $bookings[] = $booking;
@@ -1572,11 +1566,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                                     null,
                                     0,
                                     $course_date->end_time,
-                                    $this->request->preparation_time,
-                                    '',
-                                    '',
-                                    0,
-                                    false
+                                    $this->request->preparation_time
                                 );
                                 if ($booking instanceof ResourceBooking) {
                                     $bookings[] = $booking;
@@ -1611,11 +1601,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                             null,
                             0,
                             null,
-                            $this->request->preparation_time,
-                            '',
-                            '',
-                            0,
-                            false
+                            $this->request->preparation_time
                         );
                         if ($booking instanceof ResourceBooking) {
                             $bookings[] = $booking;
@@ -1735,7 +1721,6 @@ class Resources_RoomRequestController extends AuthenticatedController
             } else {
                 $this->reply_comment = Request::get('reply_comment');
                 $this->request->reply_comment = $this->reply_comment;
-
                 $this->request->closed = '3';
                 $this->request->last_modified_by = $user->id;
                 if ($this->request->isDirty()) {
@@ -1985,7 +1970,6 @@ class Resources_RoomRequestController extends AuthenticatedController
 
             $cycle = $cdate->cycle;
             $resource = Resource::find($booking->resource_id);
-
             $request = ResourceRequest::findByMetadate($cycle->metadate_id);
             if ($request && $request->closed > 0) {
                 $request->closed = 0;
@@ -2001,7 +1985,6 @@ class Resources_RoomRequestController extends AuthenticatedController
             }
 
             if($request->store()) {
-                $cycle_bookings = [];
                 $booking_deleted = false;
                 foreach($cycle->getAllDates() as $bcdate) {
                     $bcdate_booking = ResourceBooking::findOneBySQL('range_id=?', [$bcdate->id]);
@@ -2051,11 +2034,8 @@ class Resources_RoomRequestController extends AuthenticatedController
     public function quickbook_action($request_id, $room_id, $range_str)
     {
         $this->request = ResourceRequest::find($request_id);
-
         $this->selected_rooms = Request::getArray('selected_rooms');
         $this->notification_settings = Request::get('notification_settings');
-
-
         $this->show_force_resolve_button = true;
 
         $errors = [];
@@ -2122,11 +2102,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     null,
                     0,
                     $course_date->end_time,
-                    $this->request->preparation_time,
-                    '',
-                    '',
-                    0,
-                    false
+                    $this->request->preparation_time
                 );
                 if ($booking instanceof ResourceBooking) {
                     $bookings[] = $booking;
@@ -2161,12 +2137,8 @@ class Resources_RoomRequestController extends AuthenticatedController
                             ],
                             null,
                             0,
-                            $course_date->end_time,
-                            $this->request->preparation_time,
-                            '',
-                            '',
-                            0,
-                            false
+                            $date->end_time,
+                            $this->request->preparation_time
                         );
                         if ($booking instanceof ResourceBooking) {
                             $bookings[] = $booking;
@@ -2201,11 +2173,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     null,
                     0,
                     null,
-                    $this->request->preparation_time,
-                    '',
-                    '',
-                    0,
-                    false
+                    $this->request->preparation_time
                 );
                 if ($booking instanceof ResourceBooking) {
                     $bookings[] = $booking;
@@ -2290,7 +2258,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             'institut_id',
             'get'
         );
-        $institute_selector->includeAllOption(true);
+        $institute_selector->includeAllOption();
         $institute_selector->setSelectedElementIds($this->filter['institute']);
         $sidebar->addWidget($institute_selector);
 
@@ -2434,28 +2402,27 @@ class Resources_RoomRequestController extends AuthenticatedController
             $request_colour                        = ColourValue::find('Resources.BookingPlan.Request.Bg');
             $this->table_keys                      = [
                 [
-                    'colour' => $booking_colour->__toString(),
+                    'colour' => (string)$booking_colour,
                     'text'   => _('Manuelle Buchung')
                 ],
                 [
-                    'colour' => $course_booking_colour->__toString(),
+                    'colour' => (string)$course_booking_colour,
                     'text'   => _('Veranstaltungsbezogene Buchung')
                 ],
                 [
-                    'colour' => $lock_colour->__toString(),
+                    'colour' => (string)$lock_colour,
                     'text'   => _('Sperrbuchung')
                 ],
                 [
-                    'colour' => $preparation_colour->__toString(),
+                    'colour' => (string)$preparation_colour,
                     'text'   => _('Rüstzeit')
                 ],
                 [
-                    'colour' => $reservation_colour->__toString(),
+                    'colour' => (string)$reservation_colour,
                     'text'   => _('Reservierung')
                 ],
             ];
             $this->event_color = $request_colour;
         }
-
     }
 }
