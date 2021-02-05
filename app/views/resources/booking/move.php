@@ -1,45 +1,35 @@
 <? if ($show_form): ?>
     <? if ($available_resources): ?>
-        <?= $this->render_partial(
-            'resources/booking/index.php',
-            [
-                'booking' => $booking,
-                'hide_buttons' => true
-            ]
-        ) ?>
         <form class="default" method="post"
-              action="<?= $this->controller->link_for(
-                      'resources/booking/move/' . $booking->id
-                      ) ?>" data-dialog>
+              action="<?= $this->controller->link_for('resources/booking/move/' . $booking->id) ?>" data-dialog="size=auto">
             <?= CSRFProtection::tokenTag() ?>
-            <fieldset>
-                <? if ($booking->resource->class_name == 'Room'): ?>
-                    <legend><?= _('Zielraum auswählen') ?></legend>
-                    <h2>
-                        <?= _('In welchen Raum soll die Buchung verschoben werden?') ?>
-                    </h2>
-                <? else: ?>
-                    <legend><?= _('Zielressource auswählen') ?></legend>
-                    <h2>
-                        <?= _('In welche Ressource soll die Buchung verschoben werden?') ?>
-                    </h2>
-                <? endif ?>
-                <ul class="list-unstyled">
-                    <? foreach ($available_resources as $resource): ?>
-                        <? if($resource->id == $booking->resource->id) continue; ?>
-                        <li>
-                            <label>
-                                <input type="radio" name="selected_resource_id"
-                                    value="<?= htmlReady($resource->id)?>"
-                                    <?= in_array($resource->id, $selected_resource_ids)
-                                        ? 'checked="checked"'
-                                        : '' ?>>
+                <label>
+                    <? if ($booking->resource->class_name == 'Room'): ?>
+                        <?= _('Zielraum auswählen') ?>
+                        <?= tooltipIcon(_('In welchen Raum soll die Buchung verschoben werden?')) ?>
+                    <? else: ?>
+                        <?= _('Zielressource auswählen') ?>
+                        <?= tooltipIcon(_('In welche Ressource soll die Buchung verschoben werden?')) ?>
+                    <? endif ?>
+
+                    <select name="selected_resource_id">
+                        <? foreach ($available_resources as $resource): ?>
+                            <? if ($resource->id == $booking->resource->id) continue; ?>
+                            <option value="<?= htmlReady($resource->id) ?>"
+                                <?= in_array($resource->id, $selected_resource_ids) ? 'selected' : '' ?>>
                                 <?= htmlReady($resource->getFullName()) ?>
-                            </label>
-                        </li>
-                    <? endforeach ?>
-                </ul>
-            </fieldset>
+                            </option>
+
+                        <? endforeach ?>
+                    </select>
+                </label>
+            <?= $this->render_partial(
+                'resources/booking/index.php',
+                [
+                    'booking' => $booking,
+                    'hide_buttons' => true
+                ]
+            ) ?>
             <div data-dialog-button>
                 <?= \Studip\Button::create(_('Verschieben'), 'save') ?>
             </div>

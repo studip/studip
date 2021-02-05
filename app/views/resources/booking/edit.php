@@ -3,36 +3,28 @@
     <div data-dialog-button>
         <?= \Studip\LinkButton::create(
             _('Duplizieren'),
-            URLHelper::getURL(
-                'dispatch.php/resources/booking/duplicate/' . $booking->id
-            ),
+            $controller->url_for('resources/booking/duplicate/' . $booking->id),
             [
                 'data-dialog' => '1'
             ]
         ) ?>
         <?= \Studip\LinkButton::create(
             _('Kopieren'),
-            URLHelper::getURL(
-                'dispatch.php/resources/booking/copy/' . $booking->id
-            ),
+            $controller->url_for('resources/booking/copy/' . $booking->id),
             [
                 'data-dialog' => '1'
             ]
         ) ?>
         <?= \Studip\LinkButton::create(
             _('Verschieben'),
-            URLHelper::getURL(
-                'dispatch.php/resources/booking/move/' . $booking->id
-            ),
+            $controller->url_for('resources/booking/move/' . $booking->id),
             [
-                'data-dialog' => '1'
+                'data-dialog' => 'size=auto'
             ]
         ) ?>
         <?= \Studip\LinkButton::create(
             _('Löschen'),
-            URLHelper::getURL(
-                'dispatch.php/resources/booking/delete/' . $booking->id
-            ),
+            $controller->url_for('resources/booking/delete/' . $booking->id),
             [
                 'data-dialog' => '1'
             ]
