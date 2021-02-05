@@ -289,7 +289,7 @@ ul.resource-tree {
             }
         }
 
-        #RepeatIntervalSelectField-Daily, #RepeatIntervalSelectField-Weekly{
+        #RepeatIntervalSelectField-Daily, #RepeatIntervalSelectField-Weekly {
             margin-left: 2em;
             margin-bottom: 2em;
         }
@@ -452,17 +452,61 @@ article.room-list-item {
         flex-direction: row;
         flex-wrap: wrap;
 
-        article.left-part, article.right-part {
-            width: 40%;
-            flex-grow: 1;
-        }
-
-        article.right-part {
-            padding-left: 1em;
-        }
-
         article.assign-dates, div[data-dialog-button] {
+            header {
+                margin: 0px;
+            }
+
+            table {
+                margin: 0;
+
+                > tbody:last-of-type {
+                    > tr:last-child {
+                        > td {
+                            border-bottom: none;
+                        }
+                    }
+                }
+            }
+
             width: 100%;
+            padding: 0px;
+        }
+
+        article {
+            &.left-part, &.right-part {
+                width: 40%;
+                flex-grow: 1;
+                margin-bottom: 10px;
+            }
+
+            &.right-part {
+                padding-left: 1em;
+            }
+
+            section {
+                padding-top: 0px;
+            }
+        }
+
+        dl {
+            dt, dd {
+                &:not(:last-child) {
+                    margin-bottom: 5px;
+                }
+            }
+            dt {
+                grid-column: 1;
+            }
+
+            dd {
+                grid-column: 2;
+            }
+
+            margin: 0;
+            display: grid;
+            grid-template-columns: 40% auto;
+
         }
     }
 }
