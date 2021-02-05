@@ -72,23 +72,16 @@ class RoomManagement_OverviewController extends StudipController
             Navigation::activateItem('/resources/overview');
         }
 
-        $sufficient_permissions = (
-            ResourceManager::userHasGlobalPermission(
-                $this->user,
-                'user'
-            )
+        $sufficient_permissions =
+            ResourceManager::userHasGlobalPermission($this->user)
             ||
-            ResourceManager::userHasResourcePermissions($this->user, 'user')
-        );
+            ResourceManager::userHasResourcePermissions($this->user, 'user');
         if (!$sufficient_permissions) {
             throw new AccessDeniedException();
         }
 
         $this->show_resource_actions = (
-            ResourceManager::userHasGlobalPermission(
-                $this->user,
-                'autor'
-            )
+            ResourceManager::userHasGlobalPermission($this->user, 'autor')
             ||
             ResourceManager::userHasResourcePermissions($this->user, 'autor')
         );
@@ -96,7 +89,7 @@ class RoomManagement_OverviewController extends StudipController
         $this->show_admin_actions = (
             $this->user_is_global_resource_admin
             ||
-            ResourceManager::userHasResourcePermissions($this->user, 'admin')
+            ResourceManager::userHasResourcePermissions($this->user)
             ||
             $GLOBALS['perm']->have_perm('root')
         );
@@ -105,9 +98,7 @@ class RoomManagement_OverviewController extends StudipController
             return $this->redirect($this->url_for('/rooms'));
         }
 
-        PageLayout::setTitle(
-            _('Übersicht')
-        );
+        PageLayout::setTitle(_('Übersicht'));
 
         if (Navigation::hasItem('/resources/overview/index')) {
             Navigation::activateItem('/resources/overview/index');
@@ -229,7 +220,7 @@ class RoomManagement_OverviewController extends StudipController
         $actions = new ActionsWidget();
         $actions->addLink(
             _('Neuer Standort'),
-            $this->link_for('resources/location/select_category'),
+            $this->url_for('resources/location/select_category'),
             Icon::create('add'),
             ['data-dialog' => 'size=auto']
         );
@@ -238,9 +229,7 @@ class RoomManagement_OverviewController extends StudipController
         $this->locations = Location::findAll();
 
         if (!$this->locations) {
-            PageLayout::postInfo(
-                _('Es wurden keine Standorte gefunden!')
-            );
+            PageLayout::postInfo(_('Es wurden keine Standorte gefunden!'));
         }
 
     }
@@ -255,9 +244,7 @@ class RoomManagement_OverviewController extends StudipController
             Navigation::activateItem('/resources/overview/buildings');
         }
 
-        PageLayout::setTitle(
-            _('Übersicht über alle Gebäude')
-        );
+        PageLayout::setTitle(_('Übersicht über alle Gebäude'));
 
         //Check permissions:
         if (!$this->user_is_global_resource_admin) {
@@ -338,14 +325,10 @@ class RoomManagement_OverviewController extends StudipController
 
     public function rooms_action()
     {
-        if (ResourceManager::userHasGlobalPermission($this->user, 'user')) {
-            PageLayout::setTitle(
-                _('Übersicht über alle Räume')
-            );
+        if (ResourceManager::userHasGlobalPermission($this->user)) {
+            PageLayout::setTitle(_('Übersicht über alle Räume'));
         } else {
-            PageLayout::setTitle(
-                _('Meine Räume')
-            );
+            PageLayout::setTitle(_('Meine Räume'));
         }
 
         if (Navigation::hasItem('/resources/overview')) {
@@ -385,8 +368,11 @@ class RoomManagement_OverviewController extends StudipController
         $sidebar->addWidget($clipboard);
 
         $search = new SearchWidget($this->url_for(''));
-        $search->setTitle(_('Räume nach Gebäude suchen'));
+        $search->setTitle(_('Raumsuche'));
         $search->addNeedle(_('Gebäude'), 'building_name', true);
+        if ($this->user_is_global_resource_user) {
+            $search->addNeedle(_('Raum'), 'room_name', true);
+        }
         $sidebar->addWidget($search);
 
         if ($this->user_is_global_resource_user) {
@@ -452,9 +438,7 @@ class RoomManagement_OverviewController extends StudipController
         }
 
         if (!$this->rooms) {
-            PageLayout::postInfo(
-                _('Es wurden keine Räume gefunden!')
-            );
+            PageLayout::postInfo(_('Es wurden keine Räume gefunden!'));
         }
     }
 
