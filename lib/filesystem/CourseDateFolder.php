@@ -134,4 +134,13 @@ class CourseDateFolder extends PermissionEnabledFolder implements FolderType
 
         return $template;
     }
+
+    /**
+     * @see FolderType::copySettings()
+     */
+    public function copySettings()
+    {
+        return false;
+    }
+
 }

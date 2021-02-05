@@ -313,4 +313,13 @@ class VirtualFolderType implements FolderType
     {
 
     }
+
+    /**
+     * @see FolderType::copySettings()
+     */
+    public function copySettings()
+    {
+        return false;
+    }
+
 }

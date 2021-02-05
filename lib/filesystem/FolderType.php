@@ -264,4 +264,10 @@ interface FolderType
      * @return array of Studip\Button or Studip\LinkButton
      */
     public function getAdditionalActionButtons();
+
+    /**
+     * Specifies if a folder copy contains the extra settings (= data_content) from source folder, too
+     * @return boolean
+     */
+    public function copySettings();
 }

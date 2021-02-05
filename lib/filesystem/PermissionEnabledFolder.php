@@ -134,5 +134,12 @@ class PermissionEnabledFolder extends StandardFolder
         return false;
     }
 
+    /**
+     * @see FolderType::copySettings()
+     */
+    public function copySettings()
+    {
+        return true;
+    }
 
 }

@@ -959,6 +959,12 @@ class FileManager
         $new_folder->name = $source_folder->name;
         $new_folder->user_id = $user->id;
         $new_folder->description = $source_folder->description;
+
+        // Copy settings if applicable.
+        if ($source_folder->copySettings()) {
+            $new_folder->data_content = $source_folder->data_content;
+        }
+
         $new_folder = $destination_folder->createSubfolder($new_folder);
 
         //now we go through all subfolders and copy them:

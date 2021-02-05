@@ -346,4 +346,13 @@ class MessageFolder extends StandardFolder implements FolderType
         //message attachments are never writable!
         return false;
     }
+
+    /**
+     * @see FolderType::copySettings()
+     */
+    public function copySettings()
+    {
+        return false;
+    }
+
 }

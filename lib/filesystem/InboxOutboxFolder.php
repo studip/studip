@@ -298,4 +298,13 @@ class InboxOutboxFolder implements FolderType
     {
         return [];
     }
+
+    /**
+     * @see FolderType::copySettings()
+     */
+    public function copySettings()
+    {
+        return false;
+    }
+
 }
