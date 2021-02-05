@@ -13,7 +13,7 @@
             <div class="fieldset-row">
                 <fieldset class="booking-type-selection">
                     <legend><?= _('Bitte wählen Sie einen der folgenden Buchungstypen aus:') ?></legend>
-                    <select name="booking_type">
+                    <select name="booking_type" autofocus>
                         <option value="0"
                             <?= $booking_type == '0'
                                 ? 'selected="selected"'
@@ -483,7 +483,7 @@
             <fieldset class="description">
                 <legend><?= _('Buchungstext') ?></legend>
                 <label>
-                    <textarea name="description"><?= htmlReady($description) ?></textarea>
+                    <textarea name="description" <?= !$show_booking_type_selection ? 'autofocus' : ''?>><?= htmlReady($description) ?></textarea>
                 </label>
             </fieldset>
         </div>
