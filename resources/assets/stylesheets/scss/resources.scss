@@ -475,12 +475,16 @@ article.room-list-item {
 
         article {
             &.left-part, &.right-part {
-                width: 40%;
+
                 flex-grow: 1;
                 margin-bottom: 10px;
             }
 
+            &.left-part {
+                width: 50%;
+            }
             &.right-part {
+                width: 40%;
                 padding-left: 1em;
             }
 

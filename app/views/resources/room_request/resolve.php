@@ -4,16 +4,39 @@
           action="<?= $controller->link_for('resources/room_request/resolve/' . $request->id) ?>">
         <?= CSRFProtection::tokenTag() ?>
         <article class="studip left-part">
-            <header><h1><?= _('Informationen zur Anfrage') ?></h1></header>
+            <header>
+                <h1>
+                    <?= _('Informationen zur Anfrage') ?>
+                </h1>
+                <?php
+                $tooltip_info = htmlReady(
+                    sprintf(
+                        _('Anfrage erstellt am %1$s von %2$s'),
+                        date('d.m.Y H:i', $request->mkdate),
+                        ($request->user
+                            ? $request->user->getFullName()
+                            : '')
+                    )
+                );
+                $tooltip_info .= '<br>';
+                $tooltip_info .= htmlReady(
+                    sprintf(
+                        _('Letzte Änderung am %1$s von %2$s'),
+                        date('d.m.Y H:i', $request->chdate),
+                        ($request->last_modifier
+                            ? $request->last_modifier->getFullName()
+                            : '')
+                    )
+                );
+                echo tooltipHtmlIcon($tooltip_info);
+                ?>
+            </header>
             <section>
                 <dl>
                     <? if ($request->course): ?>
-                        <dt><?= _('Betroffene Veranstaltung') ?></dt>
+                        <dt><?= _('Veranstaltung') ?></dt>
                         <dd><?= htmlReady($request->course->getFullName()) ?></dd>
-                        <? $lecturers = CourseMember::findByCourseAndStatus(
-                        $request->course->id,
-                        'dozent'
-                    ) ?>
+                        <? $lecturers = CourseMember::findByCourseAndStatus($request->course->id, 'dozent') ?>
                         <dt><?= _('Lehrende') ?></dt>
                         <dd>
                             <? if (count($lecturers) == 1): ?>
@@ -29,48 +52,24 @@
                     <? endif ?>
                     <dt><?= _('Art der Anfrage') ?></dt>
                     <dd><?= htmlReady($request->getTypeString()) ?></dd>
-                    <dt><?= _('Erstellung') ?></dt>
-                    <dd><?= htmlReady(
-                            sprintf(
-                                _('Anfrage erstellt am %1$s von %2$s'),
-                                date('d.m.Y H:i', $request->mkdate),
-                                ($request->user
-                                    ? $request->user->getFullName()
-                                    : '')
-                            )
-                        ) ?></dd>
-                    <dt><?= _('Bearbeitung') ?></dt>
-                    <dd><?= htmlReady(
-                            sprintf(
-                                _('Letzte Änderung am %1$s von %2$s'),
-                                date('d.m.Y H:i', $request->chdate),
-                                ($request->last_modifier
-                                    ? $request->last_modifier->getFullName()
-                                    : '')
-                            )
-                        ) ?></dd>
-                    <dt><?= _('Aktuelle Zahl an teilnehmenden Personen') ?></dt>
-                    <dd>
-                        <? if ($request->course): ?>
+                    <? if ($request->course): ?>
+                        <dt><?= _('Anzahl Teilnehmende') ?></dt>
+                        <dd>
                             <?= htmlReady($request->course->getNumParticipants()) ?>
-                        <? else: ?>
-                            <?= _('Nicht verfügbar') ?>
-                        <? endif ?>
-                    </dd>
+                        </dd>
+                    <? endif ?>
                     <dt><?= _('Angeforderte Belegungszeiten') ?></dt>
                     <dd>
                         <? $dates = $request->getDateString(true) ?>
-                        <? foreach ($dates as $date) : ?>
-                            <?= htmlReady($date) ?><br>
-                        <? endforeach ?>
+                        <? if ($dates) : ?>
+                            <?= implode('<br>', $dates) ?>
+                        <? endif ?>
                         <? if ($request_semester_string): ?>
-                            (<?= htmlReady($request_semester_string) ?>)
+                            <br>(<?= htmlReady($request_semester_string) ?>)
                         <? endif ?>
                     </dd>
                     <? if ($room_request->preparation_time): ?>
-                        <? $preparation_time_minutes = intval(
-                            $room_request->preparation_time / 60
-                        ) ?>
+                        <? $preparation_time_minutes = intval($room_request->preparation_time / 60) ?>
                         <dt><?= _('Rüstzeit') ?></dt>
                         <dd>
                             <?= htmlReady(
@@ -85,30 +84,31 @@
                             ) ?>
                         </dd>
                     <? endif ?>
-                    <dt><?= _('Gewünschte Raumeigenschaften') ?></dt>
-                    <dd>
-                        <table>
-                            <tbody>
-                            <? foreach ($request->properties as $property): ?>
-                                <tr>
-                                    <td><?= htmlReady($property->display_name) ?></td>
-                                    <td><?= htmlReady($property->__toString()) ?></td>
-                                </tr>
-                            <? endforeach ?>
-                            </tbody>
-                        </table>
-                    </dd>
-                    <dt><?= _('Gewünschter Raum') ?></dt>
-                    <dd>
-                        <?= $request->resource
-                            ? htmlReady($request->resource->name)
-                            : _('Kein Raum ausgewählt') ?>
-                    </dd>
-                    <dt><?= _('Kommentar des Anfragenden') ?></dt>
-                    <dd><?= $request->comment
-                            ? htmlReady($request->comment)
-                            : _('Es wurde kein Kommentar eingegeben.') ?>
-                    </dd>
+                    <? if ($request->properties) : ?>
+                        <dt><?= _('Gewünschte Raumeigenschaften') ?></dt>
+                        <dd>
+                            <table>
+                                <tbody>
+                                <? foreach ($request->properties as $property): ?>
+                                    <tr>
+                                        <td><?= htmlReady($property->display_name) ?></td>
+                                        <td><?= htmlReady((string)$property) ?></td>
+                                    </tr>
+                                <? endforeach ?>
+                                </tbody>
+                            </table>
+                        </dd>
+                    <? endif ?>
+                    <? if ($request->resource) : ?>
+                        <dt><?= _('Gewünschter Raum') ?></dt>
+                        <dd>
+                            <?= htmlReady($request->resource->name) ?>
+                        </dd>
+                    <? endif ?>
+                    <? if ($request->comment) : ?>
+                        <dt><?= _('Kommentar des Anfragenden') ?></dt>
+                        <dd><?= htmlReady($request->comment) ?></dd>
+                    <? endif ?>
                     <dt><?= _('Antwort') ?></dt>
                     <? if ($request->closed == 0) : ?>
                         <dd>

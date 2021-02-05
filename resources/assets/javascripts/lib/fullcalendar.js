@@ -395,7 +395,6 @@ class Fullcalendar
             eventClick (eventClickInfo) {
                 var event = eventClickInfo.event;
                 var extended_props = event.extendedProps;
-
                 if ($(eventClickInfo.jsEvent.target).hasClass('event-colorpicker')) {
                     STUDIP.Dialog.fromURL(
                         STUDIP.URLHelper.getURL('dispatch.php/admin/courseplanning/pick_color/' + extended_props.metadate_id + '/' + config.actionCalled),
@@ -406,14 +405,13 @@ class Fullcalendar
 
 
                 if ($(eventClickInfo.event._calendar.el).hasClass('request-plan')) {
-
                     if (extended_props.request_id && extended_props.studip_view_urls.edit) {
                         STUDIP.Dialog.fromURL(
                             STUDIP.URLHelper.getURL(extended_props.studip_view_urls.edit)
                         );
                     } else if(extended_props.studip_parent_object_class == 'ResourceBooking' && $.inArray('for-course', event._def.ui.classNames) != -1) {
                         STUDIP.Dialog.fromURL(
-                            STUDIP.URLHelper.getURL('dispatch.php/resources/room_request/rerequest_booking/' + extended_props.studip_parent_object_id)
+                            STUDIP.URLHelper.getURL('dispatch.php/resources/room_request/request_booking/' + extended_props.studip_parent_object_id)
                         );
                     }
                     return false;
@@ -428,7 +426,8 @@ class Fullcalendar
                     );
                 } else if (event.startEditable && extended_props.studip_view_urls.edit) {
                     STUDIP.Dialog.fromURL(
-                        STUDIP.URLHelper.getURL(extended_props.studip_view_urls.edit)
+                        STUDIP.URLHelper.getURL(extended_props.studip_view_urls.edit),
+                        {'size': 'big'}
                     );
                 }
                 return false;

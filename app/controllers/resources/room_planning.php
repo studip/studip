@@ -148,14 +148,13 @@ class Resources_RoomPlanningController extends AuthenticatedController
         $this->anonymous_view = true;
         $this->booking_types  = [0, 1, 2];
         if ($current_user instanceof User) {
-            if ($display_all_requests) {
+            if ($this->display_all_requests) {
                 $plan_is_visible = $this->resource->userHasPermission(
                     $current_user,
                     'autor'
                 );
             } else {
-                $plan_is_visible =
-                    $this->resource->bookingPlanVisibleForUser($current_user);
+                $plan_is_visible = $this->resource->bookingPlanVisibleForUser($current_user);
             }
             $this->anonymous_view = false;
             if ($this->resource->userHasPermission($current_user, 'admin')) {
@@ -194,7 +193,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
         if ($week_timestamp) {
             $this->date->setTimestamp($week_timestamp);
         } elseif ($default_date) {
-            $this->date     = Request::getDateTime('defaultDate', 'Y-m-d');
+            $this->date     = Request::getDateTime('defaultDate');
             $week_timestamp = $this->date->getTimestamp();
         } else {
             $week_timestamp = $this->date->getTimestamp();
@@ -219,7 +218,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
 
         $views = new ViewsWidget();
         if ($GLOBALS['user']->id && ($GLOBALS['user']->id != 'nobody')) {
-            if ($this->resource->userHasPermission($current_user, 'user')) {
+            if ($this->resource->userHasPermission($current_user)) {
                 $views->addLink(
                     _('Standard Zeitfenster'),
                     URLHelper::getURL(
@@ -300,7 +299,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                     Icon::create('add')
                 )->asDialog("size=auto");
             }
-            if ($this->resource->userHasPermission($current_user, 'user')) {
+            if ($this->resource->userHasPermission($current_user)) {
                 $actions->addLink(
                     _('Belegungsplan drucken'),
                     'javascript:void(window.print());',
@@ -386,23 +385,23 @@ class Resources_RoomPlanningController extends AuthenticatedController
         if ($this->resource instanceof Room) {
             $this->table_keys = [
                 [
-                    'colour' => $booking_colour->__toString(),
+                    'colour' => (string)$booking_colour,
                     'text'   => _('Manuelle Buchung')
                 ],
                 [
-                    'colour' => $course_booking_colour->__toString(),
+                    'colour' => (string)$course_booking_colour,
                     'text'   => _('Veranstaltungsbezogene Buchung')
                 ],
                 [
-                    'colour' => $lock_colour->__toString(),
+                    'colour' => (string)$lock_colour,
                     'text'   => _('Sperrbuchung')
                 ],
                 [
-                    'colour' => $preparation_colour->__toString(),
+                    'colour' => (string)$preparation_colour,
                     'text'   => _('Rüstzeit')
                 ],
                 [
-                    'colour' => $reservation_colour->__toString(),
+                    'colour' => (string)$reservation_colour,
                     'text'   => _('Reservierung')
                 ]
             ];
@@ -411,13 +410,13 @@ class Resources_RoomPlanningController extends AuthenticatedController
                     if ($this->resource->userHasPermission($current_user, 'admin')) {
                         $planned_booking_colour = ColourValue::find('Resources.BookingPlan.PlannedBooking.Bg');
                         $this->table_keys[]     = [
-                            'colour' => $planned_booking_colour->__toString(),
+                            'colour' => (string)$planned_booking_colour,
                             'text'   => _('Geplante Buchung')
                         ];
                     }
                 }
                 $this->table_keys[] = [
-                    'colour' => $request_colour->__toString(),
+                    'colour' => (string)$request_colour,
                     'text'   => (
                     $this->display_all_requests
                         ? _('Anfrage')
@@ -715,30 +714,30 @@ class Resources_RoomPlanningController extends AuthenticatedController
         $request_colour                        = ColourValue::find('Resources.BookingPlan.Request.Bg');
         $this->table_keys                      = [
             [
-                'colour' => $booking_colour->__toString(),
+                'colour' => (string)$booking_colour,
                 'text'   => _('Manuelle Buchung')
             ],
             [
-                'colour' => $course_booking_colour->__toString(),
+                'colour' => (string)$course_booking_colour,
                 'text'   => _('Veranstaltungsbezogene Buchung')
             ],
             [
-                'colour' => $lock_colour->__toString(),
+                'colour' => (string)$lock_colour,
                 'text'   => _('Sperrbuchung')
             ],
             [
-                'colour' => $preparation_colour->__toString(),
+                'colour' => (string)$preparation_colour,
                 'text'   => _('Rüstzeit')
             ],
             [
-                'colour' => $reservation_colour->__toString(),
+                'colour' => (string)$reservation_colour,
                 'text'   => _('Reservierung')
             ],
         ];
         if ($this->resource->userHasPermission($current_user, 'admin')) {
             $planned_booking_colour = ColourValue::find('Resources.BookingPlan.PlannedBooking.Bg');
             $this->table_keys[]     = [
-                'colour' => $planned_booking_colour->__toString(),
+                'colour' => (string)$planned_booking_colour,
                 'text'   => _('Geplante Buchung')
             ];
         }
@@ -747,15 +746,14 @@ class Resources_RoomPlanningController extends AuthenticatedController
             if ($this->user_has_booking_permissions && $this->display_all_requests) {
                 $this->table_keys[] =
                     [
-                        'colour' => $request_colour->__toString(),
-                        'text'   =>
-                            _('Anfrage für regelmäßige Termine')
+                        'colour' => (string)$request_colour,
+                        'text'   => _('Anfrage für regelmäßige Termine')
                     ];
             }
             if (!$this->user_has_booking_permissions) {
                 $this->table_keys[] =
                     [
-                        'colour' => $request_colour->__toString(),
+                        'colour' => (string)$request_colour,
                         'text'   =>
                             _('Eigene Anfrage für regelmäßige Termine')
                     ];

@@ -697,7 +697,7 @@ STUDIP.ready(function() {
             }
 
             //Now change the URL of the window.
-            changeddate = STUDIP.Fullcalendar.toRFC3339String(changedmoment).split('T')[0];
+            var changeddate = STUDIP.Fullcalendar.toRFC3339String(changedmoment).split('T')[0];
             var sURLVariables = window.location.href.split(/[?&]/);
             var changed = false;
             for (var i = 0; i < sURLVariables.length; i++) {
