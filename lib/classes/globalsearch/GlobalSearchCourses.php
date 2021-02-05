@@ -101,7 +101,7 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
                 {$seminar_type_condition}
                 {$semester_condition}
                 GROUP BY courses.Seminar_id
-                ORDER BY ABS(UNIX_TIMESTAMP() - CAST(start_time AS SIGNED)) ASC";
+                ORDER BY start_time DESC";
 
         if (Config::get()->IMPORTANT_SEMNUMBER) {
             $sql .= ", courses.`VeranstaltungsNummer`";
