@@ -34,6 +34,17 @@ class Course_FilesController extends AuthenticatedController
         PageLayout::setTitle(Context::get()->getFullname() . ' - ' . _('Dateien'));
 
         Navigation::activateItem('/course/files');
+
+        if (is_object($GLOBALS['user']) && $GLOBALS['user']->id !== 'nobody') {
+            PageLayout::addHeadElement('script', ['type' => 'text/javascript'], sprintf(
+                'STUDIP.Files.setUploadConstraints(%s);',
+                json_encode([
+                    'filesize'   => $GLOBALS['UPLOAD_TYPES']['default']['file_sizes'][$GLOBALS['user']->perms],
+                    'type'       => $GLOBALS['UPLOAD_TYPES']['default']['type'],
+                    'file_types' => $GLOBALS['UPLOAD_TYPES']['default']['file_types'],
+                ])
+            ));
+        }
     }
 
     private function buildSidebar($index = 'index')

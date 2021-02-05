@@ -89,12 +89,10 @@ const Files = {
         var thresholds = []
         var data = new FormData();
         var updater_enabled = STUDIP.jsupdate_enable;
-        STUDIP.JSUpdater.stop();
 
         //Open upload-dialog
         const nameslist = $('.file_upload_window .filenames').empty();
         $('.file_upload_window .errorbox').hide();
-        $('.file_upload_window .messagebox').hide();
 
         var total_size = 0;
         $.each(filelist, function(index, file) {
@@ -117,10 +115,8 @@ const Files = {
                 total_size += file.size;
                 files += 1;
             } else {
-                $('.file_upload_window .errorbox').show();
-                $('.file_upload_window .errorbox .errormessage').text(
-                    $gettext('Datei ist zu groß oder hat eine nicht erlaubte Endung.')
-                );
+                const errorMessage = file.name + ': ' + $gettext('Datei ist zu groß oder hat eine nicht erlaubte Endung.') + "<br>";
+                $('.file_upload_window .errorbox').show().find('.errormessage').append(errorMessage);
             }
         });
         if ($('.file_uploader').length > 0) {
@@ -136,6 +132,8 @@ const Files = {
         //start upload
         $('form.drag-and-drop.files').removeClass('hovered');
         if (files > 0) {
+            STUDIP.JSUpdater.stop();
+
             $('.file_upload_window .uploadbar').show().filter('.uploadbar-inner').css({
                 right: '100%'
             });

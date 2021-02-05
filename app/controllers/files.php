@@ -45,6 +45,15 @@ class FilesController extends AuthenticatedController
         if ($GLOBALS['user']->id == 'nobody') {
             throw new AccessDeniedException();
         }
+
+        PageLayout::addHeadElement('script', ['type' => 'text/javascript'], sprintf(
+            'STUDIP.Files.setUploadConstraints(%s);',
+            json_encode([
+                'filesize'   => $GLOBALS['UPLOAD_TYPES']['personalfiles']['file_sizes'][$this->user->perms],
+                'type'       => $GLOBALS['UPLOAD_TYPES']['personalfiles']['type'],
+                'file_types' => $GLOBALS['UPLOAD_TYPES']['personalfiles']['file_types'],
+            ])
+        ));
     }
 
     /**
