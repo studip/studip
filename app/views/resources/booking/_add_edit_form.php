@@ -2,37 +2,39 @@
     <form class="default create-booking-form" method="post"
           name="create_booking"
           action="<?= ($booking !== null) && ($mode == 'edit')
-              ? $controller->link_for('resources/booking/edit/'. $booking->id)
+              ? $controller->link_for('resources/booking/edit/' . $booking->id)
               : $controller->link_for('resources/booking/add/' . $resource_or_clipboard_id . '/' . $booking_type);
           ?>"
           data-dialog="<?= $no_reload ? 'size=auto' : 'reload-on-close' ?>">
         <input type="hidden" name="origin_url"
-               value="<?= htmlReady($origin_url)?>">
+               value="<?= htmlReady($origin_url) ?>">
         <?= CSRFProtection::tokenTag() ?>
         <? if ($show_booking_type_selection): ?>
-            <fieldset class="booking-type-selection">
-                <legend><?= _('Bitte wählen Sie einen der folgenden Buchungstypen aus:')?></legend>
-                <select name="booking_type">
-                    <option value="0"
-                        <?= $booking_type == '0'
-                            ? 'selected="selected"'
-                            : '' ?>>
-                        <?= _('Buchung') ?>
-                    </option>
-                    <option value="1"
-                        <?= $booking_type == '1'
-                            ? 'selected="selected"'
-                            : '' ?>>
-                        <?= _('Reservierung') ?>
-                    </option>
-                    <option value="2"
-                        <?= $booking_type == '2'
-                            ? 'selected="selected"'
-                            : '' ?>>
-                        <?= _('Sperrbuchung') ?>
-                    </option>
-                </select>
-            </fieldset>
+            <div class="fieldset-row">
+                <fieldset class="booking-type-selection">
+                    <legend><?= _('Bitte wählen Sie einen der folgenden Buchungstypen aus:') ?></legend>
+                    <select name="booking_type">
+                        <option value="0"
+                            <?= $booking_type == '0'
+                                ? 'selected="selected"'
+                                : '' ?>>
+                            <?= _('Buchung') ?>
+                        </option>
+                        <option value="1"
+                            <?= $booking_type == '1'
+                                ? 'selected="selected"'
+                                : '' ?>>
+                            <?= _('Reservierung') ?>
+                        </option>
+                        <option value="2"
+                            <?= $booking_type == '2'
+                                ? 'selected="selected"'
+                                : '' ?>>
+                            <?= _('Sperrbuchung') ?>
+                        </option>
+                    </select>
+                </fieldset>
+            </div>
         <? endif ?>
         <div class="fieldset-row">
             <fieldset class="resource-booking-time-fields">
@@ -57,27 +59,41 @@
                         <? $single_day = ($begin->format('d.m.Y') == $end->format('d.m.Y')); ?>
 
                         <div id="begin_date-weekdays" class="hgroup">
-                            <span id="1" class="<?= $begin->format('N') == 1 ? '' :'invisible'; ?>"><?=  _('Montag'); ?></span>
-                            <span id="2" class="<?= $begin->format('N') == 2 ? '' :'invisible'; ?>"><?=  _('Dienstag'); ?></span>
-                            <span id="3" class="<?= $begin->format('N') == 3 ? '' :'invisible'; ?>"><?=  _('Mittwoch'); ?></span>
-                            <span id="4" class="<?= $begin->format('N') == 4 ? '' :'invisible'; ?>"><?=  _('Donnerstag'); ?></span>
-                            <span id="5" class="<?= $begin->format('N') == 5 ? '' :'invisible'; ?>"><?=  _('Freitag'); ?></span>
-                            <span id="6" class="<?= $begin->format('N') == 6 ? '' :'invisible'; ?>"><?=  _('Samstag'); ?></span>
-                            <span id="7" class="<?= $begin->format('N') == 7 ? '' :'invisible'; ?>"><?=  _('Sonntag'); ?></span>
+                            <span id="1"
+                                  class="<?= $begin->format('N') == 1 ? '' : 'invisible'; ?>"><?= _('Montag'); ?></span>
+                            <span id="2"
+                                  class="<?= $begin->format('N') == 2 ? '' : 'invisible'; ?>"><?= _('Dienstag'); ?></span>
+                            <span id="3"
+                                  class="<?= $begin->format('N') == 3 ? '' : 'invisible'; ?>"><?= _('Mittwoch'); ?></span>
+                            <span id="4"
+                                  class="<?= $begin->format('N') == 4 ? '' : 'invisible'; ?>"><?= _('Donnerstag'); ?></span>
+                            <span id="5"
+                                  class="<?= $begin->format('N') == 5 ? '' : 'invisible'; ?>"><?= _('Freitag'); ?></span>
+                            <span id="6"
+                                  class="<?= $begin->format('N') == 6 ? '' : 'invisible'; ?>"><?= _('Samstag'); ?></span>
+                            <span id="7"
+                                  class="<?= $begin->format('N') == 7 ? '' : 'invisible'; ?>"><?= _('Sonntag'); ?></span>
 
                             <input type="text" name="begin_date" class="has-date-picker"
                                    value="<?= htmlReady($begin->format('d.m.Y')) ?>"
                                    id="BookingStartDateInput">
                         </div>
 
-                        <div id="end_date-weekdays" class="hgroup" <?= ($single_day)?'style="display:none;"':''; ?>>
-                            <span id="1" class="<?= $end->format('N') == 1 ? '' :'invisible'; ?>"><?=  _('Montag'); ?></span>
-                            <span id="2" class="<?= $end->format('N') == 2 ? '' :'invisible'; ?>"><?=  _('Dienstag'); ?></span>
-                            <span id="3" class="<?= $end->format('N') == 3 ? '' :'invisible'; ?>"><?=  _('Mittwoch'); ?></span>
-                            <span id="4" class="<?= $end->format('N') == 4 ? '' :'invisible'; ?>"><?=  _('Donnerstag'); ?></span>
-                            <span id="5" class="<?= $end->format('N') == 5 ? '' :'invisible'; ?>"><?=  _('Freitag'); ?></span>
-                            <span id="6" class="<?= $end->format('N') == 6 ? '' :'invisible'; ?>"><?=  _('Samstag'); ?></span>
-                            <span id="7" class="<?= $end->format('N') == 7 ? '' :'invisible'; ?>"><?=  _('Sonntag'); ?></span>
+                        <div id="end_date-weekdays" class="hgroup" <?= ($single_day) ? 'style="display:none;"' : ''; ?>>
+                            <span id="1"
+                                  class="<?= $end->format('N') == 1 ? '' : 'invisible'; ?>"><?= _('Montag'); ?></span>
+                            <span id="2"
+                                  class="<?= $end->format('N') == 2 ? '' : 'invisible'; ?>"><?= _('Dienstag'); ?></span>
+                            <span id="3"
+                                  class="<?= $end->format('N') == 3 ? '' : 'invisible'; ?>"><?= _('Mittwoch'); ?></span>
+                            <span id="4"
+                                  class="<?= $end->format('N') == 4 ? '' : 'invisible'; ?>"><?= _('Donnerstag'); ?></span>
+                            <span id="5"
+                                  class="<?= $end->format('N') == 5 ? '' : 'invisible'; ?>"><?= _('Freitag'); ?></span>
+                            <span id="6"
+                                  class="<?= $end->format('N') == 6 ? '' : 'invisible'; ?>"><?= _('Samstag'); ?></span>
+                            <span id="7"
+                                  class="<?= $end->format('N') == 7 ? '' : 'invisible'; ?>"><?= _('Sonntag'); ?></span>
 
                             <input type="text" name="end_date" class="has-date-picker"
                                    value="<?= htmlReady($end->format('d.m.Y')) ?>"
@@ -86,7 +102,7 @@
                     </div>
 
                     <label>
-                        <input type="checkbox" id="multiday" <?= $single_day?'':'checked';?>
+                        <input type="checkbox" id="multiday" <?= $single_day ? '' : 'checked'; ?>
                                name="multiple_days" value="1"
                                onClick="$('#end_date-weekdays').toggle();">
                         <?= _('Mehrtägig') ?>
@@ -122,7 +138,8 @@
                                 ? 'checked="checked"'
                                 : '' ?>
                                class="semester-time-option">
-                        <input type="hidden" name="semester_course_end_date" value="<?= date('d.m.Y',$semesters[$semester_id]->vorles_ende); ?>">
+                        <input type="hidden" name="semester_course_end_date"
+                               value="<?= date('d.m.Y', $semesters[$semester_id]->vorles_ende); ?>">
                         <?= sprintf(
                             _('Ende der Vorlesungszeit des Semesters %s'),
                             sprintf(
@@ -145,7 +162,7 @@
                     </label>
                 <? endif ?>
 
-                <span class="notification-span <?= ($booking_type != '2' ) ? 'invisible' : '' ?>" data-booking_type="2">
+                <span class="notification-span <?= ($booking_type != '2') ? 'invisible' : '' ?>" data-booking_type="2">
                     <label>
                         <input type="checkbox" name="notification_enabled"
                                value="1"
@@ -164,17 +181,17 @@
                                 ? 'checked="checked"'
                                 : '' ?>>
                         <span data-booking_type="2"
-                              <?= $booking_type == '2' ? '' : 'style="display:none;"'?>>
+                              <?= $booking_type == '2' ? '' : 'style="display:none;"' ?>>
                             <?= _('Alle anderen Teilräume ebenfalls sperren.') ?>
                         </span>
                         <span data-booking_type="1"
-                              <?= $booking_type == '1' ? '' : 'style="display:none;"'?>>
+                              <?= $booking_type == '1' ? '' : 'style="display:none;"' ?>>
                             <?= _('Alle anderen Teilräume ebenfalls reservieren.') ?>
                         </span>
                         <span data-booking_type="0"
                               <?= (!$booking_type or $booking_type == '0')
                                   ? ''
-                                  : 'style="display:none;"'?>>
+                                  : 'style="display:none;"' ?>>
                             <?= _('Alle anderen Teilräume ebenfalls buchen.') ?>
                         </span>
                     </label>
@@ -193,7 +210,7 @@
                                    class="booking-type-item">
                             <?= _('Einzeltermin') ?>
                         </label>
-                        <label  title="<?= _('Konvolut'); ?>">
+                        <label title="<?= _('Konvolut'); ?>">
                             <input type="radio" name="booking_style" value="block"
                                 <?= !empty($block_booking) || $booking_style == 'block' ? 'checked="checked"' : '' ?>
                                    class="booking-type-item">
@@ -304,37 +321,37 @@
                                 <option value="1"
                                     <?= $repetition_interval == '1'
                                         ? 'selected="selected"'
-                                        : ''?>>
+                                        : '' ?>>
                                     <?= _('jeden Tag') ?>
                                 </option>
                                 <option value="2"
                                     <?= $repetition_interval == '2'
                                         ? 'selected="selected"'
-                                        : ''?>>
+                                        : '' ?>>
                                     <?= _('jeden zweiten Tag') ?>
                                 </option>
                                 <option value="3"
                                     <?= $repetition_interval == '3'
                                         ? 'selected="selected"'
-                                        : ''?>>
+                                        : '' ?>>
                                     <?= _('jeden dritten Tag') ?>
                                 </option>
                                 <option value="4"
                                     <?= $repetition_interval == '4'
                                         ? 'selected="selected"'
-                                        : ''?>>
+                                        : '' ?>>
                                     <?= _('jeden vierten Tag') ?>
                                 </option>
                                 <option value="5"
                                     <?= $repetition_interval == '5'
                                         ? 'selected="selected"'
-                                        : ''?>>
+                                        : '' ?>>
                                     <?= _('jeden fünften Tag') ?>
                                 </option>
                                 <option value="6"
                                     <?= $repetition_interval == '6'
                                         ? 'selected="selected"'
-                                        : ''?>>
+                                        : '' ?>>
                                     <?= _('jeden sechsten Tag') ?>
                                 </option>
                             </select>
@@ -350,38 +367,38 @@
                                 <option value="1"
                                     <?= $repetition_interval == '1'
                                         ? 'selected="selected"'
-                                        : ''?>>
+                                        : '' ?>>
                                     <?= _('jede Woche') ?>
                                 </option>
                                 <option value="2"
                                     <?= $repetition_interval == '2'
                                         ? 'selected="selected"'
-                                        : ''?>>
+                                        : '' ?>>
                                     <?= _('jede zweite Woche') ?>
                                 </option>
                                 <option value="3"
                                     <?= $repetition_interval == '3'
                                         ? 'selected="selected"'
-                                        : ''?>>
+                                        : '' ?>>
                                     <?= _('jede dritte Woche') ?>
                                 </option>
                                 <option value="4"
                                     <?= $repetition_interval == '4'
                                         ? 'selected="selected"'
-                                        : ''?>>
+                                        : '' ?>>
                                     <?= _('jede vierte Woche') ?>
                                 </option>
                                 <option value="5"
                                     <?= $repetition_interval == '5'
                                         ? 'selected="selected"'
-                                        : ''?>>
+                                        : '' ?>>
                                     <?= _('jede fünfte Woche') ?>
                                 </option>
                             </select>
                         </div>
                         <label>
                             <input type="radio" name="repetition_style" value="monthly"
-                                <?= $repetition_style =='monthly' ? 'checked="checked"' : '' ?>
+                                <?= $repetition_style == 'monthly' ? 'checked="checked"' : '' ?>
                                    class="repetition-booking-item">
                             <?= _('Monatliche Wiederholung') ?>
                         </label>
@@ -494,7 +511,7 @@
                     <textarea name="internal_comment"><?= htmlReady($internal_comment) ?></textarea>
                 </label>
             </fieldset>
-            <fieldset class="overwrite-fieldset <?= ($booking_type != '2' ) ? 'invisible' : '' ?>" data-booking_type="2">
+            <fieldset class="overwrite-fieldset <?= ($booking_type != '2') ? 'invisible' : '' ?>" data-booking_type="2">
                 <legend><?= _('Vorhandene Buchungen überschreiben') ?></legend>
                 <label>
                     <input type="checkbox" value="1"
@@ -508,14 +525,14 @@
                 <? if (count($intervals) > 1): ?>
                     <fieldset class="singledates">
                         <legend><?= _('Einzelbuchungen') ?></legend>
-                        <? $wdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa' ] ?>
+                        <? $wdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'] ?>
 
                         <table class="default">
                             <? foreach ($intervals as $interval): ?>
                                 <tr data-interval_id="<?= htmlReady($interval->id) ?>"
                                     class="booking-list-interval">
                                     <td class="booking-list-interval-date
-                                <?= $interval->takes_place ? '': ' not-taking-place' ?>
+                                <?= $interval->takes_place ? '' : ' not-taking-place' ?>
                                 ">
                                         <? if (date('d.m.Y', $interval['begin']) == date('d.m.Y', $interval['end'])): ?>
                                             <?= $wdays[intVal(date('w', $interval['begin']))]
@@ -532,7 +549,7 @@
                                     </td>
                                     <td class="booking-list-interval-actions">
                                         <a class="takes-place-delete takes-place-status-toggle
-                                <?= $interval->takes_place ? '': ' invisible'; ?>
+                                <?= $interval->takes_place ? '' : ' invisible'; ?>
                                 "
                                            data-interval_id="<?= htmlReady($interval->id) ?>">
                                             <?= Icon::create('trash')->asImg(
@@ -544,7 +561,7 @@
                                         </a>
 
                                         <a class="takes-place-revive takes-place-status-toggle
-                                <?= $interval->takes_place ? ' invisible': ''; ?>
+                                <?= $interval->takes_place ? ' invisible' : ''; ?>
                                 "
                                            data-interval_id="<?= htmlReady($interval->id) ?>">
                                             <?= Icon::create('trash+decline')->asImg(

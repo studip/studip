@@ -288,7 +288,7 @@ class Resources_RoomPlanningController extends AuthenticatedController
                     _('Neue Buchung'),
                     URLHelper::getURL('dispatch.php/resources/booking/add/' . $this->resource->id),
                     Icon::create('add')
-                )->asDialog("size=auto");
+                )->asDialog();
             } elseif ($this->resource->requestable && $this->user_has_request_permissions
                       && Config::get()->RESOURCES_ALLOW_ROOM_REQUESTS) {
                 $actions->addLink(
