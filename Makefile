@@ -1,4 +1,4 @@
-build: webpack-prod
+build: install-dev webpack-prod
 
 install: force_update
 	composer install --no-dev
