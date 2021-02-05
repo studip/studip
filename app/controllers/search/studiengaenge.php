@@ -339,6 +339,32 @@ class Search_StudiengaengeController extends MVVController
                 $this->url_for('/verlauf/' . $stgteil_id, ['with_courses' => intval(!$this->with_courses)])
             );
             Sidebar::get()->addWidget($widget, 'with_courses');
+            
+            // add links to export Modulhandbücher as PDF
+            $widget = new ActionsWidget();
+            $widget->setTitle(_('Aktuelle Modulhandbücher'));
+            $avl_lang = array_keys($GLOBALS['MVV_MODUL_DESKRIPTOR']['SPRACHE']['values']);
+
+            foreach ($avl_lang as $language) {
+                if ($language === $GLOBALS['MVV_LANGUAGES']['default']) {
+                    $title = _('Originalfassung als PDF');
+                } else {
+                    $title = sprintf(
+                        _('Zweitfassung (%s) als PDF'),
+                        $GLOBALS['MVV_LANGUAGES']['values'][$language]['name']
+                    );
+                }
+                // get link without registered parameters
+                $dl_link = URLHelper::getURL("dispatch.php/shared/download/modulhandbuch/pdf/{$this->active_sem->id}/{$version_id}/{$language}/big", null, true);
+                $widget->addLink(
+                    $title,
+                    $dl_link,
+                    Icon::create('file-pdf'),
+                    ['target' => '_blank']
+                );
+            }
+
+            Sidebar::get()->addWidget($widget, 'mhb_export');
         }
         $this->breadcrumb->append($this->studiengang, 'studiengang');
         $this->render_template('search/studiengaenge/verlauf', $this->layout);
