@@ -1,6 +1,6 @@
 <? if ($show_info) : ?>
     <form id="resolve-request" class="default" method="post"
-        data-dialog="size=big;<?= Request::submitted('reload-on-close')?'reload-on-close':'';?>"
+          data-dialog="size=big;<?= Request::submitted('reload-on-close') ? 'reload-on-close' : ''; ?>"
           action="<?= $controller->link_for('resources/room_request/resolve/' . $request->id) ?>">
         <?= CSRFProtection::tokenTag() ?>
         <article class="studip left-part">
@@ -11,9 +11,9 @@
                         <dt><?= _('Betroffene Veranstaltung') ?></dt>
                         <dd><?= htmlReady($request->course->getFullName()) ?></dd>
                         <? $lecturers = CourseMember::findByCourseAndStatus(
-                            $request->course->id,
-                            'dozent'
-                        ) ?>
+                        $request->course->id,
+                        'dozent'
+                    ) ?>
                         <dt><?= _('Lehrende') ?></dt>
                         <dd>
                             <? if (count($lecturers) == 1): ?>
@@ -31,23 +31,23 @@
                     <dd><?= htmlReady($request->getTypeString()) ?></dd>
                     <dt><?= _('Erstellung') ?></dt>
                     <dd><?= htmlReady(
-                        sprintf(
-                            _('Anfrage erstellt am %1$s von %2$s'),
-                            date('d.m.Y H:i', $request->mkdate),
-                            ($request->user
-                           ? $request->user->getFullName()
-                           : '')
-                        )
+                            sprintf(
+                                _('Anfrage erstellt am %1$s von %2$s'),
+                                date('d.m.Y H:i', $request->mkdate),
+                                ($request->user
+                                    ? $request->user->getFullName()
+                                    : '')
+                            )
                         ) ?></dd>
                     <dt><?= _('Bearbeitung') ?></dt>
                     <dd><?= htmlReady(
-                        sprintf(
-                            _('Letzte Änderung am %1$s von %2$s'),
-                            date('d.m.Y H:i', $request->chdate),
-                            ($request->last_modifier
-                           ? $request->last_modifier->getFullName()
-                           : '')
-                        )
+                            sprintf(
+                                _('Letzte Änderung am %1$s von %2$s'),
+                                date('d.m.Y H:i', $request->chdate),
+                                ($request->last_modifier
+                                    ? $request->last_modifier->getFullName()
+                                    : '')
+                            )
                         ) ?></dd>
                     <dt><?= _('Aktuelle Zahl an teilnehmenden Personen') ?></dt>
                     <dd>
@@ -67,11 +67,11 @@
                             (<?= htmlReady($request_semester_string) ?>)
                         <? endif ?>
                     </dd>
-                    <? if($room_request->preparation_time): ?>
+                    <? if ($room_request->preparation_time): ?>
                         <? $preparation_time_minutes = intval(
                             $room_request->preparation_time / 60
                         ) ?>
-                        <dt><?= _('Rüstzeit')?></dt>
+                        <dt><?= _('Rüstzeit') ?></dt>
                         <dd>
                             <?= htmlReady(
                                 sprintf(
@@ -89,25 +89,25 @@
                     <dd>
                         <table>
                             <tbody>
-                                <? foreach ($request->properties as $property): ?>
-                                    <tr>
-                                        <td><?= htmlReady($property->display_name) ?></td>
-                                        <td><?= htmlReady($property->__toString()) ?></td>
-                                    </tr>
-                                <? endforeach ?>
+                            <? foreach ($request->properties as $property): ?>
+                                <tr>
+                                    <td><?= htmlReady($property->display_name) ?></td>
+                                    <td><?= htmlReady($property->__toString()) ?></td>
+                                </tr>
+                            <? endforeach ?>
                             </tbody>
                         </table>
                     </dd>
                     <dt><?= _('Gewünschter Raum') ?></dt>
                     <dd>
                         <?= $request->resource
-                          ? htmlReady($request->resource->name)
-                          : _('Kein Raum ausgewählt') ?>
+                            ? htmlReady($request->resource->name)
+                            : _('Kein Raum ausgewählt') ?>
                     </dd>
                     <dt><?= _('Kommentar des Anfragenden') ?></dt>
                     <dd><?= $request->comment
-                          ? htmlReady($request->comment)
-                          : _('Es wurde kein Kommentar eingegeben.') ?>
+                            ? htmlReady($request->comment)
+                            : _('Es wurde kein Kommentar eingegeben.') ?>
                     </dd>
                     <dt><?= _('Antwort') ?></dt>
                     <? if ($request->closed == 0) : ?>
@@ -125,51 +125,53 @@
                 <article class="studip">
                     <header><h1><?= _('Auswahl alternative Räume') ?></h1></header>
                     <section>
-                        <label>
-                            <input type="radio" name="alternatives_selection" value="clipboard"
-                                   <?= $alternatives_selection == 'clipboard'
-                                     ? 'checked="checked"'
-                                     : '' ?>>
-                            <?= _('Auswahl anhand einer Raumgruppe') ?>
-                            <select name="selected_clipboard_id">
-                                <? foreach ($clipboards as $clipboard): ?>
-                                <option value="<?= htmlReady($clipboard->id) ?>"
-                                        <?= $selected_clipboard_id == $clipboard->id
-                                          ? 'selected="selected"'
-                                          : ''?>>
-                                    <?= htmlReady($clipboard->name) ?>
-                                </option>
-                            <? endforeach ?>
-                            </select>
-                        </label>
+                        <? if ($clipboards) : ?>
+                            <label>
+                                <input type="radio" name="alternatives_selection" value="clipboard"
+                                    <?= $alternatives_selection == 'clipboard'
+                                        ? 'checked="checked"'
+                                        : '' ?>>
+                                <?= _('Auswahl anhand einer Raumgruppe') ?>
+                                <select name="selected_clipboard_id">
+                                    <? foreach ($clipboards as $clipboard): ?>
+                                        <option value="<?= htmlReady($clipboard->id) ?>"
+                                            <?= $selected_clipboard_id == $clipboard->id
+                                                ? 'selected="selected"'
+                                                : '' ?>>
+                                            <?= htmlReady($clipboard->name) ?>
+                                        </option>
+                                    <? endforeach ?>
+                                </select>
+                            </label>
+                        <? endif ?>
                         <label>
                             <input type="radio" name="alternatives_selection" value="room_search"
-                                   <?= $alternatives_selection == 'room_search'
-                                     ? 'checked="checked"'
-                                     : '' ?>>
-                        <?= _('Raumsuche') ?>
-                        <?= $room_search->render() ?>
+                                <?= $alternatives_selection == 'room_search'
+                                    ? 'checked="checked"'
+                                    : '' ?>>
+                            <?= _('Raumsuche') ?>
+                            <?= $room_search->render() ?>
                         </label>
                         <label>
                             <input type="radio" name="alternatives_selection" value="my_rooms"
-                                   <?= $alternatives_selection == 'my_rooms'
-                                     ? 'checked="checked"'
-                                     : '' ?>>
+                                <?= $alternatives_selection == 'my_rooms'
+                                    ? 'checked="checked"'
+                                    : '' ?>>
                             <? if ($user_is_global_autor): ?>
                                 <?= _('Alle Räume') ?>
                             <? else: ?>
                                 <?= _('Alle meine Räume') ?>
                             <? endif ?>
                         </label>
-                            <? if (!$config->RESOURCES_DIRECT_ROOM_REQUESTS_ONLY): ?>
-                                <label>
-                                    <input type="radio" name="alternatives_selection" value="request"
-                                           <?= $alternatives_selection == 'request'
-                                             ? 'checked="checked"'
-                                             : '' ?>>
-                                    <?= _('Suche anhand der gewünschten Raumeigenschaften') ?>
-                                </label>
-                            <? endif ?>
+                        <? if (!$config->RESOURCES_DIRECT_ROOM_REQUESTS_ONLY): ?>
+                            <label>
+                                <input type="radio" name="alternatives_selection" value="request"
+                                    <?= $alternatives_selection == 'request'
+                                        ? 'checked="checked"'
+                                        : '' ?>>
+                                <?= _('Suche anhand der gewünschten Raumeigenschaften') ?>
+                            </label>
+                        <? endif ?>
                         <?= \Studip\Button::create(_('Auswählen'), 'select_alternatives') ?>
                     </section>
                 </article>
@@ -178,19 +180,19 @@
                     <section>
                         <label>
                             <input type="radio" name="notification_settings" value="creator"
-                                   <?= $notification_settings == 'creator'
-                                     ? 'checked="checked"'
-                                     : ''
-                                   ?>>
-                        <?= _('Nur die erstellende Person benachrichtigen.') ?>
+                                <?= $notification_settings == 'creator'
+                                    ? 'checked="checked"'
+                                    : ''
+                                ?>>
+                            <?= _('Nur die erstellende Person benachrichtigen.') ?>
                         </label>
                         <label>
                             <input type="radio" name="notification_settings" value="creator_and_lecturers"
-                                   <?= $notification_settings == 'creator_and_lecturers'
-                                     ? 'checked="checked"'
-                                     : ''
-                                   ?>>
-                        <?= _('Die erstellende Person und alle Lehrenden benachrichtigen.') ?>
+                                <?= $notification_settings == 'creator_and_lecturers'
+                                    ? 'checked="checked"'
+                                    : ''
+                                ?>>
+                            <?= _('Die erstellende Person und alle Lehrenden benachrichtigen.') ?>
                         </label>
                     </section>
                 </article>
@@ -199,100 +201,100 @@
                 <header><h1><?= _('Termine zuordnen') ?></h1></header>
                 <table id="resolve-dates-table" class="default">
                     <thead>
-                        <tr>
-                            <th><?= _('Raum') ?></th>
-                            <th><?= _('Alle Termine') ?></th>
-                            <? foreach ($request_time_intervals as $metadate_id => $data): ?>
-                                <? if ($data['metadate'] instanceof SeminarCycleDate) : ?>
+                    <tr>
+                        <th><?= _('Raum') ?></th>
+                        <th><?= _('Alle Termine') ?></th>
+                        <? foreach ($request_time_intervals as $metadate_id => $data): ?>
+                            <? if ($data['metadate'] instanceof SeminarCycleDate) : ?>
                                 <? $date_string = $data['metadate']->toString('short') ?>
-                                    <th><?= htmlReady($date_string) ?></th>
-                                <? else : ?>
-                                    <? foreach ($data['intervals'] as $time_interval) : ?>
-                                        <?
-                                        $date_string1 = sprintf(
-                                            '%1$s., %2$s',
-                                            getWeekday(date('w', $time_interval['begin'])),
-                                            date('d.m', $time_interval['begin'])
-                                        );
-                                        $date_string2 = sprintf(
-                                            '%1$s - %2$s',
-                                            date('H:i', $time_interval['begin']),
-                                            date('H:i', $time_interval['end'])
-                                        );
-                                        ?>
-                                        <th><?= htmlReady($date_string1) ?><br><?= htmlReady($date_string2) ?></th>
-                                    <? endforeach ?>
-                                <? endif ?>
-                            <? endforeach ?>
-                        </tr>
+                                <th><?= htmlReady($date_string) ?></th>
+                            <? else : ?>
+                                <? foreach ($data['intervals'] as $time_interval) : ?>
+                                    <?
+                                    $date_string1 = sprintf(
+                                        '%1$s., %2$s',
+                                        getWeekday(date('w', $time_interval['begin'])),
+                                        date('d.m', $time_interval['begin'])
+                                    );
+                                    $date_string2 = sprintf(
+                                        '%1$s - %2$s',
+                                        date('H:i', $time_interval['begin']),
+                                        date('H:i', $time_interval['end'])
+                                    );
+                                    ?>
+                                    <th><?= htmlReady($date_string1) ?><br><?= htmlReady($date_string2) ?></th>
+                                <? endforeach ?>
+                            <? endif ?>
+                        <? endforeach ?>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr class="nohover">
-                            <td><?= _('Keine Auswahl') ?></td>
-                            <td>
-                                <input type="checkbox" data-proxyfor="input.radio-null"
-                                       name="all_in_room" value="">
-                            </td>
-                            <? foreach ($request_time_intervals as $metadate_id => $data): ?>
-                                <? if (($data['metadate'] instanceof SeminarCycleDate)) : ?>
+                    <tr class="nohover">
+                        <td><?= _('Keine Auswahl') ?></td>
+                        <td>
+                            <input type="checkbox" data-proxyfor="input.radio-null"
+                                   name="all_in_room" value="">
+                        </td>
+                        <? foreach ($request_time_intervals as $metadate_id => $data): ?>
+                            <? if (($data['metadate'] instanceof SeminarCycleDate)) : ?>
+                                <?
+                                $range_index = 'SeminarCycleDate' . '_' . $metadate_id;
+                                $room_radio_name = 'selected_rooms[' . $range_index . ']';
+                                ?>
+                                <td>
+                                    <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
+                                           class="text-bottom radio-null"
+                                           value=""
+                                        <?= $selected_dates[$range_index] == null
+                                            ? 'checked="checked"'
+                                            : '' ?>>
+                                </td>
+                            <? else : ?>
+                                <? $i = 0 ?>
+                                <? foreach ($data['intervals'] as $interval) : ?>
                                     <?
-                                    $range_index = 'SeminarCycleDate' . '_' . $metadate_id;
+                                    $range_index = $interval['range'] . '_' . $interval['range_id'];
                                     $room_radio_name = 'selected_rooms[' . $range_index . ']';
                                     ?>
                                     <td>
                                         <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
-                                               class="text-bottom radio-null"
+                                               class="radio-null text-bottom"
                                                value=""
-                                               <?= $selected_dates[$range_index] == null
-                                                 ? 'checked="checked"'
-                                                 : ''?>>
+                                            <?= $selected_dates[$range_index] == null
+                                                ? 'checked="checked"'
+                                                : '' ?>>
                                     </td>
-                                <? else : ?>
-                                    <? $i = 0 ?>
-                                    <? foreach($data['intervals'] as $interval) : ?>
-                                        <?
-                                        $range_index = $interval['range'] . '_' . $interval['range_id'];
-                                        $room_radio_name = 'selected_rooms[' . $range_index . ']';
-                                        ?>
-                                        <td>
-                                            <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
-                                                   class="radio-null text-bottom"
-                                                   value=""
-                                                   <?= $selected_dates[$range_index] == null
-                                                     ? 'checked="checked"'
-                                                     : ''?>>
-                                        </td>
                                     <? $i++ ?>
-                                    <? endforeach ?>
-                                <? endif ?>
-                            <? endforeach ?>
-                        </tr>
-                        <? if ($request_resource instanceof Room): ?>
+                                <? endforeach ?>
+                            <? endif ?>
+                        <? endforeach ?>
+                    </tr>
+                    <? if ($request_resource instanceof Room): ?>
+                        <?= $this->render_partial(
+                            'resources/room_request/resolve_room_tr.php',
+                            [
+                                'room' => $request_resource,
+                                'time_intervals' => $request_time_intervals,
+                                'availability' => $room_availability[$request_resource->id],
+                                'underload' => $room_underload[$room_request->resource_id],
+                                'selected_dates' => $selected_rooms
+                            ]
+                        ) ?>
+                    <? endif ?>
+                    <? if ($alternative_rooms): ?>
+                        <? foreach ($alternative_rooms as $room): ?>
                             <?= $this->render_partial(
                                 'resources/room_request/resolve_room_tr.php',
                                 [
-                                    'room' => $request_resource,
+                                    'room' => $room,
                                     'time_intervals' => $request_time_intervals,
-                                    'availability' => $room_availability[$request_resource->id],
-                                    'underload' => $room_underload[$room_request->resource_id],
+                                    'availability' => $this->room_availability[$room->id],
+                                    'underload' => $room_underload[$room->id],
                                     'selected_dates' => $selected_rooms
                                 ]
                             ) ?>
-                        <? endif ?>
-                        <? if ($alternative_rooms): ?>
-                            <? foreach ($alternative_rooms as $room): ?>
-                                <?= $this->render_partial(
-                                    'resources/room_request/resolve_room_tr.php',
-                                    [
-                                        'room' => $room,
-                                        'time_intervals' => $request_time_intervals,
-                                        'availability' => $this->room_availability[$room->id],
-                                        'underload' => $room_underload[$room->id],
-                                        'selected_dates' => $selected_rooms
-                                    ]
-                                ) ?>
-                            <? endforeach ?>
-                        <? endif ?>
+                        <? endforeach ?>
+                    <? endif ?>
                     </tbody>
                 </table>
             </article>
@@ -303,7 +305,7 @@
                     <?= \Studip\Button::create(_('Anfrage auflösen'), 'resolve') ?>
                 <? endif ?>
                 <? if ($request->isSimpleRequest()
-                       && !$request->isReadOnlyForUser($current_user)): ?>
+                    && !$request->isReadOnlyForUser($current_user)): ?>
                     <?= \Studip\LinkButton::create(
                         _('Anfrage bearbeiten'),
                         URLHelper::getURL(
