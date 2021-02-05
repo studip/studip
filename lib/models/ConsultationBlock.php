@@ -336,7 +336,7 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
      *
      * @param Range   $range   Range
      * @param boolean $expired Select expired blocks
-     * @return array
+     * @return number
      */
     public static function countByRange(Range $range, $expired = false)
     {
