@@ -199,16 +199,6 @@ class ResourceNavigation extends Navigation
             );
             $sub_navigation->addSubNavigation('semestergroup_plan', $sub_sub_nav);
 
-            $sub_sub_nav = new Navigation(
-                _('Belegungsplan-Seriendruck'),
-                URLHelper::getURL(
-                    'dispatch.php/resources/print/clipboard_rooms',
-                    [],
-                    true
-                )
-            );
-            $sub_navigation->addSubNavigation('print_clipboard_rooms', $sub_sub_nav);
-
             if (RoomManager::userHasRooms($user, 'autor', true)) {
                 $sub_sub_nav = new Navigation(
                     _('Buchungen mit Kommentaren'),
@@ -246,6 +236,16 @@ class ResourceNavigation extends Navigation
                 'select_booking_sources',
                 $sub_navigation
             );
+            $sub_nav = new Navigation(
+                _('Belegungsplan-Seriendruck'),
+                URLHelper::getURL(
+                    'dispatch.php/resources/print/clipboard_rooms',
+                    [],
+                    true
+                )
+            );
+            $export_navigation->addSubNavigation('print_clipboard_rooms', $sub_nav);
+
 
             //Mail tab:
 

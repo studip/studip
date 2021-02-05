@@ -108,9 +108,13 @@ class Resources_PrintController extends AuthenticatedController
      */
     public function clipboard_rooms_action()
     {
-        if (Navigation::hasItem('/resources/planning/print_clipboard_rooms')) {
-            Navigation::activateItem('/resources/planning/print_clipboard_rooms');
+        if (Navigation::hasItem('/resources/export')) {
+            Navigation::activateItem('/resources/export');
         }
+        if (Navigation::hasItem('/resources/export/print_clipboard_rooms')) {
+            Navigation::activateItem('/resources/export/print_clipboard_rooms');
+        }
+        PageLayout::setTitle(_('Belegungsplan-Seriendruck'));
 
         $this->clipboard_selected = false;
         $this->print_schedules = false;
@@ -196,6 +200,16 @@ class Resources_PrintController extends AuthenticatedController
 
                 $this->schedules = [];
                 $this->rooms = [];
+
+                //Add a sidebar action to init the printing process:
+                $sidebar = Sidebar::get();
+                $actions = new ActionsWidget();
+                $actions->addLink(
+                    _('Drucken'),
+                    'javascript:void(window.print());',
+                    Icon::create('print')
+                );
+                $sidebar->addWidget($actions);
             }
         }
     }
