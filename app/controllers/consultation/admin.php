@@ -325,7 +325,7 @@ class Consultation_AdminController extends ConsultationController
                 PageLayout::postSuccess(_('Der Termin wurde reserviert.'));
             }
 
-            $this->redirect("consultation/admin/index/{$page}#slot-{$slot->id}");
+            $this->redirect("consultation/admin/index/{$page}#slot-{$this->slot->id}");
         }
     }
 
@@ -441,7 +441,7 @@ class Consultation_AdminController extends ConsultationController
     public function toggle_action($what, $state, $expired = false)
     {
         if ($what === 'messages') {
-            // TODO: Applicable everywhere?
+            // TODO: Applicable     everywhere?
             $GLOBALS['user']->cfg->store(
                 'CONSULTATION_SEND_MESSAGES',
                 (bool) $state
@@ -657,7 +657,7 @@ class Consultation_AdminController extends ConsultationController
             $this->range_config->store('CONSULTATION_TAB_TITLE', Request::i18n('tab_title'));
 
             PageLayout::postSuccess(_('Der Name wurde gespeichert'));
-            if ($expired) {
+            if ($from_expired) {
                 $this->redirect('consultation/admin/expired');
             } else {
                 $this->redirect('consultation/admin/index');
