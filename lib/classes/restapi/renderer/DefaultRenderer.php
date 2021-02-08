@@ -62,7 +62,8 @@ class DefaultRenderer
     {
         // If no media range is passed, evalute http header "Accept"
         if ($media_range === null && isset($_SERVER['ACCEPT'])) {
-            $media_range = reset(explode(';', $_SERVER['ACCEPT']));
+            $media_ranges = explode(';', $_SERVER['ACCEPT']);
+            $media_range = reset($media_ranges);
         }
 
         // Test if either the filename has the appropriate extension or

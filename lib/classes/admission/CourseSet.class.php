@@ -291,8 +291,10 @@ class CourseSet
 
     public function getAdmissionRule($class_name)
     {
-        return array_pop(array_filter($this->getAdmissionRules(), function($r) use ($class_name) {
-            return $r instanceof $class_name;}));
+        $result = array_filter($this->getAdmissionRules(), function($r) use ($class_name) {
+            return $r instanceof $class_name;}
+        );
+        return array_pop($result);
     }
     /**
      * check if course set has given admission rule

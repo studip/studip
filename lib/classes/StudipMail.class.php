@@ -411,18 +411,20 @@ class StudipMail
                 $text_message = _('Diese Nachricht ist im HTML-Format verfasst. Sie benötigen eine E-Mail-Anwendung, die das HTML-Format anzeigen kann.');
             }
             $transporter->CreateQuotedPrintableTextPart($transporter->WrapText($text_message), "", $text_part);
-            $transporter->AddAlternativeMultipart($part = [$text_part, $html_part]);
+            $part = [$text_part, $html_part];
+            $transporter->AddAlternativeMultipart($part);
         } else {
             $transporter->AddQuotedPrintableTextPart($this->getBodyText());
         }
         foreach($this->getAttachments() as $attachment){
-            $transporter->addFilePart($part = [
+            $part = [
                 'FileName'     => $attachment['file_name'],
                 'Data'         => $attachment['data'],
                 'Name'         => $attachment['name'],
                 'Content-Type' => $attachment['type'],
                 'Disposition'  => $attachment['disposition'],
-            ]);
+            ];
+            $transporter->addFilePart($part);
         }
         $error = $transporter->Send();
         if (mb_strlen($error) === 0) {

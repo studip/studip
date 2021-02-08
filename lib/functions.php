@@ -686,7 +686,8 @@ function archiv_check_perm($seminar_id)
 function get_users_online($active_time = 5, $name_format = 'full_rev')
 {
     if (!isset($GLOBALS['_fullname_sql'][$name_format])) {
-        $name_format = reset(array_keys($GLOBALS['_fullname_sql']));
+        $sql_fullname = array_keys($GLOBALS['_fullname_sql']);
+        $name_format = reset($sql_fullname);
     }
 
     $query = "SELECT a.username AS temp, a.username, {$GLOBALS['_fullname_sql'][$name_format]} AS name,

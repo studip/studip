@@ -125,7 +125,8 @@ class Studip_User {
         if ($row) {
             $user = [];
             foreach (self::get_fields() as $old => $new) {
-                $user[$new] = $row[array_pop(explode('.', $old))];
+                $tmp = explode('.', $old);
+                $user[$new] = $row[array_pop($tmp)];
             }
             $result = new Studip_User($user);
         }
@@ -153,7 +154,8 @@ class Studip_User {
         if ($row) {
             $user = [];
             foreach (self::get_fields() as $old => $new) {
-                $user[$new] = $row[array_pop(explode('.', $old))];
+                $tmp = explode('.', $old);
+                $user[$new] = $row[array_pop($tmp)];
             }
             $result = new Studip_User($user);
         }

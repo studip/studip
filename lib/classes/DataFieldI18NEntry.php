@@ -48,7 +48,8 @@ abstract class DataFieldI18NEntry extends DataFieldEntry
      */
     public function setContentLanguage($language)
     {
-        if ($language && $language == reset(array_keys(Config::get()->CONTENT_LANGUAGES))) {
+        $languages = array_keys(Config::get()->CONTENT_LANGUAGES);
+        if ($language && $language == reset($languages)) {
             $language = '';
         }
         if ($language && !Config::get()->CONTENT_LANGUAGES[$language]) {

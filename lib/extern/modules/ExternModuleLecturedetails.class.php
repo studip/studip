@@ -371,8 +371,10 @@ class ExternModuleLecturedetails extends ExternModule {
                 if ($this->config->getValue("Main", "range") == "long")
                     $data["range_path"] = $pathes_values;
                 else {
-                    foreach ($pathes_values as $path)
-                        $data["range_path"][] = array_pop(explode("&gt;", $path));
+                    foreach ($pathes_values as $path) {
+                        $_paths = explode("&gt;", $path);
+                        $data["range_path"][] = array_pop($_paths);
+                    }
                 }
                 $data["range_path"] = array_filter($data["range_path"], "htmlReady");
                 $data["range_path"] = implode("<br>", $data["range_path"]);

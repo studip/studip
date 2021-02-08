@@ -173,10 +173,11 @@ class MediaProxy
         foreach ($response as $key => $value) {
             $response[mb_strtolower($key)] = $value;
         }
+        $response_content_type = explode('/', $response['content-type']);
         if ($response['response_code'] != 200) {
             throw new MediaProxyException($response['response']);
         } else if (!isset($response['content-type'])
-            || !in_array(array_shift(explode('/', $response['content-type'])), words('image audio video'))
+            || !in_array(array_shift($response_content_type), words('image audio video'))
             || mb_stripos($response['content-type'], 'svg') !== false) {
             throw new MediaProxyException('HTTP/1.1 415 Unsupported Media Type');
         }

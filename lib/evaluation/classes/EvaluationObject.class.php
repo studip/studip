@@ -112,7 +112,7 @@ class EvaluationObject extends StudipObject {
    * @var      integer $text
    */
   var $text;
-  
+
   /**
    * Position of this group in parent object
    * @access   private
@@ -133,7 +133,7 @@ class EvaluationObject extends StudipObject {
    * @var      integer $childNum
    */
   var $childNum;
-  
+
   /**
    * Defines how many children to load. See EVAL_LOAD_*_CHILDREN
    * @access   private
@@ -151,7 +151,7 @@ class EvaluationObject extends StudipObject {
    * @param    integer           $loadChildren   See const EVAL_LOAD_*_CHILDREN
    * @access   public
    */
-  function __construct($objectID = "", $parentObject = NULL, 
+  function __construct($objectID = "", $parentObject = NULL,
                               $loadChildren = EVAL_LOAD_NO_CHILDREN) {
 
     /* Set default values -------------------------------------------------- */
@@ -212,7 +212,7 @@ class EvaluationObject extends StudipObject {
    function getText () {
          return $this->text;
    }
-   
+
 
    /**
     * Sets the position
@@ -241,7 +241,7 @@ class EvaluationObject extends StudipObject {
      $this->parentObject = &$parentObject;
      $this->parentObjectID = $this->parentObject->getObjectID ();
    }
-   
+
    /**
     * Gets the parentObject
     * @access  public
@@ -260,7 +260,7 @@ class EvaluationObject extends StudipObject {
      return $this->parentObjectID;
    }
 
-   
+
    /**
     * Sets the parentObjectID
     * @access  public
@@ -278,24 +278,24 @@ class EvaluationObject extends StudipObject {
    function removeChildID ($childID) {
       $temp         =  [];
       $childRemoved = NO;
-      
+
       while ($child = &$this->getNextChild ()) {
          if ($childRemoved)
             $child->setPosition ($child->getPosition () - 1);
-         
+
          if ($child->getObjectID () != $childID) {
             array_push ($temp, $child);
          } else {
             $childRemoved = YES;
          }
       }
-      
+
       $this->childObjects = $temp;
-      
+
       if ($childRemoved)
          $this->numberChildren--;
    }
-   
+
    /**
     * Adds a child
     * @access  public
@@ -337,7 +337,7 @@ class EvaluationObject extends StudipObject {
       if ($this->childNum >= $this->numberChildren) {
          $this->childNum = 0;
          return NULL;
-      }     
+      }
       return $this->childObjects[$this->childNum++];
    }
 
@@ -380,7 +380,7 @@ class EvaluationObject extends StudipObject {
      while ($childObject = $this->getNextChild ()) {
        $childObject->save ();
        if ($childObject->isError ())
-     return $this->throwErrorFromClass ($childObject);      
+     return $this->throwErrorFromClass ($childObject);
      }
      /* ------------------------------------------------- end: save children */
    }
@@ -389,13 +389,13 @@ class EvaluationObject extends StudipObject {
     * Deletes the object from the database
     * @access public
     */
-   function delete () {   
+   function delete () {
      /* remove id from parentobject if exists ------------------------------ */
       if (!empty ($this->parentObject)) {
          $this->parentObject->removeChildID ($this->getObjectID ());
       }
      /* ----------------------------------------- end: remove id from parent */
-      
+
      /* delete own object -------------------------------------------------- */
      $this->db->delete ($this);
      /* --------------------------------------------- end: delete own object */
@@ -434,7 +434,7 @@ class EvaluationObject extends StudipObject {
        $childObject->duplicate_init ();
      }
    }
-   
+
    /**
     * Initialisation for objects
     * @access   private
@@ -463,7 +463,7 @@ class EvaluationObject extends StudipObject {
      if ($this->db->isError ())
        return $this->throwErrorFromClass ($this->db);
    }
-   
+
    /**
     * Checks if object is in a valid state
     * @access private
@@ -472,7 +472,7 @@ class EvaluationObject extends StudipObject {
      if (empty ($this->db))
        $this->throwError (1, _("Es existiert kein DB-Objekt"));
    }
-    
+
     /**
      * Gets all children of a special kind
      * @param   EvaluationObject  &$object      the parent object
@@ -485,7 +485,7 @@ class EvaluationObject extends StudipObject {
       if ($reset == YES) {
          $specialchildobjects =  [];
       }
-      
+
       if ($object->x_instanceof () == $instanceof) {
          array_push ($specialchildobjects, $object);
       } else {

@@ -434,7 +434,8 @@ abstract class DataFieldEntry
             throw new InvalidArgumentException('Language not configured.');
         }
 
-        if ($language == reset(array_keys(Config::get()->CONTENT_LANGUAGES))) {
+        $languages = array_keys(Config::get()->CONTENT_LANGUAGES);
+        if ($language == reset($languages)) {
             $language = '';
         }
 

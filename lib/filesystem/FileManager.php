@@ -1049,10 +1049,12 @@ class FileManager
                 $folder->range_id   = $destination_folder->range_id;
                 $folder->range_type = $destination_folder->range_type;
                 $folder->store();
-                array_walk($folder->getSubFolders(), $array_walker);
+                $sub_folders = $folder->getSubFolders();
+                array_walk($sub_folders, $array_walker);
 
             };
-            array_walk($new_folder->getSubfolders(), $array_walker);
+            $sub_folders = $new_folder->getSubfolders();
+            array_walk($sub_folders, $array_walker);
             return $new_folder;
 
         } else {

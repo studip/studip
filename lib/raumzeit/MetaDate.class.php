@@ -98,7 +98,8 @@ class MetaDate
      */
     function getFirstMetadate()
     {
-        $first_metadate_id = array_shift(array_keys($this->cycles));
+        $cycles = array_keys($this->cycles);
+        $first_metadate_id = array_shift($cycles);
         return $first_metadate_id ? $this->cycles[$first_metadate_id] : null;
     }
 
@@ -166,7 +167,8 @@ class MetaDate
     function setCycleData($data = [], $cycle)
     {
         $cycle->seminar_id = $this->getSeminarId();
-        if ($last_one = array_pop(array_keys($this->cycles))) {
+        $cycles = array_keys($this->cycles);
+        if ($last_one = array_pop($cycles)) {
             $cycle->sorter = $this->cycles[$last_one]->sorter > 0 ? $this->cycles[$last_one]->sorter + 1 : 0;
         }
         if ($cycle->getDescription() != $data['description']) {

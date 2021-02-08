@@ -134,19 +134,11 @@ class Contacts extends RelationshipsController
         return $contacts;
     }
 
-    private function addContact(\User $user, $contactId)
+    private function addContact(\User $user, $contact_id)
     {
-        if (!\Contact::countBySQL(
-                'owner_id = ? AND user_id = ?',
-                [$user->id, $contact->id]
-            )
+        if (!\Contact::countBySQL('owner_id = ? AND user_id = ?', [$user->id, $contact_id])
         ) {
-            $contact = \Contact::create(
-                [
-                    'owner_id' => $user->id,
-                    'user_id' => $contactId,
-                ]
-            );
+            \Contact::create(['owner_id' => $user->id, 'user_id' => $contact_id]);
         }
     }
 
@@ -156,14 +148,14 @@ class Contacts extends RelationshipsController
         $user->store();
     }
 
-    private function replaceContacts(\User $user, array $newIds)
+    private function replaceContacts(\User $user, array $new_ids)
     {
-        $oldIds = $user->contacts->pluck('user_id');
+        $old_ids = $user->contacts->pluck('user_id');
 
-        $this->removeContacts($user, array_diff($oldIds, $newIds));
-
+        $this->removeContacts($user, array_diff($old_ids, $new_ids));
+        $diff = array_diff($new_ids, $old_ids);
         array_walk(
-            array_diff($newIds, $oldIds),
+            $diff,
             function ($contactId) use ($user) {
                 $this->addContact($user, $contactId);
             }

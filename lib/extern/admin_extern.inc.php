@@ -177,13 +177,12 @@ if (Request::option('com') == 'set_default' || Request::option('com') == 'unset_
     }
 }
 
-if (Config::get()->EXTERN_SRI_ENABLE_BY_ROOT && Request::option('com') == 'enable_sri'
-        && $perm->have_perm('root')) {
+if (Config::get()->EXTERN_SRI_ENABLE_BY_ROOT && Request::option('com') == 'enable_sri' && $GLOBALS['perm']->have_perm('root')) {
     enable_sri($range_id, Request::quoted('sri_enable'));
 }
 
 
-if (Config::get()->EXTERN_SRI_ENABLE_BY_ROOT && $perm->have_perm('root')) {
+if (Config::get()->EXTERN_SRI_ENABLE_BY_ROOT && $GLOBALS['perm']->have_perm('root')) {
     echo '<form method="post" action="' . URLHelper::getLink('?com=enable_sri') . '">';
     echo CSRFProtection::tokenTag();
     echo '<blockquote>';
