@@ -33,7 +33,7 @@ class Button extends Interactable
     }
 
     /**
-     * @return  returns a HTML representation of this button.
+     * @return  string returns a HTML representation of this button.
      */
     public function __toString()
     {

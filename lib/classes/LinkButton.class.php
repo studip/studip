@@ -31,9 +31,9 @@ class LinkButton extends Interactable
     }
 
     /**
-     * @return  returns a HTML representation of this hyperlink.
+     * @return string returns a HTML representation of this hyperlink.
      */
-    function __toString()
+    public function __toString()
     {
         // add "button" to attribute @class
         @$this->attributes["class"] .= " button";

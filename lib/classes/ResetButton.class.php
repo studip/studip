@@ -33,9 +33,9 @@ class ResetButton extends Interactable
     }
 
     /**
-     * @return  returns a HTML representation of this button.
+     * @return string  returns a HTML representation of this button.
      */
-    function __toString()
+    public function __toString()
     {
         // add "button" to attribute @class
         @$this->attributes["class"] .= " button";
