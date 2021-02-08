@@ -1447,6 +1447,20 @@ class Resource extends SimpleORMap implements StudipItem
     }
 
     /**
+     * Returns all info-label properties
+     *
+     * @return SimpleCollection
+     */
+    public function getInfolabelPrperties()
+    {
+        return SimpleCollection::createFromArray(
+            ResourceProperty::findBySQL('INNER JOIN `resource_property_definitions` USING (`property_id`) 
+                WHERE `info_label` = 1 AND `state` != "" AND `resource_id` = ?', [$this->id]
+            )
+        );
+    }
+
+    /**
      * Returns the state of the property specified by $name.
      * If the property has not been set for this resource, but is defined
      * for this resource's category, a new ResourceProperty object

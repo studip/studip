@@ -50,9 +50,7 @@
                                    value="<?= htmlReady($room->id) ?>">
                             <?= htmlReady(mb_substr($room->name, 0, 50)); ?>
                             <? if ($room->properties): ?>
-                                <? $property_names = $room->properties
-                                    ->findBy('info_label', 1)
-                                    ->findBy('state', '', '!=')
+                                <? $property_names = $room->getInfolabelPrperties()
                                     ->pluck('fullname') ?>
                                 <?= tooltipIcon(implode("\n", $property_names)) ?>
                             <? endif ?>
