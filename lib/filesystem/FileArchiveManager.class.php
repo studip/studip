@@ -54,6 +54,7 @@ class FileArchiveManager
         &$file_list = null
     )
     {
+        $archive_max_size =  Config::get()->ZIP_DOWNLOAD_MAX_SIZE * 1024 * 1024;
         //For FileRef objects we first have to do permission checks
         //using the FileRef's folder object.
         $adding_allowed = false;

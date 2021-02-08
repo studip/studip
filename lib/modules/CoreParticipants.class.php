@@ -13,6 +13,7 @@ class CoreParticipants implements StudipModule
 {
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
+        $auto_insert_perm = Config::get()->AUTO_INSERT_SEM_PARTICIPANTS_VIEW_PERM;
         // show the participants-icon only if the course is not an auto-insert-sem
         if (
             AutoInsert::checkSeminar($course_id)

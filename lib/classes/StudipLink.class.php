@@ -42,6 +42,6 @@ class StudipLink
     public function __toString()
     {
         $template = '<a href="%1$s">%2$s %3$s</a>';
-        return sprintf($template, $link, $title, $icon);
+        return sprintf($template, $this->link, $this->title, $this->icon);
     }
 }

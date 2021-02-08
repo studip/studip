@@ -220,12 +220,8 @@ class StudygroupModel
 
         // Post equivalent notifications to a regular course
         $seminar = Seminar::getInstance($sem_id);
-        NotificationCenter::postNotification(
-            'CourseDidChangeMember', $seminar, $user_id
-        );
-        NotificationCenter::postNotification(
-            'UserDidLeaveCourse', $sem_id, $user_id
-        );
+        NotificationCenter::postNotification('CourseDidChangeMember', $seminar, $user->id);
+        NotificationCenter::postNotification('UserDidLeaveCourse', $sem_id, $user->id);
     }
 
     /**

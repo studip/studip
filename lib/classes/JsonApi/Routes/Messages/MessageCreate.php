@@ -44,14 +44,14 @@ class MessageCreate extends JsonApiController
         }
 
         // Attribute: subject
-        if (!$subject = self::arrayGet($json, 'data.attributes.subject', '')
-            || !mb_strlen(trim($subject))) {
+        $subject = self::arrayGet($json, 'data.attributes.subject', '');
+        if (!$subject || !mb_strlen(trim($subject))) {
             return '`subject` must not be empty.';
         }
 
         // Attribute: message
-        if (!$message = self::arrayGet($json, 'data.attributes.message', '')
-            || !mb_strlen(trim($message))) {
+        $message = self::arrayGet($json, 'data.attributes.message', '');
+        if (!$message || !mb_strlen(trim($message))) {
             return '`message` must not be empty.';
         }
 

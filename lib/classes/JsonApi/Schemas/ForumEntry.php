@@ -50,9 +50,9 @@ class ForumEntry extends SchemaProvider
 
         $relationships[self::REL_CAT] = [
             self::LINKS => [
-                Link::RELATED => $link,
+                Link::RELATED => $cat_link,
             ],
-            self::DATA => $data,
+            self::DATA => $cat_data,
         ];
 
         return $relationships;

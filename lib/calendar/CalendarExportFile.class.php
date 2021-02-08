@@ -46,7 +46,7 @@ class CalendarExportFile extends CalendarExport
     public function exportFromDatabase($range_id = null, $start = 0, $end = Calendar::CALENDAR_END, $event_types = null, $except = null)
     {
         $this->_createFile();
-        parent::exportFromDatabase($range_id, $start, $end, $event_types, $sem_ids, $except);
+        parent::exportFromDatabase($range_id, $start, $end, $event_types, $except);
         $this->_closeFile();
     }
 
@@ -89,8 +89,6 @@ class CalendarExportFile extends CalendarExport
 
     public function _createFile()
     {
-        global $_calendar_error;
-
         if (!(is_dir($this->path))) {
             if (!mkdir($this->path)) {
                 var_dump($this->path); exit;

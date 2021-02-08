@@ -455,6 +455,7 @@ class StudipSemTreeViewAdmin extends TreeView
     }
 
     function getSemPath(){
+        $ret = "";
         //$ret = "<a href=\"" . parent::getSelf("start_item_id=root") . "\">" .htmlReady($this->tree->root_name) . "</a>";
         if ($parents = $this->tree->getParents($this->start_item_id)){
             for($i = count($parents)-1; $i >= 0; --$i){

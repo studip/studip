@@ -86,7 +86,7 @@ class SkipLinks
     public static function addIndex($name, $id, $position = null, $overwriteable = false)
     {
         $url = '#' . $id;
-        self::addLink($name, $url, $position, $overwritable);
+        self::addLink($name, $url, $position, $overwriteable);
     }
 
     /**

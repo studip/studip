@@ -288,7 +288,7 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
         if (!isset($entry)) {
             throw new InvalidArgumentException($field . " not found in config table");
         }
-
+        $ret = 0;
         if (isset($values['value'])) {
             $value_entry = new ConfigValue([$field, 'studip']);
             $old_value = $value_entry->isNew() ? $entry->value : $value_entry->value;

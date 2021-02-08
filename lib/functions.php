@@ -1268,6 +1268,7 @@ function studygroup_sem_types()
  */
 function addHiddenFields($variable, $data, $parent = [])
 {
+    $ret = "";
     if (is_array($data)) {
         foreach($data as $key => $value) {
             if (is_array($value)) {

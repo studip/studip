@@ -77,6 +77,7 @@ class ExportPDF extends TCPDF implements ExportDocument {
      */
     public function addContent($content)
     {
+        $endnote = "";
         preg_match_all("#\[comment(=.*)?\](.*)\[/comment\]#msU", $content, $matches);
         if (count($matches[0])) {
             $endnote .= "<br><br>"._("Kommentare")."<hr>";

@@ -70,6 +70,7 @@ class CheckAdmissionJob extends CronJob
                     echo 'could not create directory ' . $GLOBALS['TMP_PATH'] . '/seat_distribution_logs' . chr(10);
                 }
             }
+            $i = 0;
             foreach ($sets as $set_id) {
                 $courseset = new CourseSet($set_id);
                 if ($courseset->isSeatDistributionEnabled() && !$courseset->hasAlgorithmRun() && $courseset->getSeatDistributionTime() < time()) {

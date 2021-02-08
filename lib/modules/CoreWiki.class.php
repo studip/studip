@@ -17,7 +17,7 @@ class CoreWiki implements StudipModule
             return null;
         }
 
-        $priviledged = $GLOBALS['perm']->have_studip_perm('tutor', $object_id, $user_id);
+        $priviledged = $GLOBALS['perm']->have_studip_perm('tutor', $course_id, $user_id);
 
         if ($priviledged) {
             $sql = "SELECT COUNT(DISTINCT keyword) AS count_d,

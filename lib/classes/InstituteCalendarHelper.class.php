@@ -332,7 +332,18 @@ class InstituteCalendarHelper
         $institut = Institute::find($institut_id);
         $inst_default_colors = self::getInstituteDefaultEventcolors($institut);
 
-        Course::findAndMapMany(function ($course) use ($courses, &$events, $today, $minbigtime, $maxbigtime, $user_insts, $institut_id, $inst_default_colors) {
+        Course::findAndMapMany(function ($course) use (
+            $courses,
+            &$events,
+            $today,
+            $minbigtime,
+            $maxbigtime,
+            $user_insts,
+            $institut_id,
+            $inst_default_colors,
+            $semester,
+            $specific_weekday
+        ) {
             $semtype = $course->getSemType();
 
             $event_columns = self::getCourseEventcolumns($course);
@@ -340,7 +351,7 @@ class InstituteCalendarHelper
 
             if (in_array($course->institut_id, $user_insts)) {
                 $is_editable = true;
-                $is_start_editable = !LockRules::Check($cid, 'room_time');
+                $is_start_editable = !LockRules::Check($course->id, 'room_time');
                 $is_duration_editable = false;
             } else {
                 $is_editable = false;
@@ -349,7 +360,6 @@ class InstituteCalendarHelper
             }
 
             foreach (SeminarCycleDate::findBySeminar($course->seminar_id) as $cycle_date) {
-
                 if ($semester) {
                     $has_date_in_semester = false;
                     foreach ($cycle_date->getAllDates() as $course_date) {

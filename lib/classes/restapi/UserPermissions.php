@@ -83,7 +83,7 @@ class UserPermissions
         foreach ($permissions as $permission) {
             extract($permission);
 
-            $this->set($consumer_id, $granted);
+            $this->set($permission['consumer_id'], $permission['granted']);
         }
 
         return $this;

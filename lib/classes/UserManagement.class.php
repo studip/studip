@@ -194,6 +194,7 @@ class UserManagement
     */
     public function generate_password($length)
     {
+        $pass = "";
         mt_srand((double) microtime() * 1000000);
         for ($i = 1; $i <= $length; $i++) {
             $temp = mt_rand() % 36;

@@ -396,7 +396,7 @@ class RoomManager
     {
         $intervals = [];
 
-        if (!$booking_types and !$building_assingment_types) {
+        if (!$booking_types && !$building_booking_types) {
             //No types specified => nothing to do.
             return $intervals;
         }
