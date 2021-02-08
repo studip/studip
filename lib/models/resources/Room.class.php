@@ -36,8 +36,8 @@ class Room extends Resource
         'seats',
         'booking_plan_is_public'
     ];
-    
-    
+
+
     protected static function configure($config = [])
     {
         if (!is_array($config['additional_fields'])) {
@@ -49,14 +49,14 @@ class Room extends Resource
                 'set' => 'setProperty'
             ];
         }
-        
+
         $config['additional_fields']['building']['get']   = 'findBuilding';
         $config['registered_callbacks']['before_store'][] = 'cbValidate';
-        
+
         parent::configure($config);
     }
-    
-    
+
+
     public static function getTranslatedClassName($item_count = 1)
     {
         return ngettext(
@@ -65,8 +65,8 @@ class Room extends Resource
             $item_count
         );
     }
-    
-    
+
+
     public static function countAll()
     {
         return self::countBySql(
@@ -78,8 +78,8 @@ class Room extends Resource
             ]
         );
     }
-    
-    
+
+
     public static function findAll()
     {
         return self::findBySql(
@@ -92,12 +92,12 @@ class Room extends Resource
             ]
         );
     }
-    
-    
+
+
     public static function findByNameOrBuilding($room, $building)
     {
         $params = [];
-        
+
         $sql = "INNER JOIN resource_categories rc
                 ON resources.category_id = rc.id";
         if ($building) {
@@ -115,17 +115,17 @@ class Room extends Resource
             $params['building_name'] = $building;
         }
         $sql .= " ORDER BY sort_position DESC, name ASC, mkdate ASC";
-        
+
         return self::findBySql($sql, $params);
     }
-    
-    
+
+
     public static function getRequiredProperties()
     {
         return self::$required_properties;
     }
-    
-    
+
+
     /**
      * Finds rooms by a building specified by its ID.
      *
@@ -139,12 +139,12 @@ class Room extends Resource
         if (!$building) {
             return [];
         }
-        
+
         //Return all found Room objects below the building:
         return $building->findChildrenByClassName('Room', 0, true);
     }
-    
-    
+
+
     /**
      * Returns rooms that match the criteria of the room request.
      *
@@ -173,23 +173,23 @@ class Room extends Resource
         //We have to check first if the user is permitted to search:
         //The user must have at least 'tutor' status in the
         //room and resource management:
-        
+
         if (!ResourceManager::userHasGlobalPermission($user, 'tutor')) {
             throw new AccessDeniedException(
                 _('Ihre Berechtigungen sind unzureichend, um Räume anhand einer Raumanfrage zu suchen!')
             );
         }
-        
+
         if (!$properties) {
             $properties = [];
             foreach ($request->properties as $property) {
                 $properties[$property->name] = $property->state;
             }
         }
-        
+
         //Build the SQL query, based on the room request's properties
         //and the specified parameters:
-        
+
         $sql = "INNER JOIN resource_properties rp
             ON resources.id = rp.resource_id
             INNER JOIN resource_categories rc
@@ -203,7 +203,7 @@ class Room extends Resource
         ];
         if (count($properties)) {
             $sql       .= "AND ( ";
-            
+
             $property_c = 1;
             foreach ($properties as $name => $state) {
                 if (!$state) {
@@ -222,12 +222,12 @@ class Room extends Resource
                     //Such a property doesn't exist for the specified category.
                     continue;
                 }
-                
+
                 if ($property_c > 1) {
                     $sql .= ' OR ';
                 }
                 $sql .= "(rp.property_id = :property_id$property_c ";
-                
+
                 //By looking at the definition we can determine if we have to do
                 //a range search or a search for an exact match.
                 if ($definition->range_search || $name == 'seats') {
@@ -235,17 +235,17 @@ class Room extends Resource
                 } else {
                     $sql .= "AND rp.state = :property_state$property_c";
                 }
-                
+
                 $sql                                    .= ")";
                 $sql_array["property_id$property_c"]    = $definition->id;
                 $sql_array["property_state$property_c"] = $state;
-                
+
                 $property_c++;
             }
-            
+
             $sql .= ") ";
         }
-        
+
         if (!empty($searchable_rooms)) {
             $room_ids = [];
             foreach ($searchable_rooms as $room) {
@@ -261,25 +261,25 @@ class Room extends Resource
                 return [];
             }
         }
-        
+
         $sql .= "GROUP BY resource_id ORDER BY resources.name ASC ";
-        
+
         $offset = intval($offset);
         if ($offset > 0) {
             $sql                 .= "OFFSET :offset ";
             $sql_array['offset'] = $offset;
         }
-        
+
         $limit = intval($limit);
         if ($limit > 0) {
             $sql                .= "LIMIT :limit ";
             $sql_array['limit'] = $limit;
         }
-        
+
         return Room::findBySql($sql, $sql_array);
     }
-    
-    
+
+
     /**
      * Determins if the specified room is a room part
      * and then returns all other room parts.
@@ -292,18 +292,18 @@ class Room extends Resource
     public static function findOtherRoomParts(Room $room)
     {
         $other_room_parts = [];
-        
+
         $separable_room = SeparableRoom::findByRoomPart($room);
         if ($separable_room instanceof SeparableRoom) {
             $other_room_parts = $separable_room->findOtherRoomParts(
                 [$room]
             );
         }
-        
+
         return $other_room_parts;
     }
-    
-    
+
+
     /**
      * Helper method to return the SQL code for publicBookingPlansExists,
      * countByPublicBookingPlans and getByPublicBookingPlans.
@@ -321,8 +321,8 @@ class Room extends Resource
             AND rp.state = '1'
         ORDER BY resources.name ASC, resources.mkdate ASC";
     }
-    
-    
+
+
     /**
      * Checks wheter rooms with public booking plans exist.
      *
@@ -336,8 +336,8 @@ class Room extends Resource
             ['room_class_names' => RoomManager::getAllRoomClassNames()]
         ) > 0;
     }
-    
-    
+
+
     /**
      * Retrieves all rooms that have a public booking plan,
      * ordered by name and creation date.
@@ -351,8 +351,8 @@ class Room extends Resource
             ['room_class_names' => RoomManager::getAllRoomClassNames()]
         );
     }
-    
-    
+
+
     /**
      * Retrieves all existing room types from the database.
      * Only room types which have at least one room object with that
@@ -373,6 +373,8 @@ class Room extends Resource
             INNER JOIN resource_categories rc
             ON rcp.category_id = rc.id
             WHERE
+            state != ''
+            AND
             rc.class_name IN ( :room_class_names )
             AND
             rpd.name = 'room_type'
@@ -386,7 +388,7 @@ class Room extends Resource
             0
         );
     }
-    
+
     /**
      * Returns the part of the URL for getLink and getURL which will be
      * placed inside the calls to URLHelper::getLink and URLHelper::getURL
@@ -406,7 +408,7 @@ class Room extends Resource
                 _('Zur Erstellung der URL fehlt eine Raum-ID!')
             );
         }
-        
+
         switch ($action) {
             case 'show':
                 return 'dispatch.php/resources/room/index/' . $id;
@@ -428,8 +430,8 @@ class Room extends Resource
                 return parent::buildPathForAction($action, $id);
         }
     }
-    
-    
+
+
     /**
      * Returns the appropriate link for the room action that shall be
      * executed on a room.
@@ -452,8 +454,8 @@ class Room extends Resource
             $link_parameters
         );
     }
-    
-    
+
+
     /**
      * Returns the appropriate URL for the room action that shall be
      * executed on a room.
@@ -476,8 +478,8 @@ class Room extends Resource
             $url_parameters
         );
     }
-    
-    
+
+
     public function cbValidate()
     {
         $building = $this->findParentByClassName('Building');
@@ -490,7 +492,7 @@ class Room extends Resource
                 )
             );
         }
-        
+
         if (!is_a($this->category->class_name, get_class($this), true)) {
             //Only resources with the Building category can be handled
             //with this class!
@@ -503,20 +505,20 @@ class Room extends Resource
         }
         return true;
     }
-    
-    
+
+
     public function getRequiredPropertyNames()
     {
         return self::$required_properties;
     }
-    
-    
+
+
     public function __toString()
     {
         return $this->getFullName();
     }
-    
-    
+
+
     /**
      * This method calls Resource::createRequest and transforms the
      * resulting ResourceRequest object into a RoomRequest object.
@@ -541,11 +543,11 @@ class Room extends Resource
             $properties,
             $preparation_time
         );
-        
+
         return RoomRequest::build($request, false);
     }
-    
-    
+
+
     /**
      * Adds a child resource to this room. The child resource
      * must not be a resource of the class Room, Building or Location.
@@ -574,8 +576,8 @@ class Room extends Resource
         }
         return parent::addChild($resource);
     }
-    
-    
+
+
     /**
      * Returns the full name of this room.
      *
@@ -588,31 +590,31 @@ class Room extends Resource
             $this->name
         );
     }
-    
+
     public function getDefaultPictureUrl()
     {
         return $this->getIcon()->asImagePath();
     }
-    
+
     public function getIcon($role = Icon::ROLE_INFO)
     {
         return Icon::create('room', $role);
     }
-    
-    
+
+
     public function checkHierarchy()
     {
         //We must check if this room has rooms as children
         //or as parents. In any of those cases the hierarchy
         //is invalid!
-        
+
         $children = $this->findChildrenByClassName('Room');
         if (count($children) > 0) {
             //At least one child anywhere below this room
             //resource is a room, too.
             return false;
         }
-        
+
         $parents = ResourceManager::getHierarchy($this);
         //We do not need to check this element:
         array_shift($parents);
@@ -623,13 +625,13 @@ class Room extends Resource
                 return false;
             }
         }
-        
+
         //If code execution reaches this point then
         //the hierarchy around this room is valid.
         return true;
     }
-    
-    
+
+
     /**
      * @see Resource::bookingPlanVisibleForUser
      * @inheritDoc
@@ -639,8 +641,8 @@ class Room extends Resource
         return parent::bookingPlanVisibleForUser($user, $time_range)
             || $this->booking_plan_is_public;
     }
-    
-    
+
+
     /**
      * Returns the link for an action for this room.
      * This is the non-static variant of Room::getLinkForAction.
@@ -659,8 +661,8 @@ class Room extends Resource
             $link_parameters
         );
     }
-    
-    
+
+
     /**
      * Returns the URL for an action for this room.
      * This is the non-static variant of Room::getURLForAction.
@@ -679,8 +681,8 @@ class Room extends Resource
             $url_parameters
         );
     }
-    
-    
+
+
     /**
      * Retrieves the building where this room resides in by looking up
      * the parent resources of this Room.

@@ -29,6 +29,17 @@
             'sidebar/room-search-criteria.php',
             [
                 'criteria' => (
+                $selected_criteria['room_category_id']
+                    ? $selected_criteria['room_category_id']
+                    : $criteria['room_category_id']
+                ),
+                'removable' => false
+            ]
+        ) ?>
+        <?= $this->render_partial(
+            'sidebar/room-search-criteria.php',
+            [
+                'criteria' => (
                     $selected_criteria['special__building_location']
                     ? $selected_criteria['special__building_location']
                     : $criteria['special__building_location']
@@ -71,7 +82,7 @@
 
         <? if ($selected_criteria): ?>
             <? foreach ($selected_criteria as $s): ?>
-                <? if (preg_match('/^special__/', $s['name']) || ($s['name'] == 'room_type')) {
+                <? if (preg_match('/^special__/', $s['name']) || ($s['name'] == 'room_type') || ($s['name'] == 'room_category_id')) {
                     continue;
                 } ?>
                 <?= $this->render_partial(

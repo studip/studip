@@ -17,9 +17,19 @@ class RoomSearchWidget extends SidebarWidget
         $this->defined_properties = RoomManager::getAllRoomPropertyDefinitions(
             true,
             [
-                'seats', 'room_type'
+                'seats', 'room_type','room_category_id'
             ]
         );
+
+        $resource_categories = ResourceCategory::findAll();
+        $categories = [
+            '' => _('Alle Kategorien')
+        ];
+        if($resource_categories) {
+            foreach($resource_categories as $resource_category) {
+                $categories[$resource_category->id] = $resource_category->name;
+            }
+        }
 
         $room_types = Room::getAllRoomTypes();
         if ($room_types) {
@@ -87,6 +97,16 @@ class RoomSearchWidget extends SidebarWidget
             'title' => _('Raumname'),
             'type' => 'text',
             'range_search' => false,
+            'switch' => false,
+            'value' => '',
+            'optional' => false
+        ];
+        $this->criteria['room_category_id'] = [
+            'name' => 'room_category_id',
+            'title' => _('Kategorie'),
+            'type' => 'select',
+            'range_search' => false,
+            'options' => $categories,
             'switch' => false,
             'value' => '',
             'optional' => false
@@ -325,12 +345,16 @@ class RoomSearchWidget extends SidebarWidget
         $properties = [];
         if ($this->selected_criteria) {
             foreach ($this->selected_criteria as $name => $criteria) {
+
                 //Do not add the special properties
                 //into the $properties array:
-                if (preg_match('/special__/', $name) and ($name != 'special__seats')) {
+                if (preg_match('/special__/', $name) && ($name != 'special__seats')) {
                     continue;
                 }
                 if ($name == 'room_type' && empty($criteria['value'])) {
+                    continue;
+                }
+                if ($name == 'room_category_id' && empty($criteria['value'])) {
                     continue;
                 }
                 if ($name == 'special__seats') {
@@ -343,7 +367,7 @@ class RoomSearchWidget extends SidebarWidget
                 }
 
                 if ($properties[$name][0] && $properties[$name][1] &&
-                    ($properties[$name][0] > $properties[$name][1])) {
+                    ($properties[$name][0] > $properties[$name][1]) && $name != 'room_category_id') {
                     //A range is selected, but the range start is bigger
                     //then the range end. That's an error!
 
@@ -576,17 +600,8 @@ class RoomSearchWidget extends SidebarWidget
         $template = $GLOBALS['template_factory']->open(
             $this->template
         );
-        $layout = $GLOBALS['template_factory']->open(
-            'widgets/widget-layout'
-        );
-        $template->set_layout('widgets/widget-layout');
 
-        /*
-           $template->set_attribute(
-           'available_properties',
-           RoomManager::getAllRoomProperties()
-           );
-         */
+        $template->set_layout('widgets/widget-layout');
 
         $template->set_attributes($variables);
 

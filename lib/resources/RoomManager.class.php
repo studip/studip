@@ -463,9 +463,10 @@ class RoomManager
      * meet the requirements specified by other properties.
      * If a property isn't specified it won't be searched for.
      *
-     * @param string $name The name of the room.
+     * @param string $room_name The name of the room.
      * @param string $location_id The ID of the location where the room shall
      *     lie in.
+     * @param string $building_id
      * @param string[] $properties An array of properties
      *     and their desired states.
      *     This array has the following structure:
@@ -480,7 +481,7 @@ class RoomManager
      *     - room_category_id: The id of a resource category
      *       that has 'Room' as class name.
      *
-     * @param Array $time_ranges Optional time ranges where the rooms have
+     * @param array $time_ranges Optional time ranges where the rooms have
      *     to be available. The format of the array is the following:
      *     [
      *         [
@@ -492,10 +493,8 @@ class RoomManager
      *     the results. Defaults to null (no sorting).
      * @param bool $only_requestable_rooms Whether the search shall be limited
      *     to requestable rooms only (true) or not (false).
-     *
-     * @returns Room[] An array containing Room objects for all rooms which are
-     *     available in the given time range and which have the
-     *     (optionally) set properties).
+     * @param array $excluded_room_ids
+     * @return array
      */
     public static function findRooms(
         $room_name = '',
