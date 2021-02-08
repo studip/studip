@@ -39,7 +39,7 @@ $options = array_filter([
                            name="Institut_id"
                            value="<?= htmlReady($institut['Institut_id']) ?>"
                            src="<?= htmlReady(
-                                InstituteAvatar::getAvatar($institut['Institut_id'])->getUrl(Avatar::NORMAL)
+                                InstituteAvatar::getAvatar($institut['Institut_id'])->getUrl(Avatar::MEDIUM)
                                 ) ?>">
                 </td>
                 <td>
