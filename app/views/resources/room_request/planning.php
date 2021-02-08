@@ -126,6 +126,7 @@
                     <th data-sort="text"><?= _('Name') ?></th>
                     <th data-sort="text"><?= _('Lehrende Person(en)') ?></th>
                     <th data-sort="text"><?= _('Plätze') ?></th>
+                    <th data-sort="text"><?= _('Gewünschter Raum') ?></th>
                     <th data-sort="text"><?= _('Anfragende Person') ?></th>
                     <th data-sort="htmldata"><?= _('Art') ?></th>
                     <th class="actions"><?= _('Aktionen') ?></th>
@@ -142,7 +143,6 @@
                     $intervals = $request->getTimeIntervals();
 
                     if ($request->getGroupedTimeIntervals(true)) {
-
                         foreach($request->getGroupedTimeIntervals(true) as $metadate_id => $data) {
                             $timesort = '';
                             if ($data['metadate'] instanceof SeminarCycleDate) {
@@ -234,7 +234,15 @@
                                 data-event-tooltip=""
                                 data-event-resource="<?= $resource->id; ?>"
                                 data-event-metadate="<?= $range_str; ?>"
-                                data-event-view_urls_edit = "<?= URLHelper::getURL('dispatch.php/resources/room_request/resolve/' . $request->id, ['searched_room_id' => $resource->id, 'alternatives_selection' => 'room_search', 'selected_rooms' => [$range_str => $resource->id], 'reload-on-close' => 1]); ?>" style="cursor:pointer"
+                                data-event-view_urls_edit = "<?= $controller->url_for(
+                                    'resources/room_request/resolve/' . $request->id,
+                                    [
+                                        'searched_room_id' => $resource->id,
+                                        'alternatives_selection' => 'room_search',
+                                        'selected_rooms' => [$range_str => $resource->id],
+                                        'reload-on-close' => 1
+                                    ]); ?>"
+                                style="cursor:pointer"
                             >
                             <td>
                                 <?= $requestsinterval['date']; ?>
@@ -254,6 +262,9 @@
                             </td>
                             <td>
                                 <?= $request->getProperty('seats') ?>
+                            </td>
+                            <td>
+                                <?= $request->resource ? htmlReady($request->resource->name) : ''?>
                             </td>
                             <td>
                                 <? if ($request->user instanceof User): ?>
