@@ -33,16 +33,19 @@ $options = array_filter([
         <? foreach (Institute::getMyInstitutes($GLOBALS['user']->id) as $institut) : ?>
             <tr>
                 <td>
-                    <!-- neu -->
-                    <buton formaction="<?= $controller->link_for('/choose_folder_from_institute') ?>" name="Institut_id" value="<?= htmlReady($institut['Institut_id']) ?>" class="undecorated">
-                        <?= InstituteAvatar::getAvatar($institut['Institut_id'])->getImageTag(Avatar::MEDIUM, ['style' => 'width: 50px; height: 50px;']) ?>
-                    </a>
+                    <input type="image" class="undecorated"
+                           style="width: 50px; height: 50px;"
+                           formaction="<?= $controller->link_for('file/choose_folder_from_institute') ?>"
+                           name="Institut_id"
+                           value="<?= htmlReady($institut['Institut_id']) ?>"
+                           src="<?= htmlReady(
+                                InstituteAvatar::getAvatar($institut['Institut_id'])->getUrl(Avatar::NORMAL)
+                                ) ?>">
                 </td>
                 <td>
-                    <!-- neu -->
-                    <buton formaction="<?= $controller->link_for('/choose_folder_from_institute') ?>" name="Institut_id" value="<?= htmlReady($institut['Institut_id']) ?>" class="undecorated">
+                    <button formaction="<?= $controller->link_for('file/choose_folder_from_institute') ?>" name="Institut_id" value="<?= htmlReady($institut['Institut_id']) ?>" class="undecorated">
                         <?= htmlReady($institut['Name']) ?>
-                    </a>
+                    </button>
                 </td>
             </tr>
         <? endforeach; ?>
