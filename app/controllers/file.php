@@ -991,7 +991,7 @@ class FileController extends AuthenticatedController
                     'results' => $merged_results
                 ];
                 $cache->write($this->search_id, $cache_data);
-                if (count($merged_results) > $page_size) {
+                if (count($merged_results) > $this->page_size) {
                     $this->next_page = 2;
                 }
                 $this->result_set = array_slice($merged_results, 0, $this->page_size);

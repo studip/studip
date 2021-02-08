@@ -659,7 +659,7 @@ class Course_BasicdataController extends AuthenticatedController
 
         if (!$GLOBALS['perm']->have_studip_perm('dozent', $course_id)) {
             PageLayout::postError(_('Sie haben keine Berechtigung diese Veranstaltung zu verändern.'));
-        } elseif ($dozent === $GLOBALS['user']->id) {
+        } elseif ($teacher_id === $GLOBALS['user']->id) {
             PageLayout::postError(_('Sie dürfen sich nicht selbst aus der Veranstaltung austragen.'));
         } else {
             $sem = Seminar::getInstance($course_id);

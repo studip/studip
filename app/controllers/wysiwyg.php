@@ -395,10 +395,7 @@ class WysiwygController extends AuthenticatedController
     {
         $subgroup = array_shift($arguments);
         if (($subgroup !== null && $subgroup !== '') || count($arguments) > 0) {
-            throw new WysiwygHttpExceptionNotFound(sprintf(
-                _('Die globalen Einstellungen enthalten keine Untergruppen.'),
-                $level
-            ));
+            throw new WysiwygHttpExceptionNotFound(_('Die globalen Einstellungen enthalten keine Untergruppen.'));
         }
         $settings = new stdClass;
         $settings->disabled = !\Config::get()->WYSIWYG;

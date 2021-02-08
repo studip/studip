@@ -182,9 +182,7 @@ class Course_StudygroupController extends AuthenticatedController
      */
     public function create_action()
     {
-        global $perm;
-
-        $admin  = $perm->have_perm('admin');
+        $admin  = $GLOBALS['perm']->have_perm('admin');
         $errors = [];
 
         CSRFProtection::verifyUnsafeRequest();
@@ -218,7 +216,7 @@ class Course_StudygroupController extends AuthenticatedController
                 $statement = DBManager::get()->prepare($query);
                 $statement->bindValue(':needle', $search_for_founder);
                 $statement->execute();
-                $results_founders = $statement->fetchGrouped(PDO::FETCH_ASSOC);
+                $results_founders = $statement->fetchGrouped();
             }
 
             if (is_array($results_founders)) {
@@ -251,8 +249,7 @@ class Course_StudygroupController extends AuthenticatedController
             $this->redirect('course/studygroup/new/');
         } // remove a founder
         else if ($admin && Request::submitted('remove_founder')) {
-            unset($founders);
-
+            $founders = [];
             $this->flash['founders'] = $founders;
             $this->flash['create']   = true;
             $this->flash['request']  = Request::getInstance();

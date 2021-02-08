@@ -27,43 +27,53 @@ class Calendar_SingleController extends Calendar_CalendarController
         $sidebar = Sidebar::Get();
         if ($calendar->havePermission(Calendar::PERMISSION_WRITABLE)) {
             $actions = new ActionsWidget();
-            $actions->addLink(_('Termin anlegen'),
-                        $this->url_for('calendar/single/edit'),
-                        Icon::create('add', 'clickable'),
-                        ['data-dialog' => 'size=auto']);
+            $actions->addLink(
+                _('Termin anlegen'),
+                $this->url_for('calendar/single/edit'),
+                Icon::create('add'),
+                ['data-dialog' => 'size=auto']
+            );
             if ($calendar->havePermission(Calendar::PERMISSION_OWN)) {
                 if (Config::get()->CALENDAR_GROUP_ENABLE) {
-                    $actions->addLink(_('Kalender freigeben'),
-                            $this->url_for('calendar/single/manage_access'),
-                            Icon::create('community', 'clickable'),
-                            ['id' => 'calendar-open-manageaccess',
-                                'data-dialog' => '',
-                                'data-dialogname' => 'manageaccess']);
+                    $actions->addLink(
+                        _('Kalender freigeben'),
+                        $this->url_for('calendar/single/manage_access'),
+                        Icon::create('community'),
+                        [
+                            'id' => 'calendar-open-manageaccess',
+                            'data-dialog' => '',
+                            'data-dialogname' => 'manageaccess'
+                        ]
+                    );
                 }
-                $actions->addLink(_('Veranstaltungstermine'),
-                        $this->url_for('calendar/single/seminar_events'),
-                        Icon::create('seminar', 'clickable'),
-                        ['data-dialog' => 'size=auto']);
+                $actions->addLink(
+                    _('Veranstaltungstermine'),
+                    $this->url_for('calendar/single/seminar_events'),
+                    Icon::create('seminar'),
+                    ['data-dialog' => 'size=auto']
+                );
             }
             $sidebar->addWidget($actions);
         }
         if ($calendar->havePermission(Calendar::PERMISSION_OWN)) {
             $export = new ExportWidget();
             $export->addLink(_('Termine exportieren'),
-                        $this->url_for('calendar/single/export_calendar'),
-                        Icon::create('download', 'clickable'),
-                        ['data-dialog' => 'size=auto'])
-                    ->setActive($active == 'export_calendar');
-            $export->addLink(_('Termine importieren'),
-                        $this->url_for('calendar/single/import'),
-                        Icon::create('upload', 'clickable'),
-                        ['data-dialog' => 'size=auto'])
-                    ->setActive($active == 'import');
-            $export->addLink(_('Kalender teilen'),
-                        $this->url_for('calendar/single/share'),
-                        Icon::create('group2', 'clickable'),
-                        ['data-dialog' => 'size=auto'])
-                    ->setActive($active == 'share');
+                $this->url_for('calendar/single/export_calendar'),
+                Icon::create('download'),
+                ['data-dialog' => 'size=auto']
+            )->setActive($active == 'export_calendar');
+            $export->addLink(
+                _('Termine importieren'),
+                $this->url_for('calendar/single/import'),
+                Icon::create('upload'),
+                ['data-dialog' => 'size=auto']
+            )->setActive($active == 'import');
+            $export->addLink(
+                _('Kalender teilen'),
+                $this->url_for('calendar/single/share'),
+                Icon::create('group2'),
+                ['data-dialog' => 'size=auto']
+            )->setActive($active == 'share');
             $sidebar->addWidget($export);
         }
     }
@@ -85,14 +95,17 @@ class Calendar_SingleController extends Calendar_CalendarController
     public function week_action($range_id = null)
     {
         $this->range_id = $range_id ?: $this->range_id;
-        $timestamp = mktime(12, 0, 0, date('n', $this->atime),
-                date('j', $this->atime), date('Y', $this->atime));
+        $timestamp = mktime(12, 0, 0, date('n', $this->atime), date('j', $this->atime), date('Y', $this->atime));
         $monday = $timestamp - 86400 * (strftime('%u', $timestamp) - 1);
         $day_count = $this->settings['type_week'] == 'SHORT' ? 5 : 7;
         for ($i = 0; $i < $day_count; $i++) {
             $this->calendars[$i] =
-                    SingleCalendar::getDayCalendar($this->range_id,
-                            $monday + $i * 86400, null, $this->restrictions);
+                SingleCalendar::getDayCalendar(
+                    $this->range_id,
+                    $monday + $i * 86400,
+                    null,
+                    $this->restrictions
+                );
         }
 
         PageLayout::setTitle($this->getTitle($this->calendars[0],  _('Wochenansicht')));
@@ -157,7 +170,7 @@ class Calendar_SingleController extends Calendar_CalendarController
         $this->range_id = $range_id ?: $this->range_id;
         $this->calendar = new SingleCalendar($this->range_id);
         if ($this->calendar->deleteEvent($event_id, true)) {
-            PageLayout::postMessage(MessageBox::success(_('Der Termin wurde gelöscht.')));
+            PageLayout::postSuccess(_('Der Termin wurde gelöscht.'));
         }
         $this->redirect($this->url_for('calendar/single/' . $this->last_view));
     }
@@ -172,8 +185,7 @@ class Calendar_SingleController extends Calendar_CalendarController
             $exceptions[] = $atime;
             $event->setExceptions($exceptions);
             if ($event->store() !== false) {
-                PageLayout::postMessage(MessageBox::success(
-                    strftime(_('Termin am %x aus Serie gelöscht.'), $atime)));
+                PageLayout::postSuccess(strftime(_('Termin am %x aus Serie gelöscht.'), $atime));
             }
         }
         $this->redirect($this->url_for('calendar/single/' . $this->last_view));
@@ -213,8 +225,7 @@ class Calendar_SingleController extends Calendar_CalendarController
                 $exstart = 0;
                 $exend = Calendar::CALENDAR_END;
             }
-            $export->exportFromDatabase($this->calendar->getRangeId(), $exstart,
-                    $exend, $types);
+            $export->exportFromDatabase($this->calendar->getRangeId(), $exstart, $exend, $types);
             $export->sendFile();
             $this->render_nothing();
             exit;
@@ -261,19 +272,18 @@ class Calendar_SingleController extends Calendar_CalendarController
             if (Request::submitted('delete_id')) {
                 CSRFProtection::verifySecurityToken();
                 IcalExport::deleteKey($GLOBALS['user']->id);
-                PageLayout::postMessage(MessageBox::success(
-                        _('Die Adresse, unter der Ihre Termine abrufbar sind, wurde gelöscht')));
+                PageLayout::postSuccess(_('Die Adresse, unter der Ihre Termine abrufbar sind, wurde gelöscht'));
             }
 
             if (Request::submitted('new_id')) {
                 CSRFProtection::verifySecurityToken();
                 $this->short_id = IcalExport::setKey($GLOBALS['user']->id);
-                PageLayout::postMessage(MessageBox::success(
-                        _('Eine Adresse, unter der Ihre Termine abrufbar sind, wurde erstellt.')));
+                PageLayout::postSuccess(_('Eine Adresse, unter der Ihre Termine abrufbar sind, wurde erstellt.'));
             } else {
                 $this->short_id = IcalExport::getKeyByUser($GLOBALS['user']->id);
             }
 
+            $text = "";
             if (Request::submitted('submit_email')) {
                 $email_reg_exp = '/^([-.0-9=?A-Z_a-z{|}~])+@([-.0-9=?A-Z_a-z{|}~])+\.[a-zA-Z]{2,6}$/i';
                 if (preg_match($email_reg_exp, Request::get('email')) !== 0) {
@@ -283,15 +293,14 @@ class Calendar_SingleController extends Calendar_CalendarController
                     $text .= $GLOBALS['ABSOLUTE_URI_STUDIP'] . 'dispatch.php/ical/index/'
                             . IcalExport::getKeyByUser($GLOBALS['user']->id);
                     StudipMail::sendMessage(Request::get('email'), $subject, $text);
-                    PageLayout::postMessage(MessageBox::success(_('Die Adresse wurde verschickt!')));
+                    PageLayout::postSuccess(_('Die Adresse wurde verschickt!'));
                 } else {
-                    PageLayout::postMessage(MessageBox::error(_('Bitte geben Sie eine gültige Email-Adresse an.')));
+                    PageLayout::postError(_('Bitte geben Sie eine gültige Email-Adresse an.'));
                 }
                 $this->short_id = IcalExport::getKeyByUser($GLOBALS['user']->id);
             }
         }
-        PageLayout::setTitle($this->getTitle($this->calendar,
-                _('Kalender teilen oder einbetten')));
+        PageLayout::setTitle($this->getTitle($this->calendar, _('Kalender teilen oder einbetten')));
 
         $this->createSidebar('share', $this->calendar);
         $this->createSidebarFilter();
@@ -314,11 +323,9 @@ class Calendar_SingleController extends Calendar_CalendarController
             $contact_group = Statusgruppen::find($this->group_filter_selected);
             $calendar_users = [];
             foreach ($contact_group->members as $member) {
-                $calendar_users[] = new CalendarUser(
-                        [$this->calendar->getRangeId(), $member->user_id]);
+                $calendar_users[] = new CalendarUser([$this->calendar->getRangeId(), $member->user_id]);
             }
-            $this->calendar_users =
-                        SimpleORMapCollection::createFromArray($calendar_users);
+            $this->calendar_users = SimpleORMapCollection::createFromArray($calendar_users);
         } else {
             $this->group_filter_selected = 'list';
             $this->calendar_users = $all_calendar_users;
@@ -326,15 +333,13 @@ class Calendar_SingleController extends Calendar_CalendarController
 
         $this->own_perms = [];
         foreach ($this->calendar_users as $calendar_user) {
-            $other_user = CalendarUser::find(
-                    [$calendar_user->user_id, $this->calendar->getRangeId()]);
+            $other_user = CalendarUser::find([$calendar_user->user_id, $this->calendar->getRangeId()]);
             if ($other_user) {
                 $this->own_perms[$calendar_user->user_id] = $other_user->permission;
             } else {
                 $this->own_perms[$calendar_user->user_id] = Calendar::PERMISSION_FORBIDDEN;
             }
-            $this->users[mb_strtoupper(SimpleCollection::translitLatin1(
-                    $calendar_user->nachname[0]))][] = $calendar_user;
+            $this->users[mb_strtoupper(SimpleCollection::translitLatin1($calendar_user->nachname[0]))][] = $calendar_user;
         }
 
         ksort($this->users);
@@ -347,8 +352,7 @@ class Calendar_SingleController extends Calendar_CalendarController
                 ->setLinkText(_('Person hinzufügen'))
                 ->setDefaultSelectedUser($all_calendar_users->pluck('user_id'))
                 ->setJSFunctionOnSubmit('STUDIP.CalendarDialog.closeMps')
-                ->setExecuteURL($this->url_for('calendar/single/add_users/'
-                        . $this->calendar->getRangeId()))
+                ->setExecuteURL($this->url_for('calendar/single/add_users/' . $this->calendar->getRangeId()))
                 ->setSearchObject(new StandardSearch('user_id'));
 
         PageLayout::setTitle($this->getTitle($this->calendar, _('Kalender freigeben')));
@@ -382,10 +386,14 @@ class Calendar_SingleController extends Calendar_CalendarController
             }
         }
         if ($added) {
-            PageLayout::postMessage(MessageBox::success(sprintf(
-                    ngettext('Eine Person wurde mit der Berechtigung zum Lesen des Kalenders hinzugefügt.',
-                            '%s Personen wurden mit der Berechtigung zum Lesen des Kalenders hinzugefügt.',
-                            $added), $added)));
+            PageLayout::postSuccess(sprintf(
+                ngettext(
+                    'Eine Person wurde mit der Berechtigung zum Lesen des Kalenders hinzugefügt.',
+                    '%s Personen wurden mit der Berechtigung zum Lesen des Kalenders hinzugefügt.',
+                    $added
+                ),
+                $added
+            ));
         }
 
         if (Request::isXhr()) {
@@ -393,8 +401,7 @@ class Calendar_SingleController extends Calendar_CalendarController
             $this->response->set_status(200);
             $this->render_nothing();
         } else {
-            $this->redirect($this->url_for('calendar/single/manage_access/'
-                    . $this->calendar->getRangeId()));
+            $this->redirect($this->url_for('calendar/single/manage_access/' . $this->calendar->getRangeId()));
         }
     }
 
@@ -403,8 +410,7 @@ class Calendar_SingleController extends Calendar_CalendarController
         $this->range_id = $range_id ?: $this->range_id;
         $user_id = $user_id ?: Request::option('user_id');
         $this->calendar = new SingleCalendar($this->range_id);
-        $calendar_user = new CalendarUser(
-                    [$this->calendar->getRangeId(), $user_id]);
+        $calendar_user = new CalendarUser([$this->calendar->getRangeId(), $user_id]);
         if (!$calendar_user->isNew()) {
             $name = $calendar_user->user->getFullname();
             $calendar_user->delete();
@@ -413,10 +419,8 @@ class Calendar_SingleController extends Calendar_CalendarController
             $this->response->set_status(200);
             $this->render_nothing();
         } else {
-            PageLayout::postMessage(MessageBox::success(
-                     sprintf(_('Person %s wurde entfernt.', $name))));
-            $this->redirect($this->url_for('calendar/single/manage_access/'
-                    . $this->calendar->getRangeId()));
+            PageLayout::postSuccess(sprintf(_('Person %s wurde entfernt.', htmlReady($name))));
+            $this->redirect($this->url_for('calendar/single/manage_access/' . $this->calendar->getRangeId()));
         }
     }
 
@@ -461,17 +465,20 @@ class Calendar_SingleController extends Calendar_CalendarController
                 $details[] = sprintf(ngettext('Eine Person wurde auf schreibberechtigt gesetzt.',
                         '%s Personen wurden auf schreibberechtigt gesetzt.', $write), $write);
             }
-            PageLayout::postMessage(MessageBox::success(sprintf(
-                    ngettext('Die Berechtigungen von einer Person wurde geändert.',
-                            'Die Berechtigungen von %s Personen wurden geändert.',
-                    $sum), $sum), $details));
+            PageLayout::postSuccess(sprintf(
+                ngettext('Die Berechtigungen von einer Person wurde geändert.',
+                        'Die Berechtigungen von %s Personen wurden geändert.',
+                $sum), $sum),
+                $details
+            );
         // no message if the group was changed
         } else if (!Request::submitted('calendar_group_submit')) {
-            PageLayout::postMessage(MessageBox::success(_('Es wurden keine Berechtigungen geändert.')));
+            PageLayout::postSuccess(_('Es wurden keine Berechtigungen geändert.'));
         }
-        $this->redirect($this->url_for('calendar/single/manage_access/'
-                . $this->calendar->getRangeId(),
-                ['group_filter' => Request::option('group_filter', 'list')]));
+        $this->redirect($this->url_for(
+            'calendar/single/manage_access/' . $this->calendar->getRangeId(),
+            ['group_filter' => Request::option('group_filter', 'list')])
+        );
     }
 
     public function seminar_events_action($order_by = null, $order = 'asc')
@@ -491,11 +498,13 @@ class Calendar_SingleController extends Calendar_CalendarController
         }
         $this->group_field = 'sem_number';
         // Needed parameters for selecting courses
-        $params = ['group_field'         => $this->group_field,
-                        'order_by'            => $order_by,
-                        'order'               => $order,
-                        'studygroups_enabled' => false,
-                        'deputies_enabled'    => false];
+        $params = [
+            'group_field'         => $this->group_field,
+            'order_by'            => $order_by,
+            'order'               => $order,
+            'studygroups_enabled' => false,
+            'deputies_enabled'    => false
+        ];
 
         $this->sem_courses  = MyRealmModel::getPreparedCourses($sem, $params);
 
@@ -504,8 +513,8 @@ class Calendar_SingleController extends Calendar_CalendarController
         $this->semesters = $semesters->orderBy('beginn desc');
 
         $this->bind_calendar = SimpleCollection::createFromArray(
-                CourseMember::findBySQL('user_id = ? AND bind_calendar = 1',
-                    [$GLOBALS['user']->id]))->pluck('seminar_id');
+            CourseMember::findBySQL('user_id = ? AND bind_calendar = 1', [$GLOBALS['user']->id])
+        )->pluck('seminar_id');
 
     }
 
@@ -521,8 +530,7 @@ class Calendar_SingleController extends Calendar_CalendarController
                 $a->bind_calendar = $selected_sems[$a->seminar_id];
                 $a->store();
             });
-            PageLayout::postMessage(MessageBox::success(
-                    _('Die Auswahl der Veranstaltungen wurde gespeichert.')));
+            PageLayout::postSuccess(_('Die Auswahl der Veranstaltungen wurde gespeichert.'));
         }
         $this->redirect($this->url_for('calendar/single/' . $this->last_view));
     }
@@ -536,7 +544,6 @@ class Calendar_SingleController extends Calendar_CalendarController
      */
     protected function getTitle(SingleCalendar $calendar, $title_end)
     {
-        $title = '';
         $status = '';
         if ($calendar->getRangeId() == $GLOBALS['user']->id) {
             $title = _('Mein persönlicher Terminkalender');
@@ -555,5 +562,4 @@ class Calendar_SingleController extends Calendar_CalendarController
         }
         return $title . ' - ' . $title_end . $status ;
     }
-
 }

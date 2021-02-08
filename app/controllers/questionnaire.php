@@ -667,7 +667,7 @@ class QuestionnaireController extends AuthenticatedController
                     //Check if the user has at least admin permissions on the selected
                     //institute. If not, then don't process the submitted data
                     //any further:
-                    if (!$GLOBALS['perm']->have_studip_perm('admin', $this->institute_id, $user_id)) {
+                    if (!$GLOBALS['perm']->have_studip_perm('admin', $this->institute_id, $user->id)) {
                         PageLayout::postError(
                             _('Sie haben unzureichende Berechtigungen an der gewählten Einrichtung! Bitte wählen Sie eine andere Einrichtung!')
                         );

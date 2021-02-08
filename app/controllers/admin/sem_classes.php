@@ -43,8 +43,8 @@ class Admin_SemClassesController extends AuthenticatedController
                 $this->redirect('admin/sem_classes/overview');
             } else {
                 $statement = DBManager::get()->prepare(
-                    "INSERT INTO sem_classes SET name = :name, mkdate = UNIX_TIMESTAMP(), chdate = UNIX_TIMESTAMP() " .
-                "");
+                    "INSERT INTO sem_classes SET name = :name, mkdate = UNIX_TIMESTAMP(), chdate = UNIX_TIMESTAMP()"
+                );
                 NotificationCenter::postNotification('SeminarClassDidCreate', Request::get("add_name"), $GLOBALS['user']->id);
                 $statement->execute(['name' => Request::get("add_name")]);
                 $id = DBManager::get()->lastInsertId();
@@ -138,12 +138,8 @@ class Admin_SemClassesController extends AuthenticatedController
         if (Request::get('name') && Request::get("sem_class") && count($_POST)) {
             $name = Request::get('name');
             $statement = DBManager::get()->prepare(
-                "INSERT INTO sem_types " .
-                "SET name = :name, " .
-                    "class = :sem_class, " .
-                    "mkdate = UNIX_TIMESTAMP(), " .
-                    "chdate = UNIX_TIMESTAMP() " .
-            "");
+                "INSERT INTO sem_types SET name = :name, class = :sem_class, mkdate = UNIX_TIMESTAMP(), chdate = UNIX_TIMESTAMP()"
+            );
             $statement->execute([
                 'name' => $name,
                 'sem_class' => Request::get("sem_class")

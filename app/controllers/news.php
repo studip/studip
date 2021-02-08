@@ -563,7 +563,7 @@ class NewsController extends StudipController
                 $this->filter_text = sprintf(_('Angezeigt werden Ankündigungen, die vor dem %s sichtbar sind.'), date('d.m.Y', $this->news_enddate));
             }
         }
-
+        $counter = 0;
         // check for delete-buttons and news limit
         foreach ($this->area_structure as $type => $area_data) {
             if (is_array($this->news_items[$type])) {

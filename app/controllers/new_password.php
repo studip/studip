@@ -68,7 +68,7 @@ class NewPasswordController extends StudipController
                 $GLOBALS['UNI_CONTACT']
             );
 
-            StudipMail::sendMessage($user[0]->email, $subject, $mailbody);
+            StudipMail::sendMessage($users[0]->email, $subject, $mailbody);
 
             restoreLanguage();
         }

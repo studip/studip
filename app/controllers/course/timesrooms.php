@@ -1349,10 +1349,10 @@ class Course_TimesroomsController extends AuthenticatedController
         //cancel cycledate entry
         if ($termin->metadate_id || $cancel_comment != '') {
             $termin = $termin->cancelDate();
-            StudipLog::log('SEM_DELETE_SINGLEDATE', $termin_id, $seminar_id, 'Cycle_id: ' . $termin->metadate_id);
+            StudipLog::log('SEM_DELETE_SINGLEDATE', $termin->id, $seminar_id, 'Cycle_id: ' . $termin->metadate_id);
         } else {
             if ($termin->delete()) {
-                StudipLog::log("SEM_DELETE_SINGLEDATE", $termin_id, $seminar_id, 'appointment cancelled');
+                StudipLog::log("SEM_DELETE_SINGLEDATE", $termin->id, $seminar_id, 'appointment cancelled');
             }
         }
 

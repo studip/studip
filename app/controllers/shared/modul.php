@@ -98,8 +98,8 @@ class Shared_ModulController extends AuthenticatedController
             $this->pruef_ebene = $GLOBALS['MVV_MODUL']['PRUEF_EBENE']['values'][$modul->pruef_ebene]['name'];
             $this->modul = $modul;
             $this->type = $type;
-            $this->self_url = $this->url_for('modul/show/' . $id);
-            $this->detail_url = $this->url_for('modul/detail/' . $id);
+            $this->self_url = $this->url_for('modul/show/' . $modul_id);
+            $this->detail_url = $this->url_for('modul/detail/' . $modul_id);
             $this->teilnahmeVoraussetzung = $modul->getDeskriptor()->voraussetzung;
             PageLayout::setTitle($modul->getDisplayName() . ' (' . _('Veranstaltungsübersicht') .')');
         }

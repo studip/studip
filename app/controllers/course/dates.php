@@ -286,8 +286,6 @@ class Course_DatesController extends AuthenticatedController
             return;
         }
 
-        $output = ['topic_id' => $topic->id];
-
         $date = new CourseDate(Request::option('termin_id'));
         $seminar_id = $date->range_id;
         $title      = Request::get('title');
@@ -300,7 +298,7 @@ class Course_DatesController extends AuthenticatedController
             $topic->description = '';
             $topic->store();
         }
-
+        $output = ['topic_id' => $topic->id];
         if ($date->addTopic($topic)) {
             $factory = $this->get_template_factory();
             $template = $factory->open($this->get_default_template('_topic_li'));
