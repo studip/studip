@@ -1,5 +1,5 @@
 <form action="<?= $controller->link_for('admin/configuration/edit_configuration', ['field' => $config['field']]) ?>"
-      method="post" data-dialog class="default">
+      method="post" data-dialog="size=auto" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
@@ -9,7 +9,7 @@
 
         <? if ($config['description']): ?>
             <p><?= htmlReady($config['description']) ?></p>
-        <? endif; ?>
+        <? endif ?>
 
         <?= $this->render_partial('admin/configuration/type-edit.php', $config) ?>
 
@@ -28,28 +28,32 @@
                 <em>- <?= _('kein Eintrag vorhanden') ?> -</em>
             <? endif ?>
         </label>
-        <label class="col-1">
-            <?= _('Typ') ?>
-            <input name="type" type="text" readonly value="<?= htmlReady($config['type']) ?>">
-        </label>
-        <label class="col-1">
-            <?= _('Bereich') ?>
-            <input type="text" name="range" readonly value="<?= htmlReady($config['range']) ?>">
-        </label>
-        <label>
-            <?= _('Kategorie') ?>
-            <select name="section" onchange="jQuery(this).next('input').val( jQuery(this).val() );">
-                <? foreach (array_keys($allconfigs) as $section): ?>
-                    <option <? if ($config['section'] === $section) echo 'selected'; ?>>
-                        <?= htmlReady($section) ?>
-                    </option>
-                <? endforeach; ?>
-            </select>
-        </label>
-        <label>
-            (<em><?= _('Bitte die neue Kategorie eingeben') ?></em>)
-            <input type="text" name="section_new" id="section">
-        </label>
+        <div>
+            <label class="col-3">
+                <?= _('Typ') ?>
+                <input name="type" type="text" readonly value="<?= htmlReady($config['type']) ?>">
+            </label>
+            <label class="col-3">
+                <?= _('Bereich') ?>
+                <input type="text" name="range" readonly value="<?= htmlReady($config['range']) ?>">
+            </label>
+        </div>
+        <div>
+            <label class="col-3">
+                <?= _('Kategorie') ?>
+                <select name="section" onchange="jQuery(this).next('input').val( jQuery(this).val() );">
+                    <? foreach (array_keys($allconfigs) as $section): ?>
+                        <option <? if ($config['section'] === $section) echo 'selected'; ?>>
+                            <?= htmlReady($section) ?>
+                        </option>
+                    <? endforeach; ?>
+                </select>
+            </label>
+            <label class="col-3">
+                (<em><?= _('Bitte die neue Kategorie eingeben') ?></em>)
+                <input type="text" name="section_new" id="section">
+            </label>
+        </div>
     </fieldset>
     <footer data-dialog-button>
         <?= Studip\Button::createAccept(_('Übernehmen')) ?>

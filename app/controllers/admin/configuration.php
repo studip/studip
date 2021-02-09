@@ -1,4 +1,5 @@
 <?php
+
 /**
  * configuration.php - controller class for the configuration
  *
@@ -15,7 +16,7 @@ class Admin_ConfigurationController extends AuthenticatedController
      * Common before filter for all actions.
      *
      * @param String $action Called actions
-     * @param Array  $args   Passed arguments
+     * @param Array $args Passed arguments
      */
     public function before_filter(&$action, &$args)
     {
@@ -61,10 +62,10 @@ class Admin_ConfigurationController extends AuthenticatedController
         // set variables for view
         $this->only_section = $section;
         $this->open_section = $open_section ?: $section;
-        $this->needle       = $needle;
-        $this->sections     = ConfigurationModel::getConfig($section, $needle);
+        $this->needle = $needle;
+        $this->sections = ConfigurationModel::getConfig($section, $needle);
 
-        $this->title     = _('Verwaltung von Systemkonfigurationen');
+        $this->title = _('Verwaltung von Systemkonfigurationen');
         $this->linkchunk = 'admin/configuration/edit_configuration';
         $this->has_sections = true;
 
@@ -104,7 +105,7 @@ class Admin_ConfigurationController extends AuthenticatedController
         }
 
         // set variables for view
-        $this->config     = ConfigurationModel::getConfigInfo($field);
+        $this->config = ConfigurationModel::getConfigInfo($field);
         $this->allconfigs = ConfigurationModel::getConfig();
 
         PageLayout::setTitle(sprintf(_('Konfigurationsparameter: %s editieren'), $this->config['field']));
@@ -128,8 +129,8 @@ class Admin_ConfigurationController extends AuthenticatedController
             );
             $this->linkchunk = 'admin/configuration/edit_range_config/' . $range_id;
         } else {
-            $this->configs   = ConfigurationModel::searchConfiguration(null);
-            $this->title     = _('Globale Konfigurationsparameter für alle Ranges');
+            $this->configs = ConfigurationModel::searchConfiguration(null);
+            $this->title = _('Globale Konfigurationsparameter für alle Ranges');
             $this->linkchunk = 'admin/configuration/edit_configuration/';
         }
         $this->has_sections = false;
@@ -154,7 +155,10 @@ class Admin_ConfigurationController extends AuthenticatedController
             if ($this->validateInput($field, $value)) {
                 $range->getConfiguration()->store($field, $value);
 
-                PageLayout::postSuccess(sprintf(_('Der Konfigurationseintrag: %s wurde erfolgreich geändert!'), htmlReady($field)));
+                PageLayout::postSuccess(sprintf(
+                    _('Der Konfigurationseintrag: %s wurde erfolgreich geändert!'),
+                    htmlReady($field)
+                ));
 
                 $this->relocate('admin/configuration/range_configuration?id=' . $range_id);
                 return;
@@ -162,8 +166,8 @@ class Admin_ConfigurationController extends AuthenticatedController
         }
 
         $this->config = ConfigurationModel::showConfiguration($range, $field);
-        $this->range  = $range;
-        $this->field  = $field;
+        $this->range = $range;
+        $this->field = $field;
     }
 
     /**
@@ -177,15 +181,15 @@ class Admin_ConfigurationController extends AuthenticatedController
         $user = new User($user_id);
 
         if (!$user->isNew()) {
-            $this->configs   = ConfigurationModel::searchConfiguration($user);
-            $this->title     = sprintf(
+            $this->configs = ConfigurationModel::searchConfiguration($user);
+            $this->title = sprintf(
                 _('Vorhandene Konfigurationsparameter für "%s"'),
                 $user->getFullname()
             );
             $this->linkchunk = 'admin/configuration/edit_user_config/' . $user_id;
         } else {
-            $this->configs   = ConfigurationModel::searchConfiguration($user);
-            $this->title     = _('Globale Konfigurationsparameter für alle Personen');
+            $this->configs = ConfigurationModel::searchConfiguration($user);
+            $this->title = _('Globale Konfigurationsparameter für alle Personen');
             $this->linkchunk = 'admin/configuration/edit_configuration';
         }
         $this->has_sections = false;
@@ -210,7 +214,10 @@ class Admin_ConfigurationController extends AuthenticatedController
             if ($this->validateInput($field, $value)) {
                 $user->getConfiguration()->store($field, $value);
 
-                PageLayout::postSuccess(sprintf(_('Der Konfigurationseintrag: %s wurde erfolgreich geändert!'), htmlReady($field)));
+                PageLayout::postSuccess(sprintf(
+                    _('Der Konfigurationseintrag: %s wurde erfolgreich geändert!'),
+                    htmlReady($field)
+                ));
 
                 $this->relocate('admin/configuration/user_configuration?id=' . $user->id);
                 return;
@@ -218,8 +225,8 @@ class Admin_ConfigurationController extends AuthenticatedController
         }
 
         $this->config = ConfigurationModel::showConfiguration($user, $field);
-        $this->range  = $user;
-        $this->field  = $field;
+        $this->range = $user;
+        $this->field = $field;
 
         $this->render_action('edit_range_config');
     }
@@ -232,7 +239,7 @@ class Admin_ConfigurationController extends AuthenticatedController
         PageLayout::setTitle(_('Verwalten von Veranstaltungskonfigurationen'));
 
         $course_id = Request::option('id');
-        $course    = new Course($course_id);
+        $course = new Course($course_id);
         if (!$course->isNew()) {
             $this->configs = ConfigurationModel::searchConfiguration($course);
             $this->title = sprintf(
@@ -241,8 +248,8 @@ class Admin_ConfigurationController extends AuthenticatedController
             );
             $this->linkchunk = 'admin/configuration/edit_course_config/' . $course_id;
         } else {
-            $this->configs   = ConfigurationModel::searchConfiguration($course);
-            $this->title     = _('Globale Konfigurationsparameter für alle Veranstaltungen');
+            $this->configs = ConfigurationModel::searchConfiguration($course);
+            $this->title = _('Globale Konfigurationsparameter für alle Veranstaltungen');
             $this->linkchunk = 'admin/configuration/edit_configuration';
         }
         $this->has_sections = false;
@@ -258,7 +265,7 @@ class Admin_ConfigurationController extends AuthenticatedController
     {
         PageLayout::setTitle(_('Bearbeiten von Konfigurationsparametern für die Veranstaltung: ') . $course->getFullname());
 
-        $field  = Request::get('field');
+        $field = Request::get('field');
 
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
@@ -278,8 +285,8 @@ class Admin_ConfigurationController extends AuthenticatedController
         }
 
         $this->config = ConfigurationModel::showConfiguration($course, $field);
-        $this->range  = $course;
-        $this->field  = $field;
+        $this->range = $course;
+        $this->field = $field;
 
         $this->render_action('edit_range_config');
     }
@@ -292,7 +299,7 @@ class Admin_ConfigurationController extends AuthenticatedController
         PageLayout::setTitle(_('Verwalten von Einrichtungskonfigurationen'));
 
         $institute_id = Request::option('id');
-        $institute    = new Institute($institute_id);
+        $institute = new Institute($institute_id);
         if (!$institute->isNew()) {
             $this->configs = ConfigurationModel::searchConfiguration($institute);
             $this->title = sprintf(
@@ -301,8 +308,8 @@ class Admin_ConfigurationController extends AuthenticatedController
             );
             $this->linkchunk = 'admin/configuration/edit_institute_config/' . $institute_id;
         } else {
-            $this->configs   = ConfigurationModel::searchConfiguration($institute);
-            $this->title     = _('Globale Konfigurationsparameter für alle Einrichtungen');
+            $this->configs = ConfigurationModel::searchConfiguration($institute);
+            $this->title = _('Globale Konfigurationsparameter für alle Einrichtungen');
             $this->linkchunk = 'admin/configuration/edit_configuration';
         }
         $this->has_sections = false;
@@ -335,8 +342,8 @@ class Admin_ConfigurationController extends AuthenticatedController
         }
 
         $this->config = ConfigurationModel::showConfiguration($institute, $field);
-        $this->range  = $institute;
-        $this->field  = $field;
+        $this->range = $institute;
+        $this->field = $field;
 
         $this->render_action('edit_range_config');
     }

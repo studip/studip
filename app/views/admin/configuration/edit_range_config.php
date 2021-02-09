@@ -1,4 +1,5 @@
-<form action="<?= $controller->link_for("admin/configuration/edit_{$range_type}_config", $range, compact('field')) ?>" method="post" data-dialog class="default">
+<form action="<?= $controller->link_for("admin/configuration/edit_{$range_type}_config", $range, compact('field')) ?>"
+      method="post" data-dialo="size=auto" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
