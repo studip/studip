@@ -621,8 +621,9 @@ class Course_BasicdataController extends AuthenticatedController
                 if ($deputies_enabled) {
                     // Check whether chosen person is set as deputy
                     // -> delete deputy entry.
-                    if (isDeputy($dozent, $course_id)) {
-                        deleteDeputy($dozent, $course_id);
+                    $deputy = Deputy::find([$dozent, $course_id]);
+                    if ($deputy) {
+                        $deputy->delete();
                     }
 
                     // Add default deputies of the chosen lecturer...
@@ -701,11 +702,12 @@ class Course_BasicdataController extends AuthenticatedController
             PageLayout::postError(_('Sie dürfen sich nicht selbst aus der Veranstaltung austragen.'));
         } else {
             $sem = Seminar::getInstance($course_id);
-
-            if (deleteDeputy($deputy_id, $course_id)) {
+            $deputy = Deputy::find([$deputy_id, $course_id]);
+            if ($deputy && $deputy->delete) {
                 // Remove user from subcourses as well.
-                foreach ($sem->children as $child) {
-                    deleteDeputy($deputy_id, $child->id);
+                if($sem->children) {
+                    $children_ids = $sem->children->pluck('seminar_id');
+                    Deputy::deleteBySQL('user_id = ? AND range_id IN (?)', [$children_ids]);
                 }
 
                 PageLayout::postSuccess(sprintf(
@@ -848,7 +850,10 @@ class Course_BasicdataController extends AuthenticatedController
                 $dozent->status = 'dozent';
                 $dozent->comment = '';
                 if ($dozent->store()) {
-                    deleteDeputy($GLOBALS['user']->id, $course_id);
+                    $deputy = Deputy::find([$GLOBALS['user']->id, $course_id]);
+                    if($deputy) {
+                        $deputy->delete();
+                    }
                     PageLayout::postSuccess(sprintf(_('Sie wurden als %s eingetragen.'),
                         htmlReady(get_title_for_status('dozent', 1))));
                 } else {

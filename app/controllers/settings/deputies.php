@@ -151,9 +151,16 @@ class Settings_DeputiesController extends Settings_SettingsController
     public function store_action()
     {
         $this->check_ticket();
+        $deleted = 0;
         $delete = Request::optionArray('delete');
         if (count($delete) > 0) {
-            $deleted = deleteDeputy($delete, $this->user->user_id);
+            Deputy::findEachBySQL(function($deputy) use (&$deleted) {
+                    if($deputy->delete()) {
+                        $deleted++;
+                    }
+                },
+                'user_id IN (?) AND range_id = ?', [$delete, $this->user->user_id]
+            );
             if ($deleted) {
                 PageLayout::postSuccess(sprintf(ngettext(
                     _('Die Vertretung wurde entfernt.'),

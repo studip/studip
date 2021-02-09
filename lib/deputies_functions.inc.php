@@ -62,30 +62,6 @@ function addDeputy($user_id, $range_id) {
     return $d->store();
 }
 
-/**
- * Removes a person as deputy in the given context (course or person).
- *
- * @param mixed $user_id which person(s) to remove, can be a single ID or
- * an array of IDs
- * @param string $range_id where to remove as deputy (course or person ID)
- * @return int Number of affected rows in the database ("1" if successful).
- */
-function deleteDeputy($user_id, $range_id) {
-    $success = true;
-    if (is_array($user_id)) {
-        foreach ($user_id as $u) {
-            $success = $success && deleteDeputy($u, $range_id);
-        }
-        return $success;
-    }
-
-    $d = Deputy::find([$range_id, $user_id]);
-    if ($d) {
-        return $d->delete();
-    }
-
-    return true;
-}
 
 /**
  * Checks whether the given person is a deputy in the given context

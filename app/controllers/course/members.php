@@ -383,8 +383,9 @@ class Course_MembersController extends AuthenticatedController
             if (Config::get()->DEPUTIES_ENABLE) {
                 // Check whether chosen person is set as deputy
                 // -> delete deputy entry.
-                if (isDeputy($dozent, $this->course_id)) {
-                    deleteDeputy($dozent, $this->course_id);
+                $deputy = Deputy::find([$dozent, $this->course_id]);
+                if ($deputy) {
+                    $deputy->delete();
                 }
                 // Add default deputies of the chosen lecturer...
                 if (Config::get()->DEPUTIES_DEFAULTENTRY_ENABLE) {
