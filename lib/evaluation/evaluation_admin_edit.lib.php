@@ -1,8 +1,4 @@
 <?php
-# Lifter002: TODO
-# Lifter007: TODO
-# Lifter003: TODO
-# Lifter010: TODO
 /**
  * Beschreibung
  *
@@ -37,64 +33,67 @@ require_once 'lib/evaluation/evaluation.config.php';
 require_once HTML;
 //require_once (HTMLempty);
 # ====================================================== end: including files #
-class EvalEdit{
+class EvalEdit
+{
 
     /**
      * creates the main-table
      * @access  public
-     * @param   string  $title  the title
-     * @param   string  $left  the left site of the table
-     * @param   string  $rigt  the right site of the table
+     * @param string $title the title
+     * @param string $left the left site of the table
+     * @param string $rigt the right site of the table
      * @return  string  the html-table
-    */
-    function createSite($left = "", $right = ""){
-
+     */
+    public function createSite($left = "", $right = "")
+    {
         $table = new HTML("table");
-        $table->addAttr ("border","0");
-        $table->addAttr ("class","blank");
-        $table->addAttr ("align","center");
-        $table->addAttr ("cellspacing","0");
-        $table->addAttr ("cellpadding","2");
-        $table->addAttr ("width","100%");
-            
+        $table->addAttr("border", "0");
+        $table->addAttr("class", "blank");
+        $table->addAttr("align", "center");
+        $table->addAttr("cellspacing", "0");
+        $table->addAttr("cellpadding", "2");
+        $table->addAttr("width", "100%");
+
         $tr = new HTML("tr");
-        
+
         $td = new HTML("td");
-        $td->addAttr ("class","blank");
-        $td->addAttr ("width","100%");
-        $td->addAttr ("align","left");
-        $td->addAttr ("valign","top");
+        $td->addAttr("class", "blank");
+        $td->addAttr("width", "100%");
+        $td->addAttr("align", "left");
+        $td->addAttr("valign", "top");
         $td->setTextareaCheck(YES);
-        $td->addHTMLContent ($left);
-        
-        $tr->addContent ($td);
-            
+        $td->addHTMLContent($left);
+
+        $tr->addContent($td);
+
         $td = new HTML("td");
-        $td->addAttr ("class","blank");
-        $td->addAttr ("align","right");
-        $td->addAttr ("valign","top");
-        $td->addHTMLContent ($right);
-        
-        $tr->addContent ($td);
-        $table->addContent ($tr);
+        $td->addAttr("class", "blank");
+        $td->addAttr("align", "right");
+        $td->addAttr("valign", "top");
+        $td->addHTMLContent($right);
+
+        $tr->addContent($td);
+        $table->addContent($tr);
 
         return $table->createContent();
     }
-    
-    function createHiddenIDs(){
+
+    public function createHiddenIDs()
+    {
         $input = new HTML ("input");
-        $input->addAttr ("type","hidden");
-        $input->addAttr ("evalID",Request::option('evalID'));
-        
+        $input->addAttr("type", "hidden");
+        $input->addAttr("evalID", Request::option('evalID'));
+
         $input = new HTML ("input");
-        $input->addAttr ("type","hidden");
-        $input->addAttr ("itemID",Request::option('itemID'));
-        
+        $input->addAttr("type", "hidden");
+        $input->addAttr("itemID", Request::option('itemID'));
+
         $input = new HTML ("input");
-        $input->addAttr ("type","hidden");
-        $input->addAttr ("rangeID",Request::option("rangeID"));
-        
-        return ;
+        $input->addAttr("type", "hidden");
+        $input->addAttr("rangeID", Request::option("rangeID"));
+
+        return;
     }
 }
+
 ?>

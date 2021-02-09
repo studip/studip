@@ -1,8 +1,4 @@
 <?php
-# Lifter002: TODO
-# Lifter007: TODO
-# Lifter003: TODO
-# Lifter010: TODO
 /**
  * HTML-class for the Stud.IP-project.
  * Based on scripts from "http://tut.php-q.net/".
@@ -38,12 +34,12 @@ require_once 'HTML.class.php';
 class HTMpty extends HTMLempty
 {
 
-    function attr($name, $wert = null)
+    public function attr($name, $wert = null)
     {
         parent::addAttr($name, $wert);
     }
 
-    function stri($string)
+    public function stri($string)
     {
         parent::addString($string);
     }
@@ -53,26 +49,23 @@ class HTMpty extends HTMLempty
 class HTM extends HTML
 {
 
-    function stri($string)
+    public function stri($string)
     {
         parent::addString($string);
     }
 
-    function attr($name, $wert = null)
+    public function attr($name, $wert = null)
     {
         parent::addAttr($name, $wert);
     }
 
-    function html($_content)
+    public function html($_content)
     {
         parent::addHTMLContent($_content);
     }
 
-    function cont($_content)
+    public function cont($_content)
     {
         parent::addContent($_content);
     }
-
 }
-
-?>

@@ -50,7 +50,8 @@ define("EVAL_TITLE", _("Evaluations-Verwaltung"));
  * @package     evaluation
  *
  */
-class EvalOverview {
+class EvalOverview
+{
 # Define all required variables ============================================= #
     /**
      * Databaseobject
@@ -78,12 +79,13 @@ class EvalOverview {
     /**
      * Constructor
      * @access   public
-     * @param    object  DatabaseObject $db    The database object
-     * @param    object  Perm $perm  The permission object
-     * @param    object  User $user  The user object
+     * @param object  DatabaseObject $db    The database object
+     * @param object  Perm $perm  The permission object
+     * @param object  User $user  The user object
      */
 
-    function __construct($db, $perm, $user) {
+    function __construct($db, $perm, $user)
+    {
         /* Set default values ------------------------------------------------- */
         $this->db = $db;
         $this->perm = $perm;
@@ -97,7 +99,8 @@ class EvalOverview {
      *
      */
 
-    function createMainTable() {
+    function createMainTable()
+    {
         $table = new HTML("table");
         $table->addAttr("border", "0");
         $table->addAttr("align", "center");
@@ -111,11 +114,12 @@ class EvalOverview {
     /**
      * Creates the funny blue small titlerows
      * @access public
-     * @param  array   $rowTitles  An array with all col-titles
-     * @param  boolean $returnRow  If YES it returns the row not the table
-     * @param  string  $state
+     * @param array $rowTitles An array with all col-titles
+     * @param boolean $returnRow If YES it returns the row not the table
+     * @param string $state
      */
-    function createGroupTitle($rowTitles, $returnRow = false, $state = false) {
+    function createGroupTitle($rowTitles, $returnRow = false, $state = false)
+    {
         $table = new HTML("table");
         $table->addAttr("border", "0");
         $table->addAttr("align", "center");
@@ -170,10 +174,10 @@ class EvalOverview {
 
             # filter out not needed headlines
             if ($state == "user_template" &&
-                    ( ($i == 4) || ($i == 5) )) {
+                (($i == 4) || ($i == 5))) {
                 //nothing
             } elseif ($state == "public_template" &&
-                    ( ($i == 6) || ($i == 7) || ($i == 9))) {
+                (($i == 6) || ($i == 7) || ($i == 9))) {
                 //nothing
             } else
                 $tr->addContent($td);
@@ -187,13 +191,14 @@ class EvalOverview {
     /**
      * Test...
      * @access public
-     * @param  object  Evaluation  $eval  The evaluation
-     * @param  string  $number
-     * @param  string  $state
-     * @param  string  $open
-     * @param  boolean $returnRow
+     * @param object  Evaluation  $eval  The evaluation
+     * @param string $number
+     * @param string $state
+     * @param string $open
+     * @param boolean $returnRow
      */
-    function createEvalRow($eval, $number, $state, $open, $returnRow = false) {
+    function createEvalRow($eval, $number, $state, $open, $returnRow = false)
+    {
 
         /* initialize variables -------- */
         $evalID = $eval->getObjectID();
@@ -201,7 +206,7 @@ class EvalOverview {
 
         $no_permissons = EvaluationObjectDB::getEvalUserRangesWithNoPermission($eval);
 
-        if ($eval->getAuthor() != $user->id && $no_permissons)
+        if ($eval->getAuthor() != $GLOBALS['user']->id && $no_permissons)
             $no_buttons = 1;
 
         $style = ($number % 2) ? "table_row_odd" : ($number == 0 ? "content_body" : "table_row_even");
@@ -219,7 +224,7 @@ class EvalOverview {
         $arrowLink = new HTML('a');
         $arrowLink->addAttr('href', URLHelper::getLink($link));
 
-        $titleLink->addContent(($eval->getTitle()) ? $eval->getTitle() : ' ' );
+        $titleLink->addContent(($eval->getTitle()) ? $eval->getTitle() : ' ');
 
         switch ($state) {
 
@@ -230,7 +235,7 @@ class EvalOverview {
                 $content[1] = $eval->getChangedate() == NULL ? " " : date("d.m.Y", $eval->getChangedate());
 
                 $button = LinkButton::create(_('Vorschau'), URLHelper::getURL('show_evaluation.php?evalID=' . $evalID . '&isPreview=' . YES), ['title' => _('Vorschau dieser öffentlichen Evaluationsvorlage.'),
-                            'onClick' => 'openEval(\'' . $evalID . '\'); return false;']);
+                    'onClick' => 'openEval(\'' . $evalID . '\'); return false;']);
                 $div = new HTML("div");
                 $div->addHTMLContent($button);
                 $content[4] = $div;
@@ -256,7 +261,7 @@ class EvalOverview {
                 $shareButton->addAttr("style", "vertical-align:middle;");
                 $shareButton->addAttr("type", "image");
                 $shareButton->addAttr("name", "share_template_button");
-                $shareButton->addAttr("src", $isShared ? EVAL_PIC_SHARED : EVAL_PIC_NOTSHARED );
+                $shareButton->addAttr("src", $isShared ? EVAL_PIC_SHARED : EVAL_PIC_NOTSHARED);
                 $shareButton->addAttr("border", "0");
                 $shareButton->addAttr("alt", $isShared ? _("als öffentliche Evaluationsvorlage Freigeben") : _("Freigabe entziehen"));
                 $shareButton->addAttr("title", $isShared ? _("Die Freigabe für diese Evaluationsvorlage entziehen") : _("Diese Evaluationsvorlage öffentlich freigeben"));
@@ -287,8 +292,7 @@ class EvalOverview {
                 $content[0] = $eval->getFullname() ? $eval->getFullname() : " ";
                 $content[1] = $stopDate;
                 if (!$no_buttons) {
-                    $content[2] = Button::createCancel(_('Stop'), 'stop_button', ['title' => _('Evaluation stoppen')]);
-                    ;
+                    $content[2] = Button::createCancel(_('Stop'), 'stop_button', ['title' => _('Evaluation stoppen')]);;
                     // Kann hier noch optimiert werden, da hasVoted () immer einen DB-Aufruf startet
                     $content[3] = ($eval->hasVoted()) ? Button::create(_('Zurücksetzen'), 'restart_request_button', ['title' => _('Evaluation zurücksetzen')]) : Button::create(_('Zurücksetzen'), 'restart_confirmed_button', ['title' => _('Evaluation zurücksetzen')]);
                     $content[4] = Button::create(_('Export'), 'export_request_button', ['title' => _('Evaluation exportieren')]);
@@ -409,10 +413,10 @@ class EvalOverview {
             #$td->addHTMLContent ( ($content[$i] ? $content[$i] : "-") );
             # filter out not needed datacells
             if ($state == "user_template" &&
-                    ( ($i == 1) || ($i == 2) )) {
+                (($i == 1) || ($i == 2))) {
                 //nothing
             } elseif ($state == "public_template" &&
-                    ( ($i == 3) || ($i == 4) )) {
+                (($i == 3) || ($i == 4))) {
                 //nothing
             } else {
                 $tr->addContent($td);
@@ -431,9 +435,10 @@ class EvalOverview {
     /**
      * Test...
      * @access public
-     * @param  object  Evaluation  $eval  The evaluation
+     * @param object  Evaluation  $eval  The evaluation
      */
-    function createEvalContent($eval, $number, $state, $safeguard) {
+    function createEvalContent($eval, $number, $state, $safeguard)
+    {
 
         /* initialize variables -------- */
         $evalID = $eval->getObjectID();
@@ -459,7 +464,7 @@ class EvalOverview {
         $form = new HTML("form");
         $form->addAttr("name", "settingsForm");
         $form->addAttr("action", URLHelper::getLink("?rangeID=" .
-                        $_SESSION["rangeID"] . "&openID=" . $evalID . "#open"));
+            $_SESSION["rangeID"] . "&openID=" . $evalID . "#open"));
         $form->addAttr("method", "post");
         $form->addAttr("style", "display:inline;");
         $form->addHTMLContent(CSRFProtection::tokenTag());
@@ -508,21 +513,21 @@ class EvalOverview {
         $no_permission = EvaluationObjectDB::getEvalUserRangesWithNoPermission($eval);
 
         if (($globalperm == "root" || $globalperm == "admin") &&
-                !Request::get("search") && $eval->isTemplate()) {
+            !Request::get("search") && $eval->isTemplate()) {
             // no RuntimeSettings and Save-Button for Template if there are no ranges
-            $td2->addHTMLContent($this->createDomainSettings($eval, $state, $number % 2 ? "eval_grey_border" : "eval_light_border" ));
+            $td2->addHTMLContent($this->createDomainSettings($eval, $state, $number % 2 ? "eval_grey_border" : "eval_light_border"));
         } elseif ($no_permission) {
             // no RuntimeSettings if there are ranges with no permission
-            $td2->addHTMLContent($this->createDomainSettings($eval, $state, $number % 2 ? "eval_grey_border" : "eval_light_border" ));
+            $td2->addHTMLContent($this->createDomainSettings($eval, $state, $number % 2 ? "eval_grey_border" : "eval_light_border"));
 
             $td2->addContent(new HTMLEmpty("br"));
 
             $saveButton = Button::create(_('Übernehmen'), 'save_button', ['title' => _('Einstellungen speichern')]);
             $td2->addContent($saveButton);
         } else {
-            $td2->addHTMLContent($this->createRuntimeSettings($eval, $state, $number % 2 ? "eval_grey_border" : "eval_light_border" ));
+            $td2->addHTMLContent($this->createRuntimeSettings($eval, $state, $number % 2 ? "eval_grey_border" : "eval_light_border"));
 
-            $td2->addHTMLContent($this->createDomainSettings($eval, $state, $number % 2 ? "eval_grey_border" : "eval_light_border" ));
+            $td2->addHTMLContent($this->createDomainSettings($eval, $state, $number % 2 ? "eval_grey_border" : "eval_light_border"));
             $td2->addContent(new HTMLEmpty("br"));
 
             $saveButton = Button::create(_('Übernehmen'), 'save_button', ['title' => _('Einstellungen speichern')]);
@@ -553,7 +558,8 @@ class EvalOverview {
     /**
      *
      */
-    function createHeader($safeguard, $templates = NULL, $foundTable = "") {
+    function createHeader($safeguard, $templates = NULL, $foundTable = "")
+    {
         Helpbar::Get()->addPlainText(_('Übersicht'), _('Auf dieser Seite haben Sie eine Übersicht aller in dem ausgewählten Bereich existierenden Evaluationen sowie Ihrer eigenen Evaluationsvorlagen.'));
         Helpbar::Get()->addPlainText(_('Ansicht'), _("Sie können eine Evaluation aufklappen und dann Bereichen zuordnen und ihre Laufzeit bestimmen."));
         $table = new HTML("table");
@@ -566,8 +572,8 @@ class EvalOverview {
         /* create new ---------------------------------------------------------- */
         $actions = new ActionsWidget();
         $actions->addLink(_('Neue Evaluationsvorlage'),
-                          URLHelper::getURL('?rangeID=' . $_SESSION['rangeID'] .'&page=edit&newButton=1'),
-                          Icon::create('add', 'clickable'));
+            URLHelper::getURL('?rangeID=' . $_SESSION['rangeID'] . '&page=edit&newButton=1'),
+            Icon::create('add', 'clickable'));
         Sidebar::get()->addWidget($actions);
         /* ----------------------------------------------------- end: create new */
 
@@ -625,7 +631,8 @@ class EvalOverview {
     /**
      *
      */
-    function createShowRangeForm() {
+    function createShowRangeForm()
+    {
 
         $currentRangeID = $_SESSION['rangeID'];
 
@@ -638,7 +645,7 @@ class EvalOverview {
         $form->addHTMLContent('<fieldset>');
 
         $headline = new HTML ("legend");
-        $headline->addAttr("class","eval");
+        $headline->addAttr("class", "eval");
         $headline->addContent(_("Evaluationen"));
         $form->addContent($headline);
 
@@ -695,7 +702,8 @@ class EvalOverview {
     /**
      *
      */
-    function createSearchTemplateForm() {
+    function createSearchTemplateForm()
+    {
         $form = new HTML("form");
         $form->addAttr('class', 'default');
         $form->addAttr("method", "post");
@@ -728,9 +736,10 @@ class EvalOverview {
     /**
      * Creates a gray col with text
      * @access public
-     * @param  string  $text  The information
+     * @param string $text The information
      */
-    function createInfoCol($text) {
+    function createInfoCol($text)
+    {
         $table = new HTML("table");
         $table->addAttr("border", "0");
         $table->addAttr("align", "center");
@@ -754,7 +763,8 @@ class EvalOverview {
      * Creates a row with black line above (and "open all evals" link...?)
      * @access public
      */
-    function createClosingRow() {
+    function createClosingRow()
+    {
         $tr = new HTML("tr");
         $tr->addAttr("height", "2");
         $td = new HTML("td");
@@ -772,15 +782,14 @@ class EvalOverview {
      * @param evalAction   string comprised the action
      */
 
-    function callSafeguard($evalAction, $evalID = "", $showrangeID = NULL, $search = NULL, $referer = NULL) {
-        global $perm, $auth, $user;
-
-        if (!($evalAction || $evalAction == "search"))
+    public function callSafeguard($evalAction, $evalID = "", $showrangeID = NULL, $search = NULL, $referer = NULL)
+    {
+        if (!($evalAction || $evalAction == "search")) {
             return " ";
+        }
 
-        if (!($perm->have_studip_perm("tutor", $showrangeID)) &&
-                $user->id != $showrangeID &&
-                !(Deputy::isEditActivated() && Deputy::isDeputy($user->id, $showrangeID, true))) {
+        if (!($GLOBALS['perm']->have_studip_perm("tutor", $showrangeID)) && $GLOBALS['user']->id != $showrangeID &&
+            !(isDeputyEditAboutActivated() && isDeputy($GLOBALS['user']->id, $showrangeID, true))) {
             return $this->createSafeguard("ausruf", sprintf(_("Sie haben keinen Zugriff auf diesen Bereich.")));
         }
 
@@ -790,29 +799,21 @@ class EvalOverview {
 
         /* Actions without any permissions ---------------------------------- */
         switch ($evalAction) {
-
             case "search_template":
                 $search = trim($search);
                 $templates = $evalDB->getPublicTemplateIDs($search);
-
                 if (mb_strlen($search) < EVAL_MIN_SEARCHLEN) {
-                    $report = EvalCommon::createReportMessage(sprintf(_("Bitte einen Suchbegriff mit mindestens %d Buchstaben eingeben."), EVAL_MIN_SEARCHLEN), EVAL_PIC_ERROR, EVAL_CSS_ERROR);
+                    return MessageBox::error(sprintf(_("Bitte einen Suchbegriff mit mindestens %d Buchstaben eingeben."), EVAL_MIN_SEARCHLEN));
                 } elseif (count($templates) == 0) {
-                    $report = EvalCommon::createReportMessage(_("Es wurden keine passenden öffentlichen Evaluationsvorlagen gefunden."), EVAL_PIC_ERROR, EVAL_CSS_ERROR);
+                    return MessageBox::error(_("Es wurden keine passenden öffentlichen Evaluationsvorlagen gefunden."));
                 } else {
-                    $report = EvalCommon::createReportMessage(sprintf(_("Es wurde(n) %d passende öffentliche Evaluationsvorlagen gefunden."), count($templates)), EVAL_PIC_SUCCESS, EVAL_CSS_SUCCESS);
+                    return MessageBox::error(sprintf(_("Es wurde(n) %d passende öffentliche Evaluationsvorlagen gefunden."), count($templates)));
                 }
-                $safeguard .= $report->createContent();
-                return $safeguard;
-
             case "export_request":
-                /* Check permissions ------------------------------------------- */
-                $haveNoPerm = YES;
                 $eval = new Evaluation($evalID, NULL, EVAL_LOAD_NO_CHILDREN);
                 $haveNoPerm = EvaluationObjectDB::getEvalUserRangesWithNoPermission($eval);
                 if ($haveNoPerm == YES) {
-                    $report = EvalCommon::createReportMessage(_("Sie haben nicht die Berechtigung diese Evaluation zu exportieren."), EVAL_PIC_ERROR, EVAL_CSS_ERROR);
-                    return $report->createContent();
+                    return MessageBox::error(_("Sie haben nicht die Berechtigung diese Evaluation zu exportieren."));
                 }
                 /* -------------------------------------- end: check permissions */
 
@@ -825,16 +826,15 @@ class EvalOverview {
 
                 /* Create report ----------------------------------------------- */
                 if ($exportManager->isError()) {
-                    $report = EvalCommon::createErrorReport($exportManager, _("Fehler beim Exportieren"));
+                    return MessageBox::error(_("Fehler beim Exportieren"));
                 } else {
-                    $report = EvalCommon::createReportMessage(_("Die Daten wurden erfolgreich exportiert. Sie können die Ausgabedatei jetzt herunterladen."), EVAL_PIC_SUCCESS, EVAL_CSS_SUCCESS);
-                    $report = $report->createContent();
-                    $report .= sprintf(_("Bitte klicken Sie %s um die Datei herunter zu laden.") . "<br><br>", '<a href="' .FileManager::getDownloadLinkForTemporaryFile($exportManager->getTempFilename(), $exportManager->getFilename()) . '">' . _("auf diese Verknüpfung") . '</a>');
+                    return MessageBox::success(
+                        _("Die Daten wurden erfolgreich exportiert. Sie können die Ausgabedatei jetzt herunterladen."),
+                        [
+                            sprintf(_("Bitte klicken Sie %s um die Datei herunter zu laden.") . "<br><br>", '<a href="' . FileManager::getDownloadLinkForTemporaryFile($exportManager->getTempFilename(), $exportManager->getFilename()) . '">' . _("auf diese Verknüpfung") . '</a>')
+                        ]
+                    );
                 }
-                $safeguard .= $report;
-                /* ------------------------------------------ end: create report */
-
-                return $safeguard;
         }
         /* ----------------------------------- end: actions without permissions */
 
@@ -849,39 +849,59 @@ class EvalOverview {
         /* -------------------------------------- end: errorcheck while loading */
 
         /* Check for permissions in all ranges of the evaluation -------------- */
-        if (!$eval->isTemplate() && ($user->id != $eval->getAuthorID())) {
+        if (!$eval->isTemplate() && ($GLOBALS['user']->id != $eval->getAuthorID())) {
 
-            $no_permisson = EvaluationObjectDB::getEvalUserRangesWithNoPermission($eval);
-
+            $no_permisson = (int)EvaluationObjectDB::getEvalUserRangesWithNoPermission($eval);
+            $no_permission_msg = '';
             if ($no_permisson > 0) {
-                if ($no_permisson == 1)
-                    $no_permission_msg .= sprintf(_("Die Evaluation <b>%s</b> ist einem Bereich zugeordnet, für den Sie keine Veränderungsrechte besitzen."), $evalName);
-                else
-                    $no_permission_msg .= sprintf(_("Die Evaluation <b>%s</b> ist %s Bereichen zugeordnet, für die Sie keine Veränderungsrechte besitzen."), $evalName, $no_permisson);
+                if ($no_permisson === 1) {
+                    $no_permission_msg .= sprintf(_("Die Evaluation %s ist einem Bereich zugeordnet, für den Sie keine Veränderungsrechte besitzen."), $evalName);
+                } else {
+                    $no_permission_msg .= sprintf(_("Die Evaluation %s ist %s Bereichen zugeordnet, für die Sie keine Veränderungsrechte besitzen."), $evalName, $no_permisson);
+                }
 
                 if ($evalAction != "save") {
-
                     $no_permission_msg .= " " . _("Der Besitzer wurde durch eine systeminterne Nachricht informiert.");
-
+                    $author = User::find($eval->getAuthorID());
                     $sms = new messaging();
                     $sms->insert_message(
-                            sprintf(_("Benutzer **%s** hat versucht eine unzulässige Änderung an Ihrer Evaluation **%s** vorzunehmen."), get_username($auth->auth["uid"]), $eval->getTitle()), get_username($eval->getAuthorID()), "____%system%____", FALSE, FALSE, "1", FALSE, _("Versuchte Änderung an Ihrer Evaluation"));
+                        sprintf(_("Benutzer **%s** hat versucht eine unzulässige Änderung an Ihrer Evaluation **%s** vorzunehmen."),
+                            $GLOBALS['user']->username,
+                            $eval->getTitle()
+                        ),
+                        $author->username,
+                        "____%system%____",
+                        false,
+                        false,
+                        "1",
+                        false,
+                        _("Versuchte Änderung an Ihrer Evaluation")
+                    );
                 }
             }
         } else if ($eval->isTemplate() &&
-                $user->id != $eval->getAuthorID() &&
-                $evalAction != "copy_public_template" &&
-                $evalAction != "search_showrange") {
-
+            $GLOBALS['user']->id != $eval->getAuthorID() &&
+            $evalAction != "copy_public_template" &&
+            $evalAction != "search_showrange") {
+            $author = User::find($eval->getAuthorID());
             $sms = new messaging();
             $sms->insert_message(
-                    sprintf(_("Benutzer **%s** hat versucht eine unzulässige Änderung an Ihrem Template **%s** vorzunehmen."), get_username($auth->auth["uid"]), $eval->getTitle()), get_username($eval->getAuthorID()), "____%system%____", FALSE, FALSE, "1", FALSE, _("Versuchte Änderung an Ihrem Template"));
-            return $this->createSafeguard("ausruf", sprintf(_("Sie besitzen keine Rechte für das Tempate <b>%s</b>. Der Besitzer wurde durch eine systeminterne Nachricht informiert."), $evalName));
+                sprintf(
+                    _("Benutzer **%s** hat versucht eine unzulässige Änderung an Ihrem Template **%s** vorzunehmen."),
+                    $GLOBALS['user']->username,
+                    $eval->getTitle()
+                ), $author->username,
+                "____%system%____",
+                false,
+                false,
+                "1",
+                false,
+                _("Versuchte Änderung an Ihrem Template")
+            );
+            return MessageBox::error(sprintf(_("Sie besitzen keine Rechte für das Tempate <b>%s</b>. Der Besitzer wurde durch eine systeminterne Nachricht informiert."), $evalName));
         }
         /* ----------------------------------------- end: check for permissions */
-
         switch ($evalAction) {
-
             case "share_template":
                 if ($eval->isShared()) {
                     $eval->setShared(NO);
@@ -890,7 +910,7 @@ class EvalOverview {
                         $safeguard .= $this->createSafeguard("", EvalCommon::createErrorReport($eval));
                         return $safeguard;
                     }
-                    $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluationsvorlage <b>%s</b> kann jetzt nicht mehr von anderen Benutzern gefunden werden."), $evalName));
+                    $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluationsvorlage %s kann jetzt nicht mehr von anderen Benutzern gefunden werden."), $evalName));
                 } else {
                     $eval->setShared(YES);
                     $eval->save();
@@ -898,14 +918,14 @@ class EvalOverview {
                         $safeguard .= $this->createSafeguard("", EvalCommon::createErrorReport($eval));
                         return $safeguard;
                     }
-                    $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluationsvorlage <b>%s</b> kann jetzt von anderen Benutzern gefunden werden."), $evalName));
+                    $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluationsvorlage %s kann jetzt von anderen Benutzern gefunden werden."), $evalName));
                 }
                 break;
 
             case "copy_public_template":
                 $eval = new Evaluation($evalID, NULL, EVAL_LOAD_ALL_CHILDREN);
                 $newEval = $eval->duplicate();
-                $newEval->setAuthorID($auth->auth["uid"]);
+                $newEval->setAuthorID($GLOBALS['user']->id);
                 $newEval->setShared(NO);
                 $newEval->setStartdate(NULL);
                 $newEval->setStopdate(NULL);
@@ -930,12 +950,11 @@ class EvalOverview {
                     $safeguard .= $this->createSafeguard("", EvalCommon::createErrorReport($eval));
                     return $safeguard;
                 }
-                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation <b>%s</b> wurde gestartet."), $evalName));
+                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation %s wurde gestartet."), $evalName));
                 $evalChanged = YES;
                 break;
 
             case "stop":
-
                 if ($no_permission_msg)
                     return $this->createSafeguard("ausruf", $no_permission_msg . "<br>" . _("Die Evaluation wurde nicht beendet."));
 
@@ -946,7 +965,7 @@ class EvalOverview {
                     $safeguard .= $this->createSafeguard("", EvalCommon::createErrorReport($eval));
                     return $safeguard;
                 }
-                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation <b>%s</b> wurde beendet."), $evalName));
+                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation %s wurde beendet."), $evalName));
                 $evalChanged = YES;
                 break;
 
@@ -962,7 +981,7 @@ class EvalOverview {
                     $safeguard .= $this->createSafeguard("", EvalCommon::createErrorReport($eval));
                     return $safeguard;
                 }
-                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation <b>%s</b> wurde fortgesetzt."), $evalName));
+                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation %s wurde fortgesetzt."), $evalName));
                 $evalChanged = YES;
                 break;
 
@@ -971,7 +990,7 @@ class EvalOverview {
                 if ($no_permission_msg)
                     return $this->createSafeguard("ausruf", $no_permission_msg . "<br>" . _("Die Evaluation wurde nicht zurücksetzen."));
 
-                $safeguard .= $this->createSafeguard("ausruf", sprintf(_("Die Evaluation <b>%s</b> wirklich zurücksetzen? Dabei werden alle bisher abgegebenen Antworten gelöscht!"), $evalName), "restart_request", $evalID, $showrangeID, $referer);
+                $safeguard .= $this->createSafeguard("ausruf", sprintf(_("Die Evaluation %s wirklich zurücksetzen? Dabei werden alle bisher abgegebenen Antworten gelöscht!"), $evalName), "restart_request", $evalID, $showrangeID, $referer);
                 break;
 
             case "restart_confirmed":
@@ -990,12 +1009,12 @@ class EvalOverview {
                     $safeguard .= $this->createSafeguard("", EvalCommon::createErrorReport($eval));
                     return $safeguard;
                 }
-                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation <b>%s</b> wurde zurückgesetzt."), $evalName));
+                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation %s wurde zurückgesetzt."), $evalName));
                 $evalChanged = YES;
                 break;
 
             case "restart_aborted":
-                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation <b>%s</b> wurde nicht zurückgesetzt."), $evalName), "", "", "", $referer);
+                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation %s wurde nicht zurückgesetzt."), $evalName), "", "", "", $referer);
                 break;
 
             case "copy_own_template":
@@ -1007,7 +1026,7 @@ class EvalOverview {
                     $safeguard .= $this->createSafeguard("", EvalCommon::createErrorReport($newEval));
                     return $safeguard;
                 }
-                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluationsvorlage <b>%s</b> wurde kopiert."), $evalName));
+                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluationsvorlage %s wurde kopiert."), $evalName));
                 break;
 
             case "delete_request":
@@ -1016,7 +1035,7 @@ class EvalOverview {
                     return $this->createSafeguard("ausruf", $no_permission_msg . "<br>" . _("Die Evaluation wurde nicht gelöscht."));
                 }
 
-                $text = $eval->isTemplate() ? sprintf(_("Die Evaluationsvorlage <b>%s </b>wirklich löschen?"), $evalName) : sprintf(_("Die Evaluation <b>%s </b>wirklich löschen?"), $evalName);
+                $text = $eval->isTemplate() ? sprintf(_("Die Evaluationsvorlage %s wirklich löschen?"), $evalName) : sprintf(_("Die Evaluation %s wirklich löschen?"), $evalName);
                 $safeguard .= $this->createSafeguard("ausruf", $text, "delete_request", $evalID, $showrangeID, $referer);
                 break;
 
@@ -1032,18 +1051,18 @@ class EvalOverview {
                     return $safeguard;
                 }
 
-                $text = $eval->isTemplate() ? _("Die Evaluationsvorlage <b>%s</b> wurde gelöscht.") : _("Die Evaluation <b>%s</b> wurde gelöscht.");
+                $text = $eval->isTemplate() ? _("Die Evaluationsvorlage %s wurde gelöscht.") : _("Die Evaluation %s wurde gelöscht.");
                 $safeguard .= $this->createSafeguard("ok", sprintf($text, $evalName), "", "", "", $referer);
                 $evalChanged = YES;
                 break;
 
             case "delete_aborted":
-                $text = $eval->isTemplate() ? _("Die Evaluationsvorlage <b>%s</b> wurde nicht gelöscht.") : _("Die Evaluation <b>%s</b> wurde nicht gelöscht.");
+                $text = $eval->isTemplate() ? _("Die Evaluationsvorlage %s wurde nicht gelöscht.") : _("Die Evaluation %s wurde nicht gelöscht.");
                 $safeguard .= $this->createSafeguard("ok", sprintf($text, $evalName), "", "", "", $referer);
                 break;
 
             case "unlink_delete_aborted":
-                $text = _("Die Evaluation <b>%s</b> wurde nicht verändert.");
+                $text = _("Die Evaluation %s wurde nicht verändert.");
                 $safeguard .= $this->createSafeguard("ok", sprintf($text, $evalName), "", "", "", $referer);
                 break;
 
@@ -1054,7 +1073,7 @@ class EvalOverview {
 
                 $eval = new Evaluation($evalID, NULL, EVAL_LOAD_ALL_CHILDREN);
                 $eval->removeRangeIDs();
-                $eval->setAuthorID($auth->auth["uid"]);
+                $eval->setAuthorID($GLOBALS['user']->id);
                 $eval->resetAnswers();
                 $evalDB->removeUser($eval->getObjectID());
                 $eval->setStartdate(NULL);
@@ -1064,59 +1083,47 @@ class EvalOverview {
                     $safeguard .= $this->createSafeguard("", EvalCommon::createErrorReport($eval));
                     return $safeguard;
                 }
-                $text = _("Die Evaluation <b>%s</b> wurde aus allen Bereichen ausgehängt und zu den eigenen Evaluationsvorlagen verschoben.");
+                $text = _("Die Evaluation %s wurde aus allen Bereichen ausgehängt und zu den eigenen Evaluationsvorlagen verschoben.");
                 $safeguard .= $this->createSafeguard("ok", sprintf($text, $evalName), "", "", "", $referer);
                 break;
 
             case "created":
-                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation <b>%s</b> wurde angelegt."), $evalName));
+                $safeguard .= $this->createSafeguard("ok", sprintf(_("Die Evaluation %s wurde angelegt."), $evalName));
                 break;
 
 
             case "save2":
             case "save":
                 $eval = new Evaluation($evalID, NULL, EVAL_LOAD_ALL_CHILDREN);
-                $update_message = sprintf(_("Die Evaluation <b>%s</b> wurde mit den Veränderungen gespeichert."), $evalName);
-
-
+                $update_message = sprintf(_("Die Evaluation %s wurde mit den Veränderungen gespeichert."), $evalName);
                 /* Timesettings ---------------------------------------------------- */
                 if (Request::option("startMode")) {
-
-
                     switch (Request::option("startMode")) {
-
                         case "manual":
                             $startDate = NULL;
                             break;
-
                         case "timeBased":
                             $startDate = EvalCommon::date2timestamp(Request::int("startDay"), Request::int("startMonth"), Request::int("startYear"), Request::int("startHour"), Request::int("startMinute"));
                             break;
-
                         case "immediate":
                             $startDate = time() - 1;
                             break;
                     }
-
-                    if ($no_permission_msg &&
-                            ($eval->getStartdate != $startDate)) {
+                    if ($no_permission_msg && ($eval->getStartdate != $startDate)) {
                         $time_msg = $no_permission_msg . "<br>" . _("Die Einstellungen zur Startzeit wurden nicht verändert.");
                     }
                 }
 
                 if (Request::option("stopMode")) {
-
                     switch (Request::option("stopMode")) {
                         case "manual":
                             $stopDate = NULL;
                             $timeSpan = NULL;
                             break;
-
                         case "timeBased":
                             $stopDate = EvalCommon::date2timestamp(Request::int("stopDay"), Request::int("stopMonth"), Request::int("stopYear"), Request::int("stopHour"), Request::int("stopMinute"));
                             $timeSpan = NULL;
                             break;
-
                         case "timeSpanBased":
                             $stopDate = NULL;
                             $timeSpan = Request::get("timeSpan");
@@ -1124,8 +1131,8 @@ class EvalOverview {
                     }
 
                     if ($no_permission_msg &&
-                            ($eval->getStopdate != $stopDate &&
-                            $eval->getTimespan != $timeSpan )) {
+                        ($eval->getStopdate != $stopDate &&
+                            $eval->getTimespan != $timeSpan)) {
                         $time_msg = ($time_msg) ? $time_msg . "<br>" : $no_permission_msg;
                         $time_msg .= _("Die Einstellungen zur Endzeit wurden nicht verändert.");
                     }
@@ -1143,7 +1150,7 @@ class EvalOverview {
                             $safeguard .= $this->createSafeguard("", EvalCommon::createErrorReport($newEval));
                             return $safeguard;
                         }
-                        $update_message = sprintf(_("Die Evaluationsvorlage <b>%s</b> wurde als Evaluation angelegt."), $evalName);
+                        $update_message = sprintf(_("Die Evaluationsvorlage %s wurde als Evaluation angelegt."), $evalName);
                         $newEval->setStartdate($startDate);
                         $newEval->setStopdate($stopDate);
                         $newEval->setTimespan($timeSpan);
@@ -1218,12 +1225,8 @@ class EvalOverview {
                         return $safeguard;
                     }
                     /* -------------------------------- end: ask if it should be deleted */
-
                     $no_permission_ranges = EvaluationObjectDB::getEvalUserRangesWithNoPermission($eval, YES);
-
-
                     $counter_no_permisson = 0;
-
                     if (is_array($no_permission_ranges)) {
                         foreach ($remove_range_Array as $remove_rangeID => $v) {
 
@@ -1305,8 +1308,8 @@ class EvalOverview {
                     }
                 } else {
                     // nothing changed
-                    if (! Request::option('startMode') && ! Request::option('stopMode') &&
-                            empty($link_range) && empty($copy_range) && empty($remove_range))
+                    if (!Request::option('startMode') && !Request::option('stopMode') &&
+                        empty($link_range) && empty($copy_range) && empty($remove_range))
                         $update_message = _("Es wurden keine Veränderungen gespeichert.");
 
                     // set new start date
@@ -1325,7 +1328,7 @@ class EvalOverview {
                         $eval->setTimeSpan($timeSpan);
 
                         if (($stopDate != NULL && $stopDate <= time() - 1) ||
-                                ($timeSpan != NULL && $eval->getStartdate() != NULL && $eval->getStartdate() + $timeSpan <= time() - 1)) {
+                            ($timeSpan != NULL && $eval->getStartdate() != NULL && $eval->getStartdate() + $timeSpan <= time() - 1)) {
                             $message .= $message ? "<br>" : " ";
                             $message .= _("Die Evaluation wurde beendet.");
                         }
@@ -1344,16 +1347,16 @@ class EvalOverview {
                 // start/endtime aren't saved, because of ranges with no permisson
                 if ($time_msg)
                     $safeguard .= $this->createSafeguard(
-                            "ausruf", $time_msg);
+                        "ausruf", $time_msg);
 
                 // everything is just fine so print the all messages
                 if ($update_message && !$time_msg)
                     $safeguard .= $this->createSafeguard(
-                            "ok", $update_message . "<br>" . $message);
+                        "ok", $update_message . "<br>" . $message);
                 // messages from un/linking an making copys
                 elseif ($time_msg && $message)
                     $safeguard .= $this->createSafeguard(
-                            "ok", $message);
+                        "ok", $message);
 
                 break;
 
@@ -1381,16 +1384,16 @@ class EvalOverview {
                 $eval = new Evaluation($evalID, NULL, EVAL_LOAD_NO_CHILDREN);
                 $abort_creation = false;
                 if ($eval->getTitle() == _("Neue Evaluation") &&
-                        $eval->getText() == "") {
+                    $eval->getText() == "") {
                     # the evaluationen may be not edited yet ... so continue checking
                     $eval = new Evaluation($evalID, NULL, EVAL_LOAD_ALL_CHILDREN);
                     $number_of_childs = $eval->getNumberChildren();
                     $child = $eval->getNextChild();
                     if ($number_of_childs == 1 &&
-                            $child &&
-                            $child->getTitle() == _("Erster Gruppierungsblock") &&
-                            $child->getChildren() == NULL &&
-                            $child->getText() == "") {
+                        $child &&
+                        $child->getTitle() == _("Erster Gruppierungsblock") &&
+                        $child->getChildren() == NULL &&
+                        $child->getText() == "") {
                         $abort_creation = true;
                     }
                 }
@@ -1420,10 +1423,9 @@ class EvalOverview {
         }
 
         /* Send SMS when eval has been modified by admin/root ----------------- */
-        if (($evalChanged) && ($eval->getAuthorID() != $auth->auth["uid"])) {
-
+        if (($evalChanged) && ($eval->getAuthorID() != $GLOBALS['user']->id)) {
             $sms = new messaging();
-            $sms->insert_message(sprintf(_("An Ihrer Evaluation \"%s\" wurden von %s Änderungen vorgenommen."), $eval->getTitle(), get_username($auth->auth["uid"])), get_username($eval->getAuthorID()), "____%system%____", FALSE, FALSE, "1");
+            $sms->insert_message(sprintf(_("An Ihrer Evaluation \"%s\" wurden von %s Änderungen vorgenommen."), $eval->getTitle(), $GLOBALS['user']->username), get_username($eval->getAuthorID()), "____%system%____", FALSE, FALSE, "1");
         }
         /* ------------------------------------------------------ end: send SMS */
 
@@ -1447,9 +1449,17 @@ class EvalOverview {
      * @param text   string        The Text to draw
      * @param evalID string needed if you want to delete an evaluation (not needed)
      */
-    function createSafeguard($sign, $text, $mode = NULL, $evalID = NULL, $showrangeID = NULL, $referer = NULL) {
+    public function createSafeguard($sign, $text, $mode = NULL, $evalID = NULL, $showrangeID = NULL, $referer = NULL)
+    {
         //TODO: auf messagebox bzw. createQuestion umstellen!!!
 
+        if (mb_stripos($mode, 'request') === false && $sign != '') {
+            if($sign === 'ok') {
+                return MessageBox::success($text);
+            } else {
+                return MessageBox::error($text);
+            }
+        }
         $label = [
             "referer" => _("Zum vorherigen Bereich zurückkehren."),
             "yes" => _("Ja!"),
@@ -1459,25 +1469,9 @@ class EvalOverview {
             "cancel" => _("Abbrechen")
         ];
 
-        $html = "   <table align=\"center\" width=\"100%\" border=0 cellpadding=3 cellspacing=0>\n" // class=\"table_row_even\"
-                . "   <tr>\n"
-                . "    <td width=\"34\" valign=\"middle\" style=\"vertical-align:middle;\">\n";
-
-        if ($sign != "") {
-            if ($sign == 'ok') {
-                $sign = 'messagebox/info.png';
-            } elseif ($sign == 'ausruf') {
-                $sign = 'messagebox/question.png';
-            }
-            $html .= Assets::img($sign, ['class' => 'middle']);
-        }
-
-        $html .="    </td>\n";
-        $html .="    <td align=\"left\" valign=\"middle\" style=\"vertical-align:middle;\">\n";
-        $html .="     <span class=\"" . ($sign == "ausruf" ? "eval_error" : "eval_success") . "\"><br>" . $text . "</span><br><br>\n";
-
-        if ($referer)
+        if ($referer) {
             $linkreferer = "&referer=" . $referer;
+        }
 
         if ($mode == "delete_request") {
             $value1 = "delete_confirmed";
@@ -1490,39 +1484,35 @@ class EvalOverview {
             $request = YES;
         }
 
-        if ($referer)
+        if ($referer) {
             URLHelper::bindLinkParam('referer', $referer);
+        }
 
         if ($request) {
-
-            $html .= LinkButton::createAccept(_("Ja"), URLHelper::getURL('admin_evaluation.php?evalAction=' . $value1 . '&evalID=' . $evalID . '&rangeID=' . $showrangeID),
-                        ['title' => $label["yes"]]) . "\n";
-            $html .= LinkButton::createCancel(_("Nein"), URLHelper::getURL('admin_evaluation.php?evalAction=' . $value2 . '&evalID=' . $evalID . '&rangeID=' . $showrangeID),
-                        ['title' => $label["no"]]) . "\n";
+            return QuestionBox::create(
+                $text,
+                URLHelper::getURL('admin_evaluation.php?evalAction=' . $value1 . '&evalID=' . $evalID . '&rangeID=' . $showrangeID),
+                URLHelper::getURL('admin_evaluation.php?evalAction=' . $value2 . '&evalID=' . $evalID . '&rangeID=' . $showrangeID)
+            );
         }
 
         if ($mode == "unlink_delete_request") {
-            $add_cancel = !$referer ? : "&referer=" . $referer;
+            $add_cancel = !$referer ?: "&referer=" . $referer;
             $links = [
                 URLHelper::getURL('admin_evaluation.php?evalAction=delete_confirmed&evalID=' . $evalID . '&rangeID=' . $showrangeID),
                 URLHelper::getURL('admin_evaluation.php?evalAction=unlink_delete_aborted&evalID=' . $evalID . '&rangeID=' . $showrangeID),
                 URLHelper::getURL('admin_evaluation.php?evalAction=unlink_and_move&evalID=' . $evalID . '&rangeID=' . $showrangeID . $add_cancel)
             ];
-            $html .= LinkButton::create(_('Löschen'), $links[0], ['title' => $label["delete"]]) . "\n";
-            $html .= LinkButton::create(_('Verschieben'), $links[1], ['title' => $label["template"]]) . "\n";
-            $html .= LinkButton::createCancel(_('Abbrechen'), $links[2], ['title' => $label["cancel"]]) . "\n";
-            $html .= "<br><br>";
+            $details[] = LinkButton::create(_('Löschen'), $links[0], ['title' => $label["delete"]]);
+            $details[] = LinkButton::create(_('Verschieben'), $links[1], ['title' => $label["template"]]);
+            $details[] = LinkButton::createCancel(_('Abbrechen'), $links[2], ['title' => $label["cancel"]]);
+
+            return MessageBox::info($text, $details);
         }
 
-        $html .="    </td>\n"
-                . "   </tr>\n";
-
-        if ($referer)
-            $html .= "    <tr><td>&nbsp;</td><td><a href=\"" . URLHelper::getLink($referer) . "\">" . $label["referer"] . "</a></td></tr>";
-
-        $html .="   </table>\n";
-
-        return $html;
+        if ($referer) {
+            return LinkButton::create($label["referer"], URLHelper::getLink($referer));
+        }
     }
 
     /**
@@ -1534,7 +1524,8 @@ class EvalOverview {
      * @param   $style   the background style
      * @return  string   the runtime settings (html)
      */
-    function createRuntimeSettings($eval, $state, $style) {
+    function createRuntimeSettings($eval, $state, $style)
+    {
         $html = "";
         $startDate = $eval->getStartdate();
         $stopDate = $eval->getStopdate();
@@ -1578,8 +1569,8 @@ class EvalOverview {
         $html .= "<tr><td colspan=\"2\">\n";
         $html .= "<b>" . _("Einstellungen zur Start- und Endzeit:") . "</b>";
         $tooltip = $eval->isTemplate()
-                 ? _('Legen Sie fest, von wann bis wann alle eingehängten und kopierten Instanzen dieser Evaluationsvorlage in Stud.IP öffentlich sichtbar sein sollen.')
-                 : _('Legen Sie fest, von wann bis wann die Evaluation in Stud.IP öffentlich sichtbar sein soll.');
+            ? _('Legen Sie fest, von wann bis wann alle eingehängten und kopierten Instanzen dieser Evaluationsvorlage in Stud.IP öffentlich sichtbar sein sollen.')
+            : _('Legen Sie fest, von wann bis wann die Evaluation in Stud.IP öffentlich sichtbar sein soll.');
         $html .= " ";
         $html .= Icon::create('info-circle', 'inactive', ['title' => $tooltip])->asImg(['class' => 'middle']);
         $html .= "</td></tr>";
@@ -1587,16 +1578,16 @@ class EvalOverview {
 
         /* START TIME settings ------------------------------------------------- */
         $html .= "<td width=\"50%\" valign=\"top\">"
-                . "<table width=\"100%\" cellpadding=0 cellspacing=0 border=0>\n"
-                . "<tr>"
-                . "<td class=\"$style\" height=\"22\" align=\"left\" "
-                . "style=\"vertical-align:bottom;\">"
-                . "<b>"
-                . "&nbsp;"
-                . _("Anfang")
-                . "</b>"
-                . "</td>"
-                . "</tr>\n";
+            . "<table width=\"100%\" cellpadding=0 cellspacing=0 border=0>\n"
+            . "<tr>"
+            . "<td class=\"$style\" height=\"22\" align=\"left\" "
+            . "style=\"vertical-align:bottom;\">"
+            . "<b>"
+            . "&nbsp;"
+            . _("Anfang")
+            . "</b>"
+            . "</td>"
+            . "</tr>\n";
 
         /* Eval has NOT started yet --- */
         if ($state == EVAL_STATE_NEW || $eval->isTemplate()) {
@@ -1609,19 +1600,17 @@ class EvalOverview {
             $html .= "<input type=radio name=\"startMode\" value=\"timeBased\" " . ($startMode == "timeBased" ? "checked" : "") . ">&nbsp;";
             $html .= _("Startzeitpunkt:");
             $html .= "&nbsp;&nbsp;<input type=text name=\"startDay\" size=3 maxlength=2 value=\"" . $startDay . "\">&nbsp;.&nbsp;"
-                    . "<input type=text name=\"startMonth\" size=3 maxlength=2 value=\"" . $startMonth . "\">&nbsp;.&nbsp;"
-                    . "<input type=text name=\"startYear\" size=5 maxlength=4 value=\"" . $startYear . "\">&nbsp;"
-                    . sprintf(_("um %s Uhr"), "&nbsp;<input type=text name=\"startHour\" size=3 maxlength=2 value=\"" . $startHour . "\">&nbsp;:" .
-                            "&nbsp;<input type=text name=\"startMinute\" size=3 maxlength=2 value=\"" . $startMinute . "\">&nbsp;");
+                . "<input type=text name=\"startMonth\" size=3 maxlength=2 value=\"" . $startMonth . "\">&nbsp;.&nbsp;"
+                . "<input type=text name=\"startYear\" size=5 maxlength=4 value=\"" . $startYear . "\">&nbsp;"
+                . sprintf(_("um %s Uhr"), "&nbsp;<input type=text name=\"startHour\" size=3 maxlength=2 value=\"" . $startHour . "\">&nbsp;:" .
+                    "&nbsp;<input type=text name=\"startMinute\" size=3 maxlength=2 value=\"" . $startMinute . "\">&nbsp;");
             $html .= "</td></tr>";
 
             $html .= "<tr><td class=table_row_even valign=middle>";
             $html .= "<input type=radio name=\"startMode\" value=\"immediate\">&nbsp;";
             $html .= _("sofort");
             $html .= "</td></tr>";
-        }
-
-        /* Eval is already running or finished --- */ else {
+        } /* Eval is already running or finished --- */ else {
             $html .= "<tr><td><font size=\"+2\">&nbsp;</font></td></tr>";
             $html .= "<tr><td valign=\"middle\" align=\"center\">";
             $html .= sprintf(_("Startzeitpunkt war der <b>%s</b> um <b>%s</b> Uhr."), date("d.m.Y", $startDate), date("H:i", $startDate));
@@ -1633,45 +1622,42 @@ class EvalOverview {
 
         /* END TIME settings --------------------------------------------------- */
         $html .= "<td width=\"50%\" valign=\"top\">"
-                . "<table width=\"100%\" cellpadding=0 cellspacing=0 border=0>\n"
-                . "<tr>"
-                . "<td class=\"$style\" height=\"22\" align=\"left\" "
-                . "style=\"vertical-align:bottom;\">"
-                . "<b>"
-                . "&nbsp;"
-                . _("Ende")
-                . "</b>"
-                . "</td>"
-                . "</tr>\n";
+            . "<table width=\"100%\" cellpadding=0 cellspacing=0 border=0>\n"
+            . "<tr>"
+            . "<td class=\"$style\" height=\"22\" align=\"left\" "
+            . "style=\"vertical-align:bottom;\">"
+            . "<b>"
+            . "&nbsp;"
+            . _("Ende")
+            . "</b>"
+            . "</td>"
+            . "</tr>\n";
 
         /* Eval has NOT finished yet --- */
         if ($state != EVAL_STATE_STOPPED) {
             $html .= "<tr><td class=table_row_even>\n"
-                    . "<input type=radio name=\"stopMode\" value=\"manual\" " . ($stopMode == "manual" ? "checked" : "") . ">&nbsp;"
-                    . _("manuell beenden")
-                    . "</td></tr>"
-                    . "<tr><td class=table_row_odd>\n"
-                    . "<input type=radio name=\"stopMode\" value=\"timeBased\" " . ($stopMode == "timeBased" ? "checked" : "") . ">&nbsp;"
-                    . _("Endzeitpunkt:");
+                . "<input type=radio name=\"stopMode\" value=\"manual\" " . ($stopMode == "manual" ? "checked" : "") . ">&nbsp;"
+                . _("manuell beenden")
+                . "</td></tr>"
+                . "<tr><td class=table_row_odd>\n"
+                . "<input type=radio name=\"stopMode\" value=\"timeBased\" " . ($stopMode == "timeBased" ? "checked" : "") . ">&nbsp;"
+                . _("Endzeitpunkt:");
 
             $html .= "&nbsp;&nbsp;"
-                    . "<input type=text name=\"stopDay\" size=3 maxlength=2 value=\"" . $stopDay . "\">&nbsp;.&nbsp;"
-                    . "<input type=text name=\"stopMonth\" size=3 maxlength=2 value=\"" . $stopMonth . "\">&nbsp;.&nbsp;"
-                    . "<input type=text name=\"stopYear\" size=5 maxlength=4 value=\"" . $stopYear . "\">&nbsp;"
-                    . sprintf(_("um %s Uhr"), "&nbsp;<input type=text name=\"stopHour\" size=3 maxlength=2 value=\"" . $stopHour . "\">&nbsp;:" .
-                            "&nbsp;<input type=text name=\"stopMinute\" size=3 maxlength=2 value=\"" . $stopMinute . "\">&nbsp;");
+                . "<input type=text name=\"stopDay\" size=3 maxlength=2 value=\"" . $stopDay . "\">&nbsp;.&nbsp;"
+                . "<input type=text name=\"stopMonth\" size=3 maxlength=2 value=\"" . $stopMonth . "\">&nbsp;.&nbsp;"
+                . "<input type=text name=\"stopYear\" size=5 maxlength=4 value=\"" . $stopYear . "\">&nbsp;"
+                . sprintf(_("um %s Uhr"), "&nbsp;<input type=text name=\"stopHour\" size=3 maxlength=2 value=\"" . $stopHour . "\">&nbsp;:" .
+                    "&nbsp;<input type=text name=\"stopMinute\" size=3 maxlength=2 value=\"" . $stopMinute . "\">&nbsp;");
             $html .= "&nbsp;"
-#       . "<input type=hidden name=\"stopDate\" value=\"".$stopDate."\">"
-                    . "</td></tr>"
-                    . "<tr><td class=table_row_even valign=middle>"
-                    . "<input type=radio name=\"stopMode\" value=\"timeSpanBased\" " . ($stopMode == "timeSpanBased" ? "checked" : "")
-#       . " onClick=\"document.settingsForm.submit()\""
-                    . ">&nbsp;"
-                    . _("Zeitspanne")
-                    . "&nbsp;&nbsp;"
-                    . "<select name=\"timeSpan\" style=\"vertical-align:middle\" size=1 "
-#       . "onChange=\"document.settingsForm.submit()\""
-                    . ">";
+                . "</td></tr>"
+                . "<tr><td class=table_row_even valign=middle>"
+                . "<input type=radio name=\"stopMode\" value=\"timeSpanBased\" " . ($stopMode == "timeSpanBased" ? "checked" : "")
+                . ">&nbsp;"
+                . _("Zeitspanne")
+                . "&nbsp;&nbsp;"
+                . "<select name=\"timeSpan\" style=\"vertical-align:middle\" size=1 "
+                . ">";
 
             for ($i = 1; $i <= 12; $i++) {
                 $secs = $i * 604800;  // == weeks * seconds per week
@@ -1697,13 +1683,11 @@ class EvalOverview {
                 $startDate = ($startMode == "immediate") ? time() : $startDate;
 
                 $html .= "&nbsp;";
-                $html .= Icon::create('refresh', 'clickable', ['title' => _('Endzeitpunkt neu berechnen')])->asInput(['name'=>'save2_button','align'=>'middle',]);
+                $html .= Icon::create('refresh', 'clickable', ['title' => _('Endzeitpunkt neu berechnen')])->asInput(['name' => 'save2_button', 'align' => 'middle',]);
                 $html .= sprintf(_(" (<b>%s</b> um <b>%s</b> Uhr)"), strftime("%d.%m.%Y", $startDate + $timeSpan), strftime("%H:%M", $startDate + $timeSpan));
             }
             $html .= "</td></tr>";
-        }
-
-        /* Eval has finished --- */ else {
+        } else {
             $html .= "<tr><td><font size=\"+2\">&nbsp;</font></td></tr>";
             $html .= "<tr><td valign=\"middle\" align=\"center\">";
             $html .= sprintf(_("Endzeitpunkt war der <b>%s</b> um <b>%s</b> Uhr."), date("d.m.Y", $stopDate), date("H:i", $stopDate));
@@ -1727,8 +1711,8 @@ class EvalOverview {
      * @param   $style   the background style
      * @return  string   the domain settings (html)
      */
-    function createDomainSettings($eval, $state, $style) {
-        global $user;
+    public function createDomainSettings($eval, $state, $style)
+    {
         $db = new EvaluationObjectDB ();
         $evalDB = new EvaluationDB ();
         $evalID = $eval->getObjectID();
@@ -1746,7 +1730,7 @@ class EvalOverview {
         if ($globalperm == "root") {
             $results["studip"] = ["type" => "system", "name" => _("Systemweite Evaluationen")];
         } elseif ($globalperm == "dozent" || $globalperm == "autor" || $globalperm == "admin") {
-            $results[$user->id] = ["type" => "user", "name" => _("Profil")];
+            $results[$GLOBALS['user']->id] = ["type" => "user", "name" => _("Profil")];
         }
 
         if ($globalperm == "dozent" || $globalperm == "autor" || Request::get("search"))
@@ -1826,7 +1810,7 @@ class EvalOverview {
                 $tr_r->addContent($td_r);
 
                 if (($this->perm->have_studip_perm("tutor", $assigned_rangeID)) ||
-                        $assigned_rangeID == $user->id) {
+                    $assigned_rangeID == $GLOBALS['user']->id) {
                     // link
                     $td_r = new HTML("td");
                     $td_r->addAttr("align", "center");
@@ -1892,7 +1876,7 @@ class EvalOverview {
         // display search_results
         if ($results) {
             foreach ($results as $k => $v) {
-                foreach($range_types as $type_key => $type_value) {
+                foreach ($range_types as $type_key => $type_value) {
                     if ($v["type"] == $type_key) {
                         $ranges["$type_key"][] = ["id" => $k, "name" => $v["name"]];
                     }
@@ -1907,9 +1891,8 @@ class EvalOverview {
             $table_s->addAttr("cellpadding", "0");
             $table_s->addAttr("width", "100%");
 
+            foreach ($range_types as $type_key => $type_value) {
 
-
-            foreach($range_types as $type_key => $type_value) {
                 // Überschriften
                 $tr_s = new HTML("tr");
 
@@ -2064,8 +2047,8 @@ class EvalOverview {
         return $table->createContent();
     }
 
-    function createDomainLinks($search) {
-        global $user;
+    function createDomainLinks($search)
+    {
         $db = new EvaluationObjectDB ();
         $evalDB = new EvaluationDB ();
         $globalperm = $db->getGlobalPerm();
@@ -2076,7 +2059,7 @@ class EvalOverview {
         if ($globalperm == "root") {
             $results["studip"] = ["type" => "system", "name" => _("Systemweite Evaluationen")];
         } else {
-            $results[$user->id] = ["type" => "user", "name" => _("Profil")];
+            $results[$GLOBALS['user']->id] = ["type" => "user", "name" => _("Profil")];
         }
 
         if ($globalperm == "dozent" || $globalperm == "autor" || $search)
@@ -2100,7 +2083,7 @@ class EvalOverview {
         // display search_results
         if ($results) {
             foreach ($results as $k => $v) {
-                foreach($range_types as $type_key => $type_value) {
+                foreach ($range_types as $type_key => $type_value) {
                     if ($v["type"] == $type_key) {
                         $ranges["$type_key"][] = ["id" => $k, "name" => $v["name"]];
                     }
@@ -2116,7 +2099,7 @@ class EvalOverview {
             $table->addAttr("cellpadding", "0");
             $table->addAttr("width", "100%");
 
-            foreach($range_types as $type_key => $type_value) {
+            foreach ($range_types as $type_key => $type_value) {
                 // Überschriften
                 $tr = new HTML("tr");
 
@@ -2223,7 +2206,8 @@ class EvalOverview {
      * @returns string   the command
      *
      */
-    function getPageCommand() {
+    function getPageCommand()
+    {
         if (Request::option("evalAction"))
             return Request::option("evalAction");
 

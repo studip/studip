@@ -43,257 +43,221 @@ require_once HTML;
  * @package     evaluation
  *
  */
+class EvalCommon
+{
+    /**
+     * Creates this funny blue title bar
+     * @param string $title The title
+     * @param string $iconURL The URL for the icon
+     */
+    public static function createTitle($title, $iconURL = "", $padding = 0)
+    {
+        $table = new HTML("table");
+        $table->addAttr("border", "0");
+        $table->addAttr("class", "blank");
+        $table->addAttr("align", "center");
+        $table->addAttr("cellspacing", "0");
+        $table->addAttr("cellpadding", $padding);
+        $table->addAttr("width", "100%");
 
-class EvalCommon {
-  /* Define static functions ------------------------------------------------------ */
+        $trTitle = new HTML("tr");
+        $trTitle->AddAttr("valign", "top");
+        $trTitle->AddAttr("align", "center");
 
-  /**
-   * Creates this funny blue title bar
-   * @param   string   $title     The title
-   * @param   string   $iconURL   The URL for the icon
-   */
-  static function createTitle ($title, $iconURL = "", $padding = 0) {
-    $table = new HTML("table");
-    $table->addAttr ("border","0");
-    $table->addAttr ("class","blank");
-    $table->addAttr ("align","center");
-    $table->addAttr ("cellspacing","0");
-    $table->addAttr ("cellpadding",$padding);
-    $table->addAttr ("width","100%");
+        $tdTitle = new HTML("td");
+        if ($iconURL) {
+            $tdTitle->addAttr("class", "table_header_bold");
+        } else {
+            $tdTitle->addAttr("class", "content_body");
+        }
+        $tdTitle->addAttr("colspan", "2");
+        $tdTitle->addAttr("align", "left");
+        $tdTitle->addAttr("valign", "middle");
 
-    $trTitle = new HTML("tr");
-    $trTitle->AddAttr ("valign", "top");
-    $trTitle->AddAttr ("align", "center");
+        if ($iconURL) {
+            $imgTitle = new HTMLempty ("img");
+            $imgTitle->addAttr("src", $iconURL);
+            $imgTitle->addAttr("alt", $title);
+            $imgTitle->addAttr("align", "bottom");
+            $tdTitle->addContent($imgTitle);
+        }
 
-    $tdTitle = new HTML("td");
-    if ($iconURL) {
-       $tdTitle->addAttr ("class","table_header_bold");
-    } else {
-       $tdTitle->addAttr ("class","content_body");
-    }
-    $tdTitle->addAttr ("colspan","2");
-    $tdTitle->addAttr ("align","left");
-    $tdTitle->addAttr ("valign","middle");
+        $bTitle = new HTML ("b");
+        $bTitle->addContent($title);
+        $tdTitle->addContent($bTitle);
 
-    if ($iconURL) {
-    $imgTitle = new HTMLempty ("img");
-    $imgTitle->addAttr ("src", $iconURL);
-    $imgTitle->addAttr ("alt", $title);
-    $imgTitle->addAttr ("align", "bottom");
-    $tdTitle->addContent ($imgTitle);
-    }
+        $trTitle->addContent($tdTitle);
+        $table->addContent($trTitle);
 
-    $bTitle = new HTML ("b");
-    $bTitle->addContent ($title);
-    $tdTitle->addContent ($bTitle);
-
-    $trTitle->addContent ($tdTitle);
-    $table->addContent ($trTitle);
-
-    return $table;
-  }
-
-  /**
-   * Creates a simple image for the normal top of an modulepage
-   * @param   string   $imgURL   The URL for the icon
-   * @param   string   $imgALT   The description for the icon
-   */
-  static function createImage ($imgURL, $imgALT, $extra = "") {
-    $img = new HTMLempty ("img");
-    $img->addAttr ("border", "0");
-    $img->addAttr ("valign", "middle");
-    $img->addAttr ("src", $imgURL);
-    if (empty($extra)) {
-    $img->addAttr ("alt", $imgALT);
-    $img->addAttr ("title", $imgALT);
-    } else
-    $img->addString($extra);
-
-    return $img;
-  }
-
-  /**
-   * Creates the Javascript static function, which will open an evaluation popup
-   */
-  static function createEvalShowJS( $isPreview = NO, $as_object = YES ) {
-      $html = "";
-      $html .=
-      "<script type=\"text/javascript\" language=\"JavaScript\">".
-      "  function openEval( evalID ) {" .
-      "    evalwin = window.open(STUDIP.URLHelper.getURL('show_evaluation.php?evalID=' + evalID + '&isPreview=".$isPreview."'), " .
-      "                          evalID, 'width=790,height=500,scrollbars=yes,resizable=yes');" .
-      "    evalwin.focus();".
-      "  }\n".
-      "</script>\n";
-
-      $div = new HTML ("div");
-#      $div->addAttr( "style", "display:inline;" );
-      $div->addHTMLContent( $html );
-
-      if ( $as_object )
-          return $div;
-      else
-          return $html;
-  }
-
-  /**
-   * Creates a link, which will open an evaluation popup
-   */
-  static function createEvalShowLink ($evalID, $content, $isPreview = NO, $as_object = YES) {
-      $html = "";
-
-      $html .=
-      "<a " .
-          "href=\"". URLHelper::getLink('show_evaluation.php?evalID=' .$evalID .'&isPreview=' . $isPreview) . "\" " .
-          "target=\"".$evalID."\" " .
-          "onClick=\"openEval('".$evalID."'); return false;\">" .
-      (is_object($content) ? str_replace("\n", "", $content->createContent()) : $content) .
-      "</a>";
-
-      $div = new HTML ("div");
-#      $div->addAttr( "style", "display:inline;" );
-      $div->addHTMLContent( $html );
-
-      if ( $as_object )
-          return $div;
-      else
-          return $html;
-  }
-
-  /**
-   * Creates a reportmessage
-   * @param  string  $text     The text to show
-   * @param  string  $imgURL   The image to show
-   * @param  string  $cssClass The css class for the text
-   */
-  static function createReportMessage ($text, $imgURL, $cssClass) {
-    $table = new HTML ("table");
-    $table->addAttr ("border", "0");
-    $table->addAttr ("cellpadding", "2");
-    $table->addAttr ("cellspacing", "0");
-
-    $tr = new HTML ("tr");
-
-    $td = new HTML ("td");
-    $td->addAttr ("align", "center");
-    $td->addAttr ("width", "50");
-
-    $img = new HTMLempty ("img");
-    $img->addAttr ("src", $imgURL);
-    $td->addContent ($img);
-
-    $tr->addContent ($td);
-
-    $td = new HTML ("td");
-    $td->addAttr ("align", "left");
-    $td->addAttr ("class", $cssClass);
-    $td->addHTMLContent ($text);
-    $tr->addContent ($td);
-
-    $table->addContent ($tr);
-
-    return $table;
-  }
-
-  /**
-   * Creates an errormessage from an object
-   * @param    object StudipObejct   $object   A Stud.IP-object
-   */
-  static function showErrorReport (&$object, $errortitle = "") {
-    if (empty ($errortitle)) {
-      $errortitle = ( count( $object->getErrors() ) > 1 )
-    ? _("Es sind Fehler aufgetreten.")
-    : _("Es ist ein Fehler aufgetreten.");
+        return $table;
     }
 
-    $message = new HTML ("div");
+    /**
+     * Creates a simple image for the normal top of an modulepage
+     * @param string $imgURL The URL for the icon
+     * @param string $imgALT The description for the icon
+     */
+    public static function createImage($imgURL, $imgALT, $extra = "")
+    {
+        $img = new HTMLempty ("img");
+        $img->addAttr("border", "0");
+        $img->addAttr("valign", "middle");
+        $img->addAttr("src", $imgURL);
+        if (empty($extra)) {
+            $img->addAttr("alt", $imgALT);
+            $img->addAttr("title", $imgALT);
+        } else {
+            $img->addString($extra);
+        }
 
-    if (!$object->isError ()) {
-      $table =  EvalCommon::createReportMessage
-    (_("Es ist kein Fehler aufgetreten"), EVAL_PIC_SUCCESS,
-     EVAL_CSS_SUCCESS);
-      $message->addContent ($table);
-    } else {
-      $table =  EvalCommon::createReportMessage ($errortitle, EVAL_PIC_ERROR,
-                         EVAL_CSS_ERROR);
-      $ul = new HTML ("ul");
-      foreach ($object->getErrors () as $error) {
-#$li = new HTML ("li");
-#$li->addContent (_("Objekttyp: ".$object->x_instanceof ()));
-#$ul->addContent ($li);
-    $li = new HTML ("li");
-    $li->addContent ($error["string"]);
-    if ($error["type"] == ERROR_CRITICAL) {
-      $ul2 = new HTML ("ul");
-      $li2 = new HTML ("li");
-      $li2->addContent (_("Datei: ").$error["file"]);
-      $ul2->addContent ($li2);
-      $li2 = new HTML ("li");
-      $li2->addContent (_("Zeile: ").$error["line"]);
-      $ul2->addContent ($li2);
-      $ul->addContent ($u2);
-    }
-    $ul->addContent ($li);
-      }
-      $message->addContent ($table);
-      $message->addContent ($ul);
+        return $img;
     }
 
-    echo $message->createContent ();
-  }
+    /**
+     * Creates the Javascript static function, which will open an evaluation popup
+     */
+    static function createEvalShowJS($isPreview = NO, $as_object = YES)
+    {
+        $html = "";
+        $html .=
+            "<script type=\"text/javascript\" language=\"JavaScript\">" .
+            "  function openEval( evalID ) {" .
+            "    evalwin = window.open(STUDIP.URLHelper.getURL('show_evaluation.php?evalID=' + evalID + '&isPreview=" . $isPreview . "'), " .
+            "                          evalID, 'width=790,height=500,scrollbars=yes,resizable=yes');" .
+            "    evalwin.focus();" .
+            "  }\n" .
+            "</script>\n";
 
-  static function createErrorReport (&$object, $errortitle = "") {
-      ob_start();
-      EvalCommon::showErrorReport ($object, $errortitle);
-      $html = ob_get_contents();
-      ob_end_clean();
-      return $html;
-  }
+        $div = new HTML ("div");
+        $div->addHTMLContent($html);
 
-  /**
-   * Returns the rangeID
-   */
-  static function getRangeID () {
-    $rangeID = Request::option('range_id') ?: Context::getId();
+        if ($as_object) {
+            return $div;
+        }
+        return $html;
+    }
 
-    if (empty ($rangeID) || ($rangeID == get_username ($GLOBALS['user']->id)))
-      $rangeID = $GLOBALS['user']->id;
+    /**
+     * Creates a link, which will open an evaluation popup
+     */
+    static function createEvalShowLink($evalID, $content, $isPreview = NO, $as_object = YES)
+    {
+        $html = "";
 
-    return $rangeID;
-  }
+        $html .=
+            "<a " .
+            "href=\"" . URLHelper::getLink('show_evaluation.php?evalID=' . $evalID . '&isPreview=' . $isPreview) . "\" " .
+            "target=\"" . $evalID . "\" " .
+            "onClick=\"openEval('" . $evalID . "'); return false;\">" .
+            (is_object($content) ? str_replace("\n", "", $content->createContent()) : $content) .
+            "</a>";
+
+        $div = new HTML ("div");
+        $div->addHTMLContent($html);
+
+        if ($as_object) {
+            return $div;
+        }
+        return $html;
+    }
 
 
-  /**
-   * Checks and transforms a date into a UNIX (r)(tm) timestamp
-   * @access public
-   * @static
-   * @param   integer $day    The day
-   * @param   integer $month  The month
-   * @param   integer $year   The year
-   * @param   integer $hour   The hour (optional)
-   * @param   integer $minute The minute (optional)
-   * @param   integer $second The second (optional)
-   * @return  integer If an error occurs -> -1. Otherwise the UNIX-timestamp
-   */
-  static function date2timestamp ($day, $month, $year,
-               $hour = 0, $minute = 0, $second = 0) {
-      if (!checkdate ((int)$month, (int)$day, (int)$year) ||
-      $hour < 0 || $hour > 24 ||
-      $minute < 0 || $minute > 59 ||
-      $second < 0 || $second > 59) {
-      return -1;
-      }
+    /**
+     * Creates an errormessage from an object
+     * @param object StudipObejct   $object   A Stud.IP-object
+     */
+    public static function showErsrorReport(&$object, $errortitle = "")
+    {
+        $errors = $object->getErrors();
+        if (empty ($errortitle)) {
+            if ($errors && count($errors) > 1) {
+                $errortitle = _("Es sind Fehler aufgetreten.");
+            } else {
+                $errortitle = _("Es ist ein Fehler aufgetreten.");
+            }
+        }
 
-      // windows cant count that mutch
-      if ( $year < 1971 )
-        $year = 1971;
-      elseif ( $year > 2037 )
-        $year = 2037;
+        if (!$object->isError()) {
+            return MessageBox::success(_("Es ist kein Fehler aufgetreten"));
+        } else {
+            $details = [];
+            if (!empty($errors)) {
+                foreach ($errors as $error) {
+                    $string = $error['string'];
+                    if ($error["type"] == ERROR_CRITICAL) {
+                        $string .= _("Datei: ") . $error["file"] . '<br>';
+                        $string .= _("Zeile: ") . $error["line"] . '<br>';
 
-      return mktime ($hour, $minute, $second, $month, $day, $year);
-   }
+                    }
+                    $details[] = $string;
+                }
+            }
+            return MessageBox::error($errortitle, $details);
+        }
+    }
 
-  /* ----------------------------------------------------------------------- */
+    /**
+     * @param $object
+     * @param string $errortitle
+     * @return MessageBox|object
+     * @deprecated
+     */
+    public static function createErrorReport(&$object, $errortitle = "")
+    {
+        return MessageBox::error($errortitle);
+    }
+
+    /**
+     * Returns the rangeID
+     */
+    public static function getRangeID()
+    {
+        $rangeID = Request::option('range_id') ?: Context::getId();
+
+        if (empty ($rangeID) || ($rangeID == get_username($GLOBALS['user']->id)))
+            $rangeID = $GLOBALS['user']->id;
+
+        return $rangeID;
+    }
+
+
+    /**
+     * Checks and transforms a date into a UNIX (r)(tm) timestamp
+     * @access public
+     * @static
+     * @param integer $day The day
+     * @param integer $month The month
+     * @param integer $year The year
+     * @param integer $hour The hour (optional)
+     * @param integer $minute The minute (optional)
+     * @param integer $second The second (optional)
+     * @return  integer If an error occurs -> -1. Otherwise the UNIX-timestamp
+     */
+    public static function date2timestamp(
+        $day,
+        $month,
+        $year,
+        $hour = 0,
+        $minute = 0,
+        $second = 0
+    )
+    {
+        if (!checkdate((int)$month, (int)$day, (int)$year) ||
+            $hour < 0 || $hour > 24 ||
+            $minute < 0 || $minute > 59 ||
+            $second < 0 || $second > 59) {
+            return -1;
+        }
+
+        // windows cant count that mutch
+        if ($year < 1971) {
+            $year = 1971;
+        } elseif ($year > 2037) {
+            $year = 2037;
+        }
+
+        return mktime($hour, $minute, $second, $month, $day, $year);
+    }
 }
 
 ?>
