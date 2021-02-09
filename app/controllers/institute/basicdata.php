@@ -73,7 +73,11 @@ class Institute_BasicdataController extends AuthenticatedController
             $message              = _('Sind Sie sicher, dass Sie diese Einrichtung löschen wollen?');
             $post['i_kill']       = 1;
             $post['studipticket'] = get_ticket();
-            $this->question = createQuestion2($message, $post, [], $this->url_for('institute/basicdata/delete/' . $i_view));
+            $this->question = (string)QuestionBox::create(
+                $message,
+                $this->url_for('institute/basicdata/delete/' . $i_view, $post),
+                $this->url_for('institute/basicdata/delete/' . $i_view, [])
+            );
         }
 
         $lockrule = LockRules::getObjectRule($i_view);

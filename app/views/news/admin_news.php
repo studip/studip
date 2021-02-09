@@ -1,18 +1,22 @@
 <? use Studip\Button, Studip\LinkButton; ?>
 <? if (!empty($flash['question_text'])) : ?>
-    <?= createQuestion2($flash['question_text'], array_merge(
-        $flash['question_param'], [
+<?= QuestionBox::create(
+        $flash['question_text'],
+        $controller->url_for('news/admin_news/' . $area_type, array_merge(
+            $flash['question_param'], [
             'news_filter_term'  => htmlReady($news_searchterm),
             'news_filter_start' => $news_startdate,
             'news_filter_end'   => $news_enddate,
             'news_filter'       => 'set'
-    ]), [
-        'news_filter_term'  => htmlReady($news_searchterm),
-        'news_filter_start' => $news_startdate,
-        'news_filter_end'   => $news_enddate,
-        'news_filter'       => 'set'
-    ],
-    $controller->url_for('news/admin_news/' . $area_type)) ?>
+        ])),
+        $controller->url_for('news/admin_news/' . $area_type, [
+            'news_filter_term'  => htmlReady($news_searchterm),
+            'news_filter_start' => $news_startdate,
+            'news_filter_end'   => $news_enddate,
+            'news_filter'       => 'set'
+        ])
+    );
+?>
 <? endif ?>
 
 <form action="<?= $controller->url_for('news/admin_news/' . $area_type) ?>" id="admin_news_form" class="default" method="post">
