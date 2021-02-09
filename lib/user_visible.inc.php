@@ -336,7 +336,7 @@ function is_element_visible_for_user($user_id, $owner_id, $element_visibility) {
     if ($user_id == $owner_id) {
         $is_visible = true;
     // Deputies with homepage editing rights see the same as the owner
-    } else if (Config::get()->DEPUTIES_ENABLE && Config::get()->DEPUTIES_DEFAULTENTRY_ENABLE && Config::get()->DEPUTIES_EDIT_ABOUT_ENABLE && isDeputy($user_id, $owner_id, true)) {
+    } else if (Config::get()->DEPUTIES_ENABLE && Config::get()->DEPUTIES_DEFAULTENTRY_ENABLE && Config::get()->DEPUTIES_EDIT_ABOUT_ENABLE && Deputy::isDeputy($user_id, $owner_id, true)) {
         $is_visible = true;
     } else {
         // No element visibility given (user has not configured this element yet)

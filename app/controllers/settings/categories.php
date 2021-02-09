@@ -110,7 +110,7 @@ class Settings_CategoriesController extends Settings_SettingsController
         $name     = $category->name;
 
         if ($category->range_id !== $GLOBALS['user']->user_id &&
-                (!Deputy::isEditActivated() || !isDeputy($GLOBALS['user']->user_id, $category->range_id, true))) {
+                (!Deputy::isEditActivated() || !Deputy::isDeputy($GLOBALS['user']->user_id, $category->range_id, true))) {
             PageLayout::postError(_('Sie haben leider nicht die notwendige Berechtigung für diese Aktion.'));
             $this->redirect('settings/categories');
             return;

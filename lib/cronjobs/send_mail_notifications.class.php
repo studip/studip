@@ -54,7 +54,6 @@ class SendMailNotificationsJob extends CronJob
      */
     public function setUp()
     {
-        require_once 'lib/deputies_functions.inc.php';
         require_once 'lib/dates.inc.php';
 
         if (!Config::get()->MAIL_NOTIFICATION_ENABLE) {

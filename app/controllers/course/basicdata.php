@@ -367,7 +367,7 @@ class Course_BasicdataController extends AuthenticatedController
                          $this->url_for('avatar/update/course', $course_id),
                          Icon::create('edit', 'clickable'));
         if ($this->deputies_enabled) {
-            if (isDeputy($user->id, $this->course_id)) {
+            if (Deputy::isDeputy($user->id, $this->course_id)) {
                 $newstatus = 'dozent';
                 $text = _('Lehrende werden');
             } else if (in_array($user->id, array_keys($this->dozenten)) && sizeof($this->dozenten) > 1) {
@@ -594,12 +594,12 @@ class Course_BasicdataController extends AuthenticatedController
         return false;
     }
 
-    private function addDeputy($deputy, $course_id)
+    private function addDeputy($user_id, $course_id)
     {
         //Vertretung hinzufügen:
         if ($GLOBALS['perm']->have_studip_perm('dozent', $course_id)) {
             $sem = Seminar::GetInstance($course_id);
-            if (addDeputy($deputy, $sem->getId())) {
+            if (Deputy::addDeputy($user_id, $sem->getId())) {
                 return true;
             }
         }
@@ -632,8 +632,8 @@ class Course_BasicdataController extends AuthenticatedController
                         $lecturers = $sem->getMembers();
                         foreach ($deputies as $deputy) {
                             // ..but only if not already set as lecturer or deputy.
-                            if (!isset($lecturers[$deputy['user_id']]) && !isDeputy($deputy['user_id'], $course_id)) {
-                                addDeputy($deputy['user_id'], $course_id);
+                            if (!isset($lecturers[$deputy['user_id']]) && !Deputy::isDeputy($deputy['user_id'], $course_id)) {
+                                Deputy::addDeputy($deputy['user_id'], $course_id);
                             }
                         }
                     }
@@ -863,7 +863,7 @@ class Course_BasicdataController extends AuthenticatedController
                 break;
             case 'deputy':
                 $dozent = Course::find($course_id)->members->findOneBy('user_id', $GLOBALS['user']->id);
-                if (addDeputy($GLOBALS['user']->id, $course_id)) {
+                if (Deputy::addDeputy($GLOBALS['user']->id, $course_id)) {
                     $dozent->delete();
                     PageLayout::postSuccess(_('Sie wurden als Vertretung eingetragen.'));
                 } else {

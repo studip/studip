@@ -573,7 +573,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
         // root, owner, and owner's deputy have full permission
         if ($GLOBALS['perm']->have_perm('root', $user_id)
             || ($user_id === $this->user_id && $GLOBALS['perm']->have_perm('autor'))
-            || (Deputy::isEditActivated() && isDeputy($user_id, $this->user_id, true)))
+            || (Deputy::isEditActivated() && Deputy::isDeputy($user_id, $this->user_id, true)))
         {
             return true;
         }

@@ -780,7 +780,7 @@ class EvalOverview {
 
         if (!($perm->have_studip_perm("tutor", $showrangeID)) &&
                 $user->id != $showrangeID &&
-                !(Deputy::isEditActivated() && isDeputy($user->id, $showrangeID, true))) {
+                !(Deputy::isEditActivated() && Deputy::isDeputy($user->id, $showrangeID, true))) {
             return $this->createSafeguard("ausruf", sprintf(_("Sie haben keinen Zugriff auf diesen Bereich.")));
         }
 

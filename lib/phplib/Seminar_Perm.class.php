@@ -179,7 +179,7 @@ class Seminar_Perm
             return $status;
         }
 
-        if (Config::get()->DEPUTIES_ENABLE && isDeputy($user_id, $range_id)) {
+        if (Config::get()->DEPUTIES_ENABLE && Deputy::isDeputy($user_id, $range_id)) {
             if ($_SESSION['seminar_change_view_' . $range_id]) {
                 $status = $_SESSION['seminar_change_view_' . $range_id];
             } else {
@@ -247,7 +247,7 @@ class Seminar_Perm
         if ($range_id === $user_id && $this->have_perm('autor', $user_id)) {
             // user on his own profile
             $status = 'user';
-        } else if (Deputy::isEditActivated() && isDeputy($user_id, $range_id, true)) {
+        } else if (Deputy::isEditActivated() && Deputy::isDeputy($user_id, $range_id, true)) {
             // user is an assigned deputy
             $status = 'user';
         } else if ($this->have_perm('root', $user_id)) {

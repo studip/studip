@@ -360,7 +360,7 @@ class MyRealmModel
             }
 
             $user_status = @$member_ships[$course->id]['status'];
-            if (!$user_status && Config::get()->DEPUTIES_ENABLE && isDeputy($GLOBALS['user']->id, $course->id)) {
+            if (!$user_status && Config::get()->DEPUTIES_ENABLE && Deputy::isDeputy($GLOBALS['user']->id, $course->id)) {
                 $user_status = 'dozent';
                 $is_deputy = true;
             } else {

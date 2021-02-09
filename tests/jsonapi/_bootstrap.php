@@ -30,7 +30,6 @@ require 'config.inc.php';
 require 'lib/functions.php';
 require 'lib/language.inc.php';
 require 'lib/visual.inc.php';
-require 'lib/deputies_functions.inc.php';
 require 'lib/calendar_functions.inc.php';
 require 'lib/dates.inc.php';
 

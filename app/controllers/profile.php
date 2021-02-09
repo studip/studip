@@ -118,7 +118,7 @@ class ProfileController extends AuthenticatedController
         }
 
         $show_admin = ($this->perm->have_perm('autor') && $this->user->user_id == $this->current_user->user_id)
-                   || (Deputy::isEditActivated() && isDeputy($this->user->user_id, $this->current_user->user_id, true));
+                   || (Deputy::isEditActivated() && Deputy::isDeputy($this->user->user_id, $this->current_user->user_id, true));
         if (Visibility::verify('news', $this->current_user->user_id) || $show_admin) {
             $response   = $this->relay('news/display/' . $this->current_user->user_id);
             $this->news = $response->body;

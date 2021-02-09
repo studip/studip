@@ -339,7 +339,7 @@ class MyCoursesController extends AuthenticatedController
         }
         if (Config::get()->DEPUTIES_ENABLE) {
             $query .= " UNION "
-                . getMyDeputySeminarsQuery('gruppe', $dbv->sem_number_sql, $dbv->sem_number_end_sql, $add_fields, $add_query);
+                . Deputy::getMySeminarsQuery('gruppe', $dbv->sem_number_sql, $dbv->sem_number_end_sql, $add_fields, $add_query);
         }
         $query .= " ORDER BY sem_nr ASC";
 

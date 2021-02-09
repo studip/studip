@@ -123,7 +123,6 @@ require 'lib/phplib/page_open.php';
 require_once 'lib/functions.php';
 require_once 'lib/language.inc.php';
 require_once 'lib/visual.inc.php';
-require_once 'lib/deputies_functions.inc.php';
 
 //setup default logger
 Log::get()->setHandler($GLOBALS['TMP_PATH'] . '/studip.log');

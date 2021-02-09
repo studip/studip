@@ -184,7 +184,7 @@ class CoreParticipants implements StudipModule
             return $member->status;
         }
 
-        if (Config::get()->DEPUTIES_ENABLE && isDeputy($user_id, $course->id)) {
+        if (Config::get()->DEPUTIES_ENABLE && Deputy::isDeputy($user_id, $course->id)) {
             return 'dozent';
         }
 

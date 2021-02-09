@@ -36,7 +36,6 @@
 // +---------------------------------------------------------------------------+
 
 require_once 'lib/meine_seminare_func.inc.php';
-require_once 'lib/deputies_functions.inc.php';
 
 class ModulesNotification extends Modules {
 

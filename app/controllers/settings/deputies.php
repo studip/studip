@@ -28,8 +28,6 @@ class Settings_DeputiesController extends Settings_SettingsController
     {
         parent::before_filter($action, $args);
 
-        require_once 'lib/deputies_functions.inc.php';
-
         PageLayout::setHelpKeyword('Basis.MyStudIPDeputies');
         PageLayout::setTitle(_('Standardvertretung'));
         Navigation::activateItem('/profile/settings/deputies');
@@ -46,14 +44,14 @@ class Settings_DeputiesController extends Settings_SettingsController
         if (Request::submitted('add_deputy') && $deputy_id = Request::option('deputy_id')) {
             $this->check_ticket();
 
-            if (isDeputy($deputy_id, $this->user->user_id)) {
+            if (Deputy::isDeputy($deputy_id, $this->user->user_id)) {
                 PageLayout::postError(sprintf(
                     _('%s ist bereits als Vertretung eingetragen.'),
                     htmlReady(get_fullname($deputy_id))
                 ));
             } else if ($deputy_id == $this->user->user_id) {
                 PageLayout::postError(_('Sie können sich nicht als Ihre eigene Vertretung eintragen!'));
-            } else if (addDeputy($deputy_id, $this->user->user_id)) {
+            } else if (Deputy::addDeputy($deputy_id, $this->user->user_id)) {
                 PageLayout::postSuccess(sprintf(
                     _('%s wurde als Vertretung eingetragen.'),
                    htmlReady( get_fullname($deputy_id))
@@ -112,14 +110,14 @@ class Settings_DeputiesController extends Settings_SettingsController
             'success' => [],
         ];
         foreach ($mp->getAddedUsers() as $_user_id) {
-            if (isDeputy($_user_id, $this->user->user_id)) {
+            if (Deputy::isDeputy($_user_id, $this->user->user_id)) {
                 $msg['error'][] = sprintf(
                     _('%s ist bereits als Vertretung eingetragen.'),
                     htmlReady(get_fullname($_user_id))
                 );
             } else if ($_user_id == $this->user->user_id) {
                 $msg['error'][] = _('Sie können sich nicht als Ihre eigene Vertretung eintragen!');
-            } else if (!addDeputy($_user_id, $this->user->user_id)) {
+            } else if (!Deputy::addDeputy($_user_id, $this->user->user_id)) {
                 $msg['error'][] = _('Fehler beim Eintragen der Vertretung!');
             } else {
                 $msg['success'][] = sprintf(

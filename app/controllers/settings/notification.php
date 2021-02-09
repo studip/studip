@@ -74,7 +74,9 @@ class Settings_NotificationController extends Settings_SettingsController
                   {$add_query}
                   WHERE seminar_user.user_id = ?";
         if (Config::get()->DEPUTIES_ENABLE) {
-            $query .= " UNION " . getMyDeputySeminarsQuery('notification', $dbv->sem_number_sql, $dbv->sem_number_end_sql, $add_fields, $add_query);
+            $query .= " UNION " . Deputy::getMySeminarsQuery(
+                'notification', $dbv->sem_number_sql, $dbv->sem_number_end_sql, $add_fields, $add_query
+                );
         }
         $query .= " ORDER BY sem_nr ASC";
 
@@ -85,7 +87,7 @@ class Settings_NotificationController extends Settings_SettingsController
         if (!count($seminars)) {
             $message = sprintf(_('Sie haben zur Zeit keine Veranstaltungen belegt. Bitte nutzen Sie %s<b>Veranstaltung suchen / hinzufügen</b>%s um sch für Veranstaltungen anzumdelden.'),
                 '<a href="' . URLHelper::getLink('dispatch.php/search/courses') . '">', '</a>');
-            PageLayout::postMessage(MessageBox::info($message));
+            PageLayout::postInfo($message);
             $this->render_nothing();
             return;
         }

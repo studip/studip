@@ -451,7 +451,7 @@ class BasicDataWizardStep implements CourseWizardStep
             }
             if (Config::get()->DEPUTIES_ENABLE && isset($values['deputies']) && is_array($values['deputies'])) {
                 foreach ($values['deputies'] as $d => $assigned) {
-                    addDeputy($d, $course->id);
+                    Deputy::addDeputy($d, $course->id);
                 }
             }
             if ($semclass['admission_type_default'] == 3) {
