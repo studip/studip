@@ -22,7 +22,7 @@ class Settings_DeputiesController extends Settings_SettingsController
      * Set up this controller.
      *
      * @param String $action Name of the action to be invoked
-     * @param Array  $args   Arguments to be passed to the action method
+     * @param Array $args Arguments to be passed to the action method
      */
     public function before_filter(&$action, &$args)
     {
@@ -54,7 +54,7 @@ class Settings_DeputiesController extends Settings_SettingsController
             } else if (Deputy::addDeputy($deputy_id, $this->user->user_id)) {
                 PageLayout::postSuccess(sprintf(
                     _('%s wurde als Vertretung eingetragen.'),
-                   htmlReady( get_fullname($deputy_id))
+                    htmlReady(get_fullname($deputy_id))
                 ));
             } else {
                 PageLayout::postError(_('Fehler beim Eintragen der Vertretung!'));
@@ -79,7 +79,7 @@ class Settings_DeputiesController extends Settings_SettingsController
             _('Vor-, Nach- oder Benutzername'),
             'user_id',
             [
-                'permission'   => Deputy::getValidPerms(),
+                'permission' => Deputy::getValidPerms(),
                 'exclude_user' => $exclude_users
             ]
         );
@@ -106,7 +106,7 @@ class Settings_DeputiesController extends Settings_SettingsController
 
         $mp = MultiPersonSearch::load('settings_add_deputy');
         $msg = [
-            'error'   => [],
+            'error' => [],
             'success' => [],
         ];
         foreach ($mp->getAddedUsers() as $_user_id) {
@@ -140,7 +140,20 @@ class Settings_DeputiesController extends Settings_SettingsController
             );
         }
 
-        $this->redirect('settings/deputies/index');
+        $this->redirect('settings/deputies');
+    }
+
+    /**
+     * Delete deputy
+     * @param Deputy $deputy
+     */
+    public function delete_action(Deputy $deputy)
+    {
+        CSRFProtection::verifyUnsafeRequest();
+        if ($deputy->delete()) {
+            PageLayout::postSuccess(_('Die Vertretung wurde entfernt.'));
+        }
+        $this->redirect('settings/deputies');
     }
 
     /**
@@ -148,38 +161,17 @@ class Settings_DeputiesController extends Settings_SettingsController
      */
     public function store_action()
     {
-        $this->check_ticket();
-        $deleted = 0;
-        $delete = Request::optionArray('delete');
-        if (count($delete) > 0) {
-            Deputy::findEachBySQL(function($deputy) use (&$deleted) {
-                    if($deputy->delete()) {
-                        $deleted++;
-                    }
-                },
-                'user_id IN (?) AND range_id = ?', [$delete, $this->user->user_id]
-            );
-            if ($deleted) {
-                PageLayout::postSuccess(sprintf(ngettext(
-                    _('Die Vertretung wurde entfernt.'),
-                    _('Es wurden %s Vertretungen entfernt.'),
-                    $deleted
-                ), $deleted));
-            } else {
-                PageLayout::postError(_('Fehler beim Entfernen der Vertretung(en).'));
-            }
-        }
-
+        CSRFProtection::verifyUnsafeRequest();
         if ($this->edit_about_enabled) {
             $deputies = Deputy::findDeputies($this->user->user_id);
             $changes = Request::intArray('edit_about');
             $success = true;
             $changed = 0;
-            foreach($deputies as $deputy) {
+            foreach ($deputies as $deputy) {
                 $state = (int)$changes[$deputy->user_id];
-                if($state !== (int)$deputy->edit_about) {
+                if ($state !== (int)$deputy->edit_about) {
                     $deputy->edit_about = $state;
-                    if($deputy->store()) {
+                    if ($deputy->store()) {
                         $success = true;
                         $changed++;
                     }

@@ -1,8 +1,6 @@
 <? if ($deputies): ?>
     <form method="post" action="<?= $controller->link_for('settings/deputies/store') ?>" class="default">
-        <input type="hidden" name="studip_ticket" value="<?= get_ticket() ?>">
         <?= CSRFProtection::tokenTag() ?>
-
         <table class="default no-hover">
             <caption>
                 <?= _('Standardvertretungen') ?>
@@ -11,21 +9,21 @@
                 <col>
                 <? if ($edit_about_enabled): ?>
                     <col style="width: 200px">
-                <? endif; ?>
-                <col width="100px">
+                <? endif ?>
+                <col>
             </colgroup>
             <thead>
             <tr>
                 <th><?= _('Nutzer'); ?></th>
                 <? if ($edit_about_enabled): ?>
                     <th><?= _('darf mein Profil bearbeiten'); ?></th>
-                <? endif; ?>
-                <th><?= _('löschen'); ?></th>
+                <? endif ?>
+                <th class="actions"><?= _('Aktion'); ?></th>
             </tr>
             </thead>
             <tbody>
             <? foreach ($deputies as $deputy): ?>
-            <? $deputy_fullname = $deputy->getDeputyFullname()?>
+                <? $deputy_fullname = $deputy->getDeputyFullname() ?>
                 <tr>
                     <td>
                         <?= Avatar::getAvatar($deputy->user_id)->getImageTag(Avatar::SMALL) ?>
@@ -48,8 +46,13 @@
                             </div>
                         </td>
                     <? endif; ?>
-                    <td align="center">
-                        <input type="checkbox" name="delete[]" value="<?= $deputy->user_id ?>">
+                    <td class="actions">
+                        <?= Icon::create('trash')->asInput(
+                            [
+                                'formaction' => $controller->deleteURL($deputy),
+                                'data-confirm' => _('Wollen Sie die Standardvertretung wirklich löschen?')
+                            ]
+                        ) ?>
                     </td>
                 </tr>
             <? endforeach; ?>
