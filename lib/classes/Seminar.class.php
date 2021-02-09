@@ -1675,7 +1675,9 @@ class Seminar
         // ...logged
 
         // delete deputies if necessary
-        deleteAllDeputies($s_id);
+        Deputy::findEachBySQL(function($deputy) {
+            $deputy->delete();
+        }, 'range_id = ?', [$s_id]);
 
         UserDomain::removeUserDomainsForSeminar($s_id);
 

@@ -88,20 +88,6 @@ function deleteDeputy($user_id, $range_id) {
 }
 
 /**
- * Remove all deputies of the given course or person at once.
- *
- * @param string $range_id course or person ID
- * @return int Number of affected database rows (>0 if successful).
- */
-function deleteAllDeputies($range_id) {
-    $success = 0;
-    foreach (Deputy::findByRange_id($range_id) as $d) {
-        $success += (int)$d->delete();
-    }
-    return $success;
-}
-
-/**
  * Checks whether the given person is a deputy in the given context
  * (course or person).
  *
