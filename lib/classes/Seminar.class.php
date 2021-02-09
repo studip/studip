@@ -614,7 +614,8 @@ class Seminar
     public function getEndSemesterVorlesEnde()
     {
         if ($this->semester_duration_time == -1) {
-            $very_last_semester = array_pop(Semester::getAll());
+            $semesters = Semester::getAll();
+            $very_last_semester = array_pop($semesters);
             return $very_last_semester->vorles_ende;
         }
         return $this->course->end_semester->vorles_ende;
@@ -671,7 +672,8 @@ class Seminar
             $this->readSingleDates();
             return $this->irregularSingleDates[$singleDateID];
         } else {
-            $data =& $this->metadate->getSingleDates($cycle_id, $this->filterStart, $this->filterEnd);
+            $dates = $this->metadate->getSingleDates($cycle_id, $this->filterStart, $this->filterEnd);
+            $data =& $dates;
             return $data[$singleDateID];
         }
     }
@@ -713,8 +715,8 @@ class Seminar
             }
             //$this->metadate->readSingleDates($metadate_id, $this->filterStart, $this->filterEnd);
         }
-
-        return $this->metadate->getSingleDates($metadate_id, $this->filterStart, $this->filterEnd);
+        $dates = $this->metadate->getSingleDates($metadate_id, $this->filterStart, $this->filterEnd);
+        return $dates;
     }
 
     public function readIssues($force = false)

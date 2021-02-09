@@ -340,8 +340,10 @@ class ExternModuleTemplatePersBrowse extends ExternModule {
             $content['PERSONS']['PERSON'][$j]['PHONE'] = ExternModule::ExtHtmlReady($row['Telefon']);
             $content['PERSONS']['PERSON'][$j]['ROOM'] = ExternModule::ExtHtmlReady($row['raum']);
             $content['PERSONS']['PERSON'][$j]['EMAIL'] = ExternModule::ExtHtmlReady(get_visible_email($row['user_id']));
-            $content['PERSONS']['PERSON'][$j]['EMAIL-LOCAL'] = array_shift(explode('@', $content['PERSONS']['PERSON'][$j]['EMAIL']));
-            $content['PERSONS']['PERSON'][$j]['EMAIL-DOMAIN'] = array_pop(explode('@', $content['PERSONS']['PERSON'][$j]['EMAIL']));
+            $emails = explode('@', $content['PERSONS']['PERSON'][$j]['EMAIL']);
+            $content['PERSONS']['PERSON'][$j]['EMAIL-LOCAL'] = array_shift($emails);
+            $emails = explode('@', $content['PERSONS']['PERSON'][$j]['EMAIL']);
+            $content['PERSONS']['PERSON'][$j]['EMAIL-DOMAIN'] = array_pop($emails);
             $content['PERSONS']['PERSON'][$j]['OFFICEHOURS'] = ExternModule::ExtHtmlReady($row['sprechzeiten']);
             $content['PERSONS']['PERSON'][$j]['PERSON-NO'] = $j + 1;
 

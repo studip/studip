@@ -502,7 +502,7 @@ class ELearningUtils
                 $connected_courses['text'] = _("Diese Veranstaltung ist mit folgenden Ilias-Kursen verknüpft. Hier gelangen Sie direkt in den jeweiligen Kurs: ");
             else
                 $connected_courses['text'] = _("Diese Veranstaltung ist mit einem Ilias-Kurs verknüpft. Hier gelangen Sie direkt in den Kurs: ");
-            $output["update"] .= "<font style=\"font-size: -1\">" . _("Hier können Sie die Zuordnungen zu den verknüpften Kursen aktualisieren."). "<br></font>";
+            $output["update"] .= _("Hier können Sie die Zuordnungen zu den verknüpften Kursen aktualisieren."). "<br>";
             $output["update"] .= "<form method=\"POST\" action=\"" . URLHelper::getLink() . "#anker\">\n";
             $output["update"] .= CSRFProtection::tokenTag();
             $output["update"] .= "<input type=\"HIDDEN\" name=\"view\" value=\"" . htmlReady($view) . "\">\n";

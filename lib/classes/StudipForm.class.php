@@ -522,7 +522,7 @@ class StudipForm {
 
     function getFormFieldRequired($name){
         if ($this->form_fields[$name]['required'])
-            return "\n" . '<span style="color: red; font-weigth: bold">*</span>';
+            return "\n" . '<span style="color: red; font-weight: bold">*</span>';
         else return "";
     }
 

@@ -150,8 +150,8 @@ class AutoInsert
 
     private function addUser($user_id, $seminar)
     {
-        $query = "INSERT IGNORE INTO seminar_user (Seminar_id, user_id, status, gruppe, mkdate)";
-        $query .= " VALUES (?, ?, 'autor', ?, UNIX_TIMESTAMP())";
+        $query = "INSERT IGNORE INTO seminar_user (Seminar_id, user_id, status, gruppe, mkdate) 
+            VALUES (?, ?, 'autor', ?, UNIX_TIMESTAMP())";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$seminar['Seminar_id'], $user_id, select_group($seminar['start_time'])]);
         $rows = $statement->rowCount();

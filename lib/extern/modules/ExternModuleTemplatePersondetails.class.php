@@ -462,8 +462,10 @@ class ExternModuleTemplatePersondetails extends ExternModule {
         $content['PERSONDETAILS']['ZIPCODE'] = ExternModule::ExtHtmlReady($row['Plz']);
         $email = get_visible_email($this->user_id);
         $content['PERSONDETAILS']['EMAIL'] = ExternModule::ExtHtmlReady($email);
-        $content['PERSONDETAILS']['EMAIL-LOCAL'] = array_shift(explode('@', $content['PERSONDETAILS']['EMAIL']));
-        $content['PERSONDETAILS']['EMAIL-DOMAIN'] = array_pop(explode('@', $content['PERSONDETAILS']['EMAIL']));
+        $emails = explode('@', $content['PERSONDETAILS']['EMAIL']);
+        $content['PERSONDETAILS']['EMAIL-LOCAL'] = array_shift($emails);
+        $emails = explode('@', $content['PERSONDETAILS']['EMAIL']);
+        $content['PERSONDETAILS']['EMAIL-DOMAIN'] = array_pop($emails);
         $content['PERSONDETAILS']['ROOM'] = ExternModule::ExtHtmlReady($row['raum']);
         $content['PERSONDETAILS']['PHONE'] = ExternModule::ExtHtmlReady($row['Telefon']);
         $content['PERSONDETAILS']['FAX'] = ExternModule::ExtHtmlReady($row['Fax']);
@@ -480,8 +482,10 @@ class ExternModuleTemplatePersondetails extends ExternModule {
             $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-STREET'] = ExternModule::ExtHtmlReady($curRow['Strasse']);
             $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-ZIPCODE'] = ExternModule::ExtHtmlReady($curRow['Plz']);
             $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-EMAIL'] = ExternModule::ExtHtmlReady($curRow['Email']);
-            $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-EMAIL-LOCAL'] = array_shift(explode('@', $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-EMAIL']));
-            $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-EMAIL-DOMAIN'] = array_pop(explode('@', $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-EMAIL']));
+            $emails = explode('@', $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-EMAIL']);
+            $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-EMAIL-LOCAL'] = array_shift($emails);
+            $emails = explode('@', $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-EMAIL']);
+            $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-EMAIL-DOMAIN'] = array_pop($emails);
             $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-ROOM'] = ExternModule::ExtHtmlReady($curRow['raum']);
             $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-PHONE'] = ExternModule::ExtHtmlReady($curRow['Telefon']);
             $content['PERSONDETAILS']['ALL-INST']['SINGLE-INST'][$j]['SINGLE-INST-FAX'] = ExternModule::ExtHtmlReady($curRow['Fax']);

@@ -445,8 +445,9 @@ class Router
 
         // Register plugin routes
         $router = $this;
+        $routes = array_flatten(\PluginEngine::sendMessage('RESTAPIPlugin', 'getRouteMaps'));
         array_walk(
-            array_flatten(\PluginEngine::sendMessage('RESTAPIPlugin', 'getRouteMaps')),
+            $routes,
             function ($route) use ($router) {
                 $router->registerRoutes($route);
             }

@@ -293,8 +293,10 @@ class ExternModuleTemplatePersons extends ExternModule {
                     $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['PHONE'] = ExternModule::ExtHtmlReady($db_out['Telefon']);
                     $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['ROOM'] = ExternModule::ExtHtmlReady($db_out['raum']);
                     $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['EMAIL'] = get_visible_email($row['user_id']);
-                    $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['EMAIL-LOCAL'] = array_shift(explode('@', $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['EMAIL']));
-                    $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['EMAIL-DOMAIN'] = array_pop(explode('@', $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['EMAIL']));
+                    $emails = explode('@', $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['EMAIL']);
+                    $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['EMAIL-LOCAL'] = array_shift($emails);
+                    $emails = explode('@', $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['EMAIL']);
+                    $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['EMAIL-DOMAIN'] = array_pop($emails);
                     if ($row['Home'] && Visibility::verify('homepage', $row['user_id'])) {
                         $content['PERSONS']['GROUP'][$i]['PERSON'][$j]['HOMEPAGE-HREF'] = ExternModule::ExtHtmlReady(trim($row['Home']));
                     }

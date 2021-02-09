@@ -157,7 +157,8 @@ class ExternModuleTemplateNews extends ExternModule {
         }
         if ($nameformat == 'last') $local_fullname_sql['last'] = ' Nachname ';
 
-        $news =& StudipNews::GetNewsByRange($this->config->range_id);
+        $_news = StudipNews::GetNewsByRange($this->config->range_id);
+        $news =& $_news;
         if (!count($news)) {
             $content['NEWS']['NO-NEWS']['NO-NEWS_TEXT'] = $this->config->getValue('Main', "nodatatext");
         }

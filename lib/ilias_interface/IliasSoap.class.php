@@ -1550,7 +1550,7 @@ class IliasSoap extends StudipSoapClient
     * @param array course_data course-data
     * @return string course-xml
     */
-    function getCoursesForUser($user_id, $status = 1) 
+    function getCoursesForUser($user_id, $status = 1)
     {
         $xmlrs = '<?xml version="1.0" encoding="utf-8"?>
         <result>
@@ -1575,7 +1575,8 @@ class IliasSoap extends StudipSoapClient
             $s = simplexml_load_string($result);
             foreach ($s->rows->row as $row) {
                 $ref_id = (string)$row->column[0];
-                $course = array_pop($this->parseXML((string)$row->column[1]));
+                $xml = $this->parseXML((string)$row->column[1]);
+                $course = array_pop($xml);
                 $ret[$ref_id] = $course['title'];
             }
         }
