@@ -211,25 +211,6 @@ function getValidDeputyPerms($min_perm_only = false) {
     return $permission;
 }
 
-/**
- * Checks whether the given user has the necessary permission in order to be
- * deputy.
- *
- * @param string $user_id user ID to check
- * @return boolean My the given user be given as deputy?
- */
-function haveDeputyPerm($user_id='') {
-    global $perm;
-    $minimum_perm = Config::get()->DEPUTIES_MIN_PERM;
-    if (!$user_id) {
-        $user_id = $GLOBALS['user']->id;
-    }
-    if ($perm->have_perm($minimum_perm, $user_id) && !$perm->have_perm('admin', $user_id)) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 /**
  * Database query for retrieving all courses where the current user is deputy
