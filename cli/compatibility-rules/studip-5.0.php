@@ -16,6 +16,19 @@ return [
     // https://develop.studip.de/trac/ticket/10796
     'StudipNullCache' => '#{red:Removed} - Use #{yellow:StudipMemoryCache} instead',
 
+    // https://develop.studip.de/trac/ticket/10838
+    'getDeputies' => '#{red:Removed} - Use #{yellow:Deputy::findDeputies()} instead',
+    'getDeputyBosses' => '#{red:Removed} - Use #{yellow:Deputy::findDeputyBosses()} instead',
+    'addDeputy' => '#{red:Removed} - Use #{yellow:Deputy::addDeputy()} instead',
+    'deleteDeputy' => '#{red:Removed} - Use #{yellow:Deputy model} instead',
+    'deleteAllDeputies' => '#{red:Removed} - Use #{yellow:Deputy::deleteByRange_id} instead',
+    'isDeputy' => '#{red:Removed} - Use #{yellow:Deputy::isDeputy()} instead',
+    'setDeputyHomepageRights' => '#{red:Removed} - Use #{yellow:Deputy model} instead',
+    'getValidDeputyPerms' => '#{red:Removed} - Use #{yellow:Deputy::getValidPerms()} instead',
+    'getMyDeputySeminarsQuery' => '#{red:Removed} - Use #{yellow:Deputy::isActivated()} instead',
+    'isDefaultDeputyActivated' => '#{red:Removed} - Use #{yellow:Deputy::getMySeminarsQuery()} instead',
+    'isDeputyEditAboutActivated' => '#{red:Removed} - Use #{yellow:Deputy::isEditActivated()} instead',
+
     // https://develop.studip.de/trac/ticket/10870
     'get_config' => '#{red:Deprecated} - Use #{yellow:Config::get()} instead.',
 
