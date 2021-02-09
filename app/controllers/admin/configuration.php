@@ -79,7 +79,7 @@ class Admin_ConfigurationController extends AuthenticatedController
      */
     public function edit_configuration_action()
     {
-        PageLayout::setTitle(_('Konfigurationsparameter editieren'));
+
 
         $field = Request::get('field');
         $value = Request::get('value');
@@ -106,6 +106,8 @@ class Admin_ConfigurationController extends AuthenticatedController
         // set variables for view
         $this->config     = ConfigurationModel::getConfigInfo($field);
         $this->allconfigs = ConfigurationModel::getConfig();
+
+        PageLayout::setTitle(sprintf(_('Konfigurationsparameter: %s editieren'), $this->config['field']));
     }
 
     /**

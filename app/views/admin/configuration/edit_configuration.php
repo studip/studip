@@ -1,4 +1,5 @@
-<form action="<?= $controller->link_for('admin/configuration/edit_configuration', ['field' => $config['field']]) ?>" method="post" data-dialog class="default">
+<form action="<?= $controller->link_for('admin/configuration/edit_configuration', ['field' => $config['field']]) ?>"
+      method="post" data-dialog class="default">
     <?= CSRFProtection::tokenTag() ?>
 
     <fieldset>
@@ -6,11 +7,9 @@
             <?= _('Konfigurationsparameter editieren') ?>
         </legend>
 
-        <h1><?= htmlReady($config['field']) ?></h1>
-
-    <? if ($config['description']): ?>
-        <p><?= htmlReady($config['description']) ?></p>
-    <? endif; ?>
+        <? if ($config['description']): ?>
+            <p><?= htmlReady($config['description']) ?></p>
+        <? endif; ?>
 
         <?= $this->render_partial('admin/configuration/type-edit.php', $config) ?>
 
@@ -27,19 +26,19 @@
                 <?= Icon::create('checkbox-unchecked', Icon::ROLE_INFO)->asImg(['title' => _('Nein')]) ?>
             <? elseif ($config['is_default'] === null): ?>
                 <em>- <?= _('kein Eintrag vorhanden') ?> -</em>
-            <? endif; ?>
+            <? endif ?>
         </label>
-        <label>
+        <label class="col-1">
             <?= _('Typ') ?>
             <input name="type" type="text" readonly value="<?= htmlReady($config['type']) ?>">
         </label>
-        <label>
+        <label class="col-1">
             <?= _('Bereich') ?>
             <input type="text" name="range" readonly value="<?= htmlReady($config['range']) ?>">
         </label>
         <label>
             <?= _('Kategorie') ?>
-            <select name= "section" onchange="jQuery(this).next('input').val( jQuery(this).val() );">
+            <select name="section" onchange="jQuery(this).next('input').val( jQuery(this).val() );">
                 <? foreach (array_keys($allconfigs) as $section): ?>
                     <option <? if ($config['section'] === $section) echo 'selected'; ?>>
                         <?= htmlReady($section) ?>
@@ -48,7 +47,7 @@
             </select>
         </label>
         <label>
-            (<em><?= _('Bitte die neue Kategorie eingeben')?></em>)
+            (<em><?= _('Bitte die neue Kategorie eingeben') ?></em>)
             <input type="text" name="section_new" id="section">
         </label>
     </fieldset>
