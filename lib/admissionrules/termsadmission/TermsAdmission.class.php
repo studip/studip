@@ -70,7 +70,7 @@ class TermsAdmission extends AdmissionRule
         $template = $factory->open('input');
         $template->rule = $this;
 
-        return $template->render();
+        return MessageBox::info($template->render())->hideClose(true);
     }
 
     /**
