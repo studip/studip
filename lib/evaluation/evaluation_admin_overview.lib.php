@@ -780,7 +780,7 @@ class EvalOverview {
 
         if (!($perm->have_studip_perm("tutor", $showrangeID)) &&
                 $user->id != $showrangeID &&
-                !(isDeputyEditAboutActivated() && isDeputy($user->id, $showrangeID, true))) {
+                !(Deputy::isEditActivated() && isDeputy($user->id, $showrangeID, true))) {
             return $this->createSafeguard("ausruf", sprintf(_("Sie haben keinen Zugriff auf diesen Bereich.")));
         }
 
@@ -1906,9 +1906,9 @@ class EvalOverview {
             $table_s->addAttr("cellspacing", "0");
             $table_s->addAttr("cellpadding", "0");
             $table_s->addAttr("width", "100%");
-    
-    
-    
+
+
+
             foreach($range_types as $type_key => $type_value) {
                 // Überschriften
                 $tr_s = new HTML("tr");
@@ -2115,7 +2115,7 @@ class EvalOverview {
             $table->addAttr("cellspacing", "0");
             $table->addAttr("cellpadding", "0");
             $table->addAttr("width", "100%");
-    
+
             foreach($range_types as $type_key => $type_value) {
                 // Überschriften
                 $tr = new HTML("tr");

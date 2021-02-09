@@ -998,7 +998,7 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
                 'startsem'  => $row['startsem'],
             ];
         }
-        if (isDeputyEditAboutActivated()) {
+        if (Deputy::isEditActivated()) {
             $query = "SELECT a.user_id, a.username, 'user' AS type,
                              CONCAT({$_fullname_sql['full']}, ' (', username, ')') AS name
                       FROM auth_user_md5 AS a

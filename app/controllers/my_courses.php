@@ -118,11 +118,13 @@ class MyCoursesController extends AuthenticatedController
         $this->group_field = $group_field === 'not_grouped' ? 'sem_number' : $group_field;
 
         // Needed parameters for selecting courses
-        $params = ['group_field'         => $this->group_field,
-                        'order_by'            => $order_by,
-                        'order'               => $order,
-                        'studygroups_enabled' => $studygroups_enabled,
-                        'deputies_enabled'    => $deputies_enabled];
+        $params = [
+            'group_field'         => $this->group_field,
+            'order_by'            => $order_by,
+            'order'               => $order,
+            'studygroups_enabled' => $studygroups_enabled,
+            'deputies_enabled'    => $deputies_enabled
+        ];
 
 
         // Save the semester in session
@@ -135,7 +137,7 @@ class MyCoursesController extends AuthenticatedController
         $this->order_by                     = $order_by;
         $this->default_deputies_enabled     = $default_deputies_enabled;
         $this->deputies_edit_about_enabled  = $deputies_edit_about_enabled;
-        $this->my_bosses                    = $default_deputies_enabled ? getDeputyBosses($GLOBALS['user']->id) : [];
+        $this->my_bosses                    = $default_deputies_enabled ? Deputy::findDeputyBosses() : [];
 
         // Check for new contents
         $new_contents = $this->check_for_new($this->sem_courses, $this->group_field);

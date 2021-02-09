@@ -49,14 +49,14 @@ class Settings_DeputiesController extends Settings_SettingsController
             if (isDeputy($deputy_id, $this->user->user_id)) {
                 PageLayout::postError(sprintf(
                     _('%s ist bereits als Vertretung eingetragen.'),
-                    htmlReady(get_fullname($deputy_id, 'full'))
+                    htmlReady(get_fullname($deputy_id))
                 ));
             } else if ($deputy_id == $this->user->user_id) {
                 PageLayout::postError(_('Sie können sich nicht als Ihre eigene Vertretung eintragen!'));
             } else if (addDeputy($deputy_id, $this->user->user_id)) {
                 PageLayout::postSuccess(sprintf(
                     _('%s wurde als Vertretung eingetragen.'),
-                   htmlReady( get_fullname($deputy_id, 'full'))
+                   htmlReady( get_fullname($deputy_id))
                 ));
             } else {
                 PageLayout::postError(_('Fehler beim Eintragen der Vertretung!'));
@@ -65,37 +65,38 @@ class Settings_DeputiesController extends Settings_SettingsController
             return;
         }
 
-        $deputies = getDeputies($this->user->user_id, true);
-
+        $deputies = Deputy::findDeputies($this->user->user_id);
+        $deputy_user_ids = $deputies->pluck('user_id');
         $exclude_users = [$this->user->user_id];
         if (is_array($deputies)) {
             $exclude_users = array_merge($exclude_users, array_map(function ($d) {
                 return $d['user_id'];
-            }, $deputies));
+            }, $deputy_user_ids));
         }
 
         $this->deputies = $deputies;
 
-        $this->search = new PermissionSearch('user', _('Vor-, Nach- oder Benutzername'),
+        $this->search = new PermissionSearch(
+            'user',
+            _('Vor-, Nach- oder Benutzername'),
             'user_id',
             [
-                'permission'   => getValidDeputyPerms(),
+                'permission'   => Deputy::getValidPerms(),
                 'exclude_user' => $exclude_users
             ]
         );
 
-        $sidebar = Sidebar::Get();
         $actions = new ActionsWidget();
         $mp = MultiPersonSearch::get('settings_add_deputy')
             ->setLinkText(_('Neue Standardvertretung festlegen'))
-            ->setDefaultSelectedUser(array_keys($this->deputies))
+            ->setDefaultSelectedUser($deputy_user_ids)
             ->setLinkIconPath('')
             ->setTitle(_('Neue Standardvertretung festlegen'))
             ->setExecuteURL(URLHelper::getLink('dispatch.php/settings/deputies/add_member'))
             ->setSearchObject($this->search)
             ->setNavigationItem('/links/settings/deputies')
             ->render();
-        $element = LinkElement::fromHTML($mp, Icon::create('community+add', 'clickable'));
+        $element = LinkElement::fromHTML($mp, Icon::create('community+add'));
         $actions->addElement($element);
         Sidebar::Get()->addWidget($actions);
     }
@@ -114,7 +115,7 @@ class Settings_DeputiesController extends Settings_SettingsController
             if (isDeputy($_user_id, $this->user->user_id)) {
                 $msg['error'][] = sprintf(
                     _('%s ist bereits als Vertretung eingetragen.'),
-                    htmlReady(get_fullname($_user_id, 'full'))
+                    htmlReady(get_fullname($_user_id))
                 );
             } else if ($_user_id == $this->user->user_id) {
                 $msg['error'][] = _('Sie können sich nicht als Ihre eigene Vertretung eintragen!');
@@ -123,7 +124,7 @@ class Settings_DeputiesController extends Settings_SettingsController
             } else {
                 $msg['success'][] = sprintf(
                     _('%s wurde als Vertretung eingetragen.'),
-                    htmlReady(get_fullname($_user_id, 'full'))
+                    htmlReady(get_fullname($_user_id))
                 );
             }
         }
@@ -150,7 +151,6 @@ class Settings_DeputiesController extends Settings_SettingsController
     public function store_action()
     {
         $this->check_ticket();
-
         $delete = Request::optionArray('delete');
         if (count($delete) > 0) {
             $deleted = deleteDeputy($delete, $this->user->user_id);
@@ -166,18 +166,20 @@ class Settings_DeputiesController extends Settings_SettingsController
         }
 
         if ($this->edit_about_enabled) {
-            $deputies = getDeputies($this->user->user_id, true);
+            $deputies = Deputy::findDeputies($this->user->user_id);
             $changes = Request::intArray('edit_about');
-
             $success = true;
             $changed = 0;
-            foreach ($changes as $id => $state) {
-                if (!in_array($id, $deleted) && $state != $deputies[$id]['edit_about']) {
-                    $success = $success and (setDeputyHomepageRights($id, $this->user->user_id, $state) > 0);
-                    $changed += 1;
+            foreach($deputies as $deputy) {
+                $state = (int)$changes[$deputy->user_id];
+                if($state !== (int)$deputy->edit_about) {
+                    $deputy->edit_about = $state;
+                    if($deputy->store()) {
+                        $success = true;
+                        $changed++;
+                    }
                 }
             }
-
             if ($success && $changed > 0) {
                 PageLayout::postSuccess(_('Die Einstellungen wurden gespeichert.'));
             } else if ($changed > 0) {

@@ -751,7 +751,7 @@ class NewsController extends StudipController
                     'type' => 'user'
                 ];
             }
-            if (isDeputyEditAboutActivated()) {
+            if (Deputy::isEditActivated()) {
                 $query = "SELECT DISTINCT a.user_id
                           FROM deputies d
                           JOIN auth_user_md5 a ON (d.range_id = a.user_id)

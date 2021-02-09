@@ -388,12 +388,11 @@ class Course_MembersController extends AuthenticatedController
                 }
                 // Add default deputies of the chosen lecturer...
                 if (Config::get()->DEPUTIES_DEFAULTENTRY_ENABLE) {
-                    $deputies = getDeputies($dozent);
-                    $lecturers = $sem->getMembers('dozent');
+                    $deputies = Deputy::findDeputies($dozent)->pluck('user_id');
+                    $lecturers = $sem->getMembers();
                     foreach ($deputies as $deputy) {
                         // ..but only if not already set as lecturer or deputy.
-                        if (!isset($lecturers[$deputy['user_id']]) &&
-                                !isDeputy($deputy['user_id'], $this->course_id)) {
+                        if (!isset($lecturers[$deputy['user_id']]) && !isDeputy($deputy['user_id'], $this->course_id)) {
                             addDeputy($deputy['user_id'], $this->course_id);
                         }
                     }

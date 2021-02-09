@@ -647,12 +647,12 @@ function in_archiv ($sem_id)
 
     // Eventuelle Vertretungen in der Veranstaltung haben weiterhin Zugriff mit Lehrendenrechten
     if (Config::get()->DEPUTIES_ENABLE) {
-        $deputies = getDeputies($seminar_id);
+        $deputies = Deputy::findDeputies($seminar_id)->pluck('user_id');
         // Eintragen ins Archiv mit Zugriffsberechtigung "dozent"
         $query = "INSERT IGNORE INTO archiv_user SET seminar_id = ?, user_id = ?, status = 'dozent'";
         $statement = DBManager::get()->prepare($query);
         foreach ($deputies as $deputy) {
-            $statement->execute([$seminar_id, $deputy['user_id']]);
+            $statement->execute([$seminar_id, $deputy]);
         }
     }
 

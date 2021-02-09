@@ -68,6 +68,7 @@
         _('In dem ausgewählten <b>Semester</b> wurden keine Veranstaltungen belegt.').'<br>'._('Wählen Sie links im <b>Semesterfilter</b> ein anderes Semester aus')
     ]))?>
 <? endif ?>
+
 <? if (count($my_bosses)) : ?>
     <?= $this->render_partial('my_courses/_deputy_bosses'); ?>
 <? endif ?>

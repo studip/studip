@@ -166,7 +166,7 @@ $message_types = ['msg' => "success", 'error' => "error", 'info' => "info"];
                     <?= MultiPersonSearch::get('add_member_deputy' . $course_id)
                             ->setTitle(_('Mehrere Vertretungen hinzufügen'))
                             ->setSearchObject($deputySearch)
-                            ->setDefaultSelectedUser(array_keys($deputies))
+                            ->setDefaultSelectedUser($deputies->pluck('user_id'))
                             ->setDataDialogStatus(Request::isXhr())
                             ->setJSFunctionOnSubmit(Request::isXhr() ? 'jQuery(this).closest(".ui-dialog-content").dialog("close");' : false)
                             ->setExecuteURL($controller->url_for('course/basicdata/add_member/' . $course_id . '/deputy'))
@@ -193,22 +193,22 @@ $message_types = ['msg' => "success", 'error' => "error", 'info' => "info"];
             <? foreach ($deputies as $deputy) : ?>
                 <tr>
                     <td>
-                        <?= Avatar::getAvatar($deputy['user_id'], $deputy['username'])->getImageTag(Avatar::SMALL) ?>
+                        <?= Avatar::getAvatar($deputy->user_id, $deputy->username)->getImageTag(Avatar::SMALL) ?>
                     </td>
                     <td>
-                        <?= get_fullname($deputy['user_id'], 'full_rev', true) ?>
-                        (<?= $deputy['username']  ?>,
+                        <?= htmlReady($deputy->getDeputyFullname()) ?>
+                        (<?= htmlReady($deputy->username) ?>,
                          <?= _('Status') ?>:
-                         <?= $deputy['perms'] ?>)
+                         <?= $deputy->perms ?>)
                     </td>
                     <td></td>
                     <td class="actions">
                     <? if ($perm_dozent && !$dozent_is_locked): ?>
                         <?= Icon::create('trash')->asInput([
-                            'formaction'   => $controller->url_for('course/basicdata/deletedeputy', $course_id, $deputy['user_id']),
+                            'formaction'   => $controller->url_for("course/basicdata/deletedeputy/{$course_id}/{$deputy['user_id']}"),
                             'data-confirm' => _('Soll die Person wirklich entfernt werden?'),
                         ]) ?>
-                    <? endif; ?>
+                    <? endif ?>
                     </td>
                 </tr>
             <? endforeach ?>

@@ -194,7 +194,7 @@ class BasicDataWizardStep implements CourseWizardStep
             // Add your own default deputies if applicable.
             if ($deputies && Config::get()->DEPUTIES_DEFAULTENTRY_ENABLE) {
                 $values['deputies'] = array_merge($values['deputies'] ?: [],
-                    array_flip(array_keys(getDeputies($GLOBALS['user']->id))));
+                    array_flip(Deputy::findDeputies($GLOBALS['user']->id)->pluck('user_id')));
             }
         }
         // Add lecturer from my courses filter.
@@ -203,7 +203,7 @@ class BasicDataWizardStep implements CourseWizardStep
             // Add this lecturer's default deputies if applicable.
             if ($deputies && Config::get()->DEPUTIES_DEFAULTENTRY_ENABLE) {
                 $values['deputies'] = array_merge($values['deputies'] ?: [],
-                    array_flip(array_keys(getDeputies($GLOBALS['user']->cfg->ADMIN_COURSES_TEACHERFILTER))));
+                    array_flip(Deputy::findDeputies($GLOBALS['user']->cfg->ADMIN_COURSES_TEACHERFILTER)->pluck('user_id')));
             }
         }
         if (!$values['lecturers']) {
@@ -502,8 +502,7 @@ class BasicDataWizardStep implements CourseWizardStep
         $data['participating'] = array_flip($participating);
         unset($data['participating'][$course->institut_id]);
         if (Config::get()->DEPUTIES_ENABLE) {
-            $deputies = getDeputies($course->id);
-            $data['deputies'] = array_flip(array_keys($deputies));
+            $data['deputies'] = array_flip(Deputy::findDeputies($course->id)->pluck('user_id'));
         }
         $values[__CLASS__] = $data;
         return $values;
@@ -518,15 +517,9 @@ class BasicDataWizardStep implements CourseWizardStep
     public function getDefaultDeputies($user_id)
     {
         if (Config::get()->DEPUTIES_ENABLE && Config::get()->DEPUTIES_DEFAULTENTRY_ENABLE) {
-            $deputies = getDeputies($user_id, 'full_rev_username');
-            $result = [];
-            foreach ($deputies as $d) {
-                $result[] = [
-                    'id' => $d['user_id'],
-                    'name' => $d['fullname']
-                ];
-            }
-            return $result;
+            return Deputy::findDeputies($user_id)->map(function($deputy) {
+                return ['id' => $deputy->user_id, 'name' => $deputy->getDeputyFullname()];
+            });
         } else {
             return [];
         }

@@ -325,12 +325,12 @@ class Course_BasicdataController extends AuthenticatedController
         $this->deputies_enabled = $deputies_enabled;
 
         if ($this->deputies_enabled) {
-            $this->deputies = getDeputies($this->course_id);
+            $this->deputies = Deputy::findDeputies  ($this->course_id);
             $this->deputySearch = new PermissionSearch(
                     "user_not_already_in_sem_or_deputy",
                     sprintf(_("%s suchen"), get_title_for_status('deputy', 1, $sem->status)),
                     "user_id",
-                    ['permission' => getValidDeputyPerms(), 'seminar_id' => $this->course_id]
+                    ['permission' => Deputy::getValidPerms(), 'seminar_id' => $this->course_id]
                 );
 
             $this->deputy_title = get_title_for_status('deputy', 1, $sem->status);
@@ -531,7 +531,6 @@ class Course_BasicdataController extends AuthenticatedController
                 $func = 'addTeacher';
                 break;
         }
-
         $succeeded = [];
         $failed = [];
         foreach ($mp->getAddedUsers() as $a) {
@@ -625,15 +624,14 @@ class Course_BasicdataController extends AuthenticatedController
                     if (isDeputy($dozent, $course_id)) {
                         deleteDeputy($dozent, $course_id);
                     }
+
                     // Add default deputies of the chosen lecturer...
                     if (Config::get()->DEPUTIES_DEFAULTENTRY_ENABLE) {
-                        $deputies  = getDeputies($dozent);
-                        $lecturers = $sem->getMembers('dozent');
+                        $deputies  = Deputy::findDeputies($dozent)->pluck('user_id');
+                        $lecturers = $sem->getMembers();
                         foreach ($deputies as $deputy) {
                             // ..but only if not already set as lecturer or deputy.
-                            if (!isset($lecturers[$deputy['user_id']]) &&
-                                !isDeputy($deputy['user_id'], $course_id)
-                            ) {
+                            if (!isset($lecturers[$deputy['user_id']]) && !isDeputy($deputy['user_id'], $course_id)) {
                                 addDeputy($deputy['user_id'], $course_id);
                             }
                         }

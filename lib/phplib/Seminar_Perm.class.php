@@ -247,7 +247,7 @@ class Seminar_Perm
         if ($range_id === $user_id && $this->have_perm('autor', $user_id)) {
             // user on his own profile
             $status = 'user';
-        } else if (isDeputyEditAboutActivated() && isDeputy($user_id, $range_id, true)) {
+        } else if (Deputy::isEditActivated() && isDeputy($user_id, $range_id, true)) {
             // user is an assigned deputy
             $status = 'user';
         } else if ($this->have_perm('root', $user_id)) {
