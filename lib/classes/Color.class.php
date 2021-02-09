@@ -23,7 +23,7 @@ class Color {
      * May be expanded in a later version to allow
      *  X11 color names as described in
      *  http://en.wikipedia.org/wiki/Web_colors
-     * 
+     *
      * @var array
      */
     static $colorstrings = [
@@ -144,7 +144,7 @@ class Color {
                             + $color2[2] * (100 - $percentOfColor1)) / 100);
         $color_new[3] = ($color1[3] * $percentOfColor1
                             + $color2[3] * (100 - $percentOfColor1)) / 100;
-        $format = ((mb_strpos($format2, "a") !== false) && (mb_strpos($fotmat1, "a") === false))
+        $format = ((mb_strpos($format2, "a") !== false) && (mb_strpos($format1, "a") === false))
                     ? $format2
                     : $format1;
         $func = "_array2" . $format;
@@ -193,7 +193,7 @@ class Color {
         $color[0] = floor(($color[0] * (100 - $factor) + 255 * $factor) / 100);
         $color[1] = floor(($color[1] * (100 - $factor) + 255 * $factor) / 100);
         $color[2] = floor(($color[2] * (100 - $factor) + 255 * $factor) / 100);
-        
+
         // convert the color back (if possible)
         $func = "_array2" . $format;
         return self::$func($color);
