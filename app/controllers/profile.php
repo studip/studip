@@ -171,9 +171,15 @@ class ProfileController extends AuthenticatedController
         foreach ($folders as $folder) {
             $one_public_folder = $folder->getTypedFolder();
             if ($one_public_folder->viewable) {
-                $all_files = FileManager::getFolderFilesRecursive($one_public_folder, $GLOBALS['user']->id);
-                $public_files = array_merge($public_files, $all_files['files']);
-                $public_folders = array_merge($public_folders, $all_files['folders']);
+                //We don't need to fetch all files recursively,
+                //since we have collected all public folders above already.
+                $folder_file_refs = $one_public_folder->getFiles();
+                foreach ($folder_file_refs as $file_ref) {
+                    if ($one_public_folder->isFileDownloadable($file_ref->id, $GLOBALS['user']->id)) {
+                        $public_files[$file_ref->id] = $file_ref;
+                    }
+                }
+                $public_folders[$one_public_folder->id] = $one_public_folder;
             }
         }
         if (count($public_files)) {
