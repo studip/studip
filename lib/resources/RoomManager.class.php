@@ -985,7 +985,7 @@ class RoomManager
         ];
 
         if (!$time_ranges) {
-            $sql .= 'GROUP BY `resources`.`id` ORDER BY `resources`.`name` ASC';
+            $sql .= 'ORDER BY `resources`.`name` ASC';
             return [
                 'sql' => $sql,
                 'sql_params' => $sql_params

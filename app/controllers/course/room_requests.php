@@ -168,7 +168,7 @@ class Course_RoomRequestsController extends AuthenticatedController
             if (!$_SESSION['course_room_request'][$request_id]) {
                 $_SESSION['course_room_request'][$request_id] = [];
             }
-            $result = $_SESSION['course_room_request'][$request_id];
+            $result =& $_SESSION['course_room_request'][$request_id];
         }
         return $result;
     }
@@ -336,6 +336,8 @@ class Course_RoomRequestsController extends AuthenticatedController
             $this->redirect(
                 'course/room_requests/request_select_room/' . $this->request_id
             );
+            page_close();
+            die();
         }
 
         if (Request::isPost()) {
@@ -431,6 +433,8 @@ class Course_RoomRequestsController extends AuthenticatedController
         } else {
             //It is a new request. Create the request object and do nothing else.
             $this->request = $this->getRequestInstanceFromSession($this->request_id);
+            $this->category_id = Request::get('category_id', $session_data['category_id']);
+            $this->category = ResourceCategory::find($this->category_id);
         }
 
         if (!($this->category instanceof ResourceCategory)) {
@@ -477,6 +481,7 @@ class Course_RoomRequestsController extends AuthenticatedController
                 return;
             }
             $session_data['preparation_time'] = $this->preparation_time;
+            $session_data['category_id'] = $this->category_id;
 
             if (Request::submitted('search_by_name')) {
                 //Delete all selected properties from the session since the
