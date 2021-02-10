@@ -336,8 +336,7 @@ class Course_RoomRequestsController extends AuthenticatedController
             $this->redirect(
                 'course/room_requests/request_select_room/' . $this->request_id
             );
-            page_close();
-            die();
+            return;
         }
 
         if (Request::isPost()) {
