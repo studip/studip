@@ -13,7 +13,7 @@ class GlobalSearchUsers extends GlobalSearchModule implements GlobalSearchFullte
     /**
      * Returns the displayname for this module
      *
-     * @return mixed
+     * @return string
      */
     public static function getName()
     {
@@ -26,9 +26,9 @@ class GlobalSearchUsers extends GlobalSearchModule implements GlobalSearchFullte
      *
      * This function is required to make use of the mysql union parallelism
      *
-     * @param $search the input query string
-     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
-     * @return String SQL Query to discover elements for the search
+     * @param string $search the input query string
+     * @param array $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
+     * @return string SQL Query to discover elements for the search
      */
     public static function getSQL($search, $filter, $limit)
     {
@@ -70,14 +70,14 @@ class GlobalSearchUsers extends GlobalSearchModule implements GlobalSearchFullte
      * - expand: Url if the user further expands the search
      * - img: Avatar for the
      *
-     * @param $id
-     * @param $search
-     * @return mixed
+     * @param array $data
+     * @param string $search
+     * @return array
      */
     public static function filter($data, $search)
     {
         $user = User::buildExisting($data);
-        $result = [
+        return [
             'id'         => $user->id,
             'name'       => self::markMany($user->getFullname(), $search),
             'url'        => URLHelper::getURL(
@@ -89,14 +89,13 @@ class GlobalSearchUsers extends GlobalSearchModule implements GlobalSearchFullte
             'expand'     => self::getSearchURL($search),
             'img'        => Avatar::getAvatar($user->id)->getUrl(Avatar::MEDIUM),
         ];
-        return $result;
     }
 
     /**
      * Returns the URL that can be called for a full search.
      *
      * @param string $searchterm what to search for?
-     * @return URL to the full search, containing the searchterm and the category
+     * @return string URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {
@@ -123,37 +122,11 @@ class GlobalSearchUsers extends GlobalSearchModule implements GlobalSearchFullte
     }
 
     /**
-     * Executes a fulltext (MATCH AGAINST) search in database for the given search term.
-     *
-     * @param string $search the term to search for.
-     * @return string SQL query.
-     */
-    public static function getFulltextSearch($search)
-    {
-        if (!$search) {
-            return null;
-        }
-
-        // if you're no admin respect visibilty
-        if (!$GLOBALS['perm']->have_perm('admin')) {
-            $visQuery = get_vis_query('user', 'search') . " AND ";
-        }
-        $query = DBManager::get()->quote(preg_replace("/(\w+)[*]*\s?/", "+$1* ", $search));
-        $sql = "SELECT SQL_CALC_FOUND_ROWS user.`user_id`, user.`Vorname`, user.`Nachname`, user.`username`
-                FROM `auth_user_md5` AS user
-                LEFT JOIN `user_visibility` USING (`user_id`)
-                WHERE {$visQuery} MATCH(`username`, `Vorname`, `Nachname`) AGAINST($query IN BOOLEAN MODE)
-                LIMIT " . Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE;
-        return $sql;
-    }
-
-    /**
      * Function to mark a querystring in a resultstring
      *
-     * @param $string
-     * @param $query
-     * @param bool|true $filename
-     * @return mixed
+     * @param string $string
+     * @param string $query
+     * @return string
      */
     public static function markMany($string, $query)
     {

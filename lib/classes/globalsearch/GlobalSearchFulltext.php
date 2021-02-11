@@ -21,12 +21,4 @@ interface GlobalSearchFulltext
      * Disables fulltext (MATCH AGAINST) search by removing the corresponding indices.
      */
     public static function disable();
-
-    /**
-     * Executes a fulltext (MATCH AGAINST) search in database for the given search term.
-     *
-     * @param string $search the term to search for.
-     * @return string SQL query.
-     */
-    public static function getFulltextSearch($search);
 }

@@ -13,7 +13,7 @@ class GlobalSearchMessages extends GlobalSearchModule
     /**
      * Returns the displayname for this module
      *
-     * @return mixed
+     * @return string
      */
     public static function getName()
     {
@@ -26,9 +26,9 @@ class GlobalSearchMessages extends GlobalSearchModule
      *
      * This function is required to make use of the mysql union parallelism
      *
-     * @param $search the input query string
-     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
-     * @return String SQL Query to discover elements for the search
+     * @param string $search the input query string
+     * @param array $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
+     * @return string SQL Query to discover elements for the search
      */
     public static function getSQL($search, $filter, $limit)
     {
@@ -60,16 +60,16 @@ class GlobalSearchMessages extends GlobalSearchModule
      * - expand: Url if the user further expands the search
      * - img: Avatar for the
      *
-     * @param $id
-     * @param $search
-     * @return mixed
+     * @param string $message_id
+     * @param striing $search
+     * @return array
      */
     public static function filter($message_id, $search)
     {
         $message = Message::buildExisting($message_id);
 
         $username = $additional = _('unbekannt');
-        if ($message->autor_id === '____%system%____') {
+        if ((string)$message->autor_id === '____%system%____') {
             $username  = _('System');
             $additonal = _('Systemnachricht');
         } else {
@@ -87,7 +87,7 @@ class GlobalSearchMessages extends GlobalSearchModule
             }
         }
 
-        $result = [
+        return [
             'name'        => self::mark($message->subject, $search),
             'url'         => URLHelper::getURL("dispatch.php/messages/overview/{$message->id}", [], true),
             'img'         => Icon::create('mail', 'clickable')->asImagePath(),
@@ -97,14 +97,13 @@ class GlobalSearchMessages extends GlobalSearchModule
             'expand'      => self::getSearchURL($search),
             'user'        => $username,
         ];
-        return $result;
     }
 
     /**
      * Returns the URL that can be called for a full search.
      *
      * @param string $searchterm what to search for?
-     * @return URL to the full search, containing the searchterm and the category
+     * @return string URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {

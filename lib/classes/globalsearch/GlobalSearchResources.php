@@ -12,7 +12,7 @@ class GlobalSearchResources extends GlobalSearchModule
     /**
      * Returns the displayname for this module
      *
-     * @return mixed
+     * @return string
      */
     public static function getName()
     {
@@ -25,9 +25,9 @@ class GlobalSearchResources extends GlobalSearchModule
      *
      * This function is required to make use of the mysql union parallelism
      *
-     * @param $search the input query string
-     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
-     * @return String SQL Query to discover elements for the search
+     * @param string $search the input query string
+     * @param array $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
+     * @return string SQL Query to discover elements for the search
      */
     public static function getSQL($search, $filter, $limit)
     {
@@ -57,9 +57,9 @@ class GlobalSearchResources extends GlobalSearchModule
      * - expand: Url if the user further expands the search
      * - img: Avatar for the
      *
-     * @param $id
-     * @param $search
-     * @return mixed
+     * @param array $res
+     * @param string $search
+     * @return attay
      */
     public static function filter($res, $search)
     {
@@ -86,7 +86,7 @@ class GlobalSearchResources extends GlobalSearchModule
      * Returns the URL that can be called for a full search.
      *
      * @param string $searchterm what to search for?
-     * @return URL to the full search, containing the searchterm and the category
+     * @return string URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {

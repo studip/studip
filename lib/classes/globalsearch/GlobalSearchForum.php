@@ -35,8 +35,8 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
      *
      * This function is required to make use of the mysql union parallelism
      *
-     * @param $search the input query string
-     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
+     * @param string $search the input query string
+     * @param array $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return String SQL Query to discover elements for the search
      */
     public static function getSQL($search, $filter, $limit)
@@ -95,9 +95,9 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
      * - expand: Url if the user further expands the search
      * - img: Avatar for the
      *
-     * @param $id
-     * @param $search
-     * @return mixed
+     * @param array $data
+     * @param string $search
+     * @return array
      */
     public static function filter($data, $search)
     {
@@ -132,7 +132,7 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
         $filtered_content = self::blockquote_filter($data['content']);
 
         //in case the search query is found in either $name or $filtered_content (via direct_search), the result should be returned
-        if (strpos($name, "<mark>") !== FALSE || self::direct_search($filtered_content, $search)) {
+        if (mb_strpos($name, "<mark>") !== false || self::direct_search($filtered_content, $search)) {
             $result = [
                 'id'          => $data['topic_id'],
                 'name'        => $name,
@@ -159,7 +159,6 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
 
             return $result;
         }
-        return false;
     }
 
     /**
@@ -205,7 +204,6 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
         return $found;
     }
 
-
     /**
      * Enables fulltext (MATCH AGAINST) search by creating the corresponding indices.
      */
@@ -226,7 +224,7 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
      * Returns the URL that can be called for a full search.
      *
      * @param string $searchterm what to search for?
-     * @return URL to the full search, containing the searchterm and the category
+     * @return string URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {
@@ -234,41 +232,5 @@ class GlobalSearchForum extends GlobalSearchModule implements GlobalSearchFullte
             'q'        => $searchterm,
             'category' => self::class
         ]);
-    }
-
-    /**
-     * Executes a fulltext (MATCH AGAINST) search in database for the given search term.
-     *
-     * @param string $search the term to search for.
-     * @return string SQL query.
-     */
-    public static function getFulltextSearch($search)
-    {
-        $search = str_replace(' ', '% ', $search);
-        $query = DBManager::get()->quote(preg_replace("/(\w+)[*]*\s?/", "+$1* ", $search));
-        $words = mb_substr(preg_replace("/\W*(\w+)\W*/", "$1|", $search), 0, -1);
-        $quoteRegex = '`content` REGEXP "[[]quote=.*['.$words.'].*[]]|[<]admin_msg autor=.*[.'.$words.'.].*[>]" ASC, ';
-
-        // visibility
-        if (!$GLOBALS['perm']->have_perm('admin')) {
-            $seminaruser = " AND EXISTS (
-                SELECT 1 FROM `seminar_user`
-                WHERE `forum_entries`.`seminar_id` = `seminar_user`.`seminar_id`
-                  AND `seminar_user`.`user_id` = " . DBManager::get()->quote($GLOBALS['user']->id) . "
-            ) ";
-        }
-
-        // anonymous postings
-        if (!$GLOBALS['perm']->have_perm('root') && Config::get()->FORUM_ANONYMOUS_POSTINGS) {
-            $anonymous = "`anonymous` = 0 AND";
-        } else {
-            $anonymous = '';
-        }
-
-        $sql = "SELECT `forum_entries`.* FROM `forum_entries`
-                WHERE {$anonymous} MATCH(`name`, `content`) AGAINST({$query} IN BOOLEAN MODE)
-                {$seminaruser}
-                ORDER BY $quoteRegex `chdate` DESC LIMIT " . Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE;
-        return $sql;
     }
 }

@@ -47,7 +47,7 @@ trait GlobalSearchCacheTrait
     /**
      * Stored an item in cache
      * @param  string  $index Index to store
-     * @param  string  $index Value to store
+     * @param  string  $value Value to store
      * @return mixed value
      */
     protected static function setCachedItem($index, $value)

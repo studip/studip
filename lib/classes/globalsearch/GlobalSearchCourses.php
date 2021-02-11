@@ -12,7 +12,7 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
     /**
      * Returns the displayname for this module
      *
-     * @return mixed
+     * @return string
      */
     public static function getName()
     {
@@ -35,9 +35,9 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
      *
      * This function is required to make use of the mysql union parallelism
      *
-     * @param $search the input query string
-     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
-     * @return String SQL Query to discover elements for the search
+     * @param string $search the input query string
+     * @param array $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
+     * @return string SQL Query to discover elements for the search
      */
     public static function getSQL($search, $filter, $limit)
     {
@@ -125,9 +125,9 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
      * - expand: Url if the user further expands the search
      * - img: Avatar for the
      *
-     * @param $id
-     * @param $search
-     * @return mixed
+     * @param array $data
+     * @param string $search
+     * @return array
      */
     public static function filter($data, $search)
     {
@@ -242,58 +242,10 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
     }
 
     /**
-     * Executes a fulltext (MATCH AGAINST) search in database for the given search term.
-     *
-     * @param string $search the term to search for.
-     * @return string SQL query.
-     */
-    public static function getFulltextSearch($search)
-    {
-        if (!$search) {
-            return null;
-        }
-
-        $query = DBManager::get()->quote(preg_replace("/(\w+)[*]*\s?/", "+$1* ", $search));
-
-        // visibility
-        if (!$GLOBALS['perm']->have_perm('admin')) {
-            $visibility = "courses.visible = 1 AND ";
-            $seminaruser = " AND NOT EXISTS (
-                SELECT 1 FROM seminar_user
-                WHERE seminar_id = courses.Seminar_id
-                    AND user_id = ".DBManager::get()->quote($GLOBALS['user']->id).") ";
-        }
-
-        $semtype = DBManager::get()->query(
-            "SELECT `id`, `name` FROM `sem_types` WHERE MATCH (`name`) AGAINST ($query IN BOOLEAN MODE)");
-        while ($type = $semtype->fetch(PDO::FETCH_ASSOC)) {
-
-            $semtypes[] = $type['id'];
-            // Get up some order criteria with the semtypes
-            // Remove semtypes form query
-                $replace = "/".$type['name'][0].chunk_split(mb_substr($type['name'], 1), 1, '?')."\*\s?/i";
-                $query = preg_replace($replace, "", $query);
-        }
-
-        if (isset($semtypes)) {
-            $semstatus = "`status` IN (".join(",",$semtypes) .") DESC, ";
-        }
-
-        $sql = "SELECT courses.`Seminar_id`, courses.`start_time`, courses.`Name`,
-                    courses.`VeranstaltungsNummer`, courses.`status`
-                FROM `seminare` AS courses
-                WHERE MATCH(`VeranstaltungsNummer`, `Name`) AGAINST ($query IN BOOLEAN MODE)
-                ORDER BY $semstatus ABS(`start_time` - UNIX_TIMESTAMP()) ASC,
-                     MATCH(`VeranstaltungsNummer`, `Name`) AGAINST ($query IN BOOLEAN MODE) DESC
-                LIMIT " . (4 * Config::get()->GLOBALSEARCH_MAX_RESULT_OF_TYPE);
-        return $sql;
-    }
-
-    /**
      * Returns the URL that can be called for a full search.
      *
      * @param string $searchterm what to search for?
-     * @return URL to the full search, containing the searchterm and the category
+     * @return string URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {

@@ -28,16 +28,16 @@ abstract class GlobalSearchModule
     /**
      * Returns the displayname for this module
      *
-     * @return mixed
+     * @return string
      */
     abstract public static function getName();
 
     /**
      * Has to return a SQL Query that discovers all objects. All retrieved data is passed row by row to getGlobalSearchFilter.
      *
-     * @param $search the input query string
-     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
-     * @return String SQL Query to discover elements for the search
+     * @param string $search the input query string
+     * @param array $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
+     * @return string SQL Query to discover elements for the search
      */
     abstract public static function getSQL($search, $filter, $limit);
 
@@ -53,9 +53,9 @@ abstract class GlobalSearchModule
      * - expand: Url if the user further expands the search
      * - img: Avatar for the
      *
-     * @param $data One row returned from getSQL SQL Query
-     * @param $search The searchstring (Use for markup e.g. self::mark)
-     * @return mixed Information Array
+     * @param array $data One row returned from getSQL SQL Query
+     * @param string $search The searchstring (Use for markup e.g. self::mark)
+     * @return array Information Array
      */
     abstract public static function filter($data, $search);
 
@@ -66,7 +66,7 @@ abstract class GlobalSearchModule
      */
     public static function getFilters()
     {
-        return '';
+        return [];
     }
 
     /**
@@ -77,7 +77,7 @@ abstract class GlobalSearchModule
      * specific search.
      *
      * @param string $searchterm what to search for?
-     * @return URL to the full search, containing the searchterm and the category
+     * @return string URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {
@@ -87,11 +87,11 @@ abstract class GlobalSearchModule
     /**
      * Function to mark a querystring in a resultstring
      *
-     * @param $string             Result string that should be displayed
-     * @param $query              Query string to mark up
+     * @param string $string             Result string that should be displayed
+     * @param string $query              Query string to mark up
      * @param bool $longtext      Indicates whether result might be a longer text
      * @param bool|true $filename Indicates whether the query string might denote a file.
-     * @return mixed
+     * @return string
      */
     public static function mark($string, $query, $longtext = false, $filename = false)
     {
@@ -165,8 +165,8 @@ abstract class GlobalSearchModule
     * Get the selected institute with sub-institutes as an array of IDs
     * or a single institute as a string to use in the SQL query.
     *
-    * @param $institute_id ID of the given institute or faculty
-    * @return mixed: a single institute as string if selected
+    * @param string $institute_id ID of the given institute or faculty
+    * @return array: a single institute as string if selected
     *                or an array of institute IDs if a faculty was selected
     */
     public static function getInstituteIdsForSQL($institute_id)
@@ -177,7 +177,7 @@ abstract class GlobalSearchModule
             $institute_ids[] = $institute_id;
             return $institute_ids;
         } else {
-            return $institute_id;
+            return [$institute_id];
         }
     }
 
@@ -185,8 +185,8 @@ abstract class GlobalSearchModule
      * Get the selected seminar class with sub-types as an array
      * or a single seminar type as a string to use in an SQL query.
      *
-     * @param $sem_class a single sem_type ID or a sem_class containing multiple sem_types
-     * @return mixed: seminar class/types formatted for an SQL query
+     * @param string $sem_class a single sem_type ID or a sem_class containing multiple sem_types
+     * @return string: seminar class/types formatted for an SQL query
      */
     public static function getSeminarTypesForSQL($sem_class)
     {
@@ -217,7 +217,7 @@ abstract class GlobalSearchModule
         $sem_time_switch = Config::get()->SEMESTER_TIME_SWITCH;
         $current_semester = Semester::findByTimestamp(time() + $sem_time_switch * 7 * 24 * 3600);
 
-        return $current_semester['beginn'];
+        return (int)$current_semester['beginn'];
     }
 
     /**
@@ -226,7 +226,7 @@ abstract class GlobalSearchModule
      */
     public static function getActiveSearchModules()
     {
-        $modules = array_filter(
+        $modules = (array)array_filter(
             Config::get()->GLOBALSEARCH_MODULES,
             function ($data, $module) {
                 if ($module === 'GlobalSearchModules' && !MVV::isVisibleSearch()) {

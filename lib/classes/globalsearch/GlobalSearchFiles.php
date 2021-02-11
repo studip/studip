@@ -12,7 +12,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
     /**
      * Returns the displayname for this module
      *
-     * @return mixed
+     * @return string
      */
     public static function getName()
     {
@@ -29,9 +29,9 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
      * also be seen/downloaded by the current user. So we fetch thrice the
      * number of entries we need, hoping something downloadable will remain.
      *
-     * @param $search the input query string
-     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
-     * @return String SQL Query to discover elements for the search
+     * @param string $search the input query string
+     * @param array $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
+     * @return string SQL Query to discover elements for the search
      */
     public static function getSQL($search, $filter, $limit)
     {
@@ -164,8 +164,6 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
                             ORDER BY r.`chdate` DESC LIMIT " . $limit;
             }
         }
-
-        return null;
     }
 
     /**
@@ -181,9 +179,9 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
      * - expand: Url if the user further expands the search
      * - img: Icon according to file mimetype
      *
-     * @param Array $fileref
-     * @param $search
-     * @return mixed
+     * @param array $data
+     * @param string $search
+     * @return array
      */
     public static function filter($data, $search)
     {
@@ -253,7 +251,7 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
      * Returns the URL that can be called for a full search.
      *
      * @param string $searchterm what to search for?
-     * @return URL to the full search, containing the searchterm and the category
+     * @return string URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {
@@ -261,44 +259,5 @@ class GlobalSearchFiles extends GlobalSearchModule implements GlobalSearchFullte
             'q'        => $searchterm,
             'category' => self::class
         ]);
-    }
-
-    /**
-     * Executes a fulltext (MATCH AGAINST) search in database for the given search term.
-     *
-     * @param string $search the term to search for.
-     * @return string SQL query.
-     */
-    public static function getFulltextSearch($search)
-    {
-        // Filter for own courses
-        if (!$GLOBALS['perm']->have_perm('admin')) {
-            $user = DBManager::get()->quote($GLOBALS['user']->id);
-            $ownseminars = "JOIN seminar_user ON (dokumente.seminar_id = seminar_user.seminar_id AND seminar_user.user_id = $user) ";
-        }
-
-        // Now check if we got a seminar
-        if (mb_strpos($search, '/') !== FALSE) {
-            $args = explode('/', $search);
-            $prequery = DBManager::get()->quote("%" . trim($args[0]) . "%");
-            $query = DBManager::get()->quote("%" . trim($args[1]) . "%");
-            $binary = DBManager::get()->quote('%' . join('%', preg_split('//u',
-                        mb_strtoupper(trim($args[0])), null, PREG_SPLIT_NO_EMPTY)) . '%');
-            $comp = "AND";
-            return "SELECT SQL_CALC_FOUND_ROWS dokumente.*
-                    FROM dokumente
-                    JOIN seminare USING (seminar_id)
-                    {$ownseminars}
-                    WHERE (seminare.name LIKE BINARY {$binary} OR seminare.name LIKE {$prequery})
-                      {$comp} dokumente.name LIKE {$query}
-                    ORDER BY dokumente.chdate DESC LIMIT " . $limit;
-        } else {
-            $query = DBManager::get()->quote(preg_replace("/(\w+)[*]*\s?/", "+$1* ", $search));
-            return "SELECT SQL_CALC_FOUND_ROWS dokumente.*
-                    FROM dokumente IGNORE INDEX (chdate)
-                    {$ownseminars}
-                    WHERE MATCH(dokumente.name) AGAINST ($query IN BOOLEAN MODE)
-                    ORDER BY dokumente.chdate DESC LIMIT " . $limit;
-        }
     }
 }

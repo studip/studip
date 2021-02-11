@@ -22,9 +22,9 @@ class GlobalSearchModules extends GlobalSearchModule
      * Transforms the search request into an sql statement, that provides the id (same as getId) as type and
      * the object id, that is later passed to the filter.
      *
-     * @param $search the input query string
-     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
-     * @return String SQL Query to discover elements for the search
+     * @param strinig $search the input query string
+     * @param array $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
+     * @return string SQL Query to discover elements for the search
      */
     public static function getSQL($search, $filter, $limit)
     {
@@ -96,16 +96,13 @@ class GlobalSearchModules extends GlobalSearchModule
      * - expand: Url if the user further expands the search
      * - img: Avatar for the
      *
-     * @param $id
-     * @param $search
+     * @param array $module_data
+     * @param string $search
      * @return array
      */
     public static function filter($module_data, $search)
     {
         extract($module_data);
-
-        $label = $module_data['code'] . ' ' . $module_data['bezeichnung'];
-
         // Get icon according to permissions
         $icon_role = Icon::ROLE_CLICKABLE;
         if (self::extendedDisplay()) {
@@ -155,7 +152,7 @@ class GlobalSearchModules extends GlobalSearchModule
      * search term.
      *
      * @param string $searchterm what to search for?
-     * @return URL to the full search, containing the searchterm and the category
+     * @return string URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {

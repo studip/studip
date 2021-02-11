@@ -47,7 +47,7 @@ class GlobalSearchBuzzwords extends SimpleORMap
      *
      * This function is required to make use of the mysql union parallelism
      *
-     * @param $search the input query string
+     * @param string $search the input query string
      * @return String SQL Query to discover elements for the search
      */
     public static function getSQL($search, $filter, $limit)
@@ -77,9 +77,9 @@ class GlobalSearchBuzzwords extends SimpleORMap
      * - expand: Url if the user further expands the search
      * - img: Avatar for the
      *
-     * @param $id
-     * @param $search
-     * @return mixed
+     * @param array $buzz
+     * @param string $search
+     * @return array
      */
     public static function filter($buzz, $search)
     {

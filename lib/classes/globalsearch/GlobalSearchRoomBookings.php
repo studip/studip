@@ -13,7 +13,7 @@ class GlobalSearchRoomBookings extends GlobalSearchModule
     /**
      * Returns the displayname for this module
      *
-     * @return mixed
+     * @return string
      */
     public static function getName()
     {
@@ -24,7 +24,7 @@ class GlobalSearchRoomBookings extends GlobalSearchModule
      * Returns the URL that can be called for a full search.
      *
      * @param string $searchterm what to search for?
-     * @return URL to the full search, containing the searchterm and the category
+     * @return string URL to the full search, containing the searchterm and the category
      */
     public static function getSearchURL($searchterm)
     {
@@ -39,7 +39,7 @@ class GlobalSearchRoomBookings extends GlobalSearchModule
      *
      * @param string $search The term or date to search for. You can either use
      *                       part of the room bookings free text or a date.
-     * @param $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
+     * @param array $filter an array with search limiting filter information (e.g. 'category', 'semester', etc.)
      * @return null|string
      */
     public static function getSQL($search, $filter, $limit)
@@ -86,6 +86,22 @@ class GlobalSearchRoomBookings extends GlobalSearchModule
         return $sql;
     }
 
+    /**
+     * Returns an array of information for the found element. Following informations (key: description) are necessary
+     *
+     * - name: The name of the object
+     * - url: The url to send the user to when he clicks the link
+     *
+     * Additional informations are:
+     *
+     * - additional: Subtitle for the hit
+     * - expand: Url if the user further expands the search
+     * - img: Avatar for the
+     *
+     * @param array $res
+     * @param string $search
+     * @return array
+     */
     public static function filter($res, $search)
     {
         $additional  = $res['name'] . ', ';
@@ -99,7 +115,7 @@ class GlobalSearchRoomBookings extends GlobalSearchModule
                 'show_object' => $res['resource_id'],
                 'start_time'  => strtotime('last monday', $res['begin'] + 24 * 60 * 60)
             ], true),
-            'img'        => Icon::create('room-clear', 'clickable')->asImagePath(),
+            'img'        => Icon::create('room-clear')->asImagePath(),
             'additional' => self::mark($additional, $search),
             'expand'     => null
         ];
