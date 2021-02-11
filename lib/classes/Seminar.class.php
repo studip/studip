@@ -459,8 +459,11 @@ class Seminar
      *
      * @return  array
      */
-    public function getSettings() {
-        return $this->course->toArray();
+    public function getSettings()
+    {
+        $settings = $this->course->toArray();
+        unset($settings['config']);
+        return $settings;
     }
 
     public function store($trigger_chdate = true)
