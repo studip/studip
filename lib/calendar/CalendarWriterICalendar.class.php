@@ -601,7 +601,7 @@ class CalendarWriteriCalendar extends CalendarWriter
         $line = preg_replace('/(\r\n|\n|\r)/', '\n', $line);
         if (mb_strlen($line) > 75) {
             $foldedline = '';
-            while (!empty($line)) {
+            while ($line !== '') {
                 $maxLine = mb_substr($line, 0, 75);
                 $cutPoint = max(60, max(mb_strrpos($maxLine, ';'), mb_strrpos($maxLine, ':')) + 1);
 
