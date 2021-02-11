@@ -85,6 +85,7 @@ class CalendarWriteriCalendar extends CalendarWriter
         $replace_pattern_1 = ['\\\\', '\\n', '\;', '\,'];
         $match_pattern_2 = ['\\', '\n', ';'];
         $replace_pattern_2 = ['\\\\', '\\n', '\;'];
+        $exdate_time = 0;
 
         $result = "BEGIN:VEVENT" . $this->newline;
 
@@ -140,8 +141,9 @@ class CalendarWriteriCalendar extends CalendarWriter
                     $value = $this->_exportDateTime(time(), true);
                     break;
 
-                case 'DTEND':
                 case 'DTSTART':
+                    $exdate_time = $value;
+                case 'DTEND':
                     if ($event->isDayEvent()) {
                         $params['VALUE'] = 'DATE';
                         $params_str = ';VALUE=DATE';
@@ -164,9 +166,9 @@ class CalendarWriteriCalendar extends CalendarWriter
 
                 case 'EXDATE':
                     if (array_key_exists('VALUE', $params)) {
-                        $value = $this->_exportExdate($value, $params['VALUE']);
+                        $value = $this->_exportExDate($value, $params['VALUE']);
                     } else {
-                        $value = $this->_exportExdate($value, 'DATE-TIME');
+                        $value = $this->_exportExDateTime($value, $exdate_time);
                     }
                     $params_str = ';TZID=Europe/Berlin';
                     break;
@@ -494,15 +496,23 @@ class CalendarWriteriCalendar extends CalendarWriter
         return implode(',', $wdays);
     }
 
-    public function _exportExdate($value, $param)
+    public function _exportExDate($value, $param)
     {
         $exdates = [];
         $date_times = explode(',', $value);
         foreach ($date_times as $date_time) {
-            if ($param == 'DATE-TIME')
-                $exdates[] = $this->_exportDateTime($date_time);
-            else
-                $exdates[] = $this->_exportDate($date_time);
+            $exdates[] = $this->_exportDate($date_time);
+        }
+
+        return implode(',', $exdates);
+    }
+
+    public function _exportExDateTime($value, $param)
+    {
+        $exdates = [];
+        $date_times = explode(',', $value);
+        foreach ($date_times as $date_time) {
+            $exdates[] = $this->_exportDate($date_time) . 'T' . $this->_exportTime($param);
         }
 
         return implode(',', $exdates);
