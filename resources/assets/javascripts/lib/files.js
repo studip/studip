@@ -9,7 +9,7 @@ const Files = {
             && jQuery("#files_table_form").length) {
             STUDIP.Vue.load().then(({createApp}) => {
                 this.filesapp = createApp({
-                    el: "#layout_container",
+                    el: "#layout_content",
                     data: {
                         "files":       jQuery("#files_table_form").data("files") || [],
                         "folders":     jQuery("#files_table_form").data("folders") || [],
