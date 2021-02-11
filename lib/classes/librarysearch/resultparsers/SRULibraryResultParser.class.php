@@ -28,32 +28,22 @@ class SRULibraryResultParser implements LibraryResultParser
      */
     public function readResultSet($data = '') : array
     {
+
         $dom = new \DOMDocument();
         $dom->loadXML($data);
-        $result = $dom->getElementsByTagName('records')[0];
-        if (!$result) {
-            //Wrong document type.
-            return [];
-        }
 
-        $records = $result->childNodes;
-        $result_set = [];
-        foreach ($records as $record) {
-            $record_schema = $record->getElementsByTagName('recordSchema')[0];
-            if ($record_schema->textContent == 'marcxml') {
-                $record_node = $record->getElementsByTagName('record')[0];
-                if (!$record_node) {
-                    //Invalid data.
-                    continue;
+        $record_schema = $dom->getElementsByTagName('recordSchema')[0];
+        if (strpos($record_schema->textContent, 'marcxml') !== false) {
+            $parser = new MarcxmlLibraryResultParser();
+            $result_set = [];
+            foreach ($dom->getElementsByTagName('collection') as $collection) {
+                foreach ($collection->getElementsByTagName('record') as $record) {
+                    $result_set[] = $parser->readResultNode($record);
                 }
-                $parser = new MarcxmlLibraryResultParser();
-                //The result is one marcxml record in a collection:
-                $result_set[] = $parser->readResultNode($record_node);
-            } else {
-                //Unknown format
             }
+            return $result_set;
         }
-        return $result_set;
+        throw new RuntimeException('only recordSchema marcxml implemented');
     }
 
 
