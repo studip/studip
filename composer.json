@@ -63,14 +63,14 @@
         "phpxmlrpc/extras": "^0.6.2",
         "algo26-matthias/idna-convert": "^3.0",
         "caxy/php-htmldiff": "^0.1.9",
-        "ext-gd": "^7.2",
-        "ext-gettext": "^7.2",
-        "ext-pdo_mysql": "^7.2",
-        "ext-session": "^7.2",
-        "ext-curl": "^7.2",
-        "ext-zip": "^1.15",
-        "ext-json": "^1.6",
-        "ext-pcre": "^7.2",
-        "ext-pdo": "^7.2"
+        "ext-gd": "*",
+        "ext-gettext": "*",
+        "ext-pdo_mysql": "*",
+        "ext-session": "*",
+        "ext-curl": "*",
+        "ext-zip": "*",
+        "ext-json": "*",
+        "ext-pcre": "*",
+        "ext-pdo": "*"
     }
 }
