@@ -32,6 +32,10 @@
         <? endif ?>
     </label>
     <label>
+        <span class="required"><?= _('Datenfeld mit Matrikelnummer (wenn leer, wird keine Matrikelnummer übergeben)') ?></span>
+        <input type="text" name="ilias_matriculation" size="50" maxlength="255" value="<?= htmlReady($ilias_config['matriculation']) ?>">
+    </label>
+    <label>
     <span class="required"><?= _('Struktur für angelegte Kurse') ?></span>
     </label>
     <label>

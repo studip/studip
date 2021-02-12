@@ -1016,8 +1016,11 @@ class IliasSoap extends StudipSoapClient
 <Gender>".$user_data["gender"]."</Gender>
 <Email>".$user_data["email"]."</Email>
 <Street>".$user_data["street"]."</Street>
-<PhoneHome>".$user_data["phone_home"]."</PhoneHome>
-<Role Id=\"".$role_id."\" Type=\"Global\"/>
+<PhoneHome>".$user_data["phone_home"]."</PhoneHome>";
+        if ($user_data["matriculation"] !== '') {
+            $usr_xml .= "<Matriculation>".(int)$user_data["matriculation"]."</Matriculation>";
+        }
+        $usr_xml .= "<Role Id=\"".$role_id."\" Type=\"Global\"/>
 <Active>true</Active>
 <TimeLimitUnlimited>".$user_data["time_limit_unlimited"]."</TimeLimitUnlimited>
 <TimeLimitMessage>0</TimeLimitMessage>

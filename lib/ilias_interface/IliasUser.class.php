@@ -20,6 +20,7 @@ class IliasUser
     const USER_TYPE_CREATED= '0';
 
     public $index;
+    private $ilias_config;
     public $version;
     public $id;
     public $studip_id;
@@ -63,6 +64,8 @@ class IliasUser
         $this->auth_plugin = DBManager::get()->query("SELECT IFNULL(auth_plugin, 'standard') FROM auth_user_md5 WHERE user_id = '" . $this->studip_id. "'")->fetchColumn();
         $this->index = $index;
         $this->version = $version;
+        $ilias_configs = Config::get()->ILIAS_INTERFACE_SETTINGS;
+        $this->ilias_config = $ilias_configs[$this->index];
 
         $this->readData();
         $this->getStudipUserData();
@@ -135,6 +138,16 @@ class IliasUser
             default: $this->gender  = 'f';
         }
 
+        $this->matriculation = '';
+        if (array_key_exists('matriculation', $this->ilias_config) && $this->ilias_config['matriculation']) {
+            $this->matriculation = 0;
+            foreach (DataFieldEntry::getDataFieldEntries($this->studip_id, 'user') as $entry) {
+                if ($entry->getName() == $this->ilias_config['matriculation']) {
+                    $this->matriculation = $entry->getDisplayValue();
+                }
+            }
+        }
+
         if ($this->title_front != '') {
             $this->title = $this->title_front;
         }
@@ -167,6 +180,7 @@ class IliasUser
         $user_data["email"] = $this->email;
         $user_data["street"] = $this->street;
         $user_data["phone_home"] = $this->phone_home;
+        $user_data["matriculation"] = $this->matriculation;
         $user_data["time_limit_unlimited"] = 1;
         $user_data["active"] = 1;
         $user_data["approve_date"] = date('Y-m-d H:i:s');
