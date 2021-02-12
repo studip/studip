@@ -805,7 +805,7 @@ class IndexController extends ForumController
         if (Request::isXhr()) {
             $this->render_template('index/_abo_link');
         } else {
-            switch ($constraint['depth']) {
+            switch ($this->constraint['depth']) {
                 case 0:  $msg = _('Sie haben das gesamte Forum abonniert!');break;
                 case 1:  $msg = _('Sie haben diesen Bereich abonniert.');break;
                 default: $msg = _('Sie haben dieses Thema abonniert');break;

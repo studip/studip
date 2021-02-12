@@ -19,12 +19,12 @@ class ForumBulkMail extends Messaging {
 
     /**
      * Overwrites the parent method. This method combines messages with the same
-     * content and prepares them for sending them as a mail with multiple 
+     * content and prepares them for sending them as a mail with multiple
      * recepients instead of one mail for each recipient.
      * The actual sending task is done bulkSend().
-     * 
+     *
      * @global object $user
-     * 
+     *
      * @param string $rec_user_id  user_id of recipient
      * @param string $snd_user_id  user_id of sender
      * @param string $message      the message
@@ -34,7 +34,7 @@ class ForumBulkMail extends Messaging {
     function sendingEmail($rec_user_id, $snd_user_id, $message, $subject, $message_id)
     {
         $receiver = User::find($rec_user_id);
-        
+
         if ($receiver && $receiver->email) {
             $rec_fullname = 'Sie';
 
@@ -51,7 +51,7 @@ class ForumBulkMail extends Messaging {
 
                 $template = $GLOBALS['template_factory']->open('mail/text');
                 $template->message      = kill_format(stripslashes($message));
-                $template->rec_fullname = $reciver->getFullname();
+                $template->rec_fullname = $receiver->getFullname();
                 $mailmessage = $template->render();
 
                 $template = $GLOBALS['template_factory']->open('mail/html');
@@ -75,7 +75,7 @@ class ForumBulkMail extends Messaging {
             restoreLanguage();
         }
     }
-    
+
 
     /**
      * Sends the collected messages from sendingMail as e-mail.
@@ -94,7 +94,7 @@ class ForumBulkMail extends Messaging {
                 foreach ($data['users'] as $user_id => $to) {
                     $mail->addRecipient($to, get_fullname($user_id), 'Bcc');
                 }
-                
+
                 $mail->setReplyToEmail('')
                 ->setBodyText($data['text']);
 
@@ -102,7 +102,7 @@ class ForumBulkMail extends Messaging {
                     $mail->setSenderEmail($data['reply_to'])
                          ->setSenderName($snd_fullname);
                 }
-                
+
                 $user_cfg = UserConfig::get($user_id);
                 if ($user_cfg->getValue('MAIL_AS_HTML')) {
                     $mail->setBodyHtml($mailhtml);
@@ -110,22 +110,22 @@ class ForumBulkMail extends Messaging {
 
                 if($GLOBALS["ENABLE_EMAIL_ATTACHMENTS"]){
                     $message = Message::find($data['message_id']);
-                    
+
                     $current_user = User::findCurrent();
-                    
+
                     $message_folder = MessageFolder::findMessageTopFolder(
                         $message->id,
                         $current_user->id
                     );
-                    
+
                     $message_folder = $message_folder->getTypedFolder();
-                    
+
                     $attachments = FileManager::getFolderFilesRecursive(
                         $message_folder,
                         $current_user->id
                     );
-                    
-                    
+
+
                     foreach($attachments as $attachment) {
                         $mail->addStudipAttachment($attachment);
                     }

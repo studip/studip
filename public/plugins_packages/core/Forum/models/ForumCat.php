@@ -200,7 +200,7 @@ class ForumCat extends SimpleORMap
     /**
      * Return the data for the passed category_id
      *
-     * @param type $category_id
+     * @param string $category_id
      *
      * @return array the data for the passed category_id
      */
@@ -216,9 +216,9 @@ class ForumCat extends SimpleORMap
     /**
      * Return the areas for the passed category_id
      *
-     * @param type $category_id
-     * @param type $start  limit start (optional)
-     * @param type $limit  number of entries to fetch (optional, default is 20)
+     * @param string $category_id
+     * @param int $start  limit start (optional)
+     * @param int $num  number of entries to fetch (optional, default is 20)
      *
      * @return array the data for the passed category_id
      */

@@ -16,8 +16,9 @@ class ForumActivity
     /**
      * Post activity for new forum post
      *
-     * @param type $topic_id
-     * @param type $post
+     * @param string $event
+     * @param string $topic_id
+     * @param array $post
      */
     public static function newEntry($event, $topic_id, $post)
     {
@@ -38,9 +39,9 @@ class ForumActivity
 
     /**
      * Post activity for updating a forum post
-     *
-     * @param type $topic_id
-     * @param type $post
+     * @param string $event
+     * @param string $topic_id
+     * @param string $post
      */
     public static function updateEntry($event, $topic_id, $post)
     {
@@ -66,9 +67,9 @@ class ForumActivity
 
     /**
      * Post activity for deleting a forum post
-     *
-     * @param type $topic_id
-     * @param type $post
+     * $param string $event
+     * @param string $topic_id
+     * @param string $post
      */
     public static function deleteEntry($event, $topic_id, $post)
     {

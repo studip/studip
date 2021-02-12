@@ -5,8 +5,8 @@
 <table class="default forum <?= ForumPerm::has('sort_category', $seminar_id) ? 'movable' : '' ?>" data-category-id="<?= $category_id ?>">
     <caption class="handle">
         <? if (ForumPerm::has('sort_category', $seminar_id)) : ?>
-            <?= Icon::create('arr_2down', 'sort')->asImg() ?>
-            <?= Icon::create('arr_2up', 'sort')->asImg() ?>
+            <?= Icon::create('arr_2down', Icon::ROLE_SORT)->asImg() ?>
+            <?= Icon::create('arr_2up', Icon::ROLE_SORT)->asImg() ?>
         <? endif ?>
 
         <? if (ForumPerm::has('edit_category', $seminar_id) || ForumPerm::has('remove_category', $seminar_id)) : ?>
@@ -18,14 +18,14 @@
                 <? if (ForumPerm::has('edit_category', $seminar_id)) : ?>
                 <a href="<?= PluginEngine::getLink('coreforum/index/?edit_category=' . $category_id) ?>"
                     onClick="javascript:STUDIP.Forum.editCategoryName('<?= $category_id ?>'); return false;">
-                    <?= Icon::create('edit', 'clickable', ['title' => 'Name der Kategorie ändern'])->asImg() ?>
+                    <?= Icon::create('edit', Icon::ROLE_CLICKABLE, ['title' => 'Name der Kategorie ändern'])->asImg() ?>
                 </a>
                 <? endif ?>
 
                 <? if(ForumPerm::has('remove_category', $seminar_id)) : ?>
                 <a href="<?= PluginEngine::getLink('coreforum/index/remove_category/' . $category_id) ?>"
                     onClick="STUDIP.Forum.deleteCategory('<?= $category_id ?>'); return false;">
-                    <?= Icon::create('trash', 'clickable', ['title' => 'Kategorie entfernen'])->asImg() ?>
+                    <?= Icon::create('trash', Icon::ROLE_CLICKABLE, ['title' => 'Kategorie entfernen'])->asImg() ?>
                 </a>
                 <? endif ?>
             <? endif ?>
@@ -84,9 +84,9 @@
     <? if (Request::get('add_area') != $category_id) : ?>
     <tr class="add_area">
         <td colspan="5" onClick="STUDIP.Forum.addArea('<?= $category_id ?>'); return false;" class="add_area">
-            <a href="<?= PluginEngine::getLink('coreforum/index/index/?add_area=' . $category_id)?>#cat_<?= $category_id ?>"  title="<?= _('Neuen Bereich zu dieser Kategorie hinzufügen.') ?>">
+            <a href="<?= $controller->link_for('index/index/?add_area=' . $category_id)?>#cat_<?= $category_id ?>"  title="<?= _('Neuen Bereich zu dieser Kategorie hinzufügen.') ?>">
                 <span><?= _('Bereich hinzufügen') ?></span>
-                <?= Icon::create('add', 'clickable')->asImg(16, ["id" => 'tutorAddArea']) ?>
+                <?= Icon::create('add')->asImg(["id" => 'tutorAddArea']) ?>
             </a>
         </td>
     </tr>

@@ -352,7 +352,8 @@ class ForumEntry  implements PrivacyObject
         // set the name of the first entry to the name of the category the entry is in
         if (sizeof($ret) > 1) {
             reset($ret);
-            $area = array_pop(array_slice($ret, 1, 1));
+            $tmp = array_slice($ret, 1, 1);
+            $area = array_pop($tmp);
             $top  = current($ret);
             $ret[$top['id']]['name'] = ForumCat::getCategoryNameForArea($area['id']) ?: _('Allgemein');
         }
@@ -458,12 +459,12 @@ class ForumEntry  implements PrivacyObject
      *     'count' =>
      * )
      *
-     * @param type $parent_id    id of parent-element to get entries for.
-     * @param type $with_childs  if true, the whole subtree is fetched
-     * @param type $add          for additional constraints in the WHERE-part of the query
-     * @param type $sort_order   can be ASC or DESC
-     * @param type $start        can be used for pagination, is used for the LIMIT-part of the query
-     * @param type $limit        number of entries to fetch, defaults to ForumEntry::POSTINGS_PER_PAGE
+     * @param string $parent_id    id of parent-element to get entries for.
+     * @param boolean $with_childs  if true, the whole subtree is fetched
+     * @param string $add          for additional constraints in the WHERE-part of the query
+     * @param string $sort_order   can be ASC or DESC
+     * @param int $start        can be used for pagination, is used for the LIMIT-part of the query
+     * @param int $limit        number of entries to fetch, defaults to ForumEntry::POSTINGS_PER_PAGE
      *
      * @return array
      *
@@ -717,6 +718,13 @@ class ForumEntry  implements PrivacyObject
 
                 // speed up things a bit by leaving out the formatReady fields
                 foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $data) {
+                    // we throw away all formatting stuff, tags, etc, leaving the important bit of information
+                    $desc_short = ForumEntry::br2space(ForumEntry::killFormat(strip_tags($data['content'])));
+                    if (mb_strlen($desc_short) > (ForumEntry::THREAD_PREVIEW_LENGTH + 2)) {
+                        $desc_short = mb_substr($desc_short, 0, ForumEntry::THREAD_PREVIEW_LENGTH) . '...';
+                    } else {
+                        $desc_short = $desc_short;
+                    }
                     $posting_list[$data['topic_id']] = [
                         'author'          => $data['author'],
                         'topic_id'        => $data['topic_id'],
@@ -725,7 +733,7 @@ class ForumEntry  implements PrivacyObject
                         'content_short'   => $desc_short,
                         'chdate'          => $data['chdate'],
                         'mkdate'          => $data['mkdate'],
-                        'user_id'        => $data['user_id'],
+                        'user_id'         => $data['user_id'],
                         'raw_title'       => $data['name'],
                         'raw_description' => ForumEntry::killEdit($data['content']),
                         'fav'             => ($data['fav'] == 'fav'),
@@ -918,7 +926,7 @@ class ForumEntry  implements PrivacyObject
     /**
      * insert a node into the table
      *
-     * @param type $data an array containing the following fields:
+     * @param array $data an array containing the following fields:
      *     topic_id     the id of the new topic
      *     seminar_id   the id of the seminar to add the topic to
      *     user_id      the id of the user who created the topic
@@ -926,7 +934,7 @@ class ForumEntry  implements PrivacyObject
      *     content      the content of the entry
      *     author       the author's name as a plaintext string
      *     author_host  ip-address of creator
-     * @param type $parent_id the node to add the topic to
+     * @param string $parent_id the node to add the topic to
      *
      * @return void
      */
@@ -959,9 +967,9 @@ class ForumEntry  implements PrivacyObject
     /**
      * update the passed topic
      *
-     * @param type $topic_id the id of the topic to update
-     * @param type $name the new name
-     * @param type $content the new content
+     * @param string $topic_id the id of the topic to update
+     * @param string $name the new name
+     * @param string $content the new content
      *
      * @return void
      */
@@ -992,7 +1000,7 @@ class ForumEntry  implements PrivacyObject
     /**
      * delete an entry and all his descendants from the mptt-table
      *
-     * @param type $topic_id the id of the entry to delete
+     * @param string $topic_id the id of the entry to delete
      *
      * @return void
      */
@@ -1055,8 +1063,8 @@ class ForumEntry  implements PrivacyObject
     /**
      * move the passed topic to the passed area
      *
-     * @param type $topic_id the topic to move
-     * @param type $destination the area_id where the topic is moved to
+     * @param string $topic_id the topic to move
+     * @param string $destination the area_id where the topic is moved to
      *
      * @return void
      */
@@ -1154,7 +1162,7 @@ class ForumEntry  implements PrivacyObject
     /**
      * close the passed topic
      *
-     * @param type $topic_id the topic to close
+     * @param string $topic_id the topic to close
      *
      * @return void
      */
@@ -1170,7 +1178,7 @@ class ForumEntry  implements PrivacyObject
     /**
      * open the passed topic
      *
-     * @param type $topic_id the topic to open
+     * @param string $topic_id the topic to open
      *
      * @return void
      */
@@ -1186,7 +1194,7 @@ class ForumEntry  implements PrivacyObject
     /**
      * make the passed topic sticky
      *
-     * @param type $topic_id the topic to make sticky
+     * @param string $topic_id the topic to make sticky
      *
      * @return void
      */
@@ -1202,7 +1210,7 @@ class ForumEntry  implements PrivacyObject
     /**
      * make the passed topic unsticky
      *
-     * @param type $topic_id the topic to make unsticky
+     * @param string $topic_id the topic to make unsticky
      *
      * @return void
      */
@@ -1219,7 +1227,7 @@ class ForumEntry  implements PrivacyObject
      * check, if the default root-node for this seminar exists and make sure
      * the default category exists as well
      *
-     * @param type $seminar_id
+     * @param string $seminar_id
      *
      * @return void
      */

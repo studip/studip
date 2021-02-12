@@ -34,7 +34,8 @@ class AreaController extends ForumController
 
         if (Request::isXhr()) {
             $this->set_layout(null);
-            $this->entry = array_pop(ForumEntry::parseEntries([ForumEntry::getEntry($new_id)]));
+            $entries = ForumEntry::parseEntries([ForumEntry::getEntry($new_id)]);
+            $this->entry = array_pop($entries);
             $this->visitdate = ForumVisit::getLastVisit($this->getId());
         } else {
             $this->redirect(PluginEngine::getLink('coreforum/index/index/'));

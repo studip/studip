@@ -23,9 +23,9 @@ class ForumVisit {
     /**
      * return number of new entries since last visit up to 3 month ago
      *
-     * @param string $seminar_id the seminar_id for the entries
+     * @param string $parent_id the seminar_id for the entries
      * @param string $visitdate count all entries newer than this timestamp
-     * 
+     *
      * @return int the number of entries
      */
     static function getCount($parent_id, $visitdate)
@@ -49,14 +49,14 @@ class ForumVisit {
         $stmt->bindParam(':lastvisit', $visitdate);
 
         $stmt->execute();
-            
+
         return $stmt->fetchColumn();
     }
-    
+
     /**
-     * Set the seminar denoted by the passed id as visited by the currently 
+     * Set the seminar denoted by the passed id as visited by the currently
      * logged in user
-     * 
+     *
      * @param string $seminar_id
      */
     static function setVisit($seminar_id) {
@@ -71,7 +71,7 @@ class ForumVisit {
 
     /**
      * Stores the visitdate in last_visitdate and sets the current time for as new visitdate
-     * 
+     *
      * @param string $seminar_id the seminar that has been entered
      */
     static function setVisitdates($seminar_id) {
@@ -79,28 +79,28 @@ class ForumVisit {
             WHERE user_id = ? AND seminar_id = ?');
         $stmt->execute([$GLOBALS['user']->id, $seminar_id]);
         $visitdate = $stmt->fetchColumn();
-        
+
         $stmt = DBManager::get()->prepare("REPLACE INTO forum_visits
             (user_id, seminar_id, visitdate, last_visitdate)
             VALUES (?, ?, UNIX_TIMESTAMP(), ?)");
         $stmt->execute([$GLOBALS['user']->id, $seminar_id, $visitdate]);
-        
+
     }
 
-    
+
     /**
      * returns visitdate and last_visitdate for the passed seminar and the
      * currently logged in user
-     * 
+     *
      * @staticvar array $visit
-     * 
+     *
      * @param string $seminar_id the seminar to fetch the visitdates for
      * @return mixed an array containing visitdate and last_visitdate
      */
     private static function getVisitDates($seminar_id)
     {
         static $visit = [];
-        
+
         // no costly checking for root or nobody necessary
         if ($GLOBALS['perm']->have_perm('root') || $GLOBALS['user']->id == 'nobody') {
             $tstamp = mktime(23, 59, 00, date('m'), 31, date('y'));
@@ -117,14 +117,14 @@ class ForumVisit {
             $visit[$seminar_id][$GLOBALS['user']->id] = $stmt->fetch(PDO::FETCH_ASSOC);
 
             // no entry for this seminar yet present
-            if (!$visit[$seminar_id][$GLOBALS['user']->id]) { 
+            if (!$visit[$seminar_id][$GLOBALS['user']->id]) {
                 // set visitdate to current time
                 $visit[$seminar_id][$GLOBALS['user']->id] = [
                     'visit'      => time() - ForumVisit::LAST_VISIT_MAX,
                     'last_visitdate' => time() - ForumVisit::LAST_VISIT_MAX
                 ];
             }
-            
+
             // prevent visit-dates from being older than LAST_VISIT_MAX allows
             foreach ($visit[$seminar_id][$GLOBALS['user']->id] as $type => $date) {
                 if ($date < time() - ForumVisit::LAST_VISIT_MAX) {
@@ -132,27 +132,27 @@ class ForumVisit {
                 }
             }
         }
-        
+
         return $visit[$seminar_id][$GLOBALS['user']->id];
     }
-      
+
     /**
      * return the last_visitdate for the passed seminar and currently logged in user
-     * 
-     * @param type $seminar_id the seminar to get the last_visitdate for
-     * @return int a timestamp 
+     *
+     * @param string $seminar_id the seminar to get the last_visitdate for
+     * @return int a timestamp
      */
     static function getLastVisit($seminar_id)
-    { 
+    {
         $visit = self::getVisitDates($seminar_id);
         return $visit['last_visitdate'];
     }
-    
+
     /**
      * return the visitdate for the passed seminar and currently logged in user
-     * 
-     * @param type $seminar_id the seminar to get the visitdate for
-     * @return int a timestamp 
+     *
+     * @param string $seminar_id the seminar to get the visitdate for
+     * @return int a timestamp
      */
     static function getVisit($seminar_id)
     {

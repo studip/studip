@@ -179,8 +179,8 @@ class ForumPerm {
      * check if the passed category_id belongs to the passed seminar_id.
      * Throws an AccessDenied denied exception if this is not the case
      *
-     * @param type $seminar_id   id of the seminar, the category should belong to
-     * @param type $category_id  the id of the category to check
+     * @param string $seminar_id   id of the seminar, the category should belong to
+     * @param string $category_id  the id of the category to check
      */
     public static function checkCategoryId($seminar_id, $category_id)
     {
@@ -198,8 +198,8 @@ class ForumPerm {
      * check if the passed topic_id belongs to the passed seminar_id.
      * Throws an AccessDenied denied exception if this is not the case
      *
-     * @param type $seminar_id  id of the seminar, the category should belong to
-     * @param type $topic_id    the id of the topic to check
+     * @param string $seminar_id  id of the seminar, the category should belong to
+     * @param string $topic_id    the id of the topic to check
      */
     public static function checkTopicId($seminar_id, $topic_id)
     {
