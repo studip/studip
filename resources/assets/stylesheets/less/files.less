@@ -53,19 +53,26 @@
 
     .upload-progress {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: @white;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        mix-blend-mode: luminosity;
+
+        color: (#fff - @base-color);
         font-size: large;
-        text-shadow: 0 1px 0 @base-color,
-                     1px 1px 0 @base-color,
-                     1px 0 0 @base-color,
-                     1px -1px 0 @base-color,
-                     0 -1px 0 @base-color,
-                     -1px 1px 0 @base-color,
-                     0 1px 0 @base-color,
-                     -1px -1px 0 @base-color;
+        //text-shadow: 0 1px 0 @base-color,
+        //             1px 1px 0 @base-color,
+        //             1px 0 0 @base-color,
+        //             1px -1px 0 @base-color,
+        //             0 -1px 0 @base-color,
+        //             -1px 1px 0 @base-color,
+        //             0 1px 0 @base-color,
+        //             -1px -1px 0 @base-color;
     }
 }
 
