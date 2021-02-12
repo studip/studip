@@ -55,9 +55,17 @@ function process(json) {
 
 // Registers next poll
 function registerNextPoll() {
+    // Calculate smallest registered polling interval (but no more than 60 seconds)
+    let interval = 60000;
+    for (const [index, handler] of Object.entries(registeredHandlers)) {
+        if (handler.interval < interval) {
+            interval = handler.interval;
+        }
+    }
+
     // Define delay by last poll request (respond to load on server) and
     // current delay factor (respond to user activity)
-    var delay = lastAjaxDuration * Math.pow(1.33, currentDelayFactor) * 15;
+    var delay = (interval || lastAjaxDuration * 15) * Math.pow(1.33, currentDelayFactor);
 
     // Clear any previously scheduled polling
     window.clearTimeout(timeout);
@@ -212,8 +220,8 @@ const JSUpdater = {
 
     // Registers a new handler by an index, a callback and an optional data
     // object or function
-    register(index, callback, data = null) {
-        registeredHandlers[index] = { callback, data };
+    register(index, callback, data = null, interval = 0) {
+        registeredHandlers[index] = { callback, data, interval };
     },
 
     // Unregisters/removes a previously registered handler

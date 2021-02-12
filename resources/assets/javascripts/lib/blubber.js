@@ -16,9 +16,9 @@ const Blubber = {
     App: null, //This app is not always available. The app is blubber with a widget and the threads next to it.
     threads: [],
     init () {
-        STUDIP.JSUpdater.register('blubber', Blubber.updateState, Blubber.getParamsForPolling);
-
         if ($('#blubber-index, #messenger-course').length) {
+            STUDIP.JSUpdater.register('blubber', Blubber.updateState, Blubber.getParamsForPolling);
+
             let panel_data = $('.blubber_panel').data();
             STUDIP.Vue.load().then(({createApp}) => {
                 STUDIP.Blubber.App = createApp({
@@ -94,6 +94,8 @@ const Blubber = {
 
         $(document).on('dialog-open', function() {
             $('.studip-dialog .blubber_panel').each(function () {
+                STUDIP.JSUpdater.register('blubber', Blubber.updateState, Blubber.getParamsForPolling);
+
                 let panel_data = $(this).data();
                 STUDIP.Vue.load().then(({createApp}) => {
                     createApp({

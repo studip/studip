@@ -3,7 +3,7 @@ import Markup from './markup.js';
 
 const Messages = {
     init() {
-        STUDIP.JSUpdater.register('messages', Messages.newMessages, Messages.getParamsForPolling);
+        STUDIP.JSUpdater.register('messages', Messages.newMessages, Messages.getParamsForPolling, 60000);
     },
 
     /*********** AJAX-reload function for overview ***********/

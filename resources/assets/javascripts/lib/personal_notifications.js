@@ -100,7 +100,8 @@ const PersonalNotifications = {
             STUDIP.JSUpdater.register(
                 'personalnotifications',
                 process_notifications,
-                null
+                null,
+                60000
             );
 
             if ($('#audio_notification').length > 0) {

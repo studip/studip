@@ -6,7 +6,8 @@ const Questionnaire = {
         STUDIP.JSUpdater.register(
             'questionnaire',
             Questionnaire.updateQuestionnaireResults,
-            Questionnaire.getParamsForPolling
+            Questionnaire.getParamsForPolling,
+            15000
         );
     },
     getParamsForPolling: function() {
