@@ -244,6 +244,7 @@ if (Config::get()->SOAP_ENABLE) {
 
 if (Config::Get()->ILIAS_INTERFACE_ENABLE) {
     require_once 'lib/ilias_interface/IliasUserObserver.php';
+    require_once 'lib/ilias_interface/IliasCourseObserver.php';
 }
 
 // set dummy navigation until db is ready
@@ -257,6 +258,7 @@ Studip\Activity\ActivityObserver::initialize();
 FilesSearch\NotificationObserver::initialize();
 if (Config::Get()->ILIAS_INTERFACE_ENABLE) {
     IliasUserObserver::initialize();
+    IliasCourseObserver::initialize();
 }
 
 //Besser hier globale Variablen definieren...

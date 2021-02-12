@@ -140,6 +140,8 @@ class Admin_IliasInterfaceController extends AuthenticatedController
                             'root_category_name' => '',
                             'root_category' => '',
                             'user_prefix' => 'studip_',
+                            'delete_ilias_users' => '',
+                            'delete_ilias_courses' => '',
                             'user_data_category' => '',
                             'matriculation' => '',
                             'allow_change_account' => false,
@@ -310,6 +312,12 @@ class Admin_IliasInterfaceController extends AuthenticatedController
                     }
                     if (Request::getInstance()->offsetExists('ilias_matriculation')) {
                         $this->ilias_configs[$index]['matriculation'] = Request::get('ilias_matriculation');
+                    }
+                    if (Request::getInstance()->offsetExists('ilias_delete_ilias_users')) {
+                        $this->ilias_configs[$index]['delete_ilias_users'] = Request::get('ilias_delete_ilias_users');
+                    }
+                    if (Request::getInstance()->offsetExists('ilias_delete_ilias_courses')) {
+                        $this->ilias_configs[$index]['delete_ilias_courses'] = Request::get('ilias_delete_ilias_courses');
                     }
                     if (Request::getInstance()->offsetExists('ilias_cat_semester')) {
                         $this->ilias_configs[$index]['cat_semester'] = Request::get('ilias_cat_semester');

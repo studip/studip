@@ -399,6 +399,70 @@ class ConnectedIlias
     }
 
     /**
+     * delete given user account
+     *
+     * deletes ILIAS user data
+     * @access public
+     * @param $user Stud.IP user object
+     * @return boolean returns false
+     */
+    public function deleteUser($user)
+    {
+        if (! is_object($user)) {
+            return false;
+        }
+        $delete_user = new IliasUser($this->index, $this->ilias_config['version'], $user->id);
+        // if user is manually connected don't remove user
+        if ($delete_user->getUserType() == IliasUser::USER_TYPE_ORIGINAL) {
+            return true;
+        }
+        $this->soap_client->setCachingStatus(false);
+        $this->soap_client->clearCache();
+        if ($delete_user->isConnected() && $delete_user->id && $this->soap_client->lookupUser($delete_user->login)) {
+            $deleted = $this->soap_client->deleteUser($delete_user->id);
+            if ($deleted) {
+                $query = "DELETE FROM auth_extern WHERE studip_user_id = ? AND external_user_system_type = ?";
+                $statement = DBManager::get()->prepare($query);
+                $statement->execute([
+                                (string)$user->id,
+                                (string)$this->index
+                ]);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * delete given course
+     *
+     * deletes ILIAS course data
+     * @access public
+     * @param $course Stud.IP course object
+     * @return boolean returns false
+     */
+    public function deleteCourse($course)
+    {
+        if (! is_object($course)) {
+            return false;
+        }
+
+        $crs_id = IliasObjectConnections::getConnectionModuleId($course->id, 'crs', $this->index);
+        if (! $crs_id) {
+            return false;
+        }
+
+        $this->soap_client->setCachingStatus(false);
+        $this->soap_client->clearCache();
+        $deleted = $this->soap_client->deleteObject($crs_id);
+        if ($deleted) {
+            IliasObjectConnections::DeleteAllConnections($course->id, $this->index);
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * create new user category
      *
      * creates new ILIAS user account

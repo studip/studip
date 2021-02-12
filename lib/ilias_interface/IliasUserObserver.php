@@ -14,6 +14,7 @@ class IliasUserObserver
     public static function initialize()
     {
         NotificationCenter::addObserver(self::class, 'observeIliasUser', 'UserDidUpdate');
+        NotificationCenter::addObserver(self::class, 'observeIliasUser', 'UserDidDelete');
     }
 
     /**
@@ -29,6 +30,14 @@ class IliasUserObserver
                     if ($ilias_config['is_active']) {
                         $ilias = new ConnectedIlias($ilias_index);
                         $ilias->updateUser($user);
+                    }
+                }
+                break;
+            case 'UserDidDelete':
+                foreach (Config::get()->ILIAS_INTERFACE_SETTINGS as $ilias_index => $ilias_config) {
+                    if ($ilias_config['delete_ilias_users']) {
+                        $ilias = new ConnectedIlias($ilias_index);
+                        $ilias->deleteUser($user);
                     }
                 }
                 break;
