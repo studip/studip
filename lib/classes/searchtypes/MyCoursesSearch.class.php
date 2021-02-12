@@ -136,14 +136,16 @@ class MyCoursesSearch extends StandardSearch
                 return $query;
             // Admins see everything at their assigned institutes.
             case 'admin':
+                $sem_inst = Config::get()->ALLOW_ADMIN_RELATED_INST ? 'si' : 's';
                 $query = "SELECT DISTINCT s.`Seminar_id`, CONCAT_WS(' ', s.`VeranstaltungsNummer`, s.`Name`, " . $semester_text . ")
                     FROM `seminare` s
+                        JOIN `seminar_inst` si USING (Seminar_id)
                         JOIN `semester_data` sem1 ON (s.`start_time` = sem1.`beginn`)
                         LEFT JOIN `semester_data` sem2 ON (s.`start_time` + s.`duration_time` = sem2.`beginn`)
                     WHERE (s.`VeranstaltungsNummer` LIKE :input
                             OR s.`Name` LIKE :input)
                         AND s.`status` NOT IN (:semtypes)
-                        AND s.`institut_id` IN (:institutes)
+                        AND $sem_inst.`institut_id` IN (:institutes)
                         AND s.`Seminar_id` NOT IN (:exclude)
                         AND sem1.`semester_id` IN (:semesters)";
                 if ($this->additional_sql_conditions) {

@@ -146,10 +146,15 @@ class Seminar_Perm
         if ($user_perm == "root") {
             return "root";
         } elseif ($user_perm == "admin") {
-            $st = $db->prepare("SELECT seminare.Seminar_id
+            if (Config::get()->ALLOW_ADMIN_RELATED_INST) {
+                $sem_inst = 'seminar_inst';
+            } else {
+                $sem_inst = 'seminare';
+            }
+            $st = $db->prepare("SELECT Seminar_id
                           FROM user_inst
-                          LEFT JOIN seminare USING (Institut_id)
-                          WHERE inst_perms='admin' AND user_id = ? AND seminare.Seminar_id = ? LIMIT 1");
+                          LEFT JOIN $sem_inst USING (Institut_id)
+                          WHERE inst_perms='admin' AND user_id = ? AND Seminar_id = ? LIMIT 1");
             $st->execute([$user_id, $range_id]);
             if ($st->fetchColumn()) {
                 $status = "admin";
@@ -157,7 +162,7 @@ class Seminar_Perm
                 $st = $db->prepare("SELECT Seminar_id FROM user_inst a
                             LEFT JOIN Institute b ON(a.Institut_id=b.Institut_id AND b.Institut_id=b.fakultaets_id)
                             LEFT JOIN Institute c ON (b.Institut_id=c.fakultaets_id)
-                            LEFT JOIN seminare d ON (d.Institut_id=c.Institut_id)
+                            LEFT JOIN $sem_inst d ON (d.Institut_id=c.Institut_id)
                             WHERE a.user_id = ? AND a.inst_perms='admin' AND d.Seminar_id = ? LIMIT 1");
                 $st->execute([$user_id, $range_id]);
                 if ($st->fetchColumn()) {

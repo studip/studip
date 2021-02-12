@@ -134,9 +134,13 @@ class AdminCourseFilter
             'course_set' => "(SELECT set_id FROM seminar_courseset WHERE seminar_id = seminare.Seminar_id LIMIT 1)"
         ];
         $this->settings['query']['joins'] = [
+            'seminar_inst' => [
+                'join' => "INNER JOIN",
+                'on' => "seminare.Seminar_id = seminar_inst.seminar_id"
+            ],
             'Institute' => [
                 'join' => "INNER JOIN",
-                'on' => "seminare.Institut_id = Institute.Institut_id"
+                'on' => "seminar_inst.institut_id = Institute.Institut_id"
             ],
             'sem_types' => [
                 'join' => "LEFT JOIN",
@@ -192,11 +196,17 @@ class AdminCourseFilter
      */
     public function filterByInstitute($institut_ids)
     {
+        if (Config::get()->ALLOW_ADMIN_RELATED_INST) {
+            $sem_inst = 'seminar_inst';
+        } else {
+            $sem_inst = 'seminare';
+        }
+
         if (is_array($institut_ids)) {
-            $this->settings['query']['where']['institute'] = "seminare.Institut_id IN (:institut_ids)";
+            $this->settings['query']['where']['institute'] = "$sem_inst.institut_id IN (:institut_ids)";
             $this->settings['parameter']['institut_ids'] = $institut_ids;
         } else {
-            $this->settings['query']['where']['status'] = "seminare.Institut_id = :institut_id";
+            $this->settings['query']['where']['status'] = "$sem_inst.institut_id = :institut_id";
             $this->settings['parameter']['institut_id'] = (string) $institut_ids;
         }
         return $this;
