@@ -48,7 +48,7 @@ abstract class Binary
         if (\function_exists('mb_strlen')) {
             return (int) \mb_strlen($str, '8bit');
         } else {
-            return \strlen($str);
+            return (int) \strlen($str);
         }
     }
 

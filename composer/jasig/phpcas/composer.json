@@ -11,25 +11,15 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "ext-curl": "*",
-        "psr/log": "^1.0.0"
+        "ext-curl": "*"
     },
     "require-dev": {
-        "monolog/monolog": "^1.0.0",
-        "phpunit/phpunit": ">=4.8.35 <8"
+        "phpunit/phpunit": "~3.7.10"
     },
     "autoload": {
         "classmap": [
             "source/"
         ]
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "PhpCas\\": "test/CAS/"
-        }
-    },
-    "scripts": {
-        "test": "phpunit"
     },
     "extra": {
         "branch-alias": {

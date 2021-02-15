@@ -3,12 +3,14 @@
 [![Unstable Version](https://poser.pugx.org/seboettg/citeproc-php/v/unstable)](https://packagist.org/packages/seboettg/citeproc-php) 
 [![Total Downloads](https://poser.pugx.org/seboettg/citeproc-php/downloads)](https://packagist.org/packages/seboettg/citeproc-php/stats) 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
-[![Build Status](https://travis-ci.org/seboettg/citeproc-php.svg?branch=master)](https://travis-ci.org/seboettg/citeproc-php/branches)
-[![Coverage Status](https://coveralls.io/repos/github/seboettg/citeproc-php/badge.svg)](https://coveralls.io/github/seboettg/citeproc-php)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/seboettg/citeproc-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/seboettg/citeproc-php/)
-![PHP](https://img.shields.io/badge/PHP-5.6-green.svg?style=flat)
-![PHP](https://img.shields.io/badge/PHP-7.0-green.svg?style=flat)
+[![Build Status](https://scrutinizer-ci.com/g/seboettg/citeproc-php/badges/build.png?b=master)](https://scrutinizer-ci.com/g/seboettg/citeproc-php/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/seboettg/citeproc-php/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/seboettg/citeproc-php/code-structure/master/code-coverage/src/)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/seboettg/citeproc-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/seboettg/citeproc-php/?branch=master)
+[![Code Intelligence Status](https://scrutinizer-ci.com/g/seboettg/citeproc-php/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 ![PHP](https://img.shields.io/badge/PHP-7.1-green.svg?style=flat)
+![PHP](https://img.shields.io/badge/PHP-7.2-green.svg?style=flat)
+![PHP](https://img.shields.io/badge/PHP-7.3-green.svg?style=flat)
+![PHP](https://img.shields.io/badge/PHP-7.4-green.svg?style=flat)
 
 citeproc-php is a full-featured CSL 1.0.1 processor that renders bibliographic metadata into html formatted citations or bibliographies using CSL stylesheets. citeproc-php renders bibliographies as well as citations (except of [Citation-specific Options](http://docs.citationstyles.org/en/stable/specification.html#citation-specific-options)).
 
@@ -25,25 +27,17 @@ The Citation Style Language (CSL) is an XML-based format to describe the formatt
 
 For additional documentation of CSL visit [http://citationstyles.org](http://citationstyles.org).
 
-## Version 1.x ##
-
-The old version 1.x (established by Ron Jerome) has been moved to [this Repository](https://github.com/seboettg/citeproc-php-old). 
-
-## Version 2.x ##
-
-Version 2.x is a completely new written version of citeproc-php. In this connection, the license of version 2.x has been changed from GPLv3 to MIT.
-
 ## Installing citeproc-php ##
 
 The recommended way to install citeproc-php is through
-[Composer](http://getcomposer.org).
+[Composer](https://getcomposer.org).
 
 ```bash
 $ curl -sS https://getcomposer.org/installer | php
 ```
 Add the following lines to your `composer.json` file in order to add required program libraries as well as CSL styles and locales:
 
-```javascript
+```json
 {
     "name": "vendor-name/program-name",
     "repositories": [
@@ -115,7 +109,7 @@ $ mkdir mycslproject
 $ cd mycslproject
 ```
 
-First, you need json formatted metadata array of publication's metadata. There are a lot of services that supports CSL exports. For instance [BibSonomy](https://www.bibsonomy.org) Zotero, Mendeley. 
+First, you need json formatted metadata array of publication's metadata. There are a lot of services that supports CSL exports. For instance [BibSonomy](https://www.bibsonomy.org), [Zotero](https://www.zotero.org/), [Mendeley](https://www.mendeley.com/). 
 If you don't use any of these services, you can use the following test data for a first step.
 
 ```javascript
@@ -228,7 +222,7 @@ $ php -S localhost:8080
 
 Start your Browser and open the URL `http://localhost:8080`.
 
-Under examples folder you will find another example script.
+Under `examples` folder you will find another example script.
 
 
 ## Advanced usage of citeproc-php ##
@@ -317,7 +311,7 @@ $citeProc = new CiteProc($style, "en-US", $additionalMarkup);
 <?php echo $citeProc->render(json_decode($data), "bibliography");
 
 ```
-In this example each entry of the bibliography gets an anchor by its `id` and the citation (in elsevier-vancouver style [1]) gets an URL with a fragment by its `id`. Hence, every citation mark gets a link to its entry in the bibliography.
+In this example each entry of the bibliography gets an anchor by its `id` and the citation (in Elsevier-Vancouver style [1]) gets an URL with a fragment by its `id`. Hence, every citation mark gets a link to its entry in the bibliography.
 Further examples you will find in the example folder.
 
 ### Good to know ###

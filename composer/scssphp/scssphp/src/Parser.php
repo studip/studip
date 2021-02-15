@@ -1366,7 +1366,6 @@ class Parser
                     ]
                 ];
 
-            case Type::T_CUSTOM_PROPERTY:
             case Type::T_UNARY:
                 $parsed[2] = $this->isPlainCssValidElement($parsed[2]);
                 if (! $parsed[2]) {
@@ -3031,11 +3030,6 @@ class Parser
         return false;
     }
 
-    /**
-     * @param string $out
-     * @param bool $inKeywords
-     * @return bool
-     */
     protected function matchEscapeCharacter(&$out, $inKeywords = false)
     {
         $s = $this->count;
@@ -3463,55 +3457,6 @@ class Parser
     }
 
     /**
-     * parsing escaped chars in selectors:
-     * - escaped single chars are kept escaped in the selector but in a normalized form
-     *   (if not in 0-9a-f range as this would be ambigous)
-     * - other escaped sequences (multibyte chars or 0-9a-f) are kept in their initial escaped form,
-     *   normalized to lowercase
-     *
-     * TODO: this is a fallback solution. Ideally escaped chars in selectors should be encoded as the genuine chars,
-     * and escaping added when printing in the Compiler, where/if it's mandatory
-     * - but this require a better formal selector representation instead of the array we have now
-     *
-     * @param string $out
-     * @param bool $keepEscapedNumber
-     * @return bool
-     */
-    protected function matchEscapeCharacterInSelector(&$out, $keepEscapedNumber = false)
-    {
-        $s_escape = $this->count;
-        if ($this->match('\\\\', $m)) {
-            $out = '\\' . $m[0];
-            return true;
-        }
-
-        if ($this->matchEscapeCharacter($escapedout, true)) {
-            if (strlen($escapedout) === 1) {
-                if (!preg_match(",\w,", $escapedout)) {
-                    $out = '\\' . $escapedout;
-                    return true;
-                } elseif (! $keepEscapedNumber || ! \is_numeric($escapedout)) {
-                    $out = $escapedout;
-                    return true;
-                }
-            }
-            $escape_sequence = rtrim(substr($this->buffer, $s_escape, $this->count - $s_escape));
-            if (strlen($escape_sequence) < 6) {
-                $escape_sequence .= ' ';
-            }
-            $out = '\\' . strtolower($escape_sequence);
-            return true;
-        }
-        if ($this->match('\\S', $m)) {
-            $out = '\\' . $m[0];
-            return true;
-        }
-
-
-        return false;
-    }
-
-    /**
      * Parse the parts that make up a selector
      *
      * {@internal
@@ -3571,14 +3516,9 @@ class Parser
                     continue 2;
             }
 
-            // handling of escaping in selectors : get the escaped char
-            if ($char === '\\') {
-                $this->count++;
-                if ($this->matchEscapeCharacterInSelector($escaped, true)) {
-                    $parts[] = $escaped;
-                    continue;
-                }
-                $this->count--;
+            if ($char === '\\' && $this->match('\\\\\S', $m)) {
+                $parts[] = $m[0];
+                continue;
             }
 
             if ($char === '%') {
@@ -3721,7 +3661,7 @@ class Parser
                 continue;
             }
 
-            if ($this->restrictedKeyword($name, false, true)) {
+            if ($this->restrictedKeyword($name)) {
                 $parts[] = $name;
                 continue;
             }
@@ -3774,11 +3714,10 @@ class Parser
      *
      * @param string  $word
      * @param boolean $eatWhitespace
-     * @param boolean $inSelector
      *
      * @return boolean
      */
-    protected function keyword(&$word, $eatWhitespace = null, $inSelector = false)
+    protected function keyword(&$word, $eatWhitespace = null)
     {
         $s = $this->count;
         $match = $this->match(
@@ -3805,12 +3744,7 @@ class Parser
                         $this->count < $send
                         && $char === '\\'
                         && !$previousEscape
-                        && (
-                            $inSelector ?
-                                $this->matchEscapeCharacterInSelector($out)
-                                :
-                                $this->matchEscapeCharacter($out, true)
-                        )
+                        && $this->matchEscapeCharacter($out, true)
                     ) {
                         $escapedWord[] = $out;
                     } else {
@@ -3841,15 +3775,14 @@ class Parser
      *
      * @param string  $word
      * @param boolean $eatWhitespace
-     * @param boolean $inSelector
      *
      * @return boolean
      */
-    protected function restrictedKeyword(&$word, $eatWhitespace = null, $inSelector = false)
+    protected function restrictedKeyword(&$word, $eatWhitespace = null)
     {
         $s = $this->count;
 
-        if ($this->keyword($word, $eatWhitespace, $inSelector) && (\ord($word[0]) > 57 || \ord($word[0]) < 48)) {
+        if ($this->keyword($word, $eatWhitespace) && (\ord($word[0]) > 57 || \ord($word[0]) < 48)) {
             return true;
         }
 

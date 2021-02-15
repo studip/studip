@@ -8,20 +8,6 @@ citation
 Book One: (1) Locator true (2) Locator true; Book Two: (1) Locator false (2) Locator false
 <<===== RESULT =====<<
 
->>===== CITATION-ITEMS =====>>
-[
-    [
-        {
-            "id": "ITEM-1", 
-            "locator": "1"
-        }, 
-        {
-            "id": "ITEM-2"
-        }
-    ]
-]
-<<===== CITATION-ITEMS =====<<
-
 
 >>===== CSL =====>>
 <style 
@@ -62,6 +48,7 @@ Book One: (1) Locator true (2) Locator true; Book Two: (1) Locator false (2) Loc
 [
     {
         "id": "ITEM-1", 
+        "locator": "1", 
         "title": "Book One", 
         "type": "book"
     }, 

@@ -179,7 +179,7 @@ implements CAS_Request_RequestInterface
      *
      * @return void
      */
-    public function _storeResponseBody ($body)
+    private function _storeResponseBody ($body)
     {
         $this->storeResponseBody($body);
     }
@@ -192,7 +192,7 @@ implements CAS_Request_RequestInterface
      *
      * @return int
      */
-    public function _curlReadHeaders ($ch, $header)
+    private function _curlReadHeaders ($ch, $header)
     {
         $this->storeResponseHeader($header);
         return strlen($header);

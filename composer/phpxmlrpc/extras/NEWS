@@ -1,8 +1,3 @@
-XML-RPC for PHP EXTRAS version 0.6.3 - 2020/12/23
-
-* Fix an error when emulating xmlrpc_set_type
-
-
 XML-RPC for PHP EXTRAS version 0.6.2 - 2017/12/2
 
 * Fix class autoloading when trying to install the package via Composer (thanks gmpf)

@@ -8,9 +8,6 @@ use Algo26\IdnaConvert\NamePrep\NamePrep;
 use Algo26\IdnaConvert\TranscodeUnicode\TranscodeUnicode;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \Algo26\IdnaConvert\NamePrep\NamePrep
- */
 class namePrepTest extends TestCase
 {
     /** @var TranscodeUnicode */
@@ -19,7 +16,7 @@ class namePrepTest extends TestCase
     /** @var NamePrep */
     private $namePrep2003;
 
-    public function setup(): void
+    public function setup()
     {
         $this->uctc = new TranscodeUnicode();
         $this->namePrep2003 = new NamePrep(2003);

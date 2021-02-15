@@ -97,12 +97,12 @@ abstract class Hex implements EncoderInterface
      * Convert a hexadecimal string into a binary string without cache-timing
      * leaks
      *
-     * @param string $encodedString
+     * @param string $hexString
      * @param bool $strictPadding
      * @return string (raw binary)
      * @throws \RangeException
      */
-    public static function decode(string $encodedString, bool $strictPadding = false): string
+    public static function decode(string $hexString, bool $strictPadding = false): string
     {
         /** @var int $hex_pos */
         $hex_pos = 0;
@@ -111,7 +111,7 @@ abstract class Hex implements EncoderInterface
         /** @var int $c_acc */
         $c_acc = 0;
         /** @var int $hex_len */
-        $hex_len = Binary::safeStrlen($encodedString);
+        $hex_len = Binary::safeStrlen($hexString);
         /** @var int $state */
         $state = 0;
         if (($hex_len & 1) !== 0) {
@@ -120,13 +120,13 @@ abstract class Hex implements EncoderInterface
                     'Expected an even number of hexadecimal characters'
                 );
             } else {
-                $encodedString = '0' . $encodedString;
+                $hexString = '0' . $hexString;
                 ++$hex_len;
             }
         }
 
         /** @var array<int, int> $chunk */
-        $chunk = \unpack('C*', $encodedString);
+        $chunk = \unpack('C*', $hexString);
         while ($hex_pos < $hex_len) {
             ++$hex_pos;
             /** @var int $c */
@@ -142,7 +142,7 @@ abstract class Hex implements EncoderInterface
 
             if (($c_num0 | $c_alpha0) === 0) {
                 throw new \RangeException(
-                    'Expected hexadecimal character'
+                    'hexEncode() only expects hexadecimal characters'
                 );
             }
             /** @var int $c_val */

@@ -10,4 +10,6 @@ return array(
     'KubAT\\PhpSimple\\HtmlDomParser' => array($vendorDir . '/kub-at/php-simple-html-dom-parser/src'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
     'Caxy\\HtmlDiff' => array($vendorDir . '/caxy/php-htmldiff/lib'),
+    'Camspiers' => array($vendorDir . '/camspiers/json-pretty/src'),
+    'Behat\\Gherkin' => array($vendorDir . '/behat/gherkin/src'),
 );

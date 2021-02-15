@@ -8,7 +8,7 @@
  * eg: xmlrpc_alt_encode, xmlrpc_alt_server_create, etc...
  *
  * @author Gaetano Giunta
- * @copyright (c) 2006-2020 G. Giunta
+ * @copyright (c) 2006-2017 G. Giunta
  * @license code licensed under the BSD License: see license.txt
  *
  * @requires phpxmlrpc version 2.1 or later
@@ -226,7 +226,7 @@ if (!in_array('xmlrpc', get_loaded_extensions())) {
                 }
             } else {
                 // @todo EPI will NOT raise a warning for good type names, eg. 'boolean', etc...
-                trigger_error("invalid type '$type' passed to xmlrpc_set_type()");
+                raise_error("invalid type '$type' passed to xmlrpc_set_type()");
                 return false;
             }
             return true;

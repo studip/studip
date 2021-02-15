@@ -271,10 +271,8 @@ class Server
                 }
             }
 
-            // Do not output content-length header if php is compressing output for us:
-            // it will mess up measurements.
-            // Note that Apache/mod_php will add (and even alter!) the Content-Length header on its own, but only for
-            // responses up to 8000 bytes
+            // do not output content-length header if php is compressing output for us:
+            // it will mess up measurements
             if ($phpNoSelfCompress) {
                 header('Content-Length: ' . (int)strlen($payload));
             }
@@ -698,6 +696,7 @@ class Server
                         }
                     }
                     throw $e;
+                    break;
                 case 1:
                     $r = new Response(0, $e->getCode(), $e->getMessage());
                     break;
@@ -913,7 +912,7 @@ class Server
         }
         if (isset($dmap[$methName])) {
             if (isset($dmap[$methName]['docstring'])) {
-                $r = new Response(new Value($dmap[$methName]['docstring'], 'string'));
+                $r = new Response(new Value($dmap[$methName]['docstring']), 'string');
             } else {
                 $r = new Response(new Value('', 'string'));
             }
