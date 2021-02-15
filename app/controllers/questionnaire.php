@@ -479,6 +479,14 @@ class QuestionnaireController extends AuthenticatedController
                 $course_assignment['user_id'] = $GLOBALS['user']->id;
                 $course_assignment->store();
             }
+            if (Request::option("add_statusgruppe_id") && $GLOBALS['perm']->have_studip_perm("tutor", Statusgruppen::find(Request::option("add_statusgruppe_id"))->range_id)) {
+                $course_assignment = new QuestionnaireAssignment();
+                $course_assignment['questionnaire_id'] = $this->questionnaire->getId();
+                $course_assignment['range_id'] = Request::option("add_statusgruppe_id");
+                $course_assignment['range_type'] = "statusgruppe";
+                $course_assignment['user_id'] = $GLOBALS['user']->id;
+                $course_assignment->store();
+            }
             foreach (PluginManager::getInstance()->getPlugins("QuestionnaireAssignmentPlugin") as $plugin) {
                 $plugin->storeQuestionnaireAssignments($this->questionnaire);
             }
@@ -495,6 +503,15 @@ class QuestionnaireController extends AuthenticatedController
             foreach (Request::optionArray('remove_inst') as $institute_id) {
                 if ($GLOBALS['perm']->have_studip_perm('admin', $institute_id)) {
                     $inst_assignment = QuestionnaireAssignment::findByInstituteAndQuestionnaire($institute_id, $this->questionnaire->id);
+                    if ($inst_assignment) {
+                        $inst_assignment->delete();
+                    }
+                }
+            }
+
+            foreach (Request::optionArray('remove_statusgruppe') as $statusgruppe_id) {
+                if ($GLOBALS['perm']->have_studip_perm("tutor", Statusgruppen::find($statusgruppe_id)->range_id)) {
+                    $inst_assignment = QuestionnaireAssignment::findByStatusgruppeAndQuestionnaire($statusgruppe_id, $this->questionnaire->id);
                     if ($inst_assignment) {
                         $inst_assignment->delete();
                     }

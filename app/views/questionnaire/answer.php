@@ -46,6 +46,9 @@
         <? if ($questionnaire->isEditable() && (!$questionnaire->isRunning() || !$questionnaire->countAnswers())) : ?>
             <?= \Studip\LinkButton::create(_("Bearbeiten"), URLHelper::getURL("dispatch.php/questionnaire/edit/".$questionnaire->getId()), ['data-dialog' => "1"]) ?>
         <? endif ?>
+        <? if ($questionnaire->isEditable()) : ?>
+            <?= \Studip\LinkButton::create(_("Kontext auswählen"), URLHelper::getURL("dispatch.php/questionnaire/context/".$questionnaire->getId(), ['range_type' => $range_type, 'range_id' => $range_id]), ['data-dialog' => "1"]) ?>
+        <? endif ?>
         <? if ($questionnaire->isCopyable()) : ?>
             <?= \Studip\LinkButton::create(_("Kopieren"), URLHelper::getURL("dispatch.php/questionnaire/copy/".$questionnaire->getId()), ['data-dialog' => "1"]) ?>
         <? endif ?>

@@ -3,6 +3,21 @@
         <h1>
             <a href="<?= ContentBoxHelper::switchhref($questionnaire->id, ['contentbox_type' => 'vote']) ?>">
                 <?= htmlReady($questionnaire->title) ?>
+                <?
+                    $additional_context = [];
+                    foreach ($questionnaire->assignments as $assignment) {
+                        if ($assignment->range_type === "statusgruppe") {
+                            $additional_context[] = Statusgruppen::find($assignment->range_id)->name;
+                        }
+                    }
+                    if (count($additional_context) > 0) {
+                        $additional_context = implode(", ", $additional_context);
+                        if (mb_strlen($additional_context) > 65) {
+                            $additional_context = mb_substr($additional_context, 0, 60)." ...";
+                        }
+                        echo "(".htmlReady($additional_context).")";
+                    }
+                ?>
             </a>
         </h1>
         <nav>
