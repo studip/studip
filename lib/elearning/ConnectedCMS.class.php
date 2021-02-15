@@ -53,18 +53,16 @@ class ConnectedCMS
     * @access
     * @param string $cms system-type
     */
-    function __construct($cms = "")
+    public function __construct($cms = "")
     {
-
         $this->cms_type = $cms;
-        if (Config::get()->getValue("ELEARNING_INTERFACE_" . $this->cms . "_ACTIVE"))
+        if (Config::get()->getValue("ELEARNING_INTERFACE_{$this->cms}_ACTIVE")) {
             $this->is_active = true;
-        else
-            $this->is_active = false;
-//      if ($this->is_active)
-        {
-            $this->init($cms);
         }
+        else {
+            $this->is_active = false;
+        }
+        $this->init($cms);
     }
 
     /**
@@ -74,34 +72,36 @@ class ConnectedCMS
     * @access private
     * @param string $cms system-type
     */
-    function init($cms)
+    public function init($cms)
     {
-            global $ELEARNING_INTERFACE_MODULES;
-            $this->name = $ELEARNING_INTERFACE_MODULES[$cms]["name"];
-            $this->ABSOLUTE_PATH_ELEARNINGMODULES = $ELEARNING_INTERFACE_MODULES[$cms]["ABSOLUTE_PATH_ELEARNINGMODULES"];
-            $this->ABSOLUTE_PATH_SOAP = $ELEARNING_INTERFACE_MODULES[$cms]["ABSOLUTE_PATH_SOAP"];
-            if (isset($ELEARNING_INTERFACE_MODULES[$cms]["RELATIVE_PATH_DB_CLASSES"]))
-            {
-                $this->RELATIVE_PATH_DB_CLASSES = $ELEARNING_INTERFACE_MODULES[$cms]["RELATIVE_PATH_DB_CLASSES"];
-                $this->db_classes = $ELEARNING_INTERFACE_MODULES[$cms]["db_classes"];
-            }
-            else
-                $this->RELATIVE_PATH_DB_CLASSES = false;
-            $this->CLASS_PREFIX = $ELEARNING_INTERFACE_MODULES[$cms]["CLASS_PREFIX"];
-            $this->auth_necessary = $ELEARNING_INTERFACE_MODULES[$cms]["auth_necessary"];
-            $this->USER_AUTO_CREATE = $ELEARNING_INTERFACE_MODULES[$cms]["USER_AUTO_CREATE"];
-            $this->USER_PREFIX = $ELEARNING_INTERFACE_MODULES[$cms]["USER_PREFIX"];
-            $this->target_file = $ELEARNING_INTERFACE_MODULES[$cms]["target_file"];
-            $this->logo_file = $ELEARNING_INTERFACE_MODULES[$cms]["logo_file"];
-            $this->DB_ELEARNINGMODULES_HOST = $ELEARNING_INTERFACE_MODULES[$cms]["DB_ELEARNINGMODULES_HOST"];
-            $this->DB_ELEARNINGMODULES_USER = $ELEARNING_INTERFACE_MODULES[$cms]["DB_ELEARNINGMODULES_USER"];
-            $this->DB_ELEARNINGMODULES_PASSWORD = $ELEARNING_INTERFACE_MODULES[$cms]["DB_ELEARNINGMODULES_PASSWORD"];
-            $this->DB_ELEARNINGMODULES_DATABASE = $ELEARNING_INTERFACE_MODULES[$cms]["DB_ELEARNINGMODULES_DATABASE"];
-            if ($this->DB_ELEARNINGMODULES_HOST != "")
-                $this->db = new DB_ELearning($this->cms_type);
-            $this->soap_data = $ELEARNING_INTERFACE_MODULES[$cms]["soap_data"];
-            $this->types = $ELEARNING_INTERFACE_MODULES[$cms]["types"];
-            $this->roles = $ELEARNING_INTERFACE_MODULES[$cms]["roles"];
+        global $ELEARNING_INTERFACE_MODULES;
+        $this->name = $ELEARNING_INTERFACE_MODULES[$cms]["name"];
+        $this->ABSOLUTE_PATH_ELEARNINGMODULES = $ELEARNING_INTERFACE_MODULES[$cms]["ABSOLUTE_PATH_ELEARNINGMODULES"];
+        $this->ABSOLUTE_PATH_SOAP = $ELEARNING_INTERFACE_MODULES[$cms]["ABSOLUTE_PATH_SOAP"];
+        if (isset($ELEARNING_INTERFACE_MODULES[$cms]["RELATIVE_PATH_DB_CLASSES"]))
+        {
+            $this->RELATIVE_PATH_DB_CLASSES = $ELEARNING_INTERFACE_MODULES[$cms]["RELATIVE_PATH_DB_CLASSES"];
+            $this->db_classes = $ELEARNING_INTERFACE_MODULES[$cms]["db_classes"];
+        }
+        else {
+            $this->RELATIVE_PATH_DB_CLASSES = false;
+        }
+        $this->CLASS_PREFIX = $ELEARNING_INTERFACE_MODULES[$cms]["CLASS_PREFIX"];
+        $this->auth_necessary = $ELEARNING_INTERFACE_MODULES[$cms]["auth_necessary"];
+        $this->USER_AUTO_CREATE = $ELEARNING_INTERFACE_MODULES[$cms]["USER_AUTO_CREATE"];
+        $this->USER_PREFIX = $ELEARNING_INTERFACE_MODULES[$cms]["USER_PREFIX"];
+        $this->target_file = $ELEARNING_INTERFACE_MODULES[$cms]["target_file"];
+        $this->logo_file = $ELEARNING_INTERFACE_MODULES[$cms]["logo_file"];
+        $this->DB_ELEARNINGMODULES_HOST = $ELEARNING_INTERFACE_MODULES[$cms]["DB_ELEARNINGMODULES_HOST"];
+        $this->DB_ELEARNINGMODULES_USER = $ELEARNING_INTERFACE_MODULES[$cms]["DB_ELEARNINGMODULES_USER"];
+        $this->DB_ELEARNINGMODULES_PASSWORD = $ELEARNING_INTERFACE_MODULES[$cms]["DB_ELEARNINGMODULES_PASSWORD"];
+        $this->DB_ELEARNINGMODULES_DATABASE = $ELEARNING_INTERFACE_MODULES[$cms]["DB_ELEARNINGMODULES_DATABASE"];
+        if ($this->DB_ELEARNINGMODULES_HOST != "") {
+            $this->db = new DB_ELearning($this->cms_type);
+        }
+        $this->soap_data = $ELEARNING_INTERFACE_MODULES[$cms]["soap_data"];
+        $this->types = $ELEARNING_INTERFACE_MODULES[$cms]["types"];
+        $this->roles = $ELEARNING_INTERFACE_MODULES[$cms]["roles"];
     }
 
     /**
@@ -110,7 +110,7 @@ class ConnectedCMS
     * loads classes for user-functions
     * @access public
     */
-    function initSubclasses()
+    public function initSubclasses()
     {
         if ($this->auth_necessary)
         {
@@ -132,24 +132,22 @@ class ConnectedCMS
     * checks settings
     * @access public
     * @param string $cms system-type
-    * @return string messages
+    * @return array messages
     */
-    function getConnectionStatus($cms = "")
+    public function getConnectionStatus($cms = "")
     {
-        global $STUDIP_BASE_PATH;
         if ($this->cms_type == "")
         {
             $this->init($cms);
         }
-//      error_reporting(0);
-
         // check connection to CMS
 
-        if (!$this->auth_necessary)
+        if (!$this->auth_necessary) {
             $msg["auth"]["info"] = sprintf(_("Eine Authentifizierung ist für dieses System nicht vorgesehen."));
+        }
 
         // check for SOAP-Interface
-        if (in_array($this->CLASS_PREFIX, words('Ilias3 Ilias4 Ilias5')))
+        if (in_array($this->CLASS_PREFIX, ['Ilias3','Ilias4','Ilias5']))
         {
             $check = @get_headers($this->ABSOLUTE_PATH_ELEARNINGMODULES . 'login.php');
             if (strpos($check[0], '200') === false) {
@@ -159,10 +157,12 @@ class ConnectedCMS
                 $msg["path"]["info"] = sprintf(_("Die %s-Installation wurde gefunden."), $this->name);
             }
 
-            if (!Config::get()->SOAP_ENABLE)
+            if (!Config::get()->SOAP_ENABLE) {
                 $msg["soap"]["error"] = sprintf(_("Das Stud.IP-Modul für die SOAP-Schnittstelle ist nicht aktiviert. Ändern Sie den entsprechenden Eintrag in der Konfigurationsdatei \"local.inc\"."));
-            elseif (! is_array($this->soap_data))
+            }
+            elseif (! is_array($this->soap_data)) {
                 $msg["soap"]["error"] = sprintf(_("Die SOAP-Verbindungsdaten sind für dieses System nicht gesetzt. Ergänzen Sie die Einstellungen für dieses Systems um den Eintrag \"soap_data\" in der Konfigurationsdatei \"local.inc\"."));
+            }
             else
             {
                 $this->soap_client = new StudipSoapClient($this->ABSOLUTE_PATH_SOAP);
@@ -193,36 +193,27 @@ class ConnectedCMS
             }
         }
 
-        // check for database-connection
-        if ($this->DB_ELEARNINGMODULES_HOST != "")
-        {
-            if (!mysql_pconnect ($this->DB_ELEARNINGMODULES_HOST, $this->DB_ELEARNINGMODULES_USER, $this->DB_ELEARNINGMODULES_PASSWORD))
-            {
-                $msg["db"]["error"] = sprintf(_("Die Verbindung zur \"%s\"-Datenbank \"%s\" konnte nicht hergestellt werden. Überprüfen Sie die Zugangsdaten."), $this->name, $this->DB_ELEARNINGMODULES_DATABASE);
-            }
-            else
-            {
-                mysql_close();
-                $msg["db"]["info"] = sprintf(_("Die Verbindung zur \"%s\"-Datenbank wurde hergestellt."), $this->name);
-            }
-        }
-
-        $el_path = $STUDIP_BASE_PATH . '/lib/elearning';
+        $el_path = $GLOBALS['STUDIP_BASE_PATH'] . '/lib/elearning';
         // check if needed classes exist
-        if (!file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedUser.class.php") AND ($this->auth_necessary))
+        if (!file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedUser.class.php") && ($this->auth_necessary)) {
             $msg["class_user"]["error"] .= sprintf(_("Die Datei \"%s\" existiert nicht."), $el_path."/" . $this->CLASS_PREFIX . "ConnectedUser.class.php");
-        if (!file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedPermissions.class.php") AND ($this->auth_necessary))
+        }
+        if (!file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedPermissions.class.php") && ($this->auth_necessary)) {
             $msg["class_perm"]["error"] .= sprintf(_("Die Datei \"%s\" existiert nicht."), $el_path."/" . $this->CLASS_PREFIX . "ConnectedPermissions.class.php");
-        if (!file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedLink.class.php"))
+        }
+        if (!file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedLink.class.php")) {
             $msg["class_link"]["error"] .= sprintf(_("Die Datei \"%s\" existiert nicht."), $el_path."/" . $this->CLASS_PREFIX . "ConnectedLink.class.php");
-        if (!file_exists($el_path."/" . $this->CLASS_PREFIX . "ContentModule.class.php"))
+        }
+        if (!file_exists($el_path."/" . $this->CLASS_PREFIX . "ContentModule.class.php")) {
             $msg["class_content"]["error"] .= sprintf(_("Die Datei \"%s\" existiert nicht."), $el_path."/" . $this->CLASS_PREFIX . "ContentModule.class.php");
-        if (!file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedCMS.class.php"))
+        }
+        if (!file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedCMS.class.php")) {
             $msg["class_cms"]["error"] .= sprintf(_("Die Datei \"%s\" existiert nicht."), $el_path."/" . $this->CLASS_PREFIX . "ConnectedCMS.class.php");
-        if (file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedCMS.class.php") AND
-            (file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedUser.class.php") OR (!$this->auth_necessary)) AND
-            (file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedPermissions.class.php") OR (!$this->auth_necessary)) AND
-            file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedLink.class.php") AND
+        }
+        if (file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedCMS.class.php") &&
+            (file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedUser.class.php") || (!$this->auth_necessary)) &&
+            (file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedPermissions.class.php") || (!$this->auth_necessary)) &&
+            file_exists($el_path."/" . $this->CLASS_PREFIX . "ConnectedLink.class.php") &&
             file_exists($el_path."/" . $this->CLASS_PREFIX . "ContentModule.class.php"))
         {
             require_once ($el_path."/" . $this->CLASS_PREFIX . "ConnectedCMS.class.php");
@@ -233,8 +224,6 @@ class ConnectedCMS
             $msg["classes"]["error"] .= sprintf(_("Die Klassen der Schnittstelle zum System \"%s\" wurden nicht geladen."), $this->name);
         }
 
-        $messages["info"] = $info_msg;
-        $messages["error"] = $error_msg;
         return $msg;
     }
 
@@ -244,16 +233,14 @@ class ConnectedCMS
     * shows additional settings. can be overwritten by subclass.
     * @access public
     */
-    function getPreferences()
+    public function getPreferences()
     {
-        global $connected_cms;
-
         if ($this->types != "")
         {
             echo "<b>" . _("Angebundene Lernmodul-Typen: ") . "</b>";
             echo "<br>\n";
             foreach($this->types as $key => $type)
-                echo Icon::create($type["icon"], 'inactive')->asImg() . $type["name"] . " ($key)<br>\n";
+                echo Icon::create($type["icon"], Icon::ROLE_INACTIVE)->asImg() . $type["name"] . " ($key)<br>\n";
             echo "<br>\n";
         }
 
@@ -261,8 +248,9 @@ class ConnectedCMS
         {
             echo "<b>" . _("Verwendete DB-Zugriffs-Klassen: ") . "</b>";
             echo "<br>\n";
-            foreach($this->db_classes as $key => $type)
+            foreach($this->db_classes as $key => $type) {
                 echo $type["file"] . " ($key)<br>\n";
+            }
             echo "<br>\n";
         }
     }
@@ -275,7 +263,7 @@ class ConnectedCMS
     * @param array $data module-data
     * @param boolean $is_connected is module connected to seminar?
     */
-    function setContentModule($data, $is_connected = false)
+    public function setContentModule($data, $is_connected = false)
     {
         global $current_module;
         $current_module = $data["ref_id"];
@@ -287,7 +275,6 @@ class ConnectedCMS
         $this->content_module[$current_module]->setId($data["ref_id"]);
         $this->content_module[$current_module]->setTitle($data["title"]);
         $this->content_module[$current_module]->setDescription($data["description"]);
-
         $this->content_module[$current_module]->setConnectionType($is_connected);
     }
 
@@ -300,7 +287,7 @@ class ConnectedCMS
     * @param string $module_type module-type
     * @param boolean $is_connected is module connected to seminar?
     */
-    function newContentModule($module_id, $module_type, $is_connected = false)
+    public function newContentModule($module_id, $module_type, $is_connected = false)
     {
         global $current_module;
         $current_module = $module_id;
@@ -328,7 +315,7 @@ class ConnectedCMS
     * @access public
     * @return string name
     */
-    function getName()
+    public function getName()
     {
         return $this->name;
     }
@@ -340,7 +327,7 @@ class ConnectedCMS
     * @access public
     * @return string type
     */
-    function getCMSType()
+    public function getCMSType()
     {
         return $this->cms_type;
     }
@@ -352,7 +339,7 @@ class ConnectedCMS
     * @access public
     * @return string path
     */
-    function getAbsolutePath()
+    public function getAbsolutePath()
     {
         return $this->ABSOLUTE_PATH_ELEARNINGMODULES;
     }
@@ -364,7 +351,7 @@ class ConnectedCMS
     * @access public
     * @return string target file
     */
-    function getTargetFile()
+    public function getTargetFile()
     {
         return $this->target_file;
     }
@@ -376,7 +363,7 @@ class ConnectedCMS
     * @access public
     * @return string class prefix
     */
-    function getClassPrefix()
+    public function getClassPrefix()
     {
         return $this->CLASS_PREFIX;
     }
@@ -388,7 +375,7 @@ class ConnectedCMS
     * @access public
     * @return boolean authentification-setting
     */
-    function isAuthNecessary()
+    public function isAuthNecessary()
     {
         return $this->auth_necessary;
     }
@@ -412,7 +399,7 @@ class ConnectedCMS
     * @access public
     * @return string user prefix
     */
-    function getUserPrefix()
+    public function getUserPrefix()
     {
         return $this->USER_PREFIX;
     }
@@ -424,7 +411,7 @@ class ConnectedCMS
     * @access public
     * @return string logo-image
     */
-    function getLogo()
+    public function getLogo()
     {
         return "<img src=\"" . $this->logo_file . "\">";
     }
@@ -436,7 +423,7 @@ class ConnectedCMS
     * @access public
     * @return boolean returns false
     */
-    function getUserContentModules()
+    public function getUserContentModules()
     {
         return false;
     }
@@ -448,7 +435,7 @@ class ConnectedCMS
     * @access public
     * @return boolean returns false
     */
-    function searchContentModules($key)
+    public function searchContentModules($key)
     {
         return false;
     }
@@ -460,13 +447,12 @@ class ConnectedCMS
     * @access public
     * @return boolean returns false
     */
-    function terminate()
+    public function terminate()
     {
         return false;
     }
 
-    function deleteConnectedModules($object_id){
+    public function deleteConnectedModules($object_id){
         return ObjectConnections::DeleteAllConnections($object_id, $this->cms_type);
     }
 }
-?>
