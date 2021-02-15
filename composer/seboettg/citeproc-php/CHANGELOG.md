@@ -1,32 +1,9 @@
 # CHANGELOG
 
-## 2.2.0 2020-04-04
-* Compatibility for PHP 7.2, 7.3 and 7.4. This solves the issues [76](https://github.com/seboettg/citeproc-php/issues/76), [78](https://github.com/seboettg/citeproc-php/issues/75), [80](https://github.com/seboettg/citeproc-php/issues/80) and [81](https://github.com/seboettg/citeproc-php/issues/81).
-* Merged Pull Requests [75](https://github.com/seboettg/citeproc-php/pull/75) and [79](https://github.com/seboettg/citeproc-php/pull/79)
-
-Thanks to [@kchoong](https://github.com/kchoong) and [@westcomputerconsultancy](https://github.com/westcomputerconsultancy).
-
-## 2.1.9 2019-11-04
-* bugfix for [issue 68](https://github.com/seboettg/citeproc-php/issues/68)
-* bugfix for [issue 69](https://github.com/seboettg/citeproc-php/issues/69)
-* bugfix for [issue 70](https://github.com/seboettg/citeproc-php/issues/70)
-* feature/enhancement for [issue 71](https://github.com/seboettg/citeproc-php/issues/71)
-* refactoring of the code parts for rendering date ranges
-* redesign/refactoring of constraints (condition handling for choose elements)
-
-## 2.1.8 - 2019-09-13
-* bugfix of [PR 66](https://github.com/seboettg/citeproc-php/pull/66)
-* bugfix for displaced delimiters that appear when in the name list more than one empty entry exists.
-
-## 2.1.7 - 2019-03-24
-
-* bugfix of [PR 64](https://github.com/seboettg/citeproc-php/pull/64) Call to a member function getRangeDelimiter() on null
-* bugfix of [PR 63](https://github.com/seboettg/citeproc-php/pull/63) Don't show "et-al" text for citation witch don't reach et-al number
-
 ## 2.1.6 - 2018-10-13
 
 * bugfix of [issue 59](https://github.com/seboettg/citeproc-php/issues/59)
-* bugfix of [issue 60](https://github.com/seboettg/citeproc-php/issues/60)
+* bugfix of [issue 58](https://github.com/seboettg/citeproc-php/issues/60)
 
 ## 2.1.5 - 2018-09-23
 

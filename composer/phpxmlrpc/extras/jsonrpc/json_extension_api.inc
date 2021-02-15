@@ -8,7 +8,7 @@
  * ie: json_alt_encode, json_alt_decode
  *
  * @author Gaetano Giunta
- * @copyright (c) 2006-2017 G. Giunta
+ * @copyright (c) 2006-2020 G. Giunta
  * @license code licensed under the BSD License: see license.txt
  *
  * @requires phpxmlrpc version 2.1 or later

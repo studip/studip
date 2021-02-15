@@ -4,7 +4,7 @@
  * Uses the phpxmlrpc class and the jsxmlrpc library
  *
  * @author Gaetano Giunta
- * @copyright (c) 2007-2017 G. Giunta
+ * @copyright (c) 2007-2020 G. Giunta
  * @license code licensed under the BSD License: see license.txt
  */
 

@@ -4,7 +4,7 @@
 * Uses John Lim's AdoDB and NuSOAP libs
 *
 * @author Gaetano Giunta
-* @copyright (c) 2005-2017 Gaetano Giunta. All rights reserved.
+* @copyright (c) 2005-2020 Gaetano Giunta. All rights reserved.
 *
 * @todo use wsdl object to ease serialization / deserialization ?
 * @todo have an ADODB-tuned deserializer (i.e. use php decription of db native types

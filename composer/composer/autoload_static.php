@@ -13,7 +13,6 @@ class ComposerStaticInit102e652b40fa714b72854854eb2eb527
         'b45b351e6b6f7487d819961fef2fda77' => __DIR__ . '/..' . '/jakeasmith/http_build_url/src/http_build_url.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
-        'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
     );
 
@@ -33,14 +32,11 @@ class ComposerStaticInit102e652b40fa714b72854854eb2eb527
         ),
         'S' => 
         array (
-            'Symfony\\Polyfill\\Util\\' => 22,
-            'Symfony\\Polyfill\\Php56\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
             'Slim\\' => 5,
             'Seboettg\\Collection\\' => 20,
-            'Seboettg\\CiteProc\\' => 18,
             'ScssPhp\\ScssPhp\\' => 16,
         ),
         'P' => 
@@ -100,14 +96,6 @@ class ComposerStaticInit102e652b40fa714b72854854eb2eb527
         array (
             0 => __DIR__ . '/..' . '/tuupola/cors-middleware/src',
         ),
-        'Symfony\\Polyfill\\Util\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-util',
-        ),
-        'Symfony\\Polyfill\\Php56\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php56',
-        ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
@@ -127,10 +115,6 @@ class ComposerStaticInit102e652b40fa714b72854854eb2eb527
         'Seboettg\\Collection\\' => 
         array (
             0 => __DIR__ . '/..' . '/seboettg/collection/src/Seboettg/Collection',
-        ),
-        'Seboettg\\CiteProc\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/seboettg/citeproc-php/src',
         ),
         'ScssPhp\\ScssPhp\\' => 
         array (
@@ -194,6 +178,10 @@ class ComposerStaticInit102e652b40fa714b72854854eb2eb527
         ),
     );
 
+    public static $fallbackDirsPsr4 = array (
+        0 => __DIR__ . '/..' . '/seboettg/citeproc-php/src',
+    );
+
     public static $prefixesPsr0 = array (
         'P' => 
         array (
@@ -241,10 +229,12 @@ class ComposerStaticInit102e652b40fa714b72854854eb2eb527
         'CAS_Languages_ChineseSimplified' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Languages/ChineseSimplified.php',
         'CAS_Languages_English' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Languages/English.php',
         'CAS_Languages_French' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Languages/French.php',
+        'CAS_Languages_Galego' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Languages/Galego.php',
         'CAS_Languages_German' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Languages/German.php',
         'CAS_Languages_Greek' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Languages/Greek.php',
         'CAS_Languages_Japanese' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Languages/Japanese.php',
         'CAS_Languages_LanguageInterface' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Languages/LanguageInterface.php',
+        'CAS_Languages_Portuguese' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Languages/Portuguese.php',
         'CAS_Languages_Spanish' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Languages/Spanish.php',
         'CAS_OutOfSequenceBeforeAuthenticationCallException' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/OutOfSequenceBeforeAuthenticationCallException.php',
         'CAS_OutOfSequenceBeforeClientException' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/OutOfSequenceBeforeClientException.php',
@@ -274,6 +264,7 @@ class ComposerStaticInit102e652b40fa714b72854854eb2eb527
         'CAS_Request_Exception' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Request/Exception.php',
         'CAS_Request_MultiRequestInterface' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Request/MultiRequestInterface.php',
         'CAS_Request_RequestInterface' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Request/RequestInterface.php',
+        'CAS_Session_PhpSession' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/Session/PhpSession.php',
         'CAS_TypeMismatchException' => __DIR__ . '/..' . '/jasig/phpcas/source/CAS/TypeMismatchException.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
@@ -308,6 +299,7 @@ class ComposerStaticInit102e652b40fa714b72854854eb2eb527
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit102e652b40fa714b72854854eb2eb527::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit102e652b40fa714b72854854eb2eb527::$prefixDirsPsr4;
+            $loader->fallbackDirsPsr4 = ComposerStaticInit102e652b40fa714b72854854eb2eb527::$fallbackDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit102e652b40fa714b72854854eb2eb527::$prefixesPsr0;
             $loader->classMap = ComposerStaticInit102e652b40fa714b72854854eb2eb527::$classMap;
 

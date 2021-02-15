@@ -3,7 +3,7 @@
  * Self-documenting extension to the PHP-XMLRPC server
  *
  * @author Gaetano Giunta
- * @copyright (c) 2005-2017 G. Giunta
+ * @copyright (c) 2005-2020 G. Giunta
  * @license code licensed under the BSD License: see license.txt
  *
  * @todo use some AJAX magic to implement xmlrpc calls to test/debug methods

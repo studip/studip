@@ -28,7 +28,7 @@
 /**
  * @todo test xmlrpc_encode_request(NULL, array())
  *
- * @copyright 2006-2017
+ * @copyright (c) 2006-2020 G. Giunta
  */
 
 require_once 'phpunit.php';

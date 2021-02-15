@@ -9,7 +9,7 @@
  * @param string  HTTPSSURI
  * @param string  PROXY
  *
- * @copyright (C) 2007-2017 G. Giunta
+ * @copyright (C) 2007-2020 G. Giunta
  * @license code licensed under the BSD License: see license.txt
  **/
 
