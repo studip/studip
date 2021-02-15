@@ -58,6 +58,29 @@ STUDIP.ready(function() {
         STUDIP.Resources.moveTimeOptions(jQuery('input[name="booking_style"]:checked').val());
     }
 
+    //Set the date selector in the sidebar to the date from the session,
+    //if that is set and no date is set in the URL.
+    var date_set = false;
+    var url_param_string = window.location.search;
+    if (url_param_string) {
+        var url_params = new URLSearchParams(url_param_string);
+        if (url_params.get('defaultDate')) {
+            date_set = true;
+        }
+    }
+    if (!date_set) {
+        var date_input = jQuery('#booking-plan-jmpdate')[0];
+        if (date_input) {
+            var session_date_string = sessionStorage.getItem('booking_plan_date');
+            if (session_date_string) {
+                //The date string is in the format YYYY-MM-DD and has to be
+                //converted to the format DD.MM.YYYY.
+                var date_parts = session_date_string.split('-');
+                jQuery(date_input).val(date_parts[2] + '.' + date_parts[1] + '.' + date_parts[0]);
+            }
+        }
+    }
+
     //other:
 
     jQuery(document).on(
@@ -489,24 +512,28 @@ STUDIP.ready(function() {
         '#booking-plan-jmpdate-submit',
         function () {
             var picked = $('#booking-plan-jmpdate').val();
-            $('*[data-resources-fullcalendar="1"]').each(function() {
-                if (picked.includes('.')) {
-                    var good_format = picked.split('.');
-                    var day = good_format[0];
-                    var month = good_format[1];
-                    var year = good_format[2];
-                    $(this)[0].calendar.gotoDate(year.padStart(4, "20") + '-' + month.padStart(2, "0") + '-' + day.padStart(2, "0"));
-                } else if (picked.includes('/')) {
-                    var bad_format = picked.split('/');
-                    var day = bad_format[1];
-                    var month = bad_format[0];
-                    var year = bad_format[2];
-                    $(this)[0].calendar.gotoDate(year.padStart(4, "20") + '-' + month.padStart(2, "0") + '-' + day.padStart(2, "0"));
-                } else if (picked.includes('-')) {
-                    $(this)[0].calendar.gotoDate(picked);
-                }
-            });
-            updateDateURL();
+            var iso_date_string = '';
+            if (picked.includes('.')) {
+                var good_format = picked.split('.');
+                var day = good_format[0];
+                var month = good_format[1];
+                var year = good_format[2];
+                iso_date_string = year.padStart(4, "20") + '-' + month.padStart(2, "0") + '-' + day.padStart(2, "0");
+            } else if (picked.includes('/')) {
+                var bad_format = picked.split('/');
+                var day = bad_format[1];
+                var month = bad_format[0];
+                var year = bad_format[2];
+                iso_date_string = year.padStart(4, "20") + '-' + month.padStart(2, "0") + '-' + day.padStart(2, "0");
+            } else if (picked.includes('-')) {
+                iso_date_string = picked;
+            }
+            if (iso_date_string) {
+                $('*[data-resources-fullcalendar="1"]').each(function() {
+                    $(this)[0].calendar.gotoDate(iso_date_string);
+                });
+                updateDateURL();
+            }
         }
     );
 
@@ -724,6 +751,8 @@ STUDIP.ready(function() {
             $('.booking-plan-std_view').attr('href', std_day);
             $('.booking-plan-allday_view').attr('href', std_day + '&allday=1');
             $('#booking-plan-jmpdate').val(changedmoment.toLocaleDateString('de-DE'));
+            //Store the date in the sessionStorage:
+            sessionStorage.setItem('booking_plan_date', changeddate)
         }
     };
 
@@ -741,6 +770,16 @@ STUDIP.ready(function() {
     var nodes = jQuery('*.resource-plan[data-resources-fullcalendar="1"]');
     jQuery.each(nodes, function (index, node) {
         STUDIP.loadChunk('fullcalendar').then(() => {
+            //Get the default date from the sessionStorage, if it is set
+            //and no date is specified in the url.
+            var use_session_date = true;
+            var url_param_string = window.location.search;
+            if (url_param_string) {
+                var url_params = new URLSearchParams(url_param_string);
+                if (url_params.get('defaultDate')) {
+                    use_session_date = false;
+                }
+            }
             if (node.calendar == undefined) {
                 if (jQuery(node).hasClass('semester-plan')) {
                     STUDIP.Fullcalendar.createSemesterCalendarFromNode(
@@ -758,26 +797,30 @@ STUDIP.ready(function() {
                         }
                     );
                 } else {
-                    STUDIP.Fullcalendar.createFromNode(
-                        node,
-                        {
-                            studip_functions: {
-                                drop_event:
-                                STUDIP.Resources.dropEventInRoomGroupBookingPlan,
-                                resize_event:
-                                STUDIP.Resources.resizeEventInRoomGroupBookingPlan
-                            },
-                            loading: function(isLoading) {
-                                if(!isLoading) {
-                                    var h = jQuery('section.studip-fullcalendar-header');
-                                    if (h) {
-                                        jQuery(h).removeClass('invisible');
-                                        jQuery(h).insertAfter('.fc .fc-toolbar');
-                                    }
+                    var config = {
+                        studip_functions: {
+                            drop_event:
+                            STUDIP.Resources.dropEventInRoomGroupBookingPlan,
+                            resize_event:
+                            STUDIP.Resources.resizeEventInRoomGroupBookingPlan
+                        },
+                        loading: function(isLoading) {
+                            if(!isLoading) {
+                                var h = jQuery('section.studip-fullcalendar-header');
+                                if (h) {
+                                    jQuery(h).removeClass('invisible');
+                                    jQuery(h).insertAfter('.fc .fc-toolbar');
                                 }
                             }
                         }
-                    );
+                    };
+                    if (use_session_date) {
+                        var session_date_string = sessionStorage.getItem('booking_plan_date');
+                        if (session_date_string) {
+                            config.defaultDate = session_date_string;
+                        }
+                    }
+                    STUDIP.Fullcalendar.createFromNode(node, config);
                 }
             }
         });
