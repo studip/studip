@@ -38,7 +38,7 @@ class StEP00320ConfigSearchNavigation extends Migration
 
         $stmt->execute([
                 'name' => 'COURSE_SEARCH_NAVIGATION_OPTIONS',
-                'value' => studip_json_encode($standard_navigation_options),
+                'value' => json_encode($standard_navigation_options),
                 'type' => 'array',
                 'desc' => 'Aktivierung und Reihenfolge der Navigationsoptionen in der Veranstaltungssuche'
             ]);

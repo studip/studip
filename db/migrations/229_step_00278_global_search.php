@@ -79,7 +79,7 @@ class StEP00278GlobalSearch extends Migration
 
         $stmt->execute([
                 'name' => 'GLOBALSEARCH_MODULES',
-                'value' => studip_json_encode($modules),
+                'value' => json_encode($modules),
                 'type' => 'array',
                 'desc' => 'Aktivierung und Reihenfolge der Module in der globalen Suche'
             ]);

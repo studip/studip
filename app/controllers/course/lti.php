@@ -269,7 +269,7 @@ class Course_LtiController extends StudipController
         $lti_msg = Request::get('lti_msg');
         $lti_errormsg = Request::get('lti_errormsg');
         $content_items = Request::get('content_items');
-        $content_items = studip_json_decode($content_items);
+        $content_items = json_decode($content_items);
 
         OAuthStore::instance('PDO', [
             'dsn' => 'mysql:host=' . $GLOBALS['DB_STUDIP_HOST'] . ';dbname=' . $GLOBALS['DB_STUDIP_DATABASE'],

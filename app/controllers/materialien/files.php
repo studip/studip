@@ -720,7 +720,7 @@ class Materialien_FilesController extends MVVController
     public function sort_action($range_type, $range_id)
     {
         if (Request::submitted('order')) {
-            $ordered = studip_json_decode(Request::get('ordering'));
+            $ordered = json_decode(Request::get('ordering'));
             if (is_array($ordered)) {
                 $ok = false;
                 foreach ($ordered as $p => $mvvfile_id) {

@@ -4,8 +4,12 @@ return [
     'userMayAdministerRange' => '#{Changed} - Use #{yellow:userMayManageRange} instead',
 
     // UTF8-Encode/Decode legacy functions
-    'studip_utf8encode' => '#{red:Removed} - Removed. Use utf8_encode().',
-    'studip_utf8decode' => '#{red:Removed} - Removed. Use utf8_decode().',
+    'studip_utf8encode' => '#{red:Removed} - Use utf8_encode().',
+    'studip_utf8decode' => '#{red:Removed} - Use utf8_decode().',
+
+    // JSON encode/decode legacy functions
+    'studip_json_decode' => '#{red:Deprecated} - Use json_decode().',
+    'studip_json_encode' => '#{red:Deprecated} - Use json_encode().',
 
     // https://develop.studip.de/trac/ticket/10806
     'SemesterData' => '#{red:Removed} - Use #{yellow:Semester model} instead',

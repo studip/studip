@@ -2,8 +2,8 @@
     <h1><?= htmlReady($title) ?></h1>
 <? endif; ?>
 <form method="POST" action="<?= $controller->url_for("multipersonsearch/no_js_form/?name=" . $name) ?>">
-    <input type="hidden" name="search_persons_selectable_hidden" value="<?=htmlReady(studip_json_encode($selectableUsersHidden))?>">
-    <input type="hidden" name="search_persons_selected_hidden" value="<?=htmlspecialchars(studip_json_encode($selectedUsersHidden))?>">
+    <input type="hidden" name="search_persons_selectable_hidden" value="<?=htmlReady(json_encode($selectableUsersHidden))?>">
+    <input type="hidden" name="search_persons_selected_hidden" value="<?=htmlspecialchars(json_encode($selectedUsersHidden))?>">
     <input type="hidden" name="last_search_hidden" value="<?= $search?>">
     <input type="hidden" name="last_search_preset" value="<?= $searchPreset?>">
     <input type="hidden" name="not_first_call" value="true">

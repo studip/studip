@@ -160,7 +160,7 @@
 <script>
 jQuery(function ($) {
     $('#new_topic').autocomplete({
-        source: <?= studip_json_encode(Course::findCurrent()->topics->pluck('title')) ?>
+        source: <?= json_encode(Course::findCurrent()->topics->pluck('title')) ?>
     });
 });
 </script>

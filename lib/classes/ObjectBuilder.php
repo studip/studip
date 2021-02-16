@@ -44,7 +44,7 @@ class ObjectBuilder
     {
         // Decode data string to array if neccessary
         if (!is_array($data)) {
-            $data = studip_json_decode($data);
+            $data = json_decode($data);
         }
 
         // Check if we actually have an object
@@ -210,7 +210,7 @@ class ObjectBuilder
     /**
      * Returns the exported object as a JSON encoded string.
      * This is just a convenience method that saves you from wrapping the
-     * call to export() in studip_json_encode() every single time.
+     * call to export() in json_encode() every single time.
      *
      * @param mixed $object Arbitrary object
      * @return string containing the serialized object as a JSON string
@@ -219,6 +219,6 @@ class ObjectBuilder
      */
     public static function exportAsJson($object)
     {
-        return studip_json_encode(self::export($object));
+        return json_encode(self::export($object));
     }
 }

@@ -1141,6 +1141,7 @@ function legacy_studip_utf8decode($data)
  * @param bool   $assoc
  * @param int    $depth
  * @param int    $options
+ * @deprecated since Stud.IP 5.0
  */
 function studip_json_decode($json, $assoc = true, $depth = 512, $options = 0)
 {
@@ -1156,6 +1157,7 @@ function studip_json_decode($json, $assoc = true, $depth = 512, $options = 0)
  * @param mixed $data
  * @param int   $options
  * @param int   $depth
+ * @deprecated since Stud.IP 5.0
  */
 function studip_json_encode($data, $options = 0)
 {
