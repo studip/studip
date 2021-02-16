@@ -1,5 +1,5 @@
 CODECEPT  = composer/bin/codecept
-RESOURCES = $(shell find resources/assets -type f)
+RESOURCES = $(shell find resources -type f)
 
 # build all needed files
 build: composer webpack-prod
@@ -30,9 +30,9 @@ node_modules/.package-lock.json: package.json package-lock.json
 clean-npm:
 	rm -rf node_modules
 
-webpack-dev: npm .webpack.dev
+webpack-dev: .webpack.dev
 
-webpack-prod: npm .webpack.prod
+webpack-prod: .webpack.prod
 
 webpack-watch: npm
 	npm run webpack-watch
@@ -40,12 +40,12 @@ webpack-watch: npm
 wds: npm
 	npm run wds
 
-.webpack.dev: $(RESOURCES)
+.webpack.dev: npm $(RESOURCES)
 	@rm -f .webpack.prod
 	npm run webpack-dev
 	@touch $@
 
-.webpack.prod: $(RESOURCES)
+.webpack.prod: npm $(RESOURCES)
 	@rm -f .webpack.dev
 	npm run webpack-prod
 	@touch $@
