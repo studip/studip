@@ -106,9 +106,6 @@ body:not(.fixed) #barTopMenu {
         > a {
             img {
                 filter: hue-rotate(0deg) saturate(100%) brightness(100%) !important;
-
-                filter: url('filter.svg#brightness');
-                filter: brightness(100%);
             }
         }
 
@@ -265,7 +262,6 @@ body.fixed {
         display: none;
 
         img {
-            filter: url('filter.svg#brightness'); // IE?
             filter: contrast(0) brightness(2);
 
             .square(16px);
