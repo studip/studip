@@ -8,7 +8,7 @@ return [
     'studip_utf8decode' => '#{red:Removed} - Use utf8_decode().',
 
     // JSON encode/decode legacy functions
-    'studip_json_decode' => '#{red:Deprecated} - Use json_decode().',
+    'studip_json_decode' => '#{red:Deprecated} - Use json_decode() and pay attention to the second parameter.',
     'studip_json_encode' => '#{red:Deprecated} - Use json_encode().',
 
     // https://develop.studip.de/trac/ticket/10806
