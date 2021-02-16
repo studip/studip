@@ -44,7 +44,7 @@ class ObjectBuilder
     {
         // Decode data string to array if neccessary
         if (!is_array($data)) {
-            $data = json_decode($data);
+            $data = json_decode($data, true);
         }
 
         // Check if we actually have an object
