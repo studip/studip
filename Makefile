@@ -2,25 +2,14 @@ CODECEPT  = composer/bin/codecept
 RESOURCES = $(shell find resources/assets -type f)
 
 # build all needed files
-build: npm composer webpack-prod
+build: composer webpack-prod
 
 # remove all generated files
-clean: clean-npm clean-composer clean-webpack clean-doc
-
-npm: node_modules/.package-lock.json
-
-node_modules/.package-lock.json: package.json package-lock.json
-	npm install --no-save
-
-clean-npm:
-	rm -rf node_modules
+clean: clean-composer clean-npm clean-webpack clean-doc
 
 composer: composer/composer/installed.json
 
 composer-dev: $(CODECEPT)
-
-clean-composer:
-	rm -rf composer
 
 composer/composer/installed.json: composer.json composer.lock
 	composer install --no-dev
@@ -30,14 +19,25 @@ $(CODECEPT): composer.json composer.lock
 	composer install
 	@touch $@
 
-webpack-dev: .webpack.dev
+clean-composer:
+	rm -rf composer
 
-webpack-prod: .webpack.prod
+npm: node_modules/.package-lock.json
 
-webpack-watch:
+node_modules/.package-lock.json: package.json package-lock.json
+	npm install --no-save
+
+clean-npm:
+	rm -rf node_modules
+
+webpack-dev: npm .webpack.dev
+
+webpack-prod: npm .webpack.prod
+
+webpack-watch: npm
 	npm run webpack-watch
 
-wds:
+wds: npm
 	npm run wds
 
 .webpack.dev: $(RESOURCES)
