@@ -39,7 +39,7 @@ const Admission = {
 
         Dialog.fromURL(targetUrl, {
             method: 'post',
-            width: 'auto',
+            size: 'auto',
             title: $gettext('Anmelderegel konfigurieren'),
             id: 'configurerule',
             data: { ruleId: ruleId, rules: _.map($('#rules input[name="rules[]"]'), 'value') }

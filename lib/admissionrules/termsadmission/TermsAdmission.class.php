@@ -45,7 +45,7 @@ class TermsAdmission extends AdmissionRule
         parent::delete();
 
         $stmt = DBManager::get()->prepare('DELETE FROM termsadmissions WHERE rule_id = ?');
-        $stmt->execute(array($this->getId()));
+        $stmt->execute([$this->getId()]);
     }
 
     /**
@@ -66,7 +66,7 @@ class TermsAdmission extends AdmissionRule
      */
     public function getInput()
     {
-        $factory = new Flexi_TemplateFactory(__DIR__ . '/templates/');
+        $factory = new Flexi_TemplateFactory(__DIR__ . '/templates');
         $template = $factory->open('input');
         $template->rule = $this;
 
@@ -88,7 +88,7 @@ class TermsAdmission extends AdmissionRule
      */
     public function getTemplate()
     {
-        $factory = new Flexi_TemplateFactory(__DIR__ . '/templates/');
+        $factory = new Flexi_TemplateFactory(__DIR__ . '/templates');
         $template = $factory->open('configure');
         $template->rule = $this;
 
@@ -101,11 +101,13 @@ class TermsAdmission extends AdmissionRule
      *
      * @param  String userId
      * @param  String courseId
-     * @return Boolean
+     * @return Array
      */
     public function ruleApplies($userId, $courseId)
     {
-        // check, if the user has accepted the terms
+        $errors = [];
+
+        // check if the user has accepted the terms
         if (!Request::int('terms_accepted')) {
             $errors[] = _('Um sich anzumelden, müssen Sie die Teilnahmebedingungen akzeptieren.');
         }
@@ -133,7 +135,7 @@ class TermsAdmission extends AdmissionRule
      */
     public function load()
     {
-        $rule = DBManager::get()->fetchOne('SELECT * FROM termsadmissions WHERE rule_id = ?', array($this->getId()));
+        $rule = DBManager::get()->fetchOne('SELECT * FROM termsadmissions WHERE rule_id = ?', [$this->getId()]);
         $this->terms = $rule['terms'];
         return $this;
     }
@@ -146,7 +148,7 @@ class TermsAdmission extends AdmissionRule
         // Store data.
         $stmt = DBManager::get()->prepare('INSERT INTO termsadmissions (rule_id, terms, mkdate, chdate) VALUES (?, ?, ?, ?)
                                             ON DUPLICATE KEY UPDATE terms = VALUES(terms), chdate = VALUES(chdate)');
-        $stmt->execute(array($this->id, $this->terms, time(), time()));
+        $stmt->execute([$this->id, $this->terms, time(), time()]);
     }
 
     /**
