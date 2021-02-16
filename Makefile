@@ -40,12 +40,12 @@ webpack-watch: npm
 wds: npm
 	npm run wds
 
-.webpack.dev: npm $(RESOURCES)
+.webpack.dev: node_modules/.package-lock.json $(RESOURCES)
 	@rm -f .webpack.prod
 	npm run webpack-dev
 	@touch $@
 
-.webpack.prod: npm $(RESOURCES)
+.webpack.prod: node_modules/.package-lock.json $(RESOURCES)
 	@rm -f .webpack.dev
 	npm run webpack-prod
 	@touch $@
