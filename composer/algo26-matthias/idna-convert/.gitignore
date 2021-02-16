@@ -1,6 +1,0 @@
-/.idea
-!.gitkeep
-/phpunit.phar
-/composer.phar
-/composer.lock
-/vendor
