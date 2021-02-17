@@ -18,25 +18,12 @@ class Course_PlusController extends AuthenticatedController
     {
         PageLayout::setTitle(_("Mehr Funktionen"));
 
-        $id = $GLOBALS['SessionSeminar'];
-        if (!$id) {
-            if ($GLOBALS['perm']->have_perm('admin')) {
-                Navigation::activateItem('/admin/institute/modules');
-                require_once 'lib/admin_search.inc.php';
-            } else {
-                throw new AccessDeniedException();
-            }
-        }
+        $id = Context::getId();
+        $object_type = Context::getClass();
 
-        $object_type = get_object_type($id);
+        Navigation::activateItem('/course/modules');
 
-        if ($object_type !== "sem") {
-            Navigation::activateItem('/admin/institute/modules');
-        } else {
-            Navigation::activateItem('/course/modules');
-        }
-
-        if (!$GLOBALS['perm']->have_studip_perm($object_type === 'sem' ? 'tutor' : 'admin', $id)) {
+        if (!$id || !$GLOBALS['perm']->have_studip_perm($object_type === 'sem' ? 'tutor' : 'admin', $id)) {
             throw new AccessDeniedException();
         }
 
@@ -74,27 +61,15 @@ class Course_PlusController extends AuthenticatedController
 
     public function trigger_action()
     {
-        $id = $GLOBALS['SessionSeminar'];
-        if (!$id) {
-            if ($GLOBALS['perm']->have_perm('admin')) {
-                Navigation::activateItem('/admin/institute/modules');
-                require_once 'lib/admin_search.inc.php';
-            } else {
-                throw new AccessDeniedException();
-            }
-        }
+        $id = Context::getId();
+        $object_type = Context::getClass();
 
-        $object_type = get_object_type($id);
+        Navigation::activateItem('/course/modules');
 
-        if ($object_type !== "sem") {
-            Navigation::activateItem('/admin/institute/modules');
-        } else {
-            Navigation::activateItem('/course/modules');
-        }
-
-        if (!$GLOBALS['perm']->have_studip_perm($object_type === 'sem' ? 'tutor' : 'admin', $id)) {
+        if (!$id || !$GLOBALS['perm']->have_studip_perm($object_type === 'sem' ? 'tutor' : 'admin', $id)) {
             throw new AccessDeniedException();
         }
+
         if (Request::isPost()) {
             if ($object_type === "sem") {
                 $this->sem = Course::find($id);
@@ -135,11 +110,7 @@ class Course_PlusController extends AuthenticatedController
                 $plugin = PluginEngine::getPlugin($module);
                 $this->setPluginActivated($plugin, $active);
             }
-            if ($object_type === "sem") {
-                $this->redirect("course/plus/trigger", ['cid' => $id]);
-            } else {
-                $this->render_nothing();
-            }
+            $this->redirect("course/plus/trigger", ['cid' => $id]);
         } else {
             $template = $GLOBALS['template_factory']->open("tabs.php");
             $template->navigation = Navigation::getItem("/course");

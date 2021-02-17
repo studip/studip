@@ -79,8 +79,6 @@ class AdminNavigation extends Navigation
             $navigation->addSubNavigation('evaluation', new Navigation(_('Evaluationen'), 'admin_evaluation.php?view=eval_inst'));
         }
 
-        $navigation->addSubNavigation('modules', new Navigation(_('Inhaltselemente'), 'dispatch.php/course/plus/index'));
-
         if (Config::get()->EXTERN_ENABLE) {
             $navigation->addSubNavigation('external', new Navigation(_('Externe Seiten'), 'admin_extern.php?view=extern_inst'));
         }

@@ -138,6 +138,12 @@ if (Context::isCourse() && $perm->have_studip_perm('tutor', Context::getId()) &&
     Navigation::addItem('/course/modules', $plus_nav);
 }
 
+// add navigation item: add modules (institute)
+if (Context::isInstitute() && $perm->have_studip_perm('admin', Context::getId())) {
+    $plus_nav = new Navigation(_('Mehr …'), 'dispatch.php/course/plus/index');
+    $plus_nav->setDescription(_("Mehr Stud.IP-Funktionen für Ihre Einrichtung"));
+    Navigation::addItem('/course/modules', $plus_nav);
+}
 // add navigation item for profile: add modules
 if (Navigation::hasItem('/profile/edit')) {
     $plus_nav = new Navigation(_('Mehr …'), 'dispatch.php/profilemodules/index');
