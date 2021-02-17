@@ -73,7 +73,7 @@
             <input type="text" class="news_date news_prevent_submit"
                    name="news_startdate" id="news_startdate"
                    data-datetime-picker
-                   value="<? if ($news->date) echo strftime('%x %X', $news->date); ?>"
+                   value="<? if ($news->date) echo strftime('%x %H:%M', $news->date); ?>"
                    aria-label="<?= _('Einstelldatum') ?>" required>
         </label>
 
@@ -85,7 +85,7 @@
             <input type="text" class="news_date news_prevent_submit"
                    name="news_enddate" id="news_enddate"
                    data-datetime-picker='{">=":"#news_startdate","offset":"#news_duration"}'
-                   value="<? if ($news->expire) echo strftime('%x %X', $news->date + $news->expire) ?>"
+                   value="<? if ($news->expire) echo strftime('%x %H:%M', $news->date + $news->expire) ?>"
                    aria-label="<?= _('Ablaufdatum') ?>" required>
         </label>
 
