@@ -131,13 +131,8 @@ if (Request::int('disable_plugins') !== null && ($user->id === 'nobody' || $perm
 // load the default set of plugins
 PluginEngine::loadPlugins();
 
-// add the plugin-pages to navigation tree
-//StudipNavigation::initNavigationPlugins();
-
 // add navigation item: add modules
-if ((Navigation::hasItem('/course/admin') || $GLOBALS['perm']->have_perm('admin'))
-    && (Context::isCourse() && $perm->have_studip_perm('tutor', Context::getId()))
-    && (!Context::isCourse() || !$GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][Context::getArtNum()]['class']]['studygroup_mode'])) {
+if (Context::isCourse() && $perm->have_studip_perm('tutor', Context::getId()) && !Context::get()->getSemClass()['studygroup_mode']) {
     $plus_nav = new Navigation(_('Mehr …'), 'dispatch.php/course/plus/index');
     $plus_nav->setDescription(_("Mehr Stud.IP-Funktionen für Ihre Veranstaltung"));
     Navigation::addItem('/course/modules', $plus_nav);
@@ -169,7 +164,7 @@ if (!Request::isXhr() && $perm->have_perm('root')) {
         ];
     }
 
-    if (Request::submitted('stop-migration-nag')) {
+    if (Request::option('stop-migration-nag')) {
         $_SESSION['migation-check']['disabled'] = true;
     }
 
