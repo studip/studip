@@ -9,6 +9,9 @@
  */
 class CoreAdmin implements StudipModule
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         $navigation = new Navigation(_('Verwaltung'), 'dispatch.php/course/management');
@@ -16,6 +19,9 @@ class CoreAdmin implements StudipModule
         return $navigation;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTabNavigation($course_id)
     {
         $sem_create_perm = in_array(Config::get()->SEM_CREATE_PERM, ['root','admin','dozent']) ? Config::get()->SEM_CREATE_PERM : 'dozent';
@@ -140,7 +146,7 @@ class CoreAdmin implements StudipModule
     }
 
     /**
-     * @see StudipModule::getMetadata()
+     * {@inheritdoc}
      */
     public function getMetadata()
     {

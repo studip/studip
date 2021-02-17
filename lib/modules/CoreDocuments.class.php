@@ -11,6 +11,9 @@
 
 class CoreDocuments implements StudipModule
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         $range_type = get_object_type($course_id, ['sem', 'inst']) === 'sem' ? 'course' : 'institute';
@@ -39,6 +42,9 @@ class CoreDocuments implements StudipModule
         return $navigation;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTabNavigation($course_id)
     {
         $range_type = get_object_type($course_id, ['sem', 'inst']) === 'sem' ? 'course' : 'institute';
@@ -49,7 +55,7 @@ class CoreDocuments implements StudipModule
     }
 
     /**
-     * @see StudipModule::getMetadata()
+     * {@inheritdoc}
      */
     public function getMetadata()
     {

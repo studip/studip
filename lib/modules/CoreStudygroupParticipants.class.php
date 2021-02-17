@@ -11,6 +11,9 @@
 
 class CoreStudygroupParticipants implements StudipModule
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         $navigation = new Navigation(_('Teilnehmende'), "dispatch.php/course/studygroup/members/{$course_id}");
@@ -21,6 +24,9 @@ class CoreStudygroupParticipants implements StudipModule
         return $navigation;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTabNavigation($course_id)
     {
         $navigation = new Navigation(_('Teilnehmende'), "dispatch.php/course/studygroup/members/".$course_id);
@@ -30,7 +36,7 @@ class CoreStudygroupParticipants implements StudipModule
     }
 
     /**
-     * @see StudipModule::getMetadata()
+     * {@inheritdoc}
      */
     public function getMetadata()
     {

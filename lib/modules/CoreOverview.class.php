@@ -11,6 +11,9 @@
 
 class CoreOverview implements StudipModule
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         $sql = "SELECT COUNT(nw.news_id) AS count,
@@ -67,6 +70,9 @@ class CoreOverview implements StudipModule
         return $nav;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTabNavigation($course_id)
     {
         $object_type = get_object_type($course_id, ['sem', 'inst']);
@@ -99,7 +105,7 @@ class CoreOverview implements StudipModule
     }
 
     /**
-     * @see StudipModule::getMetadata()
+     * {@inheritdoc}
      */
     public function getMetadata()
     {

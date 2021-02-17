@@ -11,6 +11,9 @@
 
 class CoreScm implements StudipModule
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         if (!Config::get()->SCM_ENABLE) {
@@ -76,6 +79,9 @@ class CoreScm implements StudipModule
         return $nav;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTabNavigation($course_id)
     {
         if (!Config::get()->SCM_ENABLE) {
@@ -101,7 +107,7 @@ class CoreScm implements StudipModule
     }
 
     /**
-     * @see StudipModule::getMetadata()
+     * {@inheritdoc}
      */
     public function getMetadata()
     {

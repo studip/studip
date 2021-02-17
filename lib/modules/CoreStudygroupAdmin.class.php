@@ -9,8 +9,11 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreStudygroupAdmin implements StudipModule {
-
+class CoreStudygroupAdmin implements StudipModule
+{
+    /**
+     * {@inheritdoc}
+     */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         $navigation = new Navigation(_('Verwaltung'), "dispatch.php/course/studygroup/edit/?cid={$course_id}");
@@ -18,6 +21,9 @@ class CoreStudygroupAdmin implements StudipModule {
         return $navigation;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTabNavigation($course_id)
     {
         if (!$GLOBALS['perm']->have_studip_perm('dozent', $course_id)) {
@@ -44,7 +50,7 @@ class CoreStudygroupAdmin implements StudipModule {
     }
 
     /**
-     * @see StudipModule::getMetadata()
+     * {@inheritdoc}
      */
     public function getMetadata()
     {

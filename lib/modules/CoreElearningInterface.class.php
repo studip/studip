@@ -11,6 +11,9 @@
 
 class CoreElearningInterface implements StudipModule
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         if (!Config::get()->ELEARNING_INTERFACE_ENABLE) {
@@ -66,6 +69,9 @@ class CoreElearningInterface implements StudipModule
         return null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTabNavigation($course_id)
     {
         if (!Config::get()->ELEARNING_INTERFACE_ENABLE) {
@@ -94,7 +100,7 @@ class CoreElearningInterface implements StudipModule
     }
 
     /**
-     * @see StudipModule::getMetadata()
+     * {@inheritdoc}
      */
     public function getMetadata()
     {

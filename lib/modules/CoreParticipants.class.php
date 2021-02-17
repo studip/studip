@@ -11,6 +11,9 @@
 
 class CoreParticipants implements StudipModule
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         $auto_insert_perm = Config::get()->AUTO_INSERT_SEM_PARTICIPANTS_VIEW_PERM;
@@ -102,6 +105,9 @@ class CoreParticipants implements StudipModule
         return $navigation;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTabNavigation($course_id)
     {
         #$navigation = new AutoNavigation(_('Teilnehmende'));
@@ -137,7 +143,7 @@ class CoreParticipants implements StudipModule
     }
 
     /**
-     * @see StudipModule::getMetadata()
+     * {@inheritdoc}
      */
     public function getMetadata()
     {

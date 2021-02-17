@@ -11,6 +11,9 @@
 
 class CoreCalendar implements StudipModule
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         if (!Config::get()->CALENDAR_GROUP_ENABLE) {
@@ -22,6 +25,9 @@ class CoreCalendar implements StudipModule
         return $navigation;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTabNavigation($course_id)
     {
         if (!Config::get()->CALENDAR_GROUP_ENABLE) {
@@ -35,7 +41,7 @@ class CoreCalendar implements StudipModule
     }
 
     /**
-     * @see StudipModule::getMetadata()
+     * {@inheritdoc}
      */
     public function getMetadata()
     {

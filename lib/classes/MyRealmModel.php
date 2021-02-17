@@ -323,6 +323,13 @@ class MyRealmModel
         return $semesters;
     }
 
+    /**
+     * Returns a list of all matching courses prepared for further treatment.
+     *
+     * @param string $sem Semester index
+     * @param array $params Additional parameters
+     * @return array|null
+     */
     public static function getPreparedCourses($sem = 'all', $params = [])
     {
         $semesters   = self::getSelectedSemesters($sem);
@@ -476,7 +483,7 @@ class MyRealmModel
             self::groupBySemTree($sem_courses);
         }
 
-        return $sem_courses ?: false;
+        return $sem_courses ?: null;
     }
 
     /**
@@ -592,6 +599,12 @@ class MyRealmModel
         return true;
     }
 
+    /**
+     * Returns a list of all the courses the user is in the waiting list for.
+     *
+     * @param $user_id Id of the user
+     * @return array
+     */
     public static function getWaitingList($user_id)
     {
         $sql = "SELECT set_id, priorities.seminar_id,'claiming' as status, seminare.Name, seminare.Ort,
@@ -685,6 +698,11 @@ class MyRealmModel
         return $institutes;
     }
 
+    /**
+     * Groups the list of courses by sem tree criteria.
+     *
+     * @param array $sem_courses List of courses
+     */
     public static function groupBySemTree(&$sem_courses)
     {
         foreach ($sem_courses as $sem_key => $collection) {
@@ -748,6 +766,11 @@ class MyRealmModel
         $sem_courses = $_tmp_courses;
     }
 
+    /**
+     * Groups the list of courses by defined group.
+     *
+     * @param array $sem_courses
+     */
     public static function groupByGruppe(&$sem_courses)
     {
         foreach ($sem_courses as $sem_key => $collection) {
@@ -759,6 +782,11 @@ class MyRealmModel
         $sem_courses = $_tmp_courses;
     }
 
+    /**
+     * Groups the list of courses by the corresponding course's status.
+     *
+     * @param array $sem_courses
+     */
     public static function groupBySemStatus(&$sem_courses)
     {
         foreach ($sem_courses as $sem_key => $collection) {
@@ -778,6 +806,11 @@ class MyRealmModel
         $sem_courses = $_tmp_courses;
     }
 
+    /**
+     * Groups the list of courses by the teacher(s) of the course.
+     *
+     * @param array $sem_courses
+     */
     public static function groupByTeacher(&$sem_courses)
     {
         foreach ($sem_courses as $sem_key => $collection) {
@@ -902,6 +935,12 @@ class MyRealmModel
         return $nav_elements;
     }
 
+    /**
+     * Calculates and returns the maximum length of the given course's navigations.
+     *
+     * @param array $collection
+     * @return int
+     */
     public static function calc_single_navigation($collection)
     {
         $nav_elements = 0;
@@ -934,6 +973,13 @@ class MyRealmModel
         return array_reverse($temp);
     }
 
+    /**
+     * Sorts the list of courses by given order and parent/child relation.
+     *
+     * @param array $courses List of courses
+     * @param string $order Order to sort by
+     * @return SimpleCollection
+     */
     private static function sortCourses($courses, $order)
     {
         $sorted = $courses->orderBy($order);

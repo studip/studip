@@ -11,6 +11,9 @@
 
 class CoreSchedule implements StudipModule
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         $query = "SELECT COUNT(termin_id) AS count,
@@ -70,6 +73,9 @@ class CoreSchedule implements StudipModule
         return $nav;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTabNavigation($course_id)
     {
         $navigation = new Navigation(_('Ablaufplan'));
@@ -83,7 +89,7 @@ class CoreSchedule implements StudipModule
     }
 
     /**
-     * @see StudipModule::getMetadata()
+     * {@inheritdoc}
      */
     public function getMetadata()
     {

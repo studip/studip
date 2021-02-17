@@ -11,6 +11,9 @@
 
 class CoreWiki implements StudipModule
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getIconNavigation($course_id, $last_visit, $user_id)
     {
         if (!Config::get()->WIKI_ENABLE) {
@@ -83,6 +86,9 @@ class CoreWiki implements StudipModule
         return $nav;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getTabNavigation($course_id)
     {
         if (!Config::get()->WIKI_ENABLE) {
@@ -109,7 +115,7 @@ class CoreWiki implements StudipModule
     }
 
     /**
-     * @see StudipModule::getMetadata()
+     * {@inheritdoc}
      */
     function getMetadata()
     {
