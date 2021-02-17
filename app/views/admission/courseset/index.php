@@ -61,15 +61,11 @@ if ($coursesets) {
                             <?= Icon::create('edit+add', 'clickable', ['title' => _('Anmeldeset kopieren')])->asImg(16, ["alt" => _('Anmeldeset kopieren')]); ?>
                         </a>
                     <a href="<?= $controller->link_for('admission/courseset/configure/'.$courseset->getId()); ?>">
-                            <?= Icon::create('edit', 'clickable', ['title' => _('Anmeldeset bearbeiten')])->asImg(16, ["alt" => _('Anmeldeset bearbeiten')]); ?>
+                            <?= Icon::create('edit')->asImg(['title' => _('Anmeldeset bearbeiten')]) ?>
                         </a>
-                        <a href="<?= $controller->link_for('admission/courseset/delete/'.
-                            $courseset->getId()) ?>"
-                            onclick="return STUDIP.Dialogs.showConfirmDialog('<?=
-                                sprintf(_('Soll das Anmeldeset %s wirklich gelöscht werden?'), htmlReady($courseset->getName())) ?>', '<?=
-                                URLHelper::getURL('dispatch.php/admission/courseset/delete/'.
-                                $courseset->getId(), ['really' => 1]) ?>')">
-                            <?= Icon::create('trash', 'clickable', ['title' => _('Anmeldeset löschen')])->asImg(16, ["alt" => _('Anmeldeset löschen')]); ?>
+                        <a href="<?= $controller->link_for('admission/courseset/delete/'. $courseset->getId()), ['really' => 1] ?>"
+                           data-confirm="<?= sprintf_('Soll das Anmeldeset %s wirklich gelöscht werden?'), htmlReady($courseset->getName()) ?>">
+                            <?= Icon::create('trash')->asImg(['title' => _('Anmeldeset löschen')]) ?>
                         </a>
                      <? endif ?>
                 </td>
