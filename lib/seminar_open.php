@@ -136,7 +136,7 @@ PluginEngine::loadPlugins();
 
 // add navigation item: add modules
 if ((Navigation::hasItem('/course/admin') || $GLOBALS['perm']->have_perm('admin'))
-    && ($perm->have_studip_perm('tutor', Context::getId()) && Context::isCourse())
+    && (Context::isCourse() && $perm->have_studip_perm('tutor', Context::getId()))
     && (!Context::isCourse() || !$GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][Context::getArtNum()]['class']]['studygroup_mode'])) {
     $plus_nav = new Navigation(_('Mehr …'), 'dispatch.php/course/plus/index');
     $plus_nav->setDescription(_("Mehr Stud.IP-Funktionen für Ihre Veranstaltung"));
