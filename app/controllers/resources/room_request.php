@@ -279,7 +279,11 @@ class Resources_RoomRequestController extends AuthenticatedController
                     SELECT DISTINCT metadate_id FROM termine
                     WHERE date BETWEEN :semester_begin AND :semester_end
                     OR end_time BETWEEN :semester_begin AND :semester_end
-                    )) ";
+                    )
+                    OR EXISTS (SELECT * FROM seminare
+                    WHERE resource_requests.course_id=seminare.seminar_id
+                    AND seminare.start_time = :semester_begin)
+                    ) ";
 
                 if (!$this->filter['periodic_requests'] && !$this->filter['aperiodic_requests']) {
                     $sql .= ' OR (
