@@ -682,8 +682,6 @@ class FileController extends AuthenticatedController
         if ($foldertype) {
             $tmp_file = tempnam($GLOBALS['TMP_PATH'], 'doc');
 
-            $use_dos_encoding = version_compare(PHP_VERSION, '5.6', '<=');
-
             $result = FileArchiveManager::createArchive(
                 [$foldertype],
                 $user->id,
@@ -691,7 +689,7 @@ class FileController extends AuthenticatedController
                 true,
                 true,
                 false,
-                $use_dos_encoding ? 'CP850' : 'UTF-8',
+                'UTF-8',
                 true
             );
 
