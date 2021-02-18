@@ -24,7 +24,11 @@ The following time ranges have been booked:
 <? endforeach ?>
 <? foreach ($single_dates as $date) : ?>
 
+<? if($date instanceof CourseDate) : ?>
+- <?= $date->getFullname() ?>
+<? else : ?>
 - <?= $date->toString('default') ?>
+<? endif ?>
 <? endforeach ?>
 <? foreach ($booked_time_intervals as $interval) : ?>
 

@@ -24,7 +24,11 @@ Die folgenden Zeiträume wurden gebucht:
 <? endforeach ?>
 <? foreach ($single_dates as $date) : ?>
 
-- <?= $date->toString('default') ?>
+    <? if($date instanceof CourseDate) : ?>
+        - <?= $date->getFullname() ?>
+    <? else : ?>
+        - <?= $date->toString('default') ?>
+    <? endif ?>
 <? endforeach ?>
 <? foreach ($booked_time_intervals as $interval) : ?>
 
