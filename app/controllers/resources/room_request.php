@@ -41,6 +41,13 @@ class Resources_RoomRequestController extends AuthenticatedController
 
             $this->filter =& $_SESSION[__CLASS__]['filter'];
 
+            if($action === 'resolve') {
+                $this->filter['get_only_request_ids'] = true;
+                $this->filter['filter_request_id'] = $args[0];
+            } else {
+                $this->filter['get_only_request_ids'] = false;
+            }
+
             if (Request::get('reset_filter')) {
                 $this->filter = [
                     'marked' => -1,
@@ -1164,8 +1171,6 @@ class Resources_RoomRequestController extends AuthenticatedController
             $this->current_user,
             'autor'
         );
-        $this->filter['get_only_request_ids'] = true;
-        $this->filter['filter_request_id'] = $request_id;
         $request_ids = $this->getFilteredRoomRequests();
         if($request_ids) {
             $this->next_request = array_shift($request_ids);
