@@ -7,9 +7,9 @@
                     ngettext(
                         'Anfragenliste (%d Anfrage)',
                         'Anfragenliste (%d Anfragen)',
-                        count($requests)
+                        $count_requests
                     ),
-                    count($requests)
+                    $count_requests
                 ) ?>
             </caption>
             <thead>
@@ -43,6 +43,17 @@
                     <? endif ?>
                 <? endforeach ?>
             </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="11">
+                    <section style="float: right">
+                        <?= $pagination->asLinks(function ($page) use ($controller) {
+                            return $controller->url_for("resources/room_request/overview/{$page}");
+                        }) ?>
+                    </section>
+                </td>
+            </tr>
+            </tfoot>
         </table>
     </form>
 <? else: ?>

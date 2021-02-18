@@ -165,6 +165,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             //The following filters are special:
             $this->filter['semester'] = $GLOBALS['user']->cfg->MY_COURSES_SELECTED_CYCLE;
             $this->filter['institute'] = $GLOBALS['user']->cfg->MY_INSTITUTES_DEFAULT;
+            $this->entries_per_page = Config::get()->ENTRIES_PER_PAGE;
         }
     }
 
@@ -388,7 +389,7 @@ class Resources_RoomRequestController extends AuthenticatedController
     /**
      * Shows all requests. By default, only open requests are shown.
      */
-    public function overview_action()
+    public function overview_action(int $page = 0)
     {
         if (Navigation::hasItem('/resources/planning/requests_overview')) {
             Navigation::activateItem('/resources/planning/requests_overview');
@@ -402,10 +403,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             $filter_reset_widget = new ActionsWidget();
             $filter_reset_widget->addLink(
                 _('Filter zurücksetzen'),
-                $this->url_for(
-                    'resources/room_request/overview',
-                    ['reset_filter' => '1']
-                ),
+                $this->overviewURL(['reset_filter' => '1']),
                 Icon::create('filter+decline')
             );
             $sidebar->addWidget($filter_reset_widget);
@@ -416,7 +414,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             'institut_id',
             'get'
         );
-        $institute_selector->includeAllOption(true);
+        $institute_selector->includeAllOption();
         $institute_selector->setSelectedElementIds($this->filter['institute']);
         $sidebar->addWidget($institute_selector);
 
@@ -430,7 +428,7 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         $list = new SelectWidget(
             _('Veranstaltungstypfilter'),
-            $this->url_for(),
+            $this->overviewURL(),
             'course_type'
         );
         $list->addElement(
@@ -471,14 +469,36 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
         $sidebar->addWidget($list, 'filter-course-type');
 
-        $widget = new SelectWidget(_('Raumgruppen'), $this->url_for(),'group');
-        $widget->addElement(new SelectElement('', _('Alle'), empty($this->filter['group'])), 'clip-all');
+        $widget = new SelectWidget(
+            _('Raumgruppen'),
+            $this->overviewURL(),
+            'group'
+        );
+        $widget->addElement(
+            new SelectElement(
+                '',
+                _('Alle'),
+                empty($this->filter['group'])
+            ),
+            'clip-all'
+        );
         foreach (Clipboard::getClipboardsForUser($GLOBALS['user']->id, ['Room']) as $clip) {
-            $widget->addElement(new SelectElement($clip->id, $clip->name, $this->filter['group'] == $clip->id), 'clip-' . $clip->id);
+            $widget->addElement(
+                new SelectElement(
+                    $clip->id,
+                    $clip->name,
+                    $this->filter['group'] == $clip->id
+                ),
+                'clip-' . $clip->id
+            );
         }
         $sidebar->addWidget($widget);
 
-        $widget = new SelectWidget(_('Räume'), $this->url_for(), 'room_id');
+        $widget = new SelectWidget(
+            _('Räume'),
+            $this->overviewURL(),
+            'room_id'
+        );
         $widget->addElement(
             new SelectElement(
                 '',
@@ -501,46 +521,38 @@ class Resources_RoomRequestController extends AuthenticatedController
         $widget->addCheckbox(
             _('Nur markierte Anfragen'),
             $this->filter['marked'] == 1,
-            $this->url_for('', (
-                $this->filter['marked'] != '1'
-                ? ['marked' => '1']
-                : []
-            ))
+            $this->overviewURL($this->filter['marked'] != '1' ? ['marked' => '1'] : [])
         );
         $widget->addCheckbox(
             _('Nur unmarkierte Anfragen'),
             $this->filter['marked'] == 0,
-            $this->url_for('', (
-                $this->filter['marked'] != '0'
-                ? ['marked' => '0']
-                : []
-            ))
+            $this->overviewURL($this->filter['marked'] != '0' ? ['marked' => '0'] : [])
         );
         $widget->addCheckbox(
             _('Nur regelmäßige Termine'),
             $this->filter['periodic_requests'],
-            $this->url_for('', ['toggle_periodic_requests' => 1])
+            $this->overviewURL(['toggle_periodic_requests' => 1])
         );
         $widget->addCheckbox(
             _('Nur unregelmäßige Termine'),
             $this->filter['aperiodic_requests'],
-            $this->url_for('', ['toggle_aperiodic_requests' => 1])
+            $this->overviewURL(['toggle_aperiodic_requests' => 1])
         );
         $widget->addCheckbox(
             _('Nur mit Raumangabe'),
             $this->filter['specific_requests'],
-            $this->url_for('', ['toggle_specific_requests' => 1])
+            $this->overviewURL(['toggle_specific_requests' => 1])
         );
         $widget->addCheckbox(
             _('Eigene Anfragen anzeigen'),
             $this->filter['own_requests'],
-            $this->url_for('', ['toggle_own_requests' => 1])
+            $this->overviewURL(['toggle_own_requests' => 1])
         );
         $sidebar->addWidget($widget);
 
         $dow_selector = new SelectWidget(
             _('Wochentag'),
-            $this->url_for(),
+            $this->overviewURL(),
             'dow');
         $dow_selector->addElement(
             new SelectElement(
@@ -578,17 +590,30 @@ class Resources_RoomRequestController extends AuthenticatedController
         $export = new ExportWidget();
         $export->addLink(
             _('Gefilterte Anfragen'),
-            $this->url_for('/export_list', $export_url_params),
+            $this->export_listURL($export_url_params),
             Icon::create('file-excel')
         );
         $export->addLink(
             _('Alle Anfragen'),
-            $this->url_for('/export_list'),
+            $this->export_listURL(),
             Icon::create('file-excel')
         );
         $sidebar->addWidget($export);
 
-        $this->requests = $this->getFilteredRoomRequests();
+        $requests = $this->getFilteredRoomRequests();
+        $this->count_requests = count($requests);
+        $requests = array_slice(
+            $requests,
+            $this->entries_per_page * ($page - 1),
+            $this->entries_per_page
+        );
+
+        $this->pagination = Pagination::create(
+            $this->count_requests,
+            $page,
+            $this->entries_per_page
+        );
+        $this->requests = $requests;
     }
 
     public function index_action($request_id = null)
