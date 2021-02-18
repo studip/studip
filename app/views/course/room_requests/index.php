@@ -8,9 +8,9 @@ echo $flash['message'];
             <?= _("Vorhandene Raumanfragen") ?>
         </caption>
         <colgroup>
-            <col width="50%">
-            <col width="15%">
-            <col width="25">
+            <col style="width: 50%">
+            <col style="width: 15%">
+            <col style="width: 25px">
             <col>
         </colgroup>
         <thead>
@@ -36,7 +36,13 @@ echo $flash['message'];
                 <td class="actions">
                     <a class="load-in-new-row"
                        href="<?= $controller->link_for('course/room_requests/info/' . $rr->id) ?>">
-                        <?= Icon::create('info', 'clickable', ['title' => _('Weitere Informationen einblenden')])->asImg(16) ?>
+                        <?= Icon::create(
+                            'info',
+                            Icon::ROLE_CLICKABLE,
+                            [
+                                'title' => _('Weitere Informationen einblenden')
+                            ]
+                        ) ?>
                     </a>
                     <? $params = [] ?>
                     <? $dialog = []; ?>
@@ -49,7 +55,13 @@ echo $flash['message'];
                     <? $actionMenu->addLink(
                         $controller->url_for('course/room_requests/request_summary/' . $rr->id, ['clear_cache' => 1]),
                         _('Diese Anfrage bearbeiten'),
-                        Icon::create('edit', 'clickable', ['title' => _('Diese Anfrage bearbeiten')]),
+                        Icon::create(
+                            'edit',
+                            Icon::ROLE_CLICKABLE,
+                            [
+                                'title' => _('Diese Anfrage bearbeiten')
+                            ]
+                        ),
                         $dialog
                     ) ?>
 
@@ -80,7 +92,7 @@ echo $flash['message'];
                             _('Diese Anfrage selbst auflösen'),
                             Icon::create(
                                 'admin',
-                                'clickable',
+                                Icon::ROLE_CLICKABLE,
                                 [
                                     'title' => _('Diese Anfrage selbst auflösen')
                                 ]
@@ -90,12 +102,12 @@ echo $flash['message'];
                     <? endif ?>
                     <? $actionMenu->addLink(
                         $controller->url_for('course/room_requests/delete/' . $rr->id),
-                        _('Diese Anfrage zurückziehen'),
+                        _('Diese Anfrage löschen'),
                         Icon::create(
                             'trash',
-                            'clickable',
+                            Icon::ROLE_CLICKABLE,
                             [
-                                'title' => _('Diese Anfrage zurückziehen')
+                                'title' => _('Diese Anfrage löschen')
                             ]
                         )
                     ) ?>
@@ -118,6 +130,10 @@ echo $flash['message'];
 
 <? if (Request::isXhr()) : ?>
     <div data-dialog-button>
-        <?= \Studip\LinkButton::createEdit(_('Neue Raumanfrage erstellen'), $controller->url_for('course/room_requests/new/' . $course_id, $url_params), ['data-dialog' => 'size=big']) ?>
+        <?= \Studip\LinkButton::createEdit(
+            _('Neue Raumanfrage erstellen'),
+            $controller->url_for('course/room_requests/new/' . $course_id, $url_params),
+            ['data-dialog' => 'size=big']
+        ) ?>
     </div>
 <? endif ?>
