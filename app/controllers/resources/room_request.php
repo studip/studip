@@ -27,7 +27,7 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         $this->current_user = User::findCurrent();
 
-        if (in_array($action, ['overview','planning', 'export_list'])) {
+        if (in_array($action, ['overview','planning', 'export_list', 'resolve'])) {
             $this->current_user = User::findCurrent();
             $user_is_global_resource_autor = ResourceManager::userHasGlobalPermission($this->current_user, 'autor');
             if (!RoomManager::userHasRooms($this->current_user, 'autor', true) && !$user_is_global_resource_autor) {
@@ -321,7 +321,16 @@ class Resources_RoomRequestController extends AuthenticatedController
         $sql .= " GROUP BY resource_requests.id ORDER BY mkdate ASC";
 
         $requests = RoomRequest::findBySql($sql, $sql_params);
-
+        if($this->filter['get_only_request_ids']) {
+            $request_ids = SimpleCollection::createFromArray($requests);
+            if($this->filter['filter_request_id']) {
+                $req_id = $this->filter['filter_request_id'];
+                $requests_ids = $request_ids->filter(function($req) use ($req_id) {
+                    return $req->id !== $req_id;
+                });
+            }
+            return $requests_ids->pluck('id');
+        }
         $result = [];
         if (!empty($this->filter['dow'])) {
             $week_days = [$this->filter['dow']];
@@ -1155,7 +1164,15 @@ class Resources_RoomRequestController extends AuthenticatedController
             $this->current_user,
             'autor'
         );
-
+        $this->filter['get_only_request_ids'] = true;
+        $this->filter['filter_request_id'] = $request_id;
+        $request_ids = $this->getFilteredRoomRequests();
+        if($request_ids) {
+            $this->next_request = array_shift($request_ids);
+        }
+        if($request_ids) {
+            $this->prev_request = array_shift($request_ids);
+        }
         //$this->current_user is set in the before_filter.
 
         $this->request_resource = null;
@@ -1318,7 +1335,6 @@ class Resources_RoomRequestController extends AuthenticatedController
         $room_search_type->setAcceptedPermissionLevels(['autor', 'tutor', 'admin']);
         $room_search_type->setAdditionalDisplayProperties(['seats']);
         $this->room_search = new QuickSearch('searched_room_id', $room_search_type);
-
         $this->alternative_rooms = [];
 
         //Load all previously selected rooms where at least one date has been

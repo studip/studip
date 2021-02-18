@@ -299,6 +299,13 @@
                 </table>
             </article>
             <div data-dialog-button>
+                <? if($prev_request) : ?>
+                    <?= \Studip\LinkButton::create(
+                        _('Vorherige Anfrage'),
+                        $controller->resolveURL($prev_request),
+                        ['data-dialog' => 'size=big']
+                    ) ?>
+                <? endif ?>
                 <? if ($show_force_resolve_button): ?>
                     <?= \Studip\Button::create(_('Anfrage trotzdem auflösen'), 'force_resolve') ?>
                 <? else: ?>
@@ -344,6 +351,13 @@
                     <?= \Studip\Button::create(
                         _('Terminserien zusammenklappen'),
                         'fold_metadates'
+                    ) ?>
+                <? endif ?>
+                <? if($next_request) : ?>
+                    <?= \Studip\LinkButton::create(
+                        _('Nächste Anfrage'),
+                        $controller->resolveURL($next_request),
+                        ['data-dialog' => 'size=big']
                     ) ?>
                 <? endif ?>
             </div>
