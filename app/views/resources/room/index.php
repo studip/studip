@@ -46,61 +46,61 @@
 
 <? $resource_folder = $room->getFolder(); ?>
 <? if ($resource_folder && $resource_folder->getFiles()): ?>
-   <section class="contentbox">
-       <header>
-           <h1><?= _('Dateien') ?></h1>
-       </header>
-       <table class="default sortable-table" data-sortlist="[[2, 0]]">
-           <?= $this->render_partial('files/_files_thead') ?>
-           <? foreach ($resource_folder->getFiles() as $file): ?>
-               <? if ($file->isVisible($GLOBALS['user']->id)) : ?>
-                   <?= $this->render_partial(
-                       'files/_fileref_tr',
-                       [
-                           'file'           => $file,
-                           'current_folder' => $resource_folder,
-                           'last_visitdate' => time()
-                       ]
-                   ) ?>
-               <? endif ?>
-           <? endforeach ?>
-       </table>
-   </section>
+    <section class="contentbox">
+        <header>
+            <h1><?= _('Dateien') ?></h1>
+        </header>
+        <table class="default sortable-table" data-sortlist="[[2, 0]]">
+            <?= $this->render_partial('files/_files_thead') ?>
+            <? foreach ($resource_folder->getFiles() as $file): ?>
+                <? if ($file->isVisible($GLOBALS['user']->id)) : ?>
+                    <?= $this->render_partial(
+                        'files/_fileref_tr',
+                        [
+                            'file' => $file,
+                            'current_folder' => $resource_folder,
+                            'last_visitdate' => time()
+                        ]
+                    ) ?>
+                <? endif ?>
+            <? endforeach ?>
+        </table>
+    </section>
 <? endif ?>
-<? if (!Request::isDialog()) : ?>
-    <footer data-dialog-button>
-        <? if ($room->userHasPermission(User::findCurrent(), 'autor')) : ?>
-            <?= \Studip\LinkButton::create(
-                _('Wochenbelegung'),
-                $room->getActionLink('booking_plan'),
-                ['target' => '_blank']) ?>
-            <?= \Studip\LinkButton::create(
-                _('Semesterbelegung'),
-                $room->getActionLink('semester_plan'),
-                ['target' => '_blank']) ?>
-        <? elseif ($room->bookingPlanVisibleForUser(User::findCurrent())) : ?>
-            <?= \Studip\LinkButton::create(
-                _('Belegungsplan'),
-                $room->getActionLink('booking_plan'),
-                ['data-dialog' => 'size=big']) ?>
-            <?= \Studip\LinkButton::create(
-                _('Semesterbelegung'),
-                $room->getActionLink('semester_plan'),
-                ['data-dialog' => 'size=big']) ?>
-        <? endif ?>
-        <? if ($room->building) : ?>
-            <?= \Studip\LinkButton::create(
-                _('Zum Lageplan'),
-                ResourceManager::getMapUrlForResourcePosition(
-                    $room->building->getPropertyObject('geo_coordinates')
-                ),
-                ["target" => "_blank"]) ?>
-        <? endif ?>
-        <? if (!$current_user_is_resource_autor && $room->requestable) : ?>
-            <?= \Studip\LinkButton::create(
-                _('Raum anfragen'),
-                $room->getActionLink('request'),
-                ['data-dialog' => 'size=auto']) ?>
-        <? endif ?>
-    </footer>
-<? endif ?>
+
+<footer data-dialog-button>
+    <? if ($room->userHasPermission(User::findCurrent(), 'autor')) : ?>
+        <?= \Studip\LinkButton::create(
+            _('Wochenbelegung'),
+            $room->getActionLink('booking_plan')
+        ) ?>
+        <?= \Studip\LinkButton::create(
+            _('Semesterbelegung'),
+            $room->getActionLink('semester_plan')
+        ) ?>
+    <? elseif ($room->bookingPlanVisibleForUser(User::findCurrent())) : ?>
+        <?= \Studip\LinkButton::create(
+            _('Belegungsplan'),
+            $room->getActionLink('booking_plan'),
+            ['data-dialog' => 'size=big']) ?>
+        <?= \Studip\LinkButton::create(
+            _('Semesterbelegung'),
+            $room->getActionLink('semester_plan'),
+            ['data-dialog' => 'size=big']) ?>
+    <? endif ?>
+    <? if ($room->building) : ?>
+        <?= \Studip\LinkButton::create(
+            _('Zum Lageplan'),
+            ResourceManager::getMapUrlForResourcePosition(
+                $room->building->getPropertyObject('geo_coordinates')
+            )
+        ) ?>
+    <? endif ?>
+    <? if (!$current_user_is_resource_autor && $room->requestable) : ?>
+        <?= \Studip\LinkButton::create(
+            _('Raum anfragen'),
+            $room->getActionLink('request'),
+            ['data-dialog' => 'size=auto']) ?>
+    <? endif ?>
+</footer>
+
