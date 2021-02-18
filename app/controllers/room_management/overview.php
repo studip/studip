@@ -135,9 +135,15 @@ class RoomManagement_OverviewController extends StudipController
                 if ($resource) {
                     $resource = $resource->getDerivedClassInstance();
                     if ($resource) {
-                        $this->redirect(
-                            $resource->getActionURL('show')
-                        );
+                        if($resource instanceof Room) {
+                            $this->relocate(
+                                $resource->getActionURL('booking_plan')
+                            );
+                        } else {
+                            $this->redirect(
+                                $resource->getActionURL('show')
+                            );
+                        }
                     }
                 }
             }
