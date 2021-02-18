@@ -1,8 +1,8 @@
-<?
+<?php
 $children = $resource->children;
 $has_children = count($children) > 0;
 ?>
-<article class="studip <?= $has_children ? 'toggle' : ''?>">
+<article class="studip <?= $has_children ? 'toggle' : ''?> <?= $open ? 'open' : ''?>">
     <header>
         <h1>
             <a href="#"><?= htmlReady($resource->getFullName()) ?></a>
@@ -16,7 +16,10 @@ $has_children = count($children) > 0;
             <? foreach ($children as $child) : ?>
                 <?= $this->render_partial(
                     'resources/_common/_resource_tree_item',
-                    ['resource' => $child]
+                    [
+                        'resource' => $child,
+                        'open' => false
+                    ]
                 ) ?>
             <? endforeach ?>
         </section>
