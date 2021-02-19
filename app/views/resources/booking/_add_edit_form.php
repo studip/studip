@@ -42,11 +42,11 @@
                 <label>
                     <?= _('Uhrzeit (von - bis)') ?>
                     <div class="hgroup">
-                        <input type="text" name="begin_time" class="has-time-picker"
+                        <input type="text" name="begin_time" class="has-time-picker size-s"
                                value="<?= htmlReady($begin->format('H:i')) ?>"
                                pattern="([0-9]|[0-1][0-9]|2[0-3]):[0-5][0-9]"
                                id="BookingStartTimeInput">
-                        <input type="text" name="end_time" class="has-time-picker"
+                        <input type="text" name="end_time" class="has-time-picker size-s"
                                value="<?= htmlReady($end->format('H:i')) ?>"
                                pattern="([0-9]|[0-1][0-9]|2[0-3]):[0-5][0-9]"
                                id="BookingEndTimeInput">
@@ -114,7 +114,7 @@
                     <label>
                         <span id="RepetitionEndLabel"><?= _('Ende der Wiederholung') ?></span>
                         <span id="BlockEndLabel"><?= _('Ende des Terminblocks') ?></span>
-                        <input id="RepetitionEndInput" type="text" name="repetition_end" class="has-date-picker"
+                        <input id="RepetitionEndInput" type="text" name="repetition_end" class="has-date-picker size-s"
                                value="<?= $repetition_end->format('d.m.Y') ?>">
                         <input id="HiddenRepetitionEndInput" type="hidden" name="repetition_end"
                                value="<?= $repetition_end->format('d.m.Y') ?>" disabled>

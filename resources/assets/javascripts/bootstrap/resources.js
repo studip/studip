@@ -451,27 +451,16 @@ STUDIP.ready(function() {
         function () {
             var ds = $(this).val().split('.');
             var d = new Date(ds[1]+'/'+ds[0]+'/'+ds[2]);
+            var day_numer = (d.getDay() || 7);
+
             if ($(this).attr('id') == 'BookingStartDateInput') {
                 $("#begin_date-weekdays span").addClass('invisible');
-                $("#begin_date-weekdays #"+d.getDay()).removeClass('invisible');
+                $("#begin_date-weekdays #" + day_numer).removeClass('invisible');
 
-                if ($(this).val() > $("#RepetitionEndInput").val()
-                    && $("input[name='selected_end']:checked").val() != 'semester_course_end') {
-                    $("#RepetitionEndInput").prop('defaultValue',$(this).val());
-                    $("#RepetitionEndInput").val($(this).val()).trigger('change');
-                }
-
-                if (!$('#multiday').prop('checked')
-                    || $("#BookingEndDateInput").prop('defaultValue') ==
-                    $("#BookingEndDateInput").val())
-                {
-                    $("#BookingEndDateInput").prop('defaultValue',$(this).val());
-                    $("#BookingEndDateInput").val($(this).val()).trigger('change');
-                }
                 updateRepeatEndSemesterByTimestamp(Math.floor(d / 1000));
             } else if ($(this).attr('id') == 'BookingEndDateInput') {
                 $("#end_date-weekdays span").addClass('invisible');
-                $("#end_date-weekdays #"+d.getDay()).removeClass('invisible');
+                $("#end_date-weekdays #" + day_numer).removeClass('invisible');
             }
         }
     );
@@ -579,25 +568,25 @@ STUDIP.ready(function() {
         function () {
             var new_val = $(this).val();
             switch ($(this).attr('name')) {
-            case 'permissions[begin_date][]':
-            case 'permissions[end_date][]':
-            case 'bulk_begin_date':
-            case 'bulk_end_date':
-                var now = new Date();
-                if (new_val.split('.').length == 1) {
-                    $(this).val(new_val + '.' + ((now.getMonth()+1) < 10 ? '0' + (now.getMonth()+1) : (now.getMonth()+1)) + '.' + now.getFullYear());
-                } else if (new_val.split('.').length == 2) {
-                    $(this).val(new_val + '.' + now.getFullYear());
-                }
-                break;
-            case 'permissions[begin_time][]':
-            case 'permissions[end_time][]':
-            case 'bulk_begin_time':
-            case 'bulk_end_time':
-                if (new_val.split(':').length == 1) {
-                    $(this).val(new_val + ':00');
-                }
-                break;
+                case 'permissions[begin_date][]':
+                case 'permissions[end_date][]':
+                case 'bulk_begin_date':
+                case 'bulk_end_date':
+                    var now = new Date();
+                    if (new_val.split('.').length === 1) {
+                        $(this).val(new_val + '.' + ((now.getMonth()+1) < 10 ? '0' + (now.getMonth()+1) : (now.getMonth()+1)) + '.' + now.getFullYear());
+                    } else if (new_val.split('.').length === 2) {
+                        $(this).val(new_val + '.' + now.getFullYear());
+                    }
+                    break;
+                case 'permissions[begin_time][]':
+                case 'permissions[end_time][]':
+                case 'bulk_begin_time':
+                case 'bulk_end_time':
+                    if (new_val.split(':').length === 1) {
+                        $(this).val(new_val + ':00');
+                    }
+                    break;
             }
         }
     );
@@ -639,13 +628,11 @@ STUDIP.ready(function() {
                 dataType: 'json',
                 success: function(data) {
                     if (data) {
-                        for (element in data.collection) {
-                            var sem = data.collection[element];
-                            if (timestamp >= sem.begin && timestamp < sem.end) {
-                                semester = sem;
-                                break;
+                        Object.values(data.collection).forEach(item => {
+                            if (timestamp >= item.begin && timestamp < item.end) {
+                                semester = item;
                             }
-                        };
+                        });
                         if (semester) {
                             $("#semester_course_name").text(semester.title);
                             $(".semester-time-option").prop('disabled', false);
