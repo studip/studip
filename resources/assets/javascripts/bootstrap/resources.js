@@ -1,11 +1,11 @@
-import { $gettext } from '../lib/gettext.js';
+import {$gettext} from '../lib/gettext.js';
 
-STUDIP.ready(function() {
+STUDIP.ready(function () {
     //Event definitions:
     jQuery(document).on(
         'change',
         '.room-search-form .criteria-selector',
-        function(event) {
+        function (event) {
             STUDIP.Resources.addSearchCriteriaToRoomSearchWidget(
                 event.target
             );
@@ -15,7 +15,7 @@ STUDIP.ready(function() {
     jQuery(document).on(
         'click',
         '.room-search-form .criteria-list .remove-icon',
-        function(event) {
+        function (event) {
             STUDIP.Resources.removeSearchCriteriaFromRoomSearchWidget(
                 event.target
             );
@@ -27,7 +27,7 @@ STUDIP.ready(function() {
     jQuery(document).on(
         'click',
         '.resource-permission-list-action.apply-to-all-action',
-        function(event) {
+        function (event) {
             var table = jQuery('#RoomGroupCommonPermissionTable')[0];
             var tr = jQuery(event.target).parents('tr')[0];
             if (!tr) {
@@ -42,7 +42,7 @@ STUDIP.ready(function() {
 
     //Temporary permission list: Set the hidden checkbox to the state of the
     //proxy checkbox:
-    jQuery(document).on('change', '#resource-temporary-permissions input.bulk-proxy', function() {
+    jQuery(document).on('change', '#resource-temporary-permissions input.bulk-proxy', function () {
         var bulk_checked = jQuery(this).prop('checked');
         var bulk_indeterminate = jQuery(this).prop('indeterminate');
         if (bulk_checked || bulk_indeterminate) {
@@ -258,7 +258,7 @@ STUDIP.ready(function() {
     jQuery(document).on(
         'dragend',
         '.dragged-colour',
-        function(event) {
+        function (event) {
             jQuery(event.target).css(
                 {
                     'top': '0px',
@@ -270,7 +270,7 @@ STUDIP.ready(function() {
 
     jQuery('.schedule_entry').droppable(
         {
-            drop: function(event, ui_element) {
+            drop: function (event, ui_element) {
                 event.preventDefault();
 
                 var booking_plan_entry = event.target;
@@ -393,10 +393,10 @@ STUDIP.ready(function() {
             }
 
             //Activate the correct booking_type 2 elements:
-            jQuery("*[data-booking_type='2']").each(function(){
+            jQuery("*[data-booking_type='2']").each(function () {
                 if (booking_type == '2') {
                     jQuery(this).show();
-                }else {
+                } else {
                     jQuery(this).hide();
                 }
             });
@@ -406,7 +406,7 @@ STUDIP.ready(function() {
     jQuery(document).on(
         'change',
         'input[name="booking_style"]',
-        function() {
+        function () {
             STUDIP.Resources.moveTimeOptions($(this).val());
         }
     );
@@ -416,11 +416,11 @@ STUDIP.ready(function() {
         '.semester-time-option',
         function () {
             if (~$(this).attr('name').indexOf("begin")) {
-                $("#BookingStartDateInput").prop( "disabled", true );
+                $("#BookingStartDateInput").prop("disabled", true);
             } else {
-                $("#RepetitionEndInput").prop( "disabled", true );
+                $("#RepetitionEndInput").prop("disabled", true);
                 $("#RepetitionEndInput").val($("input[name='semester_course_end_date']").val());
-                $("#HiddenRepetitionEndInput").prop( "disabled", false );
+                $("#HiddenRepetitionEndInput").prop("disabled", false);
                 $("#HiddenRepetitionEndInput").val($("input[name='semester_course_end_date']").val());
             }
             $(".semester-selector").parent().show();
@@ -438,8 +438,7 @@ STUDIP.ready(function() {
                 $("#HiddenRepetitionEndInput").prop("disabled", true);
             }
             if (!$("#BookingStartDateInput").prop("disabled")
-                && !$("#RepetitionEndInput").prop("disabled"))
-            {
+                && !$("#RepetitionEndInput").prop("disabled")) {
                 $(".semester-selector").parent().hide();
             }
         }
@@ -450,13 +449,25 @@ STUDIP.ready(function() {
         '.manual-time-fields input[type="text"]',
         function () {
             var ds = $(this).val().split('.');
-            var d = new Date(ds[1]+'/'+ds[0]+'/'+ds[2]);
+            var d = new Date(ds[1] + '/' + ds[0] + '/' + ds[2]);
             var day_numer = (d.getDay() || 7);
 
             if ($(this).attr('id') == 'BookingStartDateInput') {
                 $("#begin_date-weekdays span").addClass('invisible');
                 $("#begin_date-weekdays #" + day_numer).removeClass('invisible');
 
+                if ($(this).val() > $("#RepetitionEndInput").val()
+                    && $("input[name='selected_end']:checked").val() != 'semester_course_end') {
+                    $("#RepetitionEndInput").prop('defaultValue', $(this).val());
+                    $("#RepetitionEndInput").val($(this).val()).trigger('change');
+                }
+
+                if (!$('#multiday').prop('checked')
+                    || $("#BookingEndDateInput").prop('defaultValue') ==
+                    $("#BookingEndDateInput").val()) {
+                    $("#BookingEndDateInput").prop('defaultValue', $(this).val());
+                    $("#BookingEndDateInput").val($(this).val()).trigger('change');
+                }
                 updateRepeatEndSemesterByTimestamp(Math.floor(d / 1000));
             } else if ($(this).attr('id') == 'BookingEndDateInput') {
                 $("#end_date-weekdays span").addClass('invisible');
@@ -477,12 +488,12 @@ STUDIP.ready(function() {
 
     $(".new-clipboard-form #add-clipboard-button").removeAttr("disabled");
     var selected_clipboard_id = $('.clipboard-selector').val();
-    $(".clipboard-area[data-id='"+selected_clipboard_id+"']").removeClass('invisible');
-    if ($(".clipboard-area[data-id='"+selected_clipboard_id+"']").find(".empty-clipboard-message").hasClass("invisible")) {
+    $(".clipboard-area[data-id='" + selected_clipboard_id + "']").removeClass('invisible');
+    if ($(".clipboard-area[data-id='" + selected_clipboard_id + "']").find(".empty-clipboard-message").hasClass("invisible")) {
         $("#clipboard-group-container").find('.widget-links').removeClass('invisible');
     }
 
-    $('.special-item-switch').each(function(){
+    $('.special-item-switch').each(function () {
         if ($(this).prop('checked') == false) {
             $(this).next('label').children(':not(span)').hide();
         }
@@ -518,7 +529,7 @@ STUDIP.ready(function() {
                 iso_date_string = picked;
             }
             if (iso_date_string) {
-                $('*[data-resources-fullcalendar="1"]').each(function() {
+                $('*[data-resources-fullcalendar="1"]').each(function () {
                     $(this)[0].calendar.gotoDate(iso_date_string);
                 });
                 updateDateURL();
@@ -532,8 +543,8 @@ STUDIP.ready(function() {
         function () {
             var selected_option = $(this).find('option:selected');
             if (selected_option) {
-                var begin = new Date(parseInt(selected_option.attr('data-begin')+'000'));
-                var end = new Date(parseInt(selected_option.attr('data-end')+'000'));
+                var begin = new Date(parseInt(selected_option.attr('data-begin') + '000'));
+                var end = new Date(parseInt(selected_option.attr('data-end') + '000'));
                 $('input[name="special__time_range_begin_date"]').val(
                     $.datepicker.formatDate('dd.mm.yy', begin)
                 );
@@ -555,8 +566,8 @@ STUDIP.ready(function() {
             } else if ($(this).hasClass('fc-timeGridDay-button')) {
                 updateViewURL('timeGridDay')
             } else if ($(this).hasClass('fc-today-button')
-                       || $(this).hasClass('fc-prev-button')
-                       || $(this).hasClass('fc-next-button')) {
+                || $(this).hasClass('fc-prev-button')
+                || $(this).hasClass('fc-next-button')) {
                 updateDateURL();
             }
         }
@@ -574,7 +585,7 @@ STUDIP.ready(function() {
                 case 'bulk_end_date':
                     var now = new Date();
                     if (new_val.split('.').length === 1) {
-                        $(this).val(new_val + '.' + ((now.getMonth()+1) < 10 ? '0' + (now.getMonth()+1) : (now.getMonth()+1)) + '.' + now.getFullYear());
+                        $(this).val(new_val + '.' + ((now.getMonth() + 1) < 10 ? '0' + (now.getMonth() + 1) : (now.getMonth() + 1)) + '.' + now.getFullYear());
                     } else if (new_val.split('.').length === 2) {
                         $(this).val(new_val + '.' + now.getFullYear());
                     }
@@ -583,9 +594,13 @@ STUDIP.ready(function() {
                 case 'permissions[end_time][]':
                 case 'bulk_begin_time':
                 case 'bulk_end_time':
-                    if (new_val.split(':').length === 1) {
-                        $(this).val(new_val + ':00');
-                    }
+                    if (new_val.split(':').length = $("#begin_date-weekdays #" + d.getDay()).removeClass('invisible');
+                ==
+                    1
+                )
+                {
+                    $(this).val(new_val + ':00');
+                }
                     break;
             }
         }
@@ -597,21 +612,21 @@ STUDIP.ready(function() {
         function () {
             var targets = '';
             switch ($(this).attr('name')) {
-            case 'bulk_begin_date':
-                targets = 'permissions[begin_date][]';
-                break;
-            case 'bulk_begin_time':
-                targets = 'permissions[begin_time][]';
-                break;
-            case 'bulk_end_date':
-                targets = 'permissions[end_date][]';
-                break;
-            case 'bulk_end_time':
-                targets = 'permissions[end_time][]';
-                break;
+                case 'bulk_begin_date':
+                    targets = 'permissions[begin_date][]';
+                    break;
+                case 'bulk_begin_time':
+                    targets = 'permissions[begin_time][]';
+                    break;
+                case 'bulk_end_date':
+                    targets = 'permissions[end_date][]';
+                    break;
+                case 'bulk_end_time':
+                    targets = 'permissions[end_time][]';
+                    break;
             }
             var new_val = $(this).val();
-            $('.resource-temporary-permission-row input[name="'+targets+'"]').each(function(){
+            $('.resource-temporary-permission-row input[name="' + targets + '"]').each(function () {
                 if ($(this).parents('tr').find('input[name="selected_permission_ids[]"]').prop('checked')) {
                     $(this).val(new_val);
                 }
@@ -626,7 +641,7 @@ STUDIP.ready(function() {
             {
                 method: 'get',
                 dataType: 'json',
-                success: function(data) {
+                success: function (data) {
                     if (data) {
                         Object.values(data.collection).forEach(item => {
                             if (timestamp >= item.begin && timestamp < item.end) {
@@ -683,12 +698,12 @@ STUDIP.ready(function() {
 
     function updateDateURL() {
         var changedmoment;
-        $('*[data-resources-fullcalendar="1"]').each(function() {
+        $('*[data-resources-fullcalendar="1"]').each(function () {
             changedmoment = $(this)[0].calendar.getDate();
         });
         if (changedmoment) {
             //Get the timestamp:
-            var timestamp = changedmoment.getTime()/1000;
+            var timestamp = changedmoment.getTime() / 1000;
 
             //Set the URL parameter for the "export bookings" action
             //in the sidebar:
@@ -772,8 +787,8 @@ STUDIP.ready(function() {
                     STUDIP.Fullcalendar.createSemesterCalendarFromNode(
                         node,
                         {
-                            loading: function(isLoading) {
-                                if(!isLoading) {
+                            loading: function (isLoading) {
+                                if (!isLoading) {
                                     var h = jQuery('section.studip-fullcalendar-header');
                                     if (h) {
                                         jQuery(h).removeClass('invisible');
@@ -791,8 +806,8 @@ STUDIP.ready(function() {
                             resize_event:
                             STUDIP.Resources.resizeEventInRoomGroupBookingPlan
                         },
-                        loading: function(isLoading) {
-                            if(!isLoading) {
+                        loading: function (isLoading) {
+                            if (!isLoading) {
                                 var h = jQuery('section.studip-fullcalendar-header');
                                 if (h) {
                                     jQuery(h).removeClass('invisible');
@@ -825,7 +840,7 @@ STUDIP.ready(function() {
                         var dom_element = info.el;
                         var view = info.view;
                         jQuery(dom_element).droppable({
-                            drop: function(event, ui_element) {
+                            drop: function (event, ui_element) {
                                 event.preventDefault();
 
                                 var booking_plan_entry = event.target;
@@ -887,10 +902,10 @@ STUDIP.ready(function() {
     $(document).on(
         'click',
         "button[name='bulk-book-requests']",
-        function(event) {
+        function (event) {
             STUDIP.Dialog.confirm(
                 $gettext('Wollen Sie die im Plan gezeigten Anfragen wirklich buchen?')
-            ).done(function() {
+            ).done(function () {
                 STUDIP.Resources.bookAllCalendarRequests();
             });
         }
@@ -900,7 +915,7 @@ STUDIP.ready(function() {
     $(document).on(
         'click',
         '.fc-request-event',
-        function() {
+        function () {
             var objectData = $(this).data();
             var eventData = {
                 id: objectData.eventId,
@@ -927,12 +942,12 @@ STUDIP.ready(function() {
                         existingRequestEvent.remove();
 
                         var remainingRequestEvents = 0;
-                        $('.fc-request-event').each(function(){
+                        $('.fc-request-event').each(function () {
                             if (calendar.getEventById($(this).data().eventId)) {
                                 remainingRequestEvents++;
                             }
                         });
-                        if(remainingRequestEvents < 1) {
+                        if (remainingRequestEvents < 1) {
                             $("button[name='bulk-book-requests']").prop('disabled', true);
                         }
                     } else {
@@ -940,13 +955,13 @@ STUDIP.ready(function() {
                         var overlap = false;
                         var checkStart = new Date(eventData.start);
                         var checkEnd = new Date(eventData.end);
-                        $(calendar.getEvents()).each(function(){
+                        $(calendar.getEvents()).each(function () {
                             // start-time in between any of the events
                             if ((checkStart >= this.start && checkStart < this.end)
-                            //end-time in between any of the events
-                            || (checkEnd > this.start && checkEnd <= this.end)
-                            //any of the events in between/on the start-time and end-time
-                            || (checkStart <= this.start && checkEnd >= this.end)) {
+                                //end-time in between any of the events
+                                || (checkEnd > this.start && checkEnd <= this.end)
+                                //any of the events in between/on the start-time and end-time
+                                || (checkStart <= this.start && checkEnd >= this.end)) {
                                 overlap = true
                             }
                         });
