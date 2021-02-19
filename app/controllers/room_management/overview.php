@@ -24,12 +24,8 @@
  * since the public_booking_plans action needs to be visible for
  * nobody users.
  */
-class RoomManagement_OverviewController extends StudipController
+class RoomManagement_OverviewController extends AuthenticatedController
 {
-    protected $with_session = true;
-    protected $allow_nobody = false;
-
-
     public function before_filter(&$action, &$args)
     {
         if ($action == 'public_booking_plans') {
@@ -47,24 +43,13 @@ class RoomManagement_OverviewController extends StudipController
         }
 
         $this->user = User::findCurrent();
-        $this->user_is_global_resource_user = ResourceManager::userHasGlobalPermission(
-            $this->user,
-            'user'
-        );
+        $this->user_is_global_resource_user = ResourceManager::userHasGlobalPermission($this->user);
         $this->user_is_root = $GLOBALS['perm']->have_perm('root');
         $this->user_is_global_resource_admin = ResourceManager::userHasGlobalPermission(
             $this->user,
             'admin'
         ) || $this->user_is_root;
     }
-
-
-    protected function buildSidebar()
-    {
-        $sidebar = Sidebar::get();
-        return $sidebar;
-    }
-
 
     public function index_action()
     {
@@ -95,7 +80,8 @@ class RoomManagement_OverviewController extends StudipController
         );
 
         if (!$this->show_admin_actions) {
-            return $this->redirect($this->url_for('/rooms'));
+            $this->redirect($this->url_for('/rooms'));
+            return;
         }
 
         PageLayout::setTitle(_('Übersicht'));
@@ -104,11 +90,11 @@ class RoomManagement_OverviewController extends StudipController
             Navigation::activateItem('/resources/overview/index');
         }
 
-        $sidebar = $this->buildSidebar();
+        $sidebar = Sidebar::get();
 
         $room_search = new RoomSearch();
         $room_search->setAdditionalPropertyFormat('');
-        $search = new SearchWidget('dispatch.php/room_management/overview/index');
+        $search = new SearchWidget($this->indexURL());
         $search->addNeedle(
             _('Suche'),
             'tree_selected_resource',
@@ -117,7 +103,6 @@ class RoomManagement_OverviewController extends StudipController
             "function(room_id) {STUDIP.Dialog.fromURL(STUDIP.URLHelper.getURL('dispatch.php/resources/room/index/' + room_id));}"
         );
         $sidebar->addWidget($search);
-
 
         $tree_selected_resource = null;
         if ($this->user_is_global_resource_admin) {
@@ -159,7 +144,7 @@ class RoomManagement_OverviewController extends StudipController
                 if (ResourceManager::userHasGlobalPermission($this->current_user, 'admin')) {
                     //Global resource admins can see all room requests.
                     //Get the 10 latest requests:
-                    $this->room_requests = RoomRequest::findBySql(
+                    $room_requests = RoomRequest::findBySql(
                         "resource_requests.closed = '0'
                         ORDER BY chdate DESC
                         LIMIT 10",
@@ -169,7 +154,7 @@ class RoomManagement_OverviewController extends StudipController
                     //Users who aren't global resource admins see only the requests
                     //of the rooms where they have at least 'autor' permissions.
                     $rooms = RoomManager::getUserRooms(
-                        User::findCurrent(),
+                        $this->current_user,
                         'autor'
                     );
                     $room_ids = [];
@@ -177,7 +162,7 @@ class RoomManagement_OverviewController extends StudipController
                         $room_ids[] = $room->id;
                     }
 
-                    $this->room_requests = RoomRequest::findBySql(
+                    $room_requests = RoomRequest::findBySql(
                         "INNER JOIN resources
                         ON resource_requests.resource_id = resources.id
                         INNER JOIN resource_categories
@@ -196,10 +181,13 @@ class RoomManagement_OverviewController extends StudipController
                         ]
                     );
                 }
+                $this->room_requests = SimpleCollection::createFromArray($room_requests)
+                    ->filter(function($room_request) {
+                        return $room_request->getEndDate()->getTimestamp() > time();
+                    });
             }
         }
     }
-
 
     public function locations_action()
     {
@@ -220,9 +208,6 @@ class RoomManagement_OverviewController extends StudipController
             throw new AccessDeniedException();
         }
 
-        //build sidebar:
-        $sidebar = $this->buildSidebar();
-
         $actions = new ActionsWidget();
         $actions->addLink(
             _('Neuer Standort'),
@@ -230,7 +215,7 @@ class RoomManagement_OverviewController extends StudipController
             Icon::create('add'),
             ['data-dialog' => 'size=auto']
         );
-        $sidebar->addWidget($actions);
+        Sidebar::get()->addWidget($actions);
 
         $this->locations = Location::findAll();
 
@@ -239,7 +224,6 @@ class RoomManagement_OverviewController extends StudipController
         }
 
     }
-
 
     public function buildings_action()
     {
@@ -257,9 +241,6 @@ class RoomManagement_OverviewController extends StudipController
             throw new AccessDeniedException();
         }
 
-        //build sidebar:
-        $sidebar = $this->buildSidebar();
-
         $actions = new ActionsWidget();
         $actions->addLink(
             _('Neues Gebäude'),
@@ -269,7 +250,7 @@ class RoomManagement_OverviewController extends StudipController
             Icon::create('add'),
             ['data-dialog' => 'size=auto']
         );
-        $sidebar->addWidget($actions);
+        Sidebar::get()->addWidget($actions);
 
         $this->buildings = Building::findAll();
 
@@ -355,7 +336,7 @@ class RoomManagement_OverviewController extends StudipController
         }
 
         //build sidebar:
-        $sidebar = $this->buildSidebar();
+        $sidebar = Sidebar::get();
 
         if ($this->user_is_global_resource_admin) {
             $actions = new ActionsWidget();
@@ -373,7 +354,7 @@ class RoomManagement_OverviewController extends StudipController
         $clipboard = new RoomClipboardWidget();
         $sidebar->addWidget($clipboard);
 
-        $search = new SearchWidget($this->url_for(''));
+        $search = new SearchWidget($this->roomsURL());
         $search->setTitle(_('Raumsuche'));
         $search->addNeedle(_('Gebäude'), 'building_name', true);
         if ($this->user_is_global_resource_user) {

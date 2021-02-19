@@ -113,12 +113,10 @@
             </thead>
         <tbody>
             <? foreach ($room_requests as $room_request): ?>
-            <? if ($room_request->getEndDate()->getTimestamp() > time()) : ?>
                 <?= $this->render_partial(
                     'resources/_common/_request_tr',
                     ['request' => $room_request]
                 )?>
-            <? endif ?>
             <? endforeach ?>
         </tbody>
     </table>
