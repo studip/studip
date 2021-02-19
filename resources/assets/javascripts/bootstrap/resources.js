@@ -594,13 +594,9 @@ STUDIP.ready(function () {
                 case 'permissions[end_time][]':
                 case 'bulk_begin_time':
                 case 'bulk_end_time':
-                    if (new_val.split(':').length = $("#begin_date-weekdays #" + d.getDay()).removeClass('invisible');
-                ==
-                    1
-                )
-                {
-                    $(this).val(new_val + ':00');
-                }
+                    if (new_val.split(':').length === 1) {
+                        $(this).val(new_val + ':00');
+                    }
                     break;
             }
         }
