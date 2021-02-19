@@ -336,8 +336,10 @@ class Forum extends \RESTAPI\RouteMap
             $entry[$key] = $raw[$key];
         }
 
+        $hide_user = $entry['anonymous'] && $raw['user_id'] !== $GLOBALS['user']->id;
+
         $entry['subject']      = $raw['name'];
-        $entry['user']         = $this->urlf('/user/%s', [$raw['user_id']]);
+        $entry['user']         = $hide_user ? null : $this->urlf('/user/%s', [$raw['user_id']]);
         $entry['course']       = $this->urlf('/course/%s', [$raw['seminar_id']]);
         $entry['content_html'] = \ForumEntry::getContentAsHtml($raw['content']);
         $entry['content']      = \ForumEntry::killEdit($raw['content']);
