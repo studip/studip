@@ -1,8 +1,8 @@
-<? if ($show_info) : ?>
-    <form id="resolve-request" class="default" method="post"
-          data-dialog="size=big;<?= Request::submitted('reload-on-close') ? 'reload-on-close' : ''; ?>"
-          action="<?= $controller->link_for('resources/room_request/resolve/' . $request->id) ?>">
-        <?= CSRFProtection::tokenTag() ?>
+<form id="resolve-request" class="default" method="post"
+      data-dialog="size=big;<?= Request::submitted('reload-on-close') ? 'reload-on-close' : ''; ?>"
+      action="<?= $controller->link_for('resources/room_request/resolve/' . $request->id) ?>">
+    <?= CSRFProtection::tokenTag() ?>
+    <? if ($show_info) : ?>
         <article class="studip left-part">
             <header>
                 <h1>
@@ -298,69 +298,64 @@
                     </tbody>
                 </table>
             </article>
-            <div data-dialog-button>
-                <? if($prev_request) : ?>
-                    <?= \Studip\LinkButton::create(
-                        _('Vorherige Anfrage'),
-                        $controller->resolveURL($prev_request),
-                        ['data-dialog' => 'size=big']
-                    ) ?>
-                <? endif ?>
-                <? if ($show_force_resolve_button): ?>
-                    <?= \Studip\Button::create(_('Anfrage trotzdem auflösen'), 'force_resolve') ?>
-                <? else: ?>
-                    <?= \Studip\Button::create(_('Anfrage auflösen'), 'resolve') ?>
-                <? endif ?>
-                <? if ($request->isSimpleRequest()
-                    && !$request->isReadOnlyForUser($current_user)): ?>
-                    <?= \Studip\LinkButton::create(
-                        _('Anfrage bearbeiten'),
-                        URLHelper::getURL(
-                            'dispatch.php/resources/room_request/edit/' . $request->id
-                        ),
-                        ['data-dialog' => 'size=auto']
-                    ) ?>
-                <? elseif ($GLOBALS['perm']->have_studip_perm('tutor', $request->getRangeId())): ?>
-                    <?= \Studip\LinkButton::create(
-                        _('Anfrage bearbeiten'),
-                        URLHelper::getURL(
-                            'dispatch.php/course/room_requests/request_summary/' . $request->id,
-                            ['cid' => $request->getRangeId()]
-                        )
-                    ) ?>
-                <? endif ?>
-                <?= \Studip\LinkButton::create(
-                    _('Anfrage ablehnen'),
-                    URLHelper::getURL(
-                        'dispatch.php/resources/room_request/decline/' . $request->id
-                    ),
-                    ['data-dialog' => 'size=auto']
-                ) ?>
-                <?= \Studip\LinkButton::create(
-                    _('Anfrage löschen'),
-                    URLHelper::getURL(
-                        'dispatch.php/resources/room_request/decline/' . $request->id,
-                        ['delete' => '1']
-                    ),
-                    ['data-dialog' => 'size=auto']
-                ) ?>
-                <? if ($show_expand_metadates_button) : ?>
-                    <?= \Studip\Button::create(_('Terminserien expandieren'), 'expand_metadates') ?>
-                <? endif ?>
-                <? if (Request::submitted('expand_metadates')) : ?>
-                    <?= \Studip\Button::create(
-                        _('Terminserien zusammenklappen'),
-                        'fold_metadates'
-                    ) ?>
-                <? endif ?>
-                <? if($next_request) : ?>
-                    <?= \Studip\LinkButton::create(
-                        _('Nächste Anfrage'),
-                        $controller->resolveURL($next_request),
-                        ['data-dialog' => 'size=big']
-                    ) ?>
-                <? endif ?>
-            </div>
         <? endif ?>
-    </form>
-<? endif ?>
+    <? endif ?>
+    <footer data-dialog-button>
+        <? if ($prev_request) : ?>
+            <?= \Studip\LinkButton::create(
+                _('Vorherige Anfrage'),
+                $controller->resolveURL($prev_request),
+                ['data-dialog' => 'size=big']
+            ) ?>
+        <? endif ?>
+        <? if ($show_form) : ?>
+            <? if ($show_force_resolve_button): ?>
+                <?= \Studip\Button::create(_('Anfrage trotzdem auflösen'), 'force_resolve') ?>
+            <? else: ?>
+                <?= \Studip\Button::create(_('Anfrage auflösen'), 'resolve') ?>
+            <? endif ?>
+            <? if ($request->isSimpleRequest()
+                && !$request->isReadOnlyForUser($current_user)): ?>
+                <?= \Studip\LinkButton::create(
+                    _('Anfrage bearbeiten'),
+                    $controller->editURL($request->id),
+                    ['data-dialog' => 'size=auto']
+                ) ?>
+            <? elseif ($GLOBALS['perm']->have_studip_perm('tutor', $request->getRangeId())): ?>
+                <?= \Studip\LinkButton::create(
+                    _('Anfrage bearbeiten'),
+                    URLHelper::getURL(
+                        'dispatch.php/course/room_requests/request_summary/' . $request->id,
+                        ['cid' => $request->getRangeId()]
+                    )
+                ) ?>
+            <? endif ?>
+            <?= \Studip\LinkButton::create(
+                _('Anfrage ablehnen'),
+                $controller->declineURL($request->id),
+                ['data-dialog' => 'size=auto']
+            ) ?>
+            <?= \Studip\LinkButton::create(
+                _('Anfrage löschen'),
+                $controller->declineURL($request->id, ['delete' => '1']),
+                ['data-dialog' => 'size=auto']
+            ) ?>
+            <? if ($show_expand_metadates_button) : ?>
+                <?= \Studip\Button::create(_('Terminserien expandieren'), 'expand_metadates') ?>
+            <? endif ?>
+            <? if (Request::submitted('expand_metadates')) : ?>
+                <?= \Studip\Button::create(
+                    _('Terminserien zusammenklappen'),
+                    'fold_metadates'
+                ) ?>
+            <? endif ?>
+        <? endif ?>
+        <? if ($next_request) : ?>
+            <?= \Studip\LinkButton::create(
+                _('Nächste Anfrage'),
+                $controller->resolveURL($next_request),
+                ['data-dialog' => 'size=big']
+            ) ?>
+        <? endif ?>
+    </footer>
+</form>

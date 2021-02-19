@@ -1,10 +1,8 @@
-<? if ($show_form): ?>
-    <form class="default" method="post"
-          action="<?= URLHelper::getLink(
-                  'dispatch.php/resources/room_request/decline/' . $request->id
-                  ) ?>"
-          data-dialog>
-        <?= CSRFProtection::tokenTag() ?>
+<form class="default" method="post"
+      action="<?= $controller->link_for('resources/room_request/decline/' . $request->id) ?>"
+      data-dialog>
+    <?= CSRFProtection::tokenTag() ?>
+    <? if ($show_form): ?>
         <? if ($delete_mode): ?>
             <input type="hidden" name="delete" value="1">
             <?= MessageBox::warning(
@@ -22,20 +20,37 @@
                 [
                     'request' => $request
                 ]
-            )?>
+            ) ?>
         </fieldset>
-        <? if ($delete_mode): ?>
-            <div data-dialog-button>
-                <?= \Studip\Button::create(_('Löschen'), 'confirm') ?>
-            </div>
-        <? else: ?>
+        <? if (!$delete_mode): ?>
             <fieldset>
                 <legend><?= _('Kommentar zur Ablehnung der Anfrage') ?></legend>
                 <textarea name="reply_comment"><?= $reply_comment ?></textarea>
             </fieldset>
-            <div data-dialog-button>
-                <?= \Studip\Button::create(_('Ablehnen'), 'confirm') ?>
-            </div>
         <? endif ?>
-    </form>
-<? endif ?>
+    <? endif ?>
+    <footer data-dialog-button>
+        <? if ($prev_request) : ?>
+            <?= \Studip\LinkButton::create(
+                _('Vorherige Anfrage'),
+                $controller->resolveURL($prev_request),
+                ['data-dialog' => 'size=big']
+            ) ?>
+        <? endif ?>
+        <?= \Studip\LinkButton::create(
+            _('Zurück'),
+            $controller->resolveURL($request->id),
+            ['data-dialog' => 'size=big']
+        ) ?>
+        <? if ($show_form) : ?>
+            <?= \Studip\Button::create($delete_mode ? _('Löschen') : _('Ablehnen'), 'confirm') ?>
+        <? endif ?>
+        <? if ($next_request) : ?>
+            <?= \Studip\LinkButton::create(
+                _('Nächste Anfrage'),
+                $controller->resolveURL($next_request),
+                ['data-dialog' => 'size=big']
+            ) ?>
+        <? endif ?>
+    </footer>
+</form>

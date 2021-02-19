@@ -27,21 +27,19 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         $this->current_user = User::findCurrent();
 
-        if (in_array($action, ['overview','planning', 'export_list', 'resolve'])) {
+        if (in_array($action, ['overview','planning', 'export_list', 'resolve', 'decline'])) {
             $this->current_user = User::findCurrent();
             $user_is_global_resource_autor = ResourceManager::userHasGlobalPermission($this->current_user, 'autor');
             if (!RoomManager::userHasRooms($this->current_user, 'autor', true) && !$user_is_global_resource_autor) {
                 throw new AccessDeniedException(_('Ihre Berechtigungen an Räumen reichen nicht aus, um die Anfrageliste anzeigen zu können!'));
             }
 
-            $this->current_user = User::findCurrent();
-
             $this->available_rooms = RoomManager::getUserRooms($this->current_user, 'autor', true);
             $this->selected_room_ids = [];
 
             $this->filter =& $_SESSION[__CLASS__]['filter'];
 
-            if($action === 'resolve') {
+            if(in_array($action, ['resolve', 'decline'])) {
                 $this->filter['get_only_request_ids'] = true;
                 $this->filter['filter_request_id'] = $args[0];
             } else {
@@ -176,7 +174,9 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
     }
 
-
+    /**
+     * @return array
+     */
     protected function getFilteredRoomRequests()
     {
         $sql = "resource_requests.closed < '1' AND (resource_id IN ( :room_ids) ";
@@ -1120,11 +1120,10 @@ class Resources_RoomRequestController extends AuthenticatedController
             )
         );
 
-        $current_user = User::findCurrent();
         $user_may_delete_request = ResourceManager::userHasGlobalPermission(
-            $current_user,
+            $this->current_user,
             'autor'
-        ) || $this->request->user_id == $current_user->id;
+        ) || $this->request->user_id == $this->current_user->id;
 
         if (!$user_may_delete_request) {
             throw new AccessDeniedException();
@@ -1295,7 +1294,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             }
             if ($this->request->getProperty('seats') > 0) {
                 $this->room_underload[$selected_room->id] =
-                    round((intval($selected_room->seats) / intval($this->request->getProperty('seats'))) * 100);
+                    round(((int)$selected_room->seats / (int)$this->request->getProperty('seats')) * 100);
             }
             $amount_of_dates = count(reset($this->room_availability));
             foreach ($this->room_availability[$selected_room->id] as $metadate_id => $metadate_availability) {
@@ -1419,8 +1418,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 );
             } elseif ($this->alternatives_selection == 'room_search') {
                 $room_id = Request::get('searched_room_id');
-                if (($this->request->resource_id != $room_id) &&
-                     !in_array($room_id, $previously_selected_room_ids)) {
+                if ($this->request->resource_id != $room_id && !in_array($room_id, $previously_selected_room_ids)) {
                     $room = Resource::find($room_id);
                     if ($room) {
                         $room = $room->getDerivedClassInstance();
@@ -1484,7 +1482,7 @@ class Resources_RoomRequestController extends AuthenticatedController
 
             if ($this->request->getProperty('seats') > 0) {
                 $this->room_underload[$room->id] =
-                    round((intval($room->seats) / intval($this->request->getProperty('seats'))) * 100);
+                    round(((int)$room->seats / (int)$this->request->getProperty('seats')) * 100);
             }
         }
 
@@ -1507,7 +1505,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 $this->request->store();
             }
 
-            if ((count($this->selected_rooms) < $this->visible_dates) && !$force_resolve) {
+            if (count($this->selected_rooms) < $this->visible_dates && !$force_resolve) {
                 PageLayout::postWarning(
                     _('Es wurden nicht für alle Termine der Anfrage Räume ausgewählt! Soll die Anfrage wirklich aufgelöst werden?')
                 );
@@ -1711,12 +1709,16 @@ class Resources_RoomRequestController extends AuthenticatedController
             return;
         }
         $this->delete_mode = Request::get('delete');
-
-        $user = User::findCurrent();
-
+        $request_ids = $this->getFilteredRoomRequests();
+        if($request_ids) {
+            $this->next_request = array_shift($request_ids);
+        }
+        if($request_ids) {
+            $this->prev_request = array_shift($request_ids);
+        }
         if ($this->request->resource) {
             $user_has_permission = $this->request->resource->userHasPermission(
-                $user,
+                $this->current_user,
                 'tutor'
             );
             if ($this->delete_mode) {
@@ -1736,7 +1738,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             }
         } else {
             $user_has_permission = ResourceManager::userHasGlobalPermission(
-                $user,
+                $this->current_user,
                 'tutor'
             );
             if ($this->delete_mode) {
@@ -1772,7 +1774,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 $this->reply_comment = Request::get('reply_comment');
                 $this->request->reply_comment = $this->reply_comment;
                 $this->request->closed = '3';
-                $this->request->last_modified_by = $user->id;
+                $this->request->last_modified_by = $this->current_user->id;
                 if ($this->request->isDirty()) {
                     if ($this->request->store()) {
                         $this->show_form = false;
@@ -1981,20 +1983,14 @@ class Resources_RoomRequestController extends AuthenticatedController
                 ];
             }
         }
-
-        $csv_data = array_merge($table_head, $table_body);
-
-        $csv_string = array_to_csv($csv_data);
         $file_name = sprintf(
             _('Raumanfragen-%s') . '.csv',
             date('Y-m-d')
         );
-        header(
-            'Content-Disposition: attachment; '
-          . encode_header_parameter('filename', $file_name)
+        $this->render_csv(
+            array_merge($table_head, $table_body),
+            FileManager::cleanFileName($file_name)
         );
-        $this->set_content_type('text/csv; charset=UTF-8');
-        $this->render_text($csv_string);
     }
 
     public function rerequest_booking_action($booking_id)
@@ -2241,7 +2237,6 @@ class Resources_RoomRequestController extends AuthenticatedController
             return;
         }
 
-
         if ($errors) {
             //Delete all bookings that have been made:
             foreach ($bookings as $booking) {
@@ -2294,10 +2289,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             $filter_reset_widget = new ActionsWidget();
             $filter_reset_widget->addLink(
                 _('Filter zurücksetzen'),
-                $this->url_for(
-                    'resources/room_request/overview',
-                    ['reset_filter' => '1']
-                ),
+                $this->overviewURL(['reset_filter' => '1']),
                 Icon::create('filter+decline')
             );
             $sidebar->addWidget($filter_reset_widget);
@@ -2322,7 +2314,7 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         $list = new SelectWidget(
             _('Veranstaltungstypfilter'),
-            $this->url_for(),
+            $this->planningURL(),
             'course_type'
         );
         $list->addElement(
@@ -2363,7 +2355,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
         $sidebar->addWidget($list, 'filter-course-type');
 
-        $widget = new SelectWidget(_('Räume'), $this->url_for(), 'room_id');
+        $widget = new SelectWidget(_('Räume'), $this->planningURL(), 'room_id');
         $widget->addElement(
             new SelectElement(
                 '',
@@ -2386,40 +2378,32 @@ class Resources_RoomRequestController extends AuthenticatedController
         $widget->addCheckbox(
             _('Nur markierte Anfragen'),
             $this->filter['marked'] == 1,
-            $this->url_for('', (
-                $this->filter['marked'] != '1'
-                ? ['marked' => '1']
-                : []
-            ))
+            $this->planningURL($this->filter['marked'] != '1' ? ['marked' => '1'] : [])
         );
         $widget->addCheckbox(
             _('Nur unmarkierte Anfragen'),
             $this->filter['marked'] == 0,
-            $this->url_for('', (
-                $this->filter['marked'] != '0'
-                ? ['marked' => '0']
-                : []
-            ))
+            $this->planningURL($this->filter['marked'] != '0' ? ['marked' => '0'] : [])
         );
         $widget->addCheckbox(
             _('Nur regelmäßige Termine'),
             $this->filter['periodic_requests'],
-            $this->url_for('', ['toggle_periodic_requests' => 1])
+            $this->planningURL(['toggle_periodic_requests' => 1])
         );
         $widget->addCheckbox(
             _('Nur unregelmäßige Termine'),
             $this->filter['aperiodic_requests'],
-            $this->url_for('', ['toggle_aperiodic_requests' => 1])
+            $this->planningURL(['toggle_aperiodic_requests' => 1])
         );
         $widget->addCheckbox(
             _('Nur mit Raumangabe'),
             $this->filter['specific_requests'],
-            $this->url_for('', ['toggle_specific_requests' => 1])
+            $this->planningURL(['toggle_specific_requests' => 1])
         );
         $widget->addCheckbox(
             _('Eigene Anfragen anzeigen'),
             $this->filter['own_requests'],
-            $this->url_for('', ['toggle_own_requests' => 1])
+            $this->planningURL(['toggle_own_requests' => 1])
         );
         $sidebar->addWidget($widget);
 
