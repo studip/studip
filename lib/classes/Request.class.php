@@ -96,6 +96,12 @@ class Request implements ArrayAccess, IteratorAggregate
      */
     public static function protocol()
     {
+
+	// If a reverse proxy tells us the required protocol we should respect that
+	if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+		return $_SERVER['HTTP_X_FORWARDED_PROTO'];
+	}
+
         return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
             ? 'https'
             : 'http';
