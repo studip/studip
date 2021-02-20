@@ -11,7 +11,7 @@ class Resources
 
         var is_temporary_table = false;
         var table_id = jQuery(table_element).attr('id');
-        if (table_id == 'TemporaryPermissionList') {
+        if (table_id === 'TemporaryPermissionList') {
             is_temporary_table = true;
         }
 
@@ -22,7 +22,7 @@ class Resources
         }
         var temp_perms_row = false;
 
-        if (jQuery(template_row).attr('data-temp-perms') == '1') {
+        if (jQuery(template_row).attr('data-temp-perms') === '1') {
             temp_perms_row = true;
         }
 
@@ -30,7 +30,7 @@ class Resources
             //Check if the user is already in the list:
             var trs = jQuery(table_element).find('tr');
             for (var tr of trs) {
-                if (jQuery(tr).data('user_id') == user_id) {
+                if (jQuery(tr).data('user_id') === user_id) {
                     //We have found a table entry for the user specified by
                     //user_id. Nothing to do here.
                     return;
@@ -70,7 +70,7 @@ class Resources
                 begin.setHours(begin.getHours() + 1);
 
                 var begin_month = (begin.getMonth() + 1).toString();
-                if (begin_month.length == 1) {
+                if (begin_month.length === 1) {
                     begin_month = '0' + begin_month;
                 }
                 var begin_date = begin.getDate()
@@ -87,7 +87,7 @@ class Resources
                 var end = new Date();
                 end.setDate(end.getDate() + 14);
                 var end_month = (end.getMonth() + 1).toString();
-                if (end_month.length == 1) {
+                if (end_month.length === 1) {
                     end_month = '0' + end_month;
                 }
 
@@ -229,17 +229,17 @@ class Resources
         var option_range_search = jQuery(selected_option).attr('data-range-search');
 
         var template = undefined;
-        if (option_type == 'bool') {
+        if (option_type === 'bool') {
             template = jQuery(select_node).parent().parent().find(
                 '.criteria-list .template[data-template-type="'
                     + option_type
                     + '"]'
             )[0];
-        } else if (option_type == 'select') {
+        } else if (option_type === 'select') {
             template = jQuery(select_node).parent().parent().find(
                 '.criteria-list .template[data-template-type="select"]'
             )[0];
-        } else if (option_type == 'date') {
+        } else if (option_type === 'date') {
             if (option_range_search) {
                 template = jQuery(select_node).parent().parent().find(
                     '.criteria-list .template[data-template-type="date_range"]'
@@ -249,7 +249,7 @@ class Resources
                     '.criteria-list .template[data-template-type="date"]'
                 )[0];
             }
-        } else if (option_type == 'num') {
+        } else if (option_type === 'num') {
             if (option_range_search) {
                 template = jQuery(select_node).parent().parent().find(
                     '.criteria-list .template[data-template-type="range"]'
@@ -278,10 +278,10 @@ class Resources
         var new_criteria_text_field = jQuery(new_criteria).find('span')[0];
         jQuery(new_criteria_text_field).text(option_title);
 
-        if (option_type == 'bool') {
+        if (option_type === 'bool') {
             var new_criteria_input = jQuery(new_criteria).find('input');
             jQuery(new_criteria_input).attr('name', option_value);
-        } else if (option_type == 'select') {
+        } else if (option_type === 'select') {
             var new_criteria_select = jQuery(new_criteria).find('select')[0];
             jQuery(new_criteria_select).attr('name', option_value);
             //Build the option elements from the data-options field:
@@ -297,7 +297,7 @@ class Resources
                     + '</option>';
             }
             jQuery(new_criteria_select).html(options_html);
-        } else if (option_type == 'date') {
+        } else if (option_type === 'date') {
             var time_inputs = jQuery(new_criteria).find('input[data-time="yes"]');
             var date_inputs = jQuery(new_criteria).find('input[type="date"]');
 
@@ -350,7 +350,7 @@ class Resources
             }
 
         } else {
-            if (option_type == 'num' && option_range_search) {
+            if (option_type === 'num' && option_range_search) {
                 var new_criteria_inputs = jQuery(new_criteria).find('input');
                 jQuery(new_criteria_inputs[0]).attr('name', option_value);
                 var min_input = new_criteria_inputs[1];
@@ -364,7 +364,7 @@ class Resources
             } else {
                 var new_criteria_input = jQuery(new_criteria).find('input')[0];
                 jQuery(new_criteria_input).attr('name', option_value);
-                if (option_type == 'num') {
+                if (option_type === 'num') {
                     jQuery(new_criteria_input).attr('type', 'number');
                 } else {
                     jQuery(new_criteria_input).attr('type', 'text');
@@ -500,12 +500,12 @@ class Resources
         STUDIP.api.POST(
             `resources/booking_interval/${interval_id}/toggle_takes_place`
         ).done(function(data) {
-            if (data['takes_place'] == undefined) {
+            if (data['takes_place'] === undefined) {
                 //Something went wrong: do nothing.
                 return;
             }
 
-            if (data['takes_place'] == '1') {
+            if (data['takes_place'] === '1') {
                 //Switch on the icons and text for the "takes place"
                 //status and switch off the other ones:
                 jQuery(li).find('.takes-place-revive').addClass('invisible');
@@ -620,7 +620,7 @@ class Resources
 
     static moveTimeOptions(bookingtype_val)
     {
-        if(bookingtype_val == 'single') {
+        if(bookingtype_val === 'single') {
             $(".time-option-container").hide();
             $(".block-booking-item").hide();
             $(".repetition-booking-item").hide();
@@ -628,10 +628,9 @@ class Resources
             $(".semester-selector").parent().hide();
             $(".manual-time-option").prop('checked', true).trigger('change');
         } else {
-            //$(".time-option-container").show();
             var time_options = $(".time-option-container");
-            $(".time-option-container").remove();
-            if(bookingtype_val == 'block') {
+            $(".time-option-container").detach();
+            if(bookingtype_val === 'block') {
                 $("#BlockBookingFieldset").prepend(time_options);
 
                 $("#BlockEndLabel").show();
@@ -715,19 +714,17 @@ class Resources
                 dataType: 'json',
                 success: function(data) {
                     if (data) {
-                        var element;
                         var start = activeRange.start;
                         var end = activeRange.end;
-                        for (element in data.collection) {
-                            var sem = data.collection[element];
-                            if (end.getTime()/1000 >= sem.seminars_begin && start.getTime()/1000 < sem.seminars_end) {
-                                semester = sem;
-                                break;
+                        Object.values(data.collection).forEach(item => {
+                            if (end.getTime()/1000 >= item.seminars_begin && start.getTime()/1000 < item.seminars_end) {
+                                semester = item;
                             }
-                        };
+                        });
                         if (semester) {
-                            $(".booking-plan-header").data('semester-begin', semester.seminars_begin);
-                            $(".booking-plan-header").data('semester-end', semester.seminars_end);
+                            $(".booking-plan-header")
+                                .data('semester-begin', semester.seminars_begin)
+                                .data('semester-end', semester.seminars_end);
                             $("#booking-plan-header-semrow").show();
                             $("#booking-plan-header-semname").text(semester.title);
                             var sem_week = Math.floor((end.getTime()/1000 - semester.seminars_begin) / 604800)+1;
@@ -737,8 +734,9 @@ class Resources
                                 semester = STUDIP.Resources.updateBookingPlanSemesterByView(activeRange, data.pagination.links.next);
                             } else {
                                 $("#booking-plan-header-semrow").hide();
-                                $(".booking-plan-header").data('semester-begin', '');
-                                $(".booking-plan-header").data('semester-end', '');
+                                $(".booking-plan-header")
+                                    .data('semester-begin', '')
+                                    .data('semester-end', '');
                             }
                         }
                     }
@@ -860,7 +858,7 @@ class BookingPlan
         var results = window.location.href.match(
                 /dispatch.php\/resources\/resource\/booking_plan\/([a-z0-9]{1,32})/
         );
-        if (results.length == 0) {
+        if (results.length === 0) {
             //No resource-ID found.
             jQuery(new_entry).remove();
             return;
