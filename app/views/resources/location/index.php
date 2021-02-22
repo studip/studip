@@ -21,7 +21,7 @@
             </div>
             <?= \Studip\LinkButton::createEdit(
                 _('Bearbeiten'),
-                $location->getURLForAction('edit'),
+                $location->getActionURL('edit'),
                 [
                     'data-dialog' => 'size=auto'
                 ]

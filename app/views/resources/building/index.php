@@ -42,7 +42,7 @@
             <? endif ?>
             <?= \Studip\LinkButton::createEdit(
                 _('Bearbeiten'),
-                $building->getURLForAction('edit'),
+                $building->getActionURL('edit'),
                 [
                     'data-dialog' => 'size=auto'
                 ]
