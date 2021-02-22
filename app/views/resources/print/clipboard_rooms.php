@@ -1,6 +1,6 @@
 <? if (!$print_schedules): ?>
     <form class="default" method="post"
-          action="<?= URLHelper::getLink('dispatch.php/resources/print/clipboard_rooms') ?>">
+          action="<?= $controller->link_for('resources/print/clipboard_rooms') ?>">
         <?= CSRFProtection::tokenTag() ?>
         <? if ($clipboard_selected): ?>
             <input type="hidden" name="clipboard_id" value="<?= htmlReady($selected_clipboard_id) ?>">
@@ -99,7 +99,15 @@
                     ) ?>
                 </div>
             <? else :?>
-                <?= MessageBox::info(_('Sie müssen zunächst Raumgruppen erstellen'))?>
+                <?= MessageBox::info(
+                    _('Sie müssen zunächst Raumgruppen erstellen'),
+                    [
+                        sprintf(
+                            _('Klicken %shier%s, um ein Raumgruppen anzulegen.'),
+                            '<a href="' . URLHelper::getLink('dispatch.php/room_management/overview/rooms') . '">',
+                            '</a>')
+                    ]
+                )?>
             <? endif ?>
         <? endif ?>
     </form>
