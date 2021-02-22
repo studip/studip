@@ -202,12 +202,26 @@
                 <table id="resolve-dates-table" class="default">
                     <thead>
                     <tr>
-                        <th><?= _('Raum') ?></th>
-                        <th><?= _('Alle Termine') ?></th>
+                        <th class="nowrap"><?= _('Raum') ?></th>
+                        <th class="nowrap"><?= _('Alle Termine') ?></th>
                         <? foreach ($request_time_intervals as $metadate_id => $data): ?>
                             <? if ($data['metadate'] instanceof SeminarCycleDate) : ?>
-                                <? $date_string = $data['metadate']->toString('short') ?>
-                                <th><?= htmlReady($date_string) ?></th>
+                                <?php
+                                $date_string1 = getWeekday($data['metadate']->weekday);
+                                $date_string2 = sprintf(
+                                    '%s:%s - %s:%s',
+                                    $data['metadate']->start_hour,
+                                    $data['metadate']->start_minute,
+                                    $data['metadate']->end_hour,
+                                    $data['metadate']->end_minute
+                                );
+                                ?>
+
+                                <th class="nowrap">
+                                    <?= htmlReady($date_string1) ?>
+                                    <br>
+                                    <?= htmlReady($date_string2) ?>
+                                </th>
                             <? else : ?>
                                 <? foreach ($data['intervals'] as $time_interval) : ?>
                                     <?
@@ -222,7 +236,11 @@
                                         date('H:i', $time_interval['end'])
                                     );
                                     ?>
-                                    <th><?= htmlReady($date_string1) ?><br><?= htmlReady($date_string2) ?></th>
+                                    <th class="nowrap">
+                                        <?= htmlReady($date_string1) ?>
+                                        <br>
+                                        <?= htmlReady($date_string2) ?>
+                                    </th>
                                 <? endforeach ?>
                             <? endif ?>
                         <? endforeach ?>

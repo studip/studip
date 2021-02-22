@@ -1,5 +1,5 @@
 <tr class="nohover">
-    <td>
+    <td class="nowrap">
         <? if ($room->bookingPlanVisibleForUser($current_user)): ?>
             <?
             $booking_plan_params = [];
