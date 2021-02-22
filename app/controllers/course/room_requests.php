@@ -879,7 +879,7 @@ class Course_RoomRequestsController extends AuthenticatedController
                 } else {
                     $this->request->reply_recipients = 'requester';
                 }
-                $this->request->preparation_time = $this->preparation_time * 60;
+                $this->request->preparation_time = (int)$this->preparation_time * 60;
 
                 $this->request->course_id = $this->course_id;
                 $this->request->last_modified_by = $this->current_user->id;

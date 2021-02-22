@@ -1,8 +1,5 @@
 <tr class="nohover">
     <td>
-        <?
-        $room_tooltip_text = $room->room_type;
-        ?>
         <? if ($room->bookingPlanVisibleForUser($current_user)): ?>
             <?
             $booking_plan_params = [];
@@ -22,7 +19,7 @@
         <? else: ?>
             <?= htmlReady($room->name) ?>
         <? endif ?>
-        <?= tooltipIcon($room_tooltip_text) ?>
+        <?= tooltipIcon($room->room_type) ?>
         – <?= htmlReady(sprintf('%d Sitzplätze', $room->seats)) ?>
         <? if ($underload) : ?>
             [<?= htmlReady($underload) ?>%]
@@ -33,17 +30,11 @@
                name="all_in_room" value="<?= htmlReady($room->id) ?>"
                <?= $room_availability_share[$room->id] <= 0.0  ? 'disabled="disabled"' : '' ?>>
         <? if ($room_availability_share[$room->id] >= 1.0) : ?>
-            <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(
-                16, ['class' => 'text-bottom']
-            ) ?>
+            <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(['class' => 'text-bottom']) ?>
         <? elseif ($room_availability_share[$room->id] <= 0.0) : ?>
-            <?= Icon::create('decline-circle', Icon::ROLE_STATUS_RED)->asImg(
-                16, ['class' => 'text-bottom']
-            ) ?>
+            <?= Icon::create('decline-circle', Icon::ROLE_STATUS_RED)->asImg(['class' => 'text-bottom']) ?>
         <? else : ?>
-            <?= Icon::create('exclaim-circle', Icon::ROLE_STATUS_YELLOW)->asImg(
-                16, ['class' => 'text-bottom']
-            ) ?>
+            <?= Icon::create('exclaim-circle', Icon::ROLE_STATUS_YELLOW)->asImg(['class' => 'text-bottom']) ?>
         <? endif ?>
     </td>
     <? foreach ($time_intervals as $metadate_id => $data): ?>
@@ -61,16 +52,12 @@
                            <?= $selected_dates[$range_index] == $room->id
                              ? 'checked="checked"'
                              : ''?>>
-                    <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(
-                        16, ['class' => 'text-bottom']
-                    ) ?>
+                    <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(['class' => 'text-bottom']) ?>
                 <? else: ?>
                     <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
                            value="1" disabled="disabled"
                            class="text-bottom">
-                    <?= Icon::create('decline-circle', Icon::ROLE_STATUS_RED)->asImg(
-                        16, ['class' => 'text-bottom']
-                    ) ?>
+                    <?= Icon::create('decline-circle', Icon::ROLE_STATUS_RED)->asImg(['class' => 'text-bottom']) ?>
                 <? endif ?>
             </td>
         <? else : ?>
@@ -89,16 +76,12 @@
                                <?= $selected_dates[$range_index] == $room->id
                                  ? 'checked="checked"'
                                  : ''?>>
-                        <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(
-                            16, ['class' => 'text-bottom']
-                        ) ?>
+                        <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(['class' => 'text-bottom']) ?>
                     <? else: ?>
                         <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
                                value="1" disabled="disabled"
                                class="text-bottom">
-                        <?= Icon::create('decline-circle', Icon::ROLE_STATUS_RED)->asImg(
-                            16, ['class' => 'text-bottom']
-                        ) ?>
+                        <?= Icon::create('decline-circle', Icon::ROLE_STATUS_RED)->asImg(['class' => 'text-bottom']) ?>
                     <? endif ?>
                 </td>
                 <? $i++ ?>

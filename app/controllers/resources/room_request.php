@@ -1271,7 +1271,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     //There is at least one metadate in the grouped set
                     //of time intervals. The expand button must be shown.
                     $this->show_expand_metadates_button = true;
-                    $this->visible_dates += count($data['intervals']);
+                    $this->visible_dates++;
                     $metadate_availability = $this->getRoomAvailability(
                         $selected_room,
                         $data['intervals']
