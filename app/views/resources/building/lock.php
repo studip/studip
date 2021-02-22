@@ -1,6 +1,6 @@
 <? if ($show_form): ?>
 <form class="default" method="post" data-dialog="reload-on-close"
-    action="<?= URLHelper::getLink('dispatch.php/resources/building/lock/' . $building->id) ?>">
+    action="<?= $controller->link_for('resources/building/lock/' . $building->id) ?>">
     <fieldset>
         <legend><?= _('Bitte Sperrzeiten auswählen') ?></legend>
         <label>

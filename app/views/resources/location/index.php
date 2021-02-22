@@ -9,15 +9,24 @@
             </section>
         </section>
     <? endif ?>
-    
-    <? if (Request::isDialog() && ($geo_coordinates_object instanceof ResourceProperty)) : ?>
-        <div data-dialog-button>
-            <?= \Studip\LinkButton::create(
-                _('Zum Lageplan'),
-                ResourceManager::getMapUrlForResourcePosition($geo_coordinates_object),
-                ['target' => '_blank']
+
+    <? if (Request::isDialog()) : ?>
+        <? if ($geo_coordinates_object instanceof ResourceProperty) : ?>
+            <div data-dialog-button>
+                <?= \Studip\LinkButton::create(
+                    _('Zum Lageplan'),
+                    ResourceManager::getMapUrlForResourcePosition($geo_coordinates_object),
+                    ['target' => '_blank']
+                ) ?>
+            </div>
+            <?= \Studip\LinkButton::createEdit(
+                _('Bearbeiten'),
+                $location->getURLForAction('edit'),
+                [
+                    'data-dialog' => 'size=auto'
+                ]
             ) ?>
-        </div>
+        <? endif ?>
     <? endif ?>
     <? $property_groups = $location->getGroupedProperties($other_properties) ?>
     <? if (count($property_groups)): ?>
@@ -28,7 +37,7 @@
             ]
         ) ?>
     <? endif ?>
-    
+
     <? $resource_folder = $location->getFolder(); ?>
     <? if ($resource_folder && $resource_folder->getFiles()): ?>
         <section class="contentbox">
@@ -42,7 +51,7 @@
                         <?= $this->render_partial(
                             'files/_fileref_tr',
                             [
-                                'file'           => $file,
+                                'file' => $file,
                                 'current_folder' => $resource_folder,
                                 'last_visitdate' => time()
                             ]
@@ -52,7 +61,7 @@
             </table>
         </section>
     <? endif ?>
-    
+
     <? if (count($location->children)): ?>
         <section class="contentbox">
             <header>
@@ -62,17 +71,17 @@
                 <ul class="list-unstyled">
                     <? foreach ($location->findChildrenByClassName('Building') as $child): ?>
                         <li>
-                            <a href="<?= $controller->url_for('resources/building/index/' . $child->id); ?>"
-                               <?= (Request::isDialog()) ? 'data-dialog' : ''; ?>>
+                            <a href="<?= $controller->link_for('resources/building/index/' . $child->id); ?>"
+                                <?= (Request::isDialog()) ? 'data-dialog' : ''; ?>>
                                 <?= $child->getIcon('clickable')->asImg(
                                     ['class' => 'text-bottom']
                                 ) ?>
                                 <?= htmlReady($child->name); ?>
                             </a>
                         </li>
-                    <? endforeach; ?>
+                    <? endforeach ?>
                 </ul>
             </section>
         </section>
-    <? endif; ?>
+    <? endif ?>
 <? endif ?>

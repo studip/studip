@@ -1,17 +1,10 @@
 <? if ($show_form): ?>
     <? $url = ($mode == 'add')
-        ? URLHelper::getLink(
-            'dispatch.php/resources/building/add',
-            [
-                'category_id' => $category_id
-            ]
-        )
-        : URLHelper::getLink(
-            'dispatch.php/resources/building/edit/' . $building->id
-        ) ?>
+        ? $controller->link_for('resources/building/add', ['category_id' => $category_id])
+        : $controller->link_for('resources/building/edit/' . $building->id) ?>
     <form class="default" method="post" action="<?= $url ?>"
           data-dialog="reload-on-close">
-        
+
         <?= CSRFProtection::tokenTag() ?>
         <fieldset>
             <legend><?= _('Grunddaten') ?></legend>
@@ -29,13 +22,8 @@
                     <option value=""><?= _('Bitte wählen') ?></option>
                     <? foreach ($possible_parents as $resource): ?>
                         <option value="<?= htmlReady($resource->id) ?>"
-                                <?= $parent_id == $resource->id
-                                    ? 'selected="selected"'
-                                    : '' ?>>
-                            <?= htmlReady('/' . implode(
-                                    '/',
-                                    ResourceManager::getHierarchyNames($resource)
-                                )) ?>
+                            <?= $parent_id == $resource->id ? 'selected="selected"' : '' ?>>
+                            <?= htmlReady('/' . implode('/', ResourceManager::getHierarchyNames($resource))) ?>
                         </option>
                     <? endforeach ?>
                 </select>
@@ -51,8 +39,7 @@
             <? if ($GLOBALS['perm']->have_perm('root')): ?>
                 <label>
                     <?= _('Sortierposition') ?>
-                    <input type="text" name="sort_position"
-                           value="<?= htmlReady($sort_position) ?>">
+                    <input type="text" name="sort_position" value="<?= htmlReady($sort_position) ?>">
                 </label>
             <? endif ?>
             <?= $this->render_partial(

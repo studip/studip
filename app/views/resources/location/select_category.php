@@ -1,5 +1,5 @@
 <? if ($categories) : ?>
-<form method="get" action="<?= $controller->url_for('resources/location/add' . $room_id) ?>" class="default"
+<form method="get" action="<?= $controller->link_for('resources/location/add' . $room_id) ?>" class="default"
       data-dialog="size=auto">
     <label>
         <?= _('Standortkategorie') ?>

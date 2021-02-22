@@ -3,7 +3,7 @@
         ? $controller->url_for('resources/room/add')
         : $controller->url_for('resources/room/edit/' . $room->id) ?>"
           data-dialog="reload-on-close">
-        
+
         <?= CSRFProtection::tokenTag() ?>
         <input type="hidden" name="category_id" value="<?= htmlReady($category_id) ?>">
         <fieldset>
@@ -13,9 +13,7 @@
                 <select name="parent_id">
                     <? foreach ($building_hierarchies as $building_id => $hierarchy): ?>
                         <option value="<?= htmlReady($building_id) ?>"
-                                <?= ($building_id == $parent_id)
-                                    ? 'selected="selected"'
-                                    : '' ?>>
+                            <?= ($building_id == $parent_id) ? 'selected="selected"' : '' ?>>
                             <?= htmlReady($hierarchy) ?>
                         </option>
                     <? endforeach ?>

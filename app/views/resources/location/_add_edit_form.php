@@ -1,9 +1,9 @@
 <? if ($show_form): ?>
     <form class="default" method="post" action="<?= ($mode == 'add')
-        ? URLHelper::getLink('dispatch.php/resources/location/add', ['category_id' => $category_id])
-        : URLHelper::getLink('dispatch.php/resources/location/edit/' . $location->id) ?>"
+        ? $controller->link_for('resources/location/add', ['category_id' => $category_id])
+        : $controller->link_for('resources/location/edit/' . $location->id) ?>"
           data-dialog="reload-on-close">
-        
+
         <?= CSRFProtection::tokenTag() ?>
         <fieldset>
             <legend><?= _('Grunddaten') ?></legend>
