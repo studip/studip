@@ -1224,10 +1224,11 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
         $this->reply_comment = $this->request->reply_comment;
 
-        $this->expand_metadates = Request::submitted('expand_metadates');
+        $this->expand_metadates = Request::submitted('expand_metadates') || Request::option('force_expand_metadates');
         $this->show_expand_metadates_button = false;
 
         $this->request_time_intervals = [];
+
         if ($this->expand_metadates) {
             //Get all single dates directly, ordered by date.
             $this->request_time_intervals = [
@@ -1270,7 +1271,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     //There is at least one metadate in the grouped set
                     //of time intervals. The expand button must be shown.
                     $this->show_expand_metadates_button = true;
-                    $this->visible_dates++;
+                    $this->visible_dates += count($data['intervals']);
                     $metadate_availability = $this->getRoomAvailability(
                         $selected_room,
                         $data['intervals']
@@ -1495,8 +1496,7 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         if ($resolve) {
             CSRFProtection::verifyUnsafeRequest();
-
-            $this->selected_rooms = Request::getArray('selected_rooms');
+            $this->selected_rooms = array_filter(Request::getArray('selected_rooms'));
             $this->notification_settings = Request::get('notification_settings');
             $this->reply_comment = Request::get('reply_comment');
 
