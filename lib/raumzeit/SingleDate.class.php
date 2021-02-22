@@ -416,7 +416,7 @@ class SingleDate
                 strftime('%d.%m.%Y', $this->date),
                 _('ganztägig'));
         } else {
-            return sprintf('%s , %s - %s',strftime('%a', $this->date),
+            return sprintf('%s., %s - %s',strftime('%a', $this->date),
                 strftime('%d.%m.%Y %H:%M', $this->date),
                 strftime('%H:%M', $this->end_time));
         }
