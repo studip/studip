@@ -2,6 +2,7 @@ table.default {
     tr.has-subcourses {
         border-bottom: 1px solid $dark-gray-color-75;
     }
+
     tr.subcourses {
 
         background-color: $dark-gray-color-5;
@@ -10,4 +11,15 @@ table.default {
             padding-left: 20px;
         }
     }
+}
+
+
+.missing_course {
+    .content {
+        font-weight: bold;
+    }
+    border: 2px solid $red;
+    display: inline-block;
+    padding: 5px;
+    margin: 5px 0;
 }

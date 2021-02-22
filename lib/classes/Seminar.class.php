@@ -264,13 +264,10 @@ class Seminar
         if (!empty($termine['ex_termin'])) {
             foreach ($termine['ex_termin'] as $ex_termin_id) {
                 $ex_termin = new SingleDate($ex_termin_id);
-
-                $missing_date  = '<div style="border:1px solid black; background:#FFFFDD; display: inline-block">';
-                $missing_date .= sprintf(_("Der Termin am %s findet nicht statt."),
-                    DateFormatter::formatDateAndRoom($ex_termin_id, $return_mode));
-
-                $missing_date .= '<br>' . _("Kommentar"). ': '.htmlReady($ex_termin->getComment());
-                $missing_date .= '</div>';
+                $template = $GLOBALS['template_factory']->open('dates/missing_date.php');
+                $template->formatted_date = DateFormatter::formatDateAndRoom($ex_termin_id, $return_mode);
+                $template->ex_termin = $ex_termin;
+                $missing_date = $template->render();
 
                 if (!empty($termine['termin'])) {
                     $termin = new SingleDate($termine['termin'][0]);
