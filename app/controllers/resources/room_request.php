@@ -1224,7 +1224,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
         $this->reply_comment = $this->request->reply_comment;
 
-        $this->expand_metadates = Request::submitted('expand_metadates') || Request::option('force_expand_metadates');
+        $this->expand_metadates = (Request::submitted('expand_metadates') || Request::option('force_expand_metadates')) && !Request::submitted('fold_metadates');
         $this->show_expand_metadates_button = false;
 
         $this->request_time_intervals = [];
