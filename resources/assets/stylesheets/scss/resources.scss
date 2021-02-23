@@ -28,34 +28,13 @@
     }
 }
 
-
 .resource-picture {
     height: 10em;
     width: 10em;
 }
 
 
-.small-resource-picture {
-    height: 16px;
-    width: 16px;
-}
-
-
-/* resource category overview table */
-
-table.resource-categories {
-    col.icon {
-        width: 20px;
-    }
-
-    td.properties ul {
-        padding-left: 1em;
-    }
-}
-
-
-/* rseource category selection */
-
+/* reseource category selection */
 .resource-category-select-icon-label > .resource-category-select-radio {
     visibility: hidden;
     position: absolute;
@@ -67,7 +46,7 @@ table.resource-categories {
 
 ul.resource-tree {
     list-style-type: none;
-    padding-left: 0px;
+    padding-left: 0;
 
     & > li {
         padding-left: 18px;
@@ -269,7 +248,7 @@ ul.resource-tree {
 .create-booking-form {
     .fieldset-row {
         &.inner-row {
-            padding-top: 0ex;
+            padding-top: 0;
             display: flow-root;
         }
 
@@ -349,12 +328,10 @@ ul.resource-tree {
     }
 }
 
-
 .dragged-colour {
     width: 10%;
     height: 10%;
 }
-
 
 @media screen {
     section.room-schedule {
@@ -400,7 +377,7 @@ article.room-list-item {
 
     section > ul.property-list {
         list-style: none;
-        padding-left: 0em;
+        padding-left: 0;
         flex-grow: 1;
     }
 }
@@ -454,7 +431,7 @@ article.room-list-item {
 
         article.assign-dates, div[data-dialog-button] {
             header {
-                margin: 0px;
+                margin: 0;
             }
 
             table {
@@ -470,7 +447,7 @@ article.room-list-item {
             }
 
             width: 100%;
-            padding: 0px;
+            padding: 0;
         }
 
         article {
@@ -489,7 +466,7 @@ article.room-list-item {
             }
 
             section {
-                padding-top: 0px;
+                padding-top: 0;
             }
         }
 
@@ -520,4 +497,3 @@ article.room-list-item {
         padding-bottom: 10px;
     }
 }
-
