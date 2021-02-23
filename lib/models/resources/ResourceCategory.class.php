@@ -791,16 +791,21 @@ class ResourceCategory extends SimpleORMap
         }
     }
 
-    public function getIconUrl()
+    /**
+     * Get the icon of a category
+     * @param string $role
+     * @return Icon
+     */
+    public function getIcon($role = Icon::ROLE_INFO)
     {
         if ($this->iconnr == 0) {
             //No special icon
-            return Icon::create('resources', Icon::ROLE_INFO)->asImagePath();
+            return Icon::create('resources', $role);
         } elseif ($this->iconnr == 1) {
-            return Icon::create('home', Icon::ROLE_INFO)->asImagePath();
+            return Icon::create('home', $role);
         } else {
             //No known icon
-            return Icon::create('resources', Icon::ROLE_INFO)->asImagePath();
+            return Icon::create('resources', $role);
         }
     }
 }

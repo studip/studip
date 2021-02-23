@@ -170,7 +170,7 @@ class ResourceCategoryTest extends \Codeception\Test\Unit
         );
     }
 
-    public function testGetIconUrl()
+    public function testGetIco()
     {
         $resource_cat = new ResourceCategory();
         $resource_cat->name = 'Test Category';
@@ -179,8 +179,8 @@ class ResourceCategoryTest extends \Codeception\Test\Unit
         $resource_cat->store();
 
         $this->assertEquals(
-            Icon::create('home', 'info')->asImagePath(),
-            $resource_cat->getIconUrl()
+            (string)Icon::create('home', 'info'),
+            (string)$resource_cat->getIcon()
         );
     }
 }
