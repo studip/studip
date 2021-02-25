@@ -43,8 +43,8 @@ class FileRefsContentShow extends NonJsonApiController
         $contentType = $fileRef->mime_type ?: get_mime_type($fileName);
 
         // check if linked file is obtainable
-        if ('proxy' == $fileRef->file->url_access_type) {
-            $linkData = \FileManager::fetchURLMetadata($fileRef->file->url);
+        if ('proxy' == $fileRef->file['access_type']) {
+            $linkData = \FileManager::fetchURLMetadata($fileRef->file['url']);
             if (200 != $linkData['response_code']) {
                 throw new InternalServerError(
                     _('Diese Datei wird von einem externen Server geladen und ist dort momentan nicht erreichbar!')
