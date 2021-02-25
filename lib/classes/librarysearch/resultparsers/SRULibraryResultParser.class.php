@@ -33,6 +33,11 @@ class SRULibraryResultParser implements LibraryResultParser
         $dom->loadXML($data);
 
         $record_schema = $dom->getElementsByTagName('recordSchema')[0];
+        if (!$record_schema) {
+            //The recordSchema element is missing.
+            //We cannot continue.
+            return [];
+        }
         if (strpos($record_schema->textContent, 'marcxml') !== false) {
             $parser = new MarcxmlLibraryResultParser();
             $result_set = [];
@@ -42,6 +47,10 @@ class SRULibraryResultParser implements LibraryResultParser
             }
             if ($collection_nodes->length > 0) {
                 foreach ($collection_nodes as $collection) {
+                    if ($collection instanceof \DOMText) {
+                        //Nothing we can do with text nodes.
+                        continue;
+                    }
                     foreach ($collection->getElementsByTagName('record') as $record) {
                         $result_set[] = $parser->readResultNode($record);
                     }
