@@ -355,7 +355,7 @@ class Search_StudiengaengeController extends MVVController
                     );
                 }
                 // get link without registered parameters
-                $dl_link = URLHelper::getURL("dispatch.php/shared/download/modulhandbuch/pdf/{$this->active_sem->id}/{$version_id}/{$language}/big", null, true);
+                $dl_link = URLHelper::getURL("dispatch.php/shared/download/modulhandbuch/pdf/{$this->active_sem->id}/{$this->cur_version_id}/{$language}/big", null, true);
                 $widget->addLink(
                     $title,
                     $dl_link,
