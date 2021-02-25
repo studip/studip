@@ -36,9 +36,15 @@ class SRULibraryResultParser implements LibraryResultParser
         if (strpos($record_schema->textContent, 'marcxml') !== false) {
             $parser = new MarcxmlLibraryResultParser();
             $result_set = [];
-            foreach ($dom->getElementsByTagName('collection') as $collection) {
-                foreach ($collection->getElementsByTagName('record') as $record) {
-                    $result_set[] = $parser->readResultNode($record);
+            $collection_nodes = $dom->getElementsByTagName('collection');
+            if ($collection_nodes->length < 1) {
+                $collection_nodes = $dom->getElementsByTagName('records');
+            }
+            if ($collection_nodes->length > 0) {
+                foreach ($collection_nodes as $collection) {
+                    foreach ($collection->getElementsByTagName('record') as $record) {
+                        $result_set[] = $parser->readResultNode($record);
+                    }
                 }
             }
             return $result_set;
