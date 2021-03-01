@@ -475,7 +475,17 @@ class PageLayout
      */
     public static function setBodyElementId($id)
     {
-        self::$body_element_id = preg_replace('/[^\w-]/', '_', $id);
+        self::$body_element_id = preg_replace('/[^\w-]+/', '_', $id);
+    }
+
+    /**
+     * Returns whether an id for the body element has been set.
+     *
+     * @return bool
+     */
+    public static function hasBodyElementId()
+    {
+        return self::$body_element_id !== false;
     }
 
     /**

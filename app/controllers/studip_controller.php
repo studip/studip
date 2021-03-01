@@ -101,30 +101,11 @@ abstract class StudipController extends Trails_Controller
      */
     public function perform($unconsumed_path)
     {
-        // Extract action from unconsumed path segment
-        list($action) = $this->extract_action_and_args($unconsumed_path);
-
-        // Extract decamelized controller name from class name
-        $controller = preg_replace('/Controller$/', '', get_class($this));
-        $controller = Trails_Inflector::underscore($controller);
-
-        // Build main parts of the body element id
-        $body_id_parts = explode('/', $controller);
-        $body_id_parts[] = $action;
-
-        // If the controller is from a plugin, Inject plugin identifier
-        // and name of plugin
-        if (basename($this->dispatcher->trails_uri, '.php') === 'plugins') {
-            $plugin = basename($this->dispatcher->trails_root);
-            $plugin = Trails_Inflector::underscore($plugin);
-            array_unshift($body_id_parts, $plugin);
-
-            array_unshift($body_id_parts, 'plugin');
+        // Set body element id if it has not already been set
+        if (!PageLayout::hasBodyElementId()) {
+            $body_id = $this->getBodyElementIdForControllerAndAction($unconsumed_path);
+            PageLayout::setBodyElementId($body_id);
         }
-
-        // Create and set body element id
-        $body_id = implode('-', $body_id_parts);
-        PageLayout::setBodyElementId($body_id);
 
         return parent::perform($unconsumed_path);
     }
@@ -724,4 +705,28 @@ abstract class StudipController extends Trails_Controller
         return $dt && $dt->format($format) == date('H:i',strtotime($datetime));
     }
 
+    /**
+     * Creates the body element id for this controller a given action.
+     *
+     * @param string $unconsumed_path Unconsumed path to extract action from
+     * @return string
+     */
+    protected function getBodyElementIdForControllerAndAction($unconsumed_path)
+    {
+        // Extract action from unconsumed path segment
+        list($action) = $this->extract_action_and_args($unconsumed_path);
+
+        // Extract controller name from class name
+        $controller = preg_replace('/Controller$/', '', get_class($this));
+        $controller = strtosnakecase($controller);
+
+        // Build main parts of the body element id
+        $body_id_parts = explode('/', $controller);
+        $body_id_parts[] = $action;
+
+        // Create and set body element id
+        $body_id = implode('-', $body_id_parts);
+
+        return $body_id;
+    }
 }

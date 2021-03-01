@@ -15,4 +15,21 @@ class PluginController extends StudipController
         parent::__construct($dispatcher);
         $this->plugin = $this->dispatcher->current_plugin;
     }
+
+    /**
+     * Creates the body element id for this controller a given action.
+     *
+     * @param string $unconsumed_path Unconsumed path to extract action from
+     * @return string
+     */
+    protected function getBodyElementIdForControllerAndAction($unconsumed_path)
+    {
+        $body_id = implode('-', [
+            'plugin',
+            strtosnakecase(get_class($this->plugin)),
+            parent::getBodyElementIdForControllerAndAction($unconsumed_path),
+        ]);
+
+        return $body_id;
+    }
 }
