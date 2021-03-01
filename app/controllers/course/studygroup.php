@@ -726,18 +726,19 @@ class Course_StudygroupController extends AuthenticatedController
     /**
      * offers specific member functions wrt perms
      *
-     * @param string id of a studypgroup
-     * @param string action that has to be performed
-     * @param string status if applicable (e.g. tutor)
-     *
-     * @return void
+     * @param string $action that has to be performed
+     * @param string $from_status if applicable (e.g. tutor)
      */
-    public function edit_members_action($action, $status = '')
+    public function edit_members_action($action, $from_status)
     {
         global $perm;
-        $id = Context::getId();
 
+        $id = Context::getId();
         $user = Request::username('user');
+
+        if ($from_status === 'moderator') {
+            $from_status = 'dozent';
+        }
 
         if (!$perm->have_studip_perm('tutor', $id)) {
             $this->redirect(URLHelper::getURL('seminar_main.php', ['auswahl' => $id]));
@@ -800,27 +801,39 @@ class Course_StudygroupController extends AuthenticatedController
                     return $u !== $GLOBALS['user']->username;
                 });
 
+                $changed = 0;
                 foreach ($users as $u) {
-                    $status = $GLOBALS['perm']->have_studip_perm('tutor', $id, get_userid($u)) ? 'dozent' : 'tutor';
-                    StudygroupModel::promote_user($u, $id, $status);
+                    if ($from_status === $perm->get_studip_perm($id, get_userid($u))) {
+                        $status = $GLOBALS['perm']->have_studip_perm('tutor', $id, get_userid($u)) ? 'dozent' : 'tutor';
+                        StudygroupModel::promote_user($u, $id, $status);
+                        $changed += 1;
+                    }
                 }
-                PageLayout::postSuccess(sprintf(
-                    _('Der Status von %u Personen wurde geändert.'),
-                    count($users)
-                ));
+                if ($changed > 0) {
+                    PageLayout::postSuccess(sprintf(
+                        _('Der Status von %u Personen wurde geändert.'),
+                        $changed
+                    ));
+                }
             } elseif (Request::submitted('downgrade') && $GLOBALS['perm']->have_studip_perm('dozent', $id)) {
                 $users = array_filter($users, function ($u) {
                     return $u !== $GLOBALS['user']->username;
                 });
 
+                $changed = 0;
                 foreach ($users as $u) {
-                    $status = $GLOBALS['perm']->have_studip_perm('dozent', $id, get_userid($u)) ? 'tutor' : 'autor';
-                    StudygroupModel::promote_user($u, $id, $status);
+                    if ($from_status === $perm->get_studip_perm($id, get_userid($u))) {
+                        $status = $GLOBALS['perm']->have_studip_perm('dozent', $id, get_userid($u)) ? 'tutor' : 'autor';
+                        StudygroupModel::promote_user($u, $id, $status);
+                        $changed += 1;
+                    }
                 }
-                PageLayout::postSuccess(sprintf(
-                    _('Der Status von %u Personen wurde geändert.'),
-                    count($users)
-                ));
+                if ($changed > 0) {
+                    PageLayout::postSuccess(sprintf(
+                        _('Der Status von %u Personen wurde geändert.'),
+                        $changed
+                    ));
+                }
             } elseif (Request::submitted('remove')) {
                 $users = array_filter($users, function ($u) {
                     return $u !== $GLOBALS['user']->username;
@@ -836,19 +849,23 @@ class Course_StudygroupController extends AuthenticatedController
             }
         } elseif (!$perm->have_studip_perm('dozent', $id, get_userid($user)) || count(Course::find($id)->getMembersWithStatus('dozent')) > 1) {
             if ($action === 'promote' && $perm->have_studip_perm('dozent', $id)) {
-                $status = $perm->have_studip_perm('tutor', $id, get_userid($user)) ? "dozent" : "tutor";
-                StudygroupModel::promote_user($user, $id, $status);
-                PageLayout::postSuccess(sprintf(
-                    _('Der Status von %s wurde geändert.'),
-                    htmlReady(get_fullname_from_uname($user, 'full'))
-                ));
+                if ($from_status === $perm->get_studip_perm($id, get_userid($user))) {
+                    $status = $perm->have_studip_perm('tutor', $id, get_userid($user)) ? "dozent" : "tutor";
+                    StudygroupModel::promote_user($user, $id, $status);
+                    PageLayout::postSuccess(sprintf(
+                        _('Der Status von %s wurde geändert.'),
+                        htmlReady(get_fullname_from_uname($user, 'full'))
+                    ));
+                }
             } elseif ($action === "downgrade" && $perm->have_studip_perm('dozent', $id)) {
-                $status = $perm->have_studip_perm('dozent', $id, get_userid($user)) ? "tutor" : "autor";
-                StudygroupModel::promote_user($user, $id, $status);
-                PageLayout::postSuccess(sprintf(
-                    _('Der Status von %s wurde geändert.'),
-                    htmlReady(get_fullname_from_uname($user, 'full'))
-                ));
+                if ($from_status === $perm->get_studip_perm($id, get_userid($user))) {
+                    $status = $perm->have_studip_perm('dozent', $id, get_userid($user)) ? "tutor" : "autor";
+                    StudygroupModel::promote_user($user, $id, $status);
+                    PageLayout::postSuccess(sprintf(
+                        _('Der Status von %s wurde geändert.'),
+                        htmlReady(get_fullname_from_uname($user, 'full'))
+                    ));
+                }
             } elseif ($action === 'remove') {
                 PageLayout::postQuestion(
                     sprintf(

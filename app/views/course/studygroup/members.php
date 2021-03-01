@@ -6,7 +6,7 @@
         'sem_id'         => $sem_id,
         'members'        => $moderators,
         'moderator_list' => true,
-        'type'           => 'moderators',
+        'type'           => 'moderator',
     ]) ?>
 <? endif ?>
 
@@ -15,7 +15,7 @@
         'title'   => $sem_class['title_tutor_plural'] ?: _('Moderator/-innen'),
         'sem_id'  => $sem_id,
         'members' => $tutors,
-        'type'    => 'tutors',
+        'type'    => 'tutor',
     ]) ?>
 <? endif ?>
 
@@ -24,7 +24,7 @@
         'title'   => $sem_class['title_autor_plural'] ?: _('Mitglieder'),
         'sem_id'  => $sem_id,
         'members' => $autors,
-        'type'    => 'autors',
+        'type'    => 'autor',
     ]) ?>
 <? endif ?>
 

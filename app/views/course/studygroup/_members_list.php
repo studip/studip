@@ -1,5 +1,5 @@
 <? if ($GLOBALS['perm']->have_studip_perm('tutor', $sem_id)): ?>
-<form action="<?= $controller->edit_members('bulk') ?>" method="post">
+<form action="<?= $controller->edit_members('bulk', $type) ?>" method="post">
 <? endif; ?>
     <table class="default studygroupmemberlist sortable-table" id="studygroup-members-<?= $type ?>">
         <colgroup>
@@ -67,17 +67,17 @@
                     <?= Studip\Button::create(_('Nachricht schreiben'), 'mail', [
                         'data-dialog' => 'size=50%',
                     ]) ?>
-                <? if ($GLOBALS['perm']->have_studip_perm('dozent', $sem_id) && in_array($type, ['autors', 'tutors'])): ?>
+                <? if ($GLOBALS['perm']->have_studip_perm('dozent', $sem_id) && in_array($type, ['autor', 'tutor'])): ?>
                     <?= Studip\Button::create(_('Hochstufen'), 'promote', [
                         'data-confirm' => _('Wollen Sie die markierten Personen wirklich hochstufen?'),
                     ]) ?>
                 <? endif; ?>
-                <? if ($GLOBALS['perm']->have_studip_perm('dozent', $sem_id) && in_array($type, ['tutors', 'moderators'])): ?>
+                <? if ($GLOBALS['perm']->have_studip_perm('dozent', $sem_id) && in_array($type, ['tutor', 'moderator'])): ?>
                     <?= Studip\Button::create(_('Herunterstufen'), 'downgrade', [
                         'data-confirm' => _('Wollen Sie die markierten Personen wirklich herunterstufen?'),
                         ]) ?>
                 <? endif; ?>
-                <? if ($type !== 'moderators'): ?>
+                <? if ($type !== 'moderator'): ?>
                     <?= Studip\Button::create(_('Austragen'), 'remove', [
                         'data-confirm' => _('Wollen Sie die markierten Personen wirklich auf der Studiengruppe entfernen?'),
                     ]) ?>
