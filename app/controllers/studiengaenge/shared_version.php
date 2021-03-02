@@ -399,7 +399,7 @@ class SharedVersionController extends MVVController
             }
         }
         if ($abschnitt && !Request::submitted('delete')) {
-            $this->redirect($this->url_for('/details_abschnitt/ ' . $abschnitt->getId()));
+            $this->redirect($this->url_for('/details_abschnitt/' . $abschnitt->getId()));
         } else {
             $this->redirect($this->url_for('/abschnitte/' . $version_id));
         }
