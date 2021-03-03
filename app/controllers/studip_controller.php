@@ -718,7 +718,7 @@ abstract class StudipController extends Trails_Controller
 
         // Extract controller name from class name
         $controller = preg_replace('/Controller$/', '', get_class($this));
-        $controller = strtosnakecase($controller);
+        $controller = Trails_Inflector::underscore($controller);
 
         // Build main parts of the body element id
         $body_id_parts = explode('/', $controller);
