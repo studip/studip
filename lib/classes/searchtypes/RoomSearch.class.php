@@ -188,17 +188,18 @@ class RoomSearch extends ResourceSearch
                 }
                 $additional_text = implode(', ', $additional_values);
             }
+            $name = $room->name;
+            if($additional_text) {
+                $name .=  sprintf(
+                    $this->additional_property_format,
+                    $additional_text
+                );
+            }
             $results[] = [
                 $room->id,
-                (
-                    $room->name . ' ' . sprintf(
-                        $this->additional_property_format,
-                        $additional_text
-                    )
-                )
+                $name
             ];
         }
-
         return $results;
     }
 }
