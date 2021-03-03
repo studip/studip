@@ -158,9 +158,10 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             'class_name' => ConsultationBooking::class,
             'on_delete'  => 'delete',
         ];
-        $config['has_many']['module_assignments'] = [
-            'class_name'        => ModulUser::class,
-            'assoc_foreign_key' => 'user_id',
+        
+        $config['has_many']['mvv_assignments'] = [
+            'class_name'        => MvvContact::class,
+            'assoc_foreign_key' => 'contact_id',
             'on_delete'         => 'delete',
         ];
 
@@ -171,7 +172,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             'on_store'          => 'store',
             'order_by'          => 'ORDER BY name',
         ];
-
+        
         $config['additional_fields']['config']['get'] = function ($user) {
             return UserConfig::get($user->id);
         };
