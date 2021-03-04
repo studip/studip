@@ -509,4 +509,9 @@ class RolePersistence
         self::getUserRolesCache()->clear();
         self::getPluginRolesCache()->clear();
     }
+
+    public static function expireUserCache($user_id)
+    {
+        unset(self::getUserRolesCache()[$user_id]);
+    }
 }

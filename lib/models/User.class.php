@@ -158,7 +158,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             'class_name' => ConsultationBooking::class,
             'on_delete'  => 'delete',
         ];
-        
+
         $config['has_many']['mvv_assignments'] = [
             'class_name'        => MvvContact::class,
             'assoc_foreign_key' => 'contact_id',
@@ -172,12 +172,13 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             'on_store'          => 'store',
             'order_by'          => 'ORDER BY name',
         ];
-        
+
         $config['additional_fields']['config']['get'] = function ($user) {
             return UserConfig::get($user->id);
         };
 
         $config['registered_callbacks']['after_delete'][] = 'cbRemoveFeedback';
+        $config['registered_callbacks']['before_store'][] = 'cbClearCaches';
 
         $info = new UserInfo();
         $info_meta = $info->getTableMetadata();
@@ -1477,5 +1478,12 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
     {
         FeedbackElement::deleteBySQL('user_id = ?', [$this->id]);
         FeedbackEntry::deleteBySQL('user_id = ?', [$this->id]);
+    }
+
+    public function cbClearCaches()
+    {
+        if ($this->isFieldDirty('perms')) {
+            RolePersistence::expireUserCache($this->user_id);
+        }
     }
 }

@@ -73,10 +73,9 @@ else if (!Seminar_Register_Auth::validateSecret($secret, $user->id)) {
 
 // alles paletti, Status ändern
 else {
-    $query = "UPDATE auth_user_md5 SET perms = 'autor' WHERE user_id = ?";
-    $statement = DBManager::get()->prepare($query);
-    $statement->execute([$user->id]);
-    if ($statement->rowCount() == 0) {
+    $studip_user = User::findCurrent();
+    $studip_user->perms = 'autor';
+    if (!$studip_user->store()) {
         $error = _('Fehler! Bitte wenden Sie sich an den Systemadministrator.');
         $details = [$query];
         $message = MessageBox::error($error, $details);
