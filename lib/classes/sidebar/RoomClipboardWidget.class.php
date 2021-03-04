@@ -40,7 +40,7 @@ class RoomClipboardWidget extends ClipboardWidget
         if (ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {
             $this->addLink(
                 _('Berechtigungen für die gesamte Raumgruppe setzen'),
-                URLHelper::getURL('dispatch.php/resources/room_group/permissions'),
+                URLHelper::getURL('dispatch.php/resources/room_group/permissions/CLIPBOARD_ID'),
                 Icon::create('link-intern'),
                 ['class' => 'room-clipboard-group-action',
                  'data-show_in_dialog' => '1']
