@@ -1014,10 +1014,13 @@ class Course_MembersController extends AuthenticatedController
             Request::set('consider_contingent', $this->flash['consider_contingent']);
         }
 
+        $users = [];
         // create a usable array
-        $users = array_filter($this->flash['users'], function ($user) {
-                    return $user;
-                });
+        if($this->flash['users']) {
+            $users = array_filter($this->flash['users'], function ($user) {
+                return $user;
+            });
+        }
 
         if ($users) {
             $msgs = $this->members->insertAdmissionMember($users, $target_status, Request::get('consider_contingent'), $status == 'accepted');
