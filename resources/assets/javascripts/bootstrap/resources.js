@@ -91,64 +91,6 @@ STUDIP.ready(function () {
 
     jQuery(document).on(
         'click',
-        '.room-clipboard-group-action',
-        function (event) {
-            //Get the IDs of the rooms of the clipboard:
-            var active_clipboard = jQuery(event.target).parents("#clipboard-group-container").find(
-                '.clipboard-area:not(.invisible)'
-            )[0];
-            if (!active_clipboard) {
-                //Something is wrong with the HTML.
-                return;
-            }
-
-            var clipboard_id = jQuery(active_clipboard).data('id');
-            var action_needs_items = jQuery(event.target).data('needs_items');
-            var show_in_dialog = jQuery(event.target).data('show_in_dialog');
-            var ids = [];
-            if (action_needs_items) {
-                var items = jQuery(active_clipboard).find(
-                    'tr.clipboard-item:not(.clipboard-item-template)'
-                );
-
-                for (item of items) {
-                    var id = jQuery(item).data('range_id');
-                    //Check if id is an md5 sum:
-                    if (id.match(/[0-9a-f]{32}/)) {
-                        ids.push(id);
-                    }
-                }
-            }
-
-            var url_path = jQuery(event.target).data('url_path');
-            url_path = url_path.replace(/CLIPBOARD_ID/, clipboard_id);
-
-            var complete_url = STUDIP.URLHelper.getURL(
-                url_path,
-                (
-                    action_needs_items ? {'resource_ids': ids} : null
-                )
-            );
-
-            if (show_in_dialog) {
-                //If we have collected at least one ID we can create a dialog
-                //displaying the comments of all the selected rooms:
-                STUDIP.Dialog.fromURL(
-                    complete_url,
-                    {
-                        size: 'normal'
-                    }
-                );
-            } else {
-                //Show the action in a new tab:
-                window.open(complete_url, '_blank');
-            }
-            return false;
-        }
-    );
-
-    jQuery(document).on(
-        'click',
         '.resource-category-properties-table .add-action',
         STUDIP.Resources.addResourcePropertyToTable
     );
@@ -970,6 +912,67 @@ STUDIP.ready(function () {
 
                 }
             }
+        }
+    );
+});
+
+
+STUDIP.domReady(function() {
+    jQuery(document).on(
+        'click',
+        '.room-clipboard-group-action',
+        function (event) {
+            //Get the IDs of the rooms of the clipboard:
+            var active_clipboard = jQuery(event.target).parents("#clipboard-group-container").find(
+                '.clipboard-area:not(.invisible)'
+            )[0];
+            if (!active_clipboard) {
+                //Something is wrong with the HTML.
+                return;
+            }
+
+            var clipboard_id = jQuery(active_clipboard).data('id');
+            var action_needs_items = jQuery(event.target).data('needs_items');
+            var show_in_dialog = jQuery(event.target).data('show_in_dialog');
+            var ids = [];
+            if (action_needs_items) {
+                var items = jQuery(active_clipboard).find(
+                    'tr.clipboard-item:not(.clipboard-item-template)'
+                );
+
+                for (item of items) {
+                    var id = jQuery(item).data('range_id');
+                    //Check if id is an md5 sum:
+                    if (id.match(/[0-9a-f]{32}/)) {
+                        ids.push(id);
+                    }
+                }
+            }
+
+            var url_path = jQuery(event.target).data('url_path');
+            url_path = url_path.replace(/CLIPBOARD_ID/, clipboard_id);
+
+            var complete_url = STUDIP.URLHelper.getURL(
+                url_path,
+                (
+                    action_needs_items ? {'resource_ids': ids} : null
+                )
+            );
+
+            if (show_in_dialog) {
+                //If we have collected at least one ID we can create a dialog
+                //displaying the comments of all the selected rooms:
+                STUDIP.Dialog.fromURL(
+                    complete_url,
+                    {
+                        size: 'normal'
+                    }
+                );
+            } else {
+                //Show the action in a new tab:
+                window.open(complete_url, '_blank');
+            }
+            return false;
         }
     );
 });
