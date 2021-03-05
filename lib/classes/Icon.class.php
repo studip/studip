@@ -312,7 +312,7 @@ class Icon
 
         $result = array_merge($this->attributes, $attributes, $dimensions, [
             'src' => self::isStatic($this->shape) ? $this->shape : $this->get_asset_svg(),
-            'alt' => $this->attributes['alt'] ?: $this->attributes['title'] ?: basename($this->shape)
+            'alt' => $this->attributes['alt'] ?? $this->attributes['title'] ?? basename($this->shape)
         ]);
 
         $classNames = 'icon-role-' . $this->role;
