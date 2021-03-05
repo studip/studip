@@ -64,12 +64,14 @@
         <tfoot>
             <tr>
                 <td colspan="<?= 2 + (int) (STUDIP\ENV === 'development') ?>">
-                <? if ($lock->isLocked($lock_data)): ?>
+                <? if ($lock->isLocked($lock_data)):
+                    $user = User::find($lock_data['user_id']);
+                ?>
                     <?= MessageBox::info(sprintf(
                         _('Die Migration wurde %s von %s bereits angestossen und läuft noch.'),
                         reltime($lock_data['timestamp']),
-                        htmlReady(User::find($lock_data['user_id'])->getFullName()
-                    )), [
+                        htmlReady($user ? $user->getFullName() : _('unbekannt'))
+                    ), [
                         sprintf(
                             _('Sollte während der Migration ein Fehler aufgetreten sein, so können Sie '
                             . 'diese Sperre durch den unten stehenden Link oder das Löschen der Datei '
