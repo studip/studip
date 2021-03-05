@@ -212,7 +212,7 @@ class RolePersistence
     private static function loadUserRoles($user_id, $implicit = false)
     {
         $cache = self::getUserRolesCache();
-
+        $cache = null;
         if (!isset($cache[$user_id])) {
             $query = "SELECT DISTINCT *
                       FROM (
