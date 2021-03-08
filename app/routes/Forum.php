@@ -209,33 +209,33 @@ class Forum extends \RESTAPI\RouteMap
      */
     public function addForumEntry($parent_id)
     {
-        $parent = $this->findEntry($parent_id);
-        $cid = $parent['course_id'];
+        $parent = \ForumEntry::getConstraints($parent_id);
+        $cid = $parent['seminar_id'];
 
-        $perm = self::isArea($entry) ? 'add_area' : 'add_entry';
+        $perm = self::isArea($parent) ? 'add_area' : 'add_entry';
 
         if (!\ForumPerm::has($perm, $cid)) {
             $this->error(401);
         }
 
-        $subject = (string)trim($this->data['subject']);
-        $content = (string)trim($this->data['content']);
+        $subject = (string) trim($this->data['subject']);
+        $content = (string) trim($this->data['content']);
 
         // areas and threads need a subject, postings do not
-        if ($entry['depth'] < 3 && !$subject) {
+        if ($parent['depth'] < 3 && !$subject) {
             $this->error(400, 'Subject required.');
         }
 
         // all entries besides the area need content
-        if ($entry['depth'] > 1 && !$content) {
+        if ($parent['depth'] > 1 && !$content) {
             $this->error(400, 'Content required.');
         }
 
-        if ($entry['depth'] >= 3 && $subject) {
+        if ($parent['depth'] >= 3 && $subject) {
             $this->error(400, 'Must not have subject here.');
         }
 
-        $anonymous = isset($this->data['anonymous']) ? intval($this->data['anonymous']) : 0;
+        $anonymous = isset($this->data['anonymous']) ? (int) $this->data['anonymous'] : 0;
 
         $entry_id = $this->createEntry($parent_id, $cid, $subject, $content, $anonymous);
 
@@ -249,8 +249,8 @@ class Forum extends \RESTAPI\RouteMap
      */
     public function updateForumEntry($entry_id)
     {
-        $entry = $this->findEntry($entry_id);
-        $cid = $parent['course_id'];
+        $entry = \ForumEntry::getConstraints($entry_id);
+        $cid = $entry['seminar_id'];
 
         $perm = self::isArea($entry) ? 'edit_area' : 'edit_entry';
 
@@ -258,8 +258,8 @@ class Forum extends \RESTAPI\RouteMap
             $this->error(401);
         }
 
-        $subject = (string)trim($this->data['subject']);
-        $content = (string)trim($this->data['content']);
+        $subject = (string) trim($this->data['subject']);
+        $content = (string) trim($this->data['content']);
 
         // areas and threads need a subject, postings do not
         if ($entry['depth'] < 3 && !$subject) {
@@ -287,8 +287,8 @@ class Forum extends \RESTAPI\RouteMap
      */
     public function deleteForumEntry($entry_id)
     {
-        $entry = $this->findEntry($entry_id);
-        $cid = $parent['course_id'];
+        $entry = \ForumEntry::getConstraints($entry_id);
+        $cid = $entry['seminar_id'];
 
         if (!\ForumPerm::hasEditPerms($entry_id) || !\ForumPerm::has('remove_entry', $cid)) {
             $this->error(401);
