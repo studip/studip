@@ -178,15 +178,19 @@ class Course_OverviewController extends AuthenticatedController
         if ($this->studygroup_mode) {
             $share->addCopyableLink(
                 _('Link zu dieser Studiengruppe kopieren'),
-                $this->link_for("course/studygroup/details/". $this->course->id, ['cid' => null]),
+                $this->url_for('course/studygroup/details/' . $this->course->id, [
+                    'cid'   => null,
+                    'again' => 'yes',
+                ]),
                 Icon::create('group')
             );
         } else {
             $share->addCopyableLink(
                 _('Link zu dieser Veranstaltung kopieren'),
-                $this->link_for('course/details', [
+                $this->url_for('course/details', [
                     'sem_id' => $this->course->id,
                     'cid'    => null,
+                    'again'  => 'yes',
                 ]),
                 Icon::create('group')
             );

@@ -283,9 +283,10 @@ class Course_DetailsController extends AuthenticatedController
             $share = new ShareWidget();
             $share->addCopyableLink(
                 _('Link zu dieser Veranstaltung kopieren'),
-                $this->link_for('course/details', [
+                $this->url_for('course/details', [
                     'sem_id' => $this->course->id,
                     'cid'    => null,
+                    'again'  => 'yes',
                 ]),
                 Icon::create('group')
             );
