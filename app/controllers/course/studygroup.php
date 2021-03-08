@@ -729,7 +729,7 @@ class Course_StudygroupController extends AuthenticatedController
      * @param string $action that has to be performed
      * @param string $from_status if applicable (e.g. tutor)
      */
-    public function edit_members_action($action, $from_status)
+    public function edit_members_action($action, $from_status = '')
     {
         global $perm;
 
