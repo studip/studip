@@ -48,7 +48,7 @@ class IconClassTest extends \Codeception\Test\Unit
     function testIconCreateAsImgWithTitle()
     {
         $this->assertEquals(
-            '<img title="Mit Anhang" width="20" height="20" src="images/icons/blue/vote.svg" alt="Mit Anhang" class="icon-role-clickable icon-shape-vote">',
+            '<img title="Mit Anhang" width="20" height="20" src="images/icons/blue/vote.svg" class="icon-role-clickable icon-shape-vote">',
             Icon::create('vote', 'clickable', ['title' => _("Mit Anhang")])->asImg(20)
         );
     }
@@ -72,7 +72,7 @@ class IconClassTest extends \Codeception\Test\Unit
     function testIconCreateAsImgWithClassAndTitle()
     {
         $this->assertEquals(
-            '<img title="Datei hochladen" class="text-bottom icon-role-new icon-shape-upload" width="20" height="20" src="images/icons/red/upload.svg" alt="Datei hochladen">',
+            '<img title="Datei hochladen" class="text-bottom icon-role-new icon-shape-upload" width="20" height="20" src="images/icons/red/upload.svg">',
             Icon::create('upload', 'new', ['title' => _("Datei hochladen")])
                 ->asImg(20, ['class' => 'text-bottom'])
         );

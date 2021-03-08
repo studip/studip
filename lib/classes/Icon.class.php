@@ -314,7 +314,7 @@ class Icon
             'src' => self::isStatic($this->shape) ? $this->shape : $this->get_asset_svg(),
         ]);
 
-        if (!isset($result['alt'], $result['title'])) {
+        if (!isset($result['alt']) && !isset($result['title'])) {
             $result['alt'] = basename($this->shape);
         }
 
