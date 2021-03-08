@@ -73,7 +73,7 @@ class AbstractAPI
             this.total_requests += 1;
 
             // Actual request
-            deferred = $.ajax(STUDIP.URLHelper.getURL(`${this.base_url}/${url}`), {
+            deferred = $.ajax(STUDIP.URLHelper.getURL(`${this.base_url}/${url}`, {}, true), {
                 contentType: options.contentType || 'application/x-www-form-urlencoded; charset=UTF-8',
                 method: options.method.toUpperCase(),
                 data: this.encodeData(options.data),

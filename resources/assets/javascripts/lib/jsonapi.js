@@ -9,6 +9,11 @@ class JSONAPI extends AbstractAPI
 
     encodeData (data) {
         data = super.encodeData(data);
+
+        if (Object.keys(data).length === 0) {
+            return null;
+        }
+
         return JSON.stringify(data);
     }
 
