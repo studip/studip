@@ -1197,15 +1197,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$new_id, $old_id]);
 
-        // Literatur
-        $query = "UPDATE IGNORE lit_catalog SET user_id = ? WHERE user_id = ?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$new_id, $old_id]);
-
-        $query = "UPDATE IGNORE lit_list SET range_id = ? WHERE range_id = ?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$new_id, $old_id]);
-
         // Nachrichten (Interne)
         $query = "UPDATE IGNORE message SET autor_id = ? WHERE autor_id = ?";
         $statement = DBManager::get()->prepare($query);
