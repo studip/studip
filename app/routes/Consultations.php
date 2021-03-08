@@ -4,6 +4,7 @@ namespace RESTAPI\Routes;
 /**
  * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
  * @license GPL2 or any later version
+ * @deprecated  Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  */
 class Consultations extends \RESTAPI\RouteMap
 {

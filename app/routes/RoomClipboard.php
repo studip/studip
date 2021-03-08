@@ -1,22 +1,15 @@
 <?php
+namespace RESTAPI\Routes;
+
 /**
- * This file contains the REST class for the
- * room and resource management system.
+ * This file contains the REST class for room clipboards
+ * (clipboards containing room resources).
  *
  * @author      Moritz Strohm <strohm@data-quest.de>
  * @copyright   2017-2019
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @since       4.5
  * @deprecated  Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
- */
-
-
-namespace RESTAPI\Routes;
-
-
-/**
- * This class provides API routes for room clipboards
- * (clipboards containing room resources).
  */
 class RoomClipboard extends \RESTAPI\RouteMap
 {

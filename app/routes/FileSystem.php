@@ -1,4 +1,6 @@
 <?php
+namespace RESTAPI\Routes;
+
 /**
  * This class implements REST routes for the new Stud.IP file system.
  *
@@ -11,8 +13,6 @@
  * licensed under the terms of the GNU General Public License Version 2
  * or later.
  */
-
-namespace RESTAPI\Routes;
 
 class FileSystem extends \RESTAPI\RouteMap
 {

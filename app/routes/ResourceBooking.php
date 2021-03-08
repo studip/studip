@@ -1,4 +1,6 @@
 <?php
+namespace RESTAPI\Routes;
+
 /**
  * This file contains the REST class for the
  * room and resource management system.
@@ -9,11 +11,6 @@
  * @since       4.5
  * @deprecated  Since Stud.IP 5.0. Will be removed in Stud.IP 5.2.
  */
-
-
-namespace RESTAPI\Routes;
-
-
 class ResourceBooking extends \RESTAPI\RouteMap
 {
 
