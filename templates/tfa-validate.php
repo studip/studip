@@ -36,7 +36,7 @@
             <div class="tfa-code-wrapper">
             <? for ($i = 0; $i < 6; $i += 1): ?>
                 <input required type="number" name="tfacode-input[<?= $i ?>]" value=""
-                       max="9" pattern="^\d$" maxlength="1" class="no-hint"
+                       max="9" pattern="[0-9]*" maxlength="1" class="no-hint"
                        <? if ($i === 0) echo 'autofocus'; ?>>
             <? endfor; ?>
             </div>
