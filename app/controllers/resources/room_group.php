@@ -124,6 +124,8 @@ class Resources_RoomGroupController extends AuthenticatedController
         if (!$selected_clipboard_id) {
             //Check if a clipboard is selected:
             $selected_clipboard_id = $_SESSION['selected_clipboard_id'];
+        } else {
+            $_SESSION['selected_clipboard_id'] = $selected_clipboard_id;
         }
 
         $clipboard = Clipboard::find($selected_clipboard_id);
