@@ -397,15 +397,18 @@ class Course_TimesroomsController extends AuthenticatedController
             //(see SingleDateDB::storeSingleDate). Therefore, the booking
             //has to be recereated, even if the room option
             //is set to "nochange".
-            $room_id = Request::get('room_id');
+            $room_id = null;
             $preparation_time = Request::get('preparation_time');
-            if ($preparation_time > $max_preparation_time) {
-                PageLayout::postError(
-                    sprintf(
-                        _('Die eingegebene Rüstzeit überschreitet das erlaubte Maximum von %d Minuten!'),
-                        $max_preparation_time
-                    )
-                );
+            if (Request::option('room') == 'room') {
+                $room_id = Request::get('room_id');
+                if ($preparation_time > $max_preparation_time) {
+                    PageLayout::postError(
+                        sprintf(
+                            _('Die eingegebene Rüstzeit überschreitet das erlaubte Maximum von %d Minuten!'),
+                            $max_preparation_time
+                        )
+                    );
+                }
             }
             if ($room_id) {
                 if ($room_id != $singledate->resource_id) {
