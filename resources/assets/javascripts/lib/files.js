@@ -92,7 +92,7 @@ const Files = {
         var updater_enabled = STUDIP.jsupdate_enable;
 
         //Open upload-dialog
-        const nameslist = $('.file_upload_window .filenames').empty();
+        const nameslist = $('.file_upload_window .filenames').show().empty();
         $('.file_upload_window .errorbox').hide().find('.errormessage').empty();
 
         var total_size = 0;
@@ -187,7 +187,7 @@ const Files = {
             }).fail((jqxhr, textStatus, error) => {
                 const errorMessage = $gettext('Es gab einen Fehler beim Hochladen der Datei(en):') + ' ' + error;
                 $('.file_upload_window .errorbox').show().find('.errormessage').text(errorMessage);
-                $('.file_upload_window').find('.filenames,.uploadbar').hide();
+                $('.file_upload_window').children('.filenames,.uploadbar').hide();
             }).always(() => {
                 if (updater_enabled) {
                     STUDIP.JSUpdater.start();
