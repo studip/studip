@@ -5,8 +5,9 @@ import FilesTable from '../../../vue/components/FilesTable.vue';
 
 const Files = {
     init () {
-        if ($('#files-index, #course-files-index, #institute-files-index, #files-flat, #course-files-flat, #institute-files-flat, #files-overview').length
+        if ($('#files-index, #files-system, #course-files-index, #institute-files-index, #files-flat, #course-files-flat, #institute-files-flat, #files-overview').length
             && jQuery("#files_table_form").length) {
+
             STUDIP.Vue.load().then(({createApp}) => {
                 this.filesapp = createApp({
                     el: "#layout_content",

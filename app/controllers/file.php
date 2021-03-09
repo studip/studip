@@ -1169,16 +1169,17 @@ class FileController extends AuthenticatedController
             if (!$plugin) {
                 throw new Trails_Exception(404, _('Plugin existiert nicht.'));
             }
-            $file_ref = $plugin->getPreparedFile($file_id);
+            $filetype = $plugin->getPreparedFile($file_id);
+            $folder = $filetype->getFolderType();
         } else {
             $file_ref = FileRef::find($file_ref_id);
+            $folder = $file_ref->foldertype;
+            $filetype = $file_ref->getFileType();
         }
-        if (!$file_ref) {
+        if (!$filetype) {
             throw new Trails_Exception(404, _('Datei nicht gefunden.'));
         }
 
-        $folder = $file_ref->foldertype;
-        $filetype = $file_ref->getFileType();
         if (!$filetype->isWritable($GLOBALS['user']->id)) {
             throw new AccessDeniedException();
         }

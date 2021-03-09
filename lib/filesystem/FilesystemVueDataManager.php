@@ -119,7 +119,10 @@ class FilesystemVueDataManager
         }
 
         $controllerpath = 'files/index';
-        if ($topFolder->range_type !== 'user') {
+        if (is_numeric($topFolder->range_type)) {
+            //plugin:
+            $controllerpath = 'files/system/' . $topFolder->range_type;
+        } elseif ($topFolder->range_type !== 'user') {
             $controllerpath = $topFolder->range_type . '/' . $controllerpath;
         }
 

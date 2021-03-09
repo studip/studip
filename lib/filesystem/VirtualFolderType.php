@@ -296,7 +296,7 @@ class VirtualFolderType implements FolderType
 
     public function getAdditionalColumns()
     {
-
+        return [];
     }
 
     public function getContentForAdditionalColumn($column_index)
