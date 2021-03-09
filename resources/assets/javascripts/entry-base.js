@@ -17,6 +17,7 @@ window.QRCode = QRCode
 import "./jquery-bundle.js"
 
 import "./init.js"
+import "./bootstrap/responsive.js"
 import "./chunk-loader.js"
 import "./bootstrap/vue.js"
 
@@ -31,7 +32,6 @@ import "./bootstrap/personal_notifications.js"
 import "./bootstrap/sidebar.js"
 import "./bootstrap/smiley_picker.js"
 import "./bootstrap/dialog.js"
-import "./bootstrap/responsive.js"
 import "./bootstrap/jsupdater.js"
 import "./bootstrap/files.js"
 import "./bootstrap/news.js"

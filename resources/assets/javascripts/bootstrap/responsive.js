@@ -11,7 +11,7 @@ STUDIP.domReady(() => {
     }
 
     STUDIP.Responsive.engage();
-});
+}, true);
 
 // Trigger search in responsive display
 $(document).on('click', '#quicksearch .quicksearchbutton', function() {
