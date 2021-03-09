@@ -46,7 +46,7 @@ $getInstalledLanguages = function () {
 };
 ?>
 <!DOCTYPE html>
-<html class="no-js" lang="<?= htmlReady(explode('_', $_SESSION['_language'])[0]) ?>">
+<html class="no-js" lang="<?= htmlReady(strtr($_SESSION['_language'], '_', '-')) ?>">
 <head>
     <meta charset="utf-8">
     <title data-original="<?= htmlReady(PageLayout::getTitle()) ?>">
