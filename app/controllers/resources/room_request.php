@@ -1345,6 +1345,10 @@ class Resources_RoomRequestController extends AuthenticatedController
         //Load all previously selected rooms where at least one date has been
         //assigned to to the list of alternative rooms and place them
         //at the top of the list.
+        if (Request::isPost()) {
+            $this->selected_rooms = Request::getArray('selected_rooms');
+        }
+
         $previously_selected_room_ids = [];
         if ($this->selected_rooms) {
             $previously_selected_room_ids = array_unique($this->selected_rooms);
@@ -1492,7 +1496,6 @@ class Resources_RoomRequestController extends AuthenticatedController
         $force_resolve = Request::submitted('force_resolve');
         $resolve = Request::submitted('resolve') || $force_resolve;
         $this->show_force_resolve_button = false;
-        $this->selected_rooms = Request::getArray('selected_rooms');
 
         if ($resolve) {
             CSRFProtection::verifyUnsafeRequest();
