@@ -172,6 +172,13 @@
 });
 
 .responsive-display {
+    // Hide sidebar from view until .responsified
+    &:not(.responsified) {
+        #layout-sidebar {
+            display: none;
+        }
+    }
+
     .media-breakpoint-small-down({
         #header, #flex-header, #barTopFont, #barTopMenu,
         #barBottomLeft .current_page, #barBottommiddle, #barBottomLeft, #barBottomArrow,
@@ -179,6 +186,7 @@
         .tabs_wrapper .colorblock {
             display: none !important;
         }
+
         #layout_wrapper #layout_page {
             .secondary-navigation {
                 display: flex;
