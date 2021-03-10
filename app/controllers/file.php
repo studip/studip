@@ -639,7 +639,7 @@ class FileController extends AuthenticatedController
         }
 
         if ($this->file_ref && Request::submitted("from_plugin")) {
-            $this->parent_folder = $this->file_ref->foldertype;
+            $this->parent_folder = $this->file_ref->getFoldertype();
         } elseif ($this->file_ref) {
             $this->parent_folder = Folder::find($this->file_ref->folder_id);
             $this->parent_folder = $this->parent_folder->getTypedFolder();
