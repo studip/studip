@@ -58,6 +58,10 @@ class GarbageCollectorJob extends CronJob
     {
         $db = DBManager::get();
 
+        if ($parameters['verbose']) {
+            $message_count_before = DBManager::get()->fetchColumn("SELECT COUNT(*) FROM `message`");
+        }
+
         // delete outdated news
         $news_deletion_days = 0;
         if($parameters['news_deletion_days'] > 0) {
@@ -66,35 +70,33 @@ class GarbageCollectorJob extends CronJob
         $deleted_news = StudipNews::DoGarbageCollect($news_deletion_days);
 
         // delete messages
-        $to_delete = $db->query("SELECT message_id, count( message_id ) AS gesamt, count(IF (deleted = 0, NULL, 1) ) AS geloescht
-                FROM message_user GROUP BY message_id HAVING gesamt = geloescht")->fetchAll(PDO::FETCH_COLUMN, 0);
-        if (count($to_delete)) {
-            $db->exec("DELETE FROM message_user WHERE message_id IN (" . $db->quote($to_delete) . ")");
-            $db->exec("DELETE FROM message WHERE message_id IN (" . $db->quote($to_delete) . ")");
-        }
+        $query = "DELETE `message`, `message_user`, `message_tags`
+                  FROM `message`
+                  LEFT JOIN `message_user` USING (`message_id`)
+                  LEFT JOIN `message_tags` USING (`message_id`)
+                  WHERE `message_id` IN (
+                      SELECT `message_id`
+                      FROM (SELECT * FROM `message_user`) AS mu
+                      GROUP BY `message_id`
+                      HAVING COUNT(`message_id`) = SUM(`deleted`)
+                  )";
+        DBManager::get()->execute($query);
+
+        // delete system messages
+        $query = "DELETE `message`, `message_user`, `message_tags`
+                  FROM `message`
+                  LEFT JOIN `message_user` USING (`message_id`)
+                  LEFT JOIN `message_tags` USING (`message_id`)
+                  WHERE `autor_id` = '____%system%____'
+                    AND DATE(FROM_UNIXTIME(`message`.`mkdate`)) + INTERVAL :days DAY < DATE(NOW())";
+        DBManager::get()->execute($query, [
+            ':days' => $parameter['message_deletion_days'] ?? 0,
+        ]);
 
         // Remove outdated opengraph urls
         $query = "DELETE FROM `opengraphdata`
                   WHERE `last_update` < UNIX_TIMESTAMP(NOW() - INTERVAL 1 WEEK)";
         DBManager::get()->exec($query);
-
-        // delete system messages
-        $message_deletion_days = 0;
-        if($parameters['message_deletion_days'] > 0){
-            $message_deletion_days =  (int) $parameters['message_deletion_days'] * 86400;
-        }
-        $query = "SELECT message_id FROM message
-                 WHERE autor_id = '____%system%____'
-                 AND UNIX_TIMESTAMP(DATE(FROM_UNIXTIME(mkdate))) + ? < UNIX_TIMESTAMP(DATE(FROM_UNIXTIME(UNIX_TIMESTAMP())))";
-
-        $stm = $db->prepare($query);
-        $stm->execute([$message_deletion_days]);
-        $to_delete_system = $stm->fetchAll(PDO::FETCH_COLUMN);
-
-        if (count($to_delete_system) > 0) {
-            $db->exec("DELETE FROM message_user WHERE message_id IN(" . $db->quote($to_delete_system) . ")");
-            $db->exec("DELETE FROM message WHERE message_id IN(" . $db->quote($to_delete_system) . ")");
-        }
 
         //delete old attachments of non-sent and deleted messages:
         //A folder is old and not attached to a message when it has the
@@ -140,8 +142,10 @@ class GarbageCollectorJob extends CronJob
         }
 
         if ($parameters['verbose']) {
+            $message_count_after = DBManager::get()->fetchColumn("SELECT COUNT(*) FROM `message`");
+
             printf(_("Gelöschte Ankündigungen: %u") . "\n", (int)$deleted_news);
-            printf(_("Gelöschte Nachrichten: %u") . "\n", (count($to_delete) + count($to_delete_system)));
+            printf(_("Gelöschte Nachrichten: %u") . "\n", $message_count_before - $message_count_after);
             printf(_("Gelöschte Dateianhänge: %u") . "\n", $unsent_attachment_folders);
             printf(_("Gelöschte MVV-Dateien: %u") . "\n", $unsent_mvv_folders);
         }
