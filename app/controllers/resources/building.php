@@ -339,9 +339,10 @@ class Resources_BuildingController extends AuthenticatedController
             $this->number      = $this->building->number;
             $this->address     = $this->building->address;
             $this->parent_id   = $this->building->parent_id;
-            if ($mode == 'edit') {
+            $geo_coordinates = $this->building->getPropertyObject('geo_coordinates');
+            if ($mode == 'edit' && $geo_coordinates) {
                 $position_data   = ResourceManager::getPositionArray(
-                    $this->building->getPropertyObject('geo_coordinates')
+                    $geo_coordinates
                 );
                 $this->latitude  = $position_data[0];
                 $this->longitude = $position_data[1];
