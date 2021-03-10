@@ -121,6 +121,9 @@
             </section>
         </article>
         <? if ($show_form): ?>
+            <? if ($expand_metadates) : ?>
+                <input type="hidden" value="1" name="force_expand_metadates">
+            <? endif ?>
             <article class="right-part">
                 <article class="studip">
                     <header><h1><?= _('Auswahl alternative Räume') ?></h1></header>
@@ -327,9 +330,6 @@
             ) ?>
         <? endif ?>
         <? if ($show_form) : ?>
-            <? if (Request::submitted('expand_metadates')) : ?>
-                <input type="hidden" value="1" name="force_expand_metadates">
-            <? endif ?>
             <? if ($show_force_resolve_button): ?>
                 <?= \Studip\Button::create(_('Anfrage trotzdem auflösen'), 'force_resolve') ?>
             <? else: ?>
