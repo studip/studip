@@ -131,8 +131,7 @@
                                     <label>
                                         <? if(!$locked) : ?>
                                             <input type="checkbox" class="date-proxy_<?= $metadate_id ?>"
-                                                   data-proxyfor="#<?= $metadate_id ?>-<?= $semester_id ?> .ids-regular"
-                                                   data-activates=".actionForAllRegular_<?= $metadate_id ?>">
+                                                   data-proxyfor="#<?= $metadate_id ?>-<?= $semester_id ?> .ids-regular">
                                         <? endif ?>
                                         <?= htmlReady(Semester::find($semester_id)->name) ?>
                                     </label>
