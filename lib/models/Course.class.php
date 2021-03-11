@@ -376,11 +376,12 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
     {
         $template['type-name'] = '%2$s: %1$s';
         $template['number-type-name'] = '%3$s %2$s: %1$s';
+        $template['type-number-name'] = '%2$s: %3$s %1$s';
         $template['number-name'] = '%3$s %1$s';
         $template['number-name-semester'] = '%3$s %1$s (%4$s)';
         $template['sem-duration-name'] = '%4$s';
         if ($format === 'default' || !isset($template[$format])) {
-           $format = Config::get()->IMPORTANT_SEMNUMBER ? 'number-type-name' : 'type-name';
+           $format = Config::get()->IMPORTANT_SEMNUMBER ? 'type-number-name' : 'type-name';
         }
         $sem_type = $this->getSemType();
         $data[0] = $this->name;
