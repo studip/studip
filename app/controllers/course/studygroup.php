@@ -301,8 +301,6 @@ class Course_StudygroupController extends AuthenticatedController
                 $sem->read_level  = 1;
                 $sem->write_level = 1;
                 $sem->institut_id = Config::Get()->STUDYGROUP_DEFAULT_INST;
-                $mods             = new Modules();
-                $bitmask          = 0;
                 $sem->visible     = 1;
                 if (Request::get('groupaccess') == 'all') {
                     $sem->admission_prelim = 0;
@@ -339,63 +337,12 @@ class Course_StudygroupController extends AuthenticatedController
                     $statement->execute([$sem->id, $user_id]);
                 }
 
-                // de-/activate modules
-                $mods              = new Modules();
-                $admin_mods        = new AdminModules();
-                $bitmask           = 0;
-                $available_modules = StudygroupModel::getInstalledModules();
-                $active_plugins    = Request::getArray('groupplugin');
-
-                foreach ($available_modules as $key => $enable) {
-                    $module_name = $sem_class->getSlotModule($key);
-                    if ($module_name
-                        && ($sem_class->isModuleMandatory($module_name)
-                            || !$sem_class->isModuleAllowed($module_name))
-                    ) {
-                        continue;
-                    }
-                    if (!$module_name) {
-                        $module_name = $key;
-                    }
-
-                    if ($active_plugins[$module_name]) {
-                        // activate modules
-                        $mods->setBit($bitmask, $mods->registered_modules[$key]["id"]);
-                        $methodActivate = "module" . ucfirst($key) . "Activate";
-                        if (method_exists($admin_mods, $methodActivate)) {
-                            $admin_mods->$methodActivate($sem->id);
-                        }
-                    }
-                }
-                // always activate participants list
-                $mods->setBit($bitmask, $mods->registered_modules["participants"]["id"]);
-
-                $sem->modules = $bitmask;
                 $sem->store();
-
-                // de-/activate plugins
-                $available_plugins = StudygroupModel::getInstalledPlugins();
-                $plugin_manager    = PluginManager::getInstance();
-
-                foreach ($available_plugins as $key => $name) {
-                    if (!$sem_class->isModuleAllowed($key)) {
-                        continue;
-                    }
-                    $plugin    = $plugin_manager->getPlugin($key);
-                    $plugin_id = $plugin->getPluginId();
-
-                    if ($active_plugins[$key] && $name) {
-                        $plugin_manager->setPluginActivated($plugin_id, $sem->id, true);
-                    } else {
-                        $plugin_manager->setPluginActivated($plugin_id, $sem->id, false);
-                    }
-                }
 
                 NotificationCenter::postNotification('StudygroupDidCreate', $sem->id);
 
                 // the work is done. let's visit the brand new studygroup.
                 $this->redirect(URLHelper::getURL('seminar_main.php?auswahl=' . $sem->id));
-
             }
         }
     }
@@ -426,10 +373,6 @@ class Course_StudygroupController extends AuthenticatedController
             $this->sem               = $sem;
             $this->sem_class         = $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][$sem->status]['class']];
             $this->tutors            = $sem->getMembers('tutor');
-            $this->available_modules = StudygroupModel::getInstalledModules();
-            $this->available_plugins = StudygroupModel::getInstalledPlugins(Context::get());
-            $this->enabled_plugins   = StudygroupModel::getEnabledPlugins($id);
-            $this->modules           = new Modules();
             $this->founders          = StudygroupModel::getFounders($id);
 
             $actions = new ActionsWidget();
@@ -532,81 +475,7 @@ class Course_StudygroupController extends AuthenticatedController
                         $sem->admission_prelim_txt = _("Die ModeratorInnen der Studiengruppe können Ihren Aufnahmewunsch bestätigen oder ablehnen. Erst nach Bestätigung erhalten Sie vollen Zugriff auf die Gruppe.");
                     }
 
-                    // get the current bitmask
-                    $mods       = new Modules();
-                    $admin_mods = new AdminModules();
-                    $bitmask    = $sem->modules;
-
-                    // de-/activate modules
-                    $available_modules = StudygroupModel::getInstalledModules();
-                    $orig_modules      = $mods->getLocalModules($sem->id, "sem");
-                    $active_plugins    = Request::getArray("groupplugin");
-
-                    foreach (array_keys($available_modules) as $key) {
-                        $module_name = $sem_class->getSlotModule($key);
-                        if (!$module_name || ($module_name
-                                              && ($sem_class->isModuleMandatory($module_name)
-                                                  || !$sem_class->isModuleAllowed($module_name)))
-                        ) {
-                            continue;
-                        }
-                        if (!$module_name) {
-                            $module_name = $key;
-                        }
-                        if ($active_plugins[$module_name]) {
-                            // activate modules
-                            $mods->setBit($bitmask, $mods->registered_modules[$key]["id"]);
-                            if (!$orig_modules[$key]) {
-                                $methodActivate = "module" . ucfirst($key) . "Activate";
-                                if (method_exists($admin_mods, $methodActivate)) {
-                                    $admin_mods->$methodActivate($sem->id);
-                                    $studip_module = $sem_class->getModule($key);
-                                    if (is_a($studip_module, "StandardPlugin")) {
-                                        PluginManager::getInstance()->setPluginActivated(
-                                            $studip_module->getPluginId(),
-                                            $id,
-                                            true
-                                        );
-                                    }
-                                }
-                            }
-                        } else {
-                            // prepare for deactivation
-                            $mods->clearBit($bitmask, $mods->registered_modules[$key]["id"]);
-                            if ($orig_modules[$key]) {
-                                $methodDeactivate = "module" . ucfirst($key) . "Deactivate";
-                                if (method_exists($admin_mods, $methodDeactivate)) {
-                                    $admin_mods->$methodDeactivate($sem->id);
-                                    $studip_module = $sem_class->getModule($key);
-                                    if (is_a($studip_module, "StandardPlugin")) {
-                                        PluginManager::getInstance()->setPluginActivated(
-                                            $studip_module->getPluginId(),
-                                            $id,
-                                            false
-                                        );
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    $sem->modules = $bitmask;
                     $sem->store();
-
-                    // de-/activate plugins
-                    $available_plugins  = StudygroupModel::getInstalledPlugins();
-                    $plugin_manager     = PluginManager::getInstance();
-
-                    foreach ($available_plugins as $key => $name) {
-                        $plugin    = $plugin_manager->getPlugin($key);
-                        $plugin_id = $plugin->getPluginId();
-                        if ($active_plugins[$key] && $name && $sem_class->isModuleAllowed($key)) {
-                            $plugin_manager->setPluginActivated($plugin_id, $id, true);
-                        } else {
-                            if ($plugin_manager->isPluginActivated($plugin_id, $id) && !$sem_class->isSlotModule($key)) {
-                                $plugin_manager->setPluginActivated($plugin_id, $id, false);
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -989,7 +858,7 @@ class Course_StudygroupController extends AuthenticatedController
 
 
     /**
-     * Displays admin settings concerning the modules and plugins which that are globally available for studygroups
+     * Displays admin settings concerning the studygroups
      *
      * @return void
      */
@@ -1008,11 +877,6 @@ class Course_StudygroupController extends AuthenticatedController
 
         if ($this->flash['institute']) {
             $default_inst = $this->flash['institute'];
-        }
-        if ($this->flash['modules']) {
-            foreach ($this->flash['modules'] as $module => $status) {
-                $enabled[$module] = $status === 'on';
-            }
         }
         if ($this->flash['terms']) {
             $terms = $this->flash['terms'];

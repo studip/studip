@@ -24,67 +24,9 @@ use Studip\Button, Studip\LinkButton;
             <textarea name="groupdescription"><?= htmlReady($sem->description) ?></textarea>
         </label>
 
-    <? if ($GLOBALS['perm']->have_studip_perm('dozent', $sem_id)) : ?>
-        <?= $this->render_partial('course/studygroup/_replace_founder', compact('tutors')) ?>
-    <? endif; ?>
-
-        <section>
-            <?= _('Inhaltselemente') ?>
-            <? foreach ($available_modules as $key => $name) : ?>
-                <? if ($key === 'documents_folder_permissions') : ?>
-                    <?
-                    // load metadata of module
-                    $adminModules = new AdminModules();
-                    $description = $adminModules->registered_modules[$key]['metadata']['description'];
-                    ?>
-                    <label>
-                        <input name="groupplugin[<?= $key ?>]" type="checkbox" <?= ($modules->getStatus($key, $sem_id, 'sem')) ? 'checked="checked"' : '' ?>>
-                        <?= htmlReady($name) ?>
-                        <?= isset($description) ? tooltipIcon(kill_format($description)) : "" ?>
-                    </label><br>
-                <? else : ?>
-                    <? $module = $sem_class->getSlotModule($key) ?>
-                    <? if ($module && $sem_class->isModuleAllowed($module) && !$sem_class->isSlotMandatory($key)) : ?>
-                        <?
-                        // load metadata of module
-                        $studip_module = $sem_class->getModule($key);
-                        $info = $studip_module->getMetadata();
-                        ?>
-                        <label>
-                            <input name="groupplugin[<?= $module ?>]" type="checkbox"
-                                    <? if ($modules->getStatus($key, $sem_id, 'sem')) echo 'checked'; ?>>
-                            <?= htmlReady($name) ?>
-                        <? $studip_module = $sem_class->getModule($module); ?>
-                        <? if (is_a($studip_module, "StandardPlugin")) : ?>
-                            (<?= htmlReady($studip_module->getPluginName()) ?>)
-                        <? endif ?>
-
-                        <? if ($info['description']): ?>
-                            <?= tooltipIcon(kill_format($info['description'])) ?>
-                        <? endif; ?>
-                        </label>
-                    <? endif;?>
-                <? endif ?>
-            <? endforeach; ?>
-
-            <? foreach ($available_plugins as $key => $name) : ?>
-                <? if ($sem_class->isModuleAllowed($key) && !$sem_class->isModuleMandatory($key) && !$sem_class->isSlotModule($key)) : ?>
-                    <?
-                    // load metadata of plugin
-                    $plugin = $sem_class->getModule($key);
-                    $info = $plugin->getMetadata();
-                    ?>
-                    <label>
-                        <input name="groupplugin[<?= $key ?>]" type="checkbox"
-                                <? if ($enabled_plugins[$key]) echo 'checked'; ?>>
-                        <?= htmlReady($name) ?>
-                    <? if ($info['description']): ?>
-                        <?= tooltipIcon(kill_format($info['description'])) ?>
-                    <? endif; ?>
-                    </label>
-                <? endif ?>
-            <? endforeach; ?>
-        </section>
+        <? if ($GLOBALS['perm']->have_studip_perm('dozent', $sem_id)) : ?>
+            <?= $this->render_partial('course/studygroup/_replace_founder', compact('tutors')) ?>
+        <? endif; ?>
 
         <label>
             <?= _('Zugang') ?>
