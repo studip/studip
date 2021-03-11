@@ -1317,6 +1317,14 @@ class Resources_RoomRequestController extends AuthenticatedController
             //If no room is selected, it cannot be declared fully available.
             $this->requested_room_fully_available = false;
             $this->room_availability_share[$selected_room->id] = 0.0;
+            if (!$this->expand_metadates) {
+                foreach ($this->request_time_intervals as $data) {
+                    if ($data['metadate'] instanceof SeminarCycleDate) {
+                        $this->show_expand_metadates_button = true;
+                        break;
+                    }
+                }
+            }
         }
 
         //Load the room groups of the current user:
