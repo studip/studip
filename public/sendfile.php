@@ -59,40 +59,56 @@ URLHelper::setBaseURL($GLOBALS['ABSOLUTE_URI_STUDIP']);
 
 $file_id = escapeshellcmd(basename(Request::get('file_id')));
 $type = Request::int('type');
-if($type < 0 || $type > 7) $type = 0;
-
-$no_access = true;
-
-//download from course or institute or document is a message attachement
-if (in_array($type, [0, 6, 7])) {
-    if ($file_ref = FileRef::find($file_id)) {
-        $file = $file_ref->getFileType();
-        $folder = $file_ref->folder->getTypedFolder();
-        $no_access = !$file->isDownloadable($GLOBALS['user']->id);
-    }
+if ($type < 0 || $type > 7) {
+    $type = 0;
 }
-//download from archive, allowed if former participant
-if ($type == 1) {
-    $query = "SELECT seminar_id FROM archiv WHERE archiv_file_id = ?";
-    $statement = DBManager::get()->prepare($query);
-    $statement->execute([$file_id]);
-    $archiv_seminar_id = $statement->fetchColumn();
-    if ($archiv_seminar_id) {
-        $no_access = !archiv_check_perm($archiv_seminar_id);
-    } else {
-        $query = "SELECT seminar_id FROM archiv WHERE archiv_protected_file_id = ?";
+
+$no_access    = true;
+$file_missing = false;
+
+switch ($type) {
+    //download from course or institute or document is a message attachment
+    case 0:
+    case 6:
+    case 7:
+        if ($file_ref = FileRef::find($file_id)) {
+            $file = $file_ref->getFileType();
+            $folder = $file_ref->folder->getTypedFolder();
+            $no_access = !$file->isDownloadable($GLOBALS['user']->id);
+        } else {
+            $file_missing = true;
+        }
+        break;
+    //download from archive, allowed if former participant
+    case 1:
+        $query = "SELECT seminar_id FROM archiv WHERE archiv_file_id = ?";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$file_id]);
         $archiv_seminar_id = $statement->fetchColumn();
         if ($archiv_seminar_id) {
-            $no_access = !in_array(archiv_check_perm($archiv_seminar_id), words('tutor dozent admin'));
+            $no_access = !archiv_check_perm($archiv_seminar_id);
+        } else {
+            $query = "SELECT seminar_id FROM archiv WHERE archiv_protected_file_id = ?";
+            $statement = DBManager::get()->prepare($query);
+            $statement->execute([$file_id]);
+            $archiv_seminar_id = $statement->fetchColumn();
+            if ($archiv_seminar_id) {
+                $no_access = !in_array(archiv_check_perm($archiv_seminar_id), words('tutor dozent admin'));
+            } else {
+                $file_missing = true;
+            }
         }
-    }
+        break;
+    //download ad hoc created files, always allowed
+    case 4:
+        $no_access = !Token::isValid(Request::option('token'), $GLOBALS['user']->id);
+        break;
 }
 
-//download ad hoc created files, always allowed
-if ($type == 4) {
-    $no_access = !Token::isValid(Request::option('token'), $GLOBALS['user']->id);
+// If file is missing, send 404
+if ($file_missing) {
+    header('HTTP/1.1 404 Not found');
+    die;
 }
 
 //if download not allowed throw exception to terminate script
@@ -166,6 +182,11 @@ if (isset($file_ref) && $file_ref->file->metadata['access_type'] == 'redirect') 
     $file_ref->incrementDownloadCounter();
     header('Location: ' . $file_ref->file->metadata['url']);
     die();
+}
+
+// Check if file actually exists
+if (!file_exists($path_file)) {
+    throw new Exception(_('Fehler beim Laden der Inhalte der Datei'));
 }
 
 $content_blacklisted = function ($mime) {
