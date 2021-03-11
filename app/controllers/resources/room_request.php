@@ -534,26 +534,28 @@ class Resources_RoomRequestController extends AuthenticatedController
         $sidebar->addWidget($widget);
 
         $widget = new OptionsWidget(_('Filter'));
-        $widget->addCheckbox(
+        $widget->addRadioButton(
             _('Nur markierte Anfragen'),
-            $this->filter['marked'] == 1,
-            $this->overviewURL($this->filter['marked'] != '1' ? ['marked' => '1'] : [])
+            $this->overviewURL($this->filter['marked'] != '1' ? ['marked' => '1'] : []),
+            $this->filter['marked'] == 1
         );
-        $widget->addCheckbox(
+        $widget->addRadioButton(
             _('Nur unmarkierte Anfragen'),
-            $this->filter['marked'] == 0,
-            $this->overviewURL($this->filter['marked'] != '0' ? ['marked' => '0'] : [])
+            $this->overviewURL($this->filter['marked'] != '0' ? ['marked' => '0'] : []),
+            $this->filter['marked'] == 0
         );
-        $widget->addCheckbox(
+        $widget->addElement(new WidgetElement('<br>'));
+        $widget->addRadioButton(
             _('Nur regelmäßige Termine'),
-            $this->filter['periodic_requests'],
-            $this->overviewURL(['toggle_periodic_requests' => 1])
+            $this->overviewURL(['toggle_periodic_requests' => 1]),
+            $this->filter['periodic_requests']
         );
-        $widget->addCheckbox(
+        $widget->addRadioButton(
             _('Nur unregelmäßige Termine'),
-            $this->filter['aperiodic_requests'],
-            $this->overviewURL(['toggle_aperiodic_requests' => 1])
+            $this->overviewURL(['toggle_aperiodic_requests' => 1]),
+            $this->filter['aperiodic_requests']
         );
+        $widget->addElement(new WidgetElement('<br>'));
         $widget->addCheckbox(
             _('Nur mit Raumangabe'),
             $this->filter['specific_requests'],
