@@ -850,10 +850,13 @@ STUDIP.ready(function () {
     );
 
 
-    $(document).on(
-        'click',
-        '.fc-request-event',
+    $(document).on('click', '.fc-request-event',
         function () {
+            var parent_table_row = $(this).closest('tr');
+
+            if($(parent_table_row).length) {
+                $(parent_table_row).toggleClass('resource-planning-selected-request')
+            }
             var objectData = $(this).data();
             var eventData = {
                 id: objectData.eventId,

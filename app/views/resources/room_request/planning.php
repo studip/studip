@@ -118,7 +118,7 @@
 <? if ($requests && $resource): ?>
     <form class="default" method="post"
           action="<?= $controller->link_for('room_request/assign') ?>">
-        <table id="external-events" class="default  request-list">
+        <table id="external-events" class="default request-list">
             <caption><?= _('Anfragen'); ?></caption>
             <thead>
             <tr>

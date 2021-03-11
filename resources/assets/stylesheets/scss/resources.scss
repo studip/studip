@@ -28,6 +28,12 @@
     }
 }
 
+tr.resource-planning-selected-request {
+    td {
+        background: $yellow-40;
+    }
+}
+
 .resource-picture {
     height: 10em;
     width: 10em;
