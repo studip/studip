@@ -206,7 +206,9 @@
                     <thead>
                     <tr>
                         <th class="nowrap"><?= _('Raum') ?></th>
-                        <th class="nowrap"><?= _('Alle Termine') ?></th>
+                        <? if (count($request_time_intervals) > 1) : ?>
+                            <th class="nowrap"><?= _('Alle Termine') ?></th>
+                        <? endif ?>
                         <? foreach ($request_time_intervals as $metadate_id => $data): ?>
                             <? if ($data['metadate'] instanceof SeminarCycleDate) : ?>
                                 <?php
@@ -252,10 +254,12 @@
                     <tbody>
                     <tr class="nohover">
                         <td><?= _('Keine Auswahl') ?></td>
-                        <td>
-                            <input type="checkbox" data-proxyfor="input.radio-null"
-                                   name="all_in_room" value="">
-                        </td>
+                        <? if (count($request_time_intervals) > 1) : ?>
+                            <td>
+                                <input type="checkbox" data-proxyfor="input.radio-null"
+                                       name="all_in_room" value="">
+                            </td>
+                        <? endif ?>
                         <? foreach ($request_time_intervals as $metadate_id => $data): ?>
                             <? if (($data['metadate'] instanceof SeminarCycleDate)) : ?>
                                 <?

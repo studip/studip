@@ -25,18 +25,20 @@
             [<?= htmlReady($underload) ?>%]
         <? endif ?>
     </td>
-    <td>
-        <input type="checkbox" data-proxyfor="input.radio-<?= htmlReady($room->id) ?>"
-               name="all_in_room" value="<?= htmlReady($room->id) ?>"
-               <?= $room_availability_share[$room->id] <= 0.0  ? 'disabled="disabled"' : '' ?>>
-        <? if ($room_availability_share[$room->id] >= 1.0) : ?>
-            <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(['class' => 'text-bottom']) ?>
-        <? elseif ($room_availability_share[$room->id] <= 0.0) : ?>
-            <?= Icon::create('decline-circle', Icon::ROLE_STATUS_RED)->asImg(['class' => 'text-bottom']) ?>
-        <? else : ?>
-            <?= Icon::create('exclaim-circle', Icon::ROLE_STATUS_YELLOW)->asImg(['class' => 'text-bottom']) ?>
-        <? endif ?>
-    </td>
+    <? if (count($time_intervals) > 1) : ?>
+        <td>
+            <input type="checkbox" data-proxyfor="input.radio-<?= htmlReady($room->id) ?>"
+                   name="all_in_room" value="<?= htmlReady($room->id) ?>"
+                   <?= $room_availability_share[$room->id] <= 0.0  ? 'disabled="disabled"' : '' ?>>
+            <? if ($room_availability_share[$room->id] >= 1.0) : ?>
+                <?= Icon::create('check-circle', Icon::ROLE_STATUS_GREEN)->asImg(['class' => 'text-bottom']) ?>
+            <? elseif ($room_availability_share[$room->id] <= 0.0) : ?>
+                <?= Icon::create('decline-circle', Icon::ROLE_STATUS_RED)->asImg(['class' => 'text-bottom']) ?>
+            <? else : ?>
+                <?= Icon::create('exclaim-circle', Icon::ROLE_STATUS_YELLOW)->asImg(['class' => 'text-bottom']) ?>
+            <? endif ?>
+        </td>
+    <? endif ?>
     <? foreach ($time_intervals as $metadate_id => $data): ?>
         <? if (($data['metadate'] instanceof SeminarCycleDate)) : ?>
             <?
