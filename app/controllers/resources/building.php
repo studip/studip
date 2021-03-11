@@ -172,12 +172,7 @@ class Resources_BuildingController extends AuthenticatedController
                 
                 //Get all ResourceLabel resources from the location
                 //and add them as possible parents:
-                $labels = $location->findChildrenByClassName(
-                    'ResourceLabel',
-                    3,
-                    true,
-                    true
-                );
+                $labels = $location->findChildrenByClassName('ResourceLabel', 3);
                 
                 foreach ($labels as $label) {
                     $this->possible_parents[] = $label;
@@ -331,24 +326,25 @@ class Resources_BuildingController extends AuthenticatedController
                     _('Fehler beim Speichern des Gebäudes!')
                 );
             }
-            
         } else {
-            //Show form with current data:
-            $this->name        = $this->building->name;
-            $this->description = $this->building->description;
-            $this->number      = $this->building->number;
-            $this->address     = $this->building->address;
-            $this->parent_id   = $this->building->parent_id;
-            $geo_coordinates = $this->building->getPropertyObject('geo_coordinates');
-            if ($mode == 'edit' && $geo_coordinates) {
-                $position_data   = ResourceManager::getPositionArray(
-                    $geo_coordinates
-                );
-                $this->latitude  = $position_data[0];
-                $this->longitude = $position_data[1];
-                $this->altitude  = $position_data[2];
+            if($this->building) {
+                //Show form with current data:
+                $this->name        = $this->building->name;
+                $this->description = $this->building->description;
+                $this->number      = $this->building->number;
+                $this->address     = $this->building->address;
+                $this->parent_id   = $this->building->parent_id;
+                $geo_coordinates = $this->building->getPropertyObject('geo_coordinates');
+                if ($mode == 'edit' && $geo_coordinates) {
+                    $position_data   = ResourceManager::getPositionArray(
+                        $geo_coordinates
+                    );
+                    $this->latitude  = $position_data[0];
+                    $this->longitude = $position_data[1];
+                    $this->altitude  = $position_data[2];
+                }
+                $this->sort_position = $this->building->sort_position;
             }
-            $this->sort_position = $this->building->sort_position;
         }
     }
     
