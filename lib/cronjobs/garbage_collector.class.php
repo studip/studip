@@ -72,14 +72,14 @@ class GarbageCollectorJob extends CronJob
         // delete messages
         $query = "DELETE `message`, `message_user`, `message_tags`
                   FROM `message`
-                  LEFT JOIN `message_user` USING (`message_id`)
-                  LEFT JOIN `message_tags` USING (`message_id`)
-                  WHERE `message_id` IN (
+                  RIGHT JOIN (
                       SELECT `message_id`
-                      FROM (SELECT * FROM `message_user`) AS mu
+                      FROM `message_user`
                       GROUP BY `message_id`
                       HAVING COUNT(`message_id`) = SUM(`deleted`)
-                  )";
+                  ) AS tmp USING (`message_id`)
+                  LEFT JOIN `message_user` USING (`message_id`)
+                  LEFT JOIN `message_tags` USING (`message_id`)";
         DBManager::get()->execute($query);
 
         // delete system messages
