@@ -25,6 +25,9 @@
         },
         computed: {
             url: function () {
+                if (this.shape.indexOf("http") === 0) {
+                    return this.shape;
+                }
                 return `${STUDIP.ASSETS_URL}images/icons/${this.color}/${this.shape}.svg`;
             },
             color: function () {
