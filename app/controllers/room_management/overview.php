@@ -108,9 +108,12 @@ class RoomManagement_OverviewController extends AuthenticatedController
         if ($this->user_is_global_resource_admin) {
 
             if (ResourceManager::userHasGlobalPermission($this->user, 'admin')){
-                $sidebar->addWidget(
-                    new ResourceTreeWidget(Location::findAll())
-                );
+                $locations = Location::findAll();
+                if($locations) {
+                    $sidebar->addWidget(
+                        new ResourceTreeWidget($locations)
+                    );
+                }
             }
 
             $tree_selected_resource = Request::get('tree_selected_resource');
