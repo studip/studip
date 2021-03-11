@@ -53,8 +53,8 @@ function parseOptions(string, needle) {
                 if (i === split.length - 1 && inquotes) {
                     throw 'Invalid data, missing closing quote';
                 }
-                if (index.length > 0) {
-                    options[index] = inval ? parseValue(value) : true;
+                if (index.trim().length > 0) {
+                    options[index.trim()] = inval ? parseValue(value) : true;
                 }
                 inval = false;
                 inquotes = false;
