@@ -2323,7 +2323,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             $filter_reset_widget = new ActionsWidget();
             $filter_reset_widget->addLink(
                 _('Filter zurücksetzen'),
-                $this->overviewURL(['reset_filter' => '1']),
+                $this->planningURL(['reset_filter' => '1']),
                 Icon::create('filter+decline')
             );
             $sidebar->addWidget($filter_reset_widget);
@@ -2389,24 +2389,6 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
         $sidebar->addWidget($list, 'filter-course-type');
 
-        $widget = new SelectWidget(_('Räume'), $this->planningURL(), 'room_id');
-        $widget->addElement(
-            new SelectElement(
-                '',
-                _('bitte wählen'),
-                !$this->filter['room_id']
-            )
-        );
-        foreach ($this->available_rooms as $room) {
-            $widget->addElement(
-                new SelectElement(
-                    $room->id,
-                    $room->name,
-                    $room->id == $this->filter['room_id']
-                )
-            );
-        }
-        $sidebar->addWidget($widget);
 
         $widget = new OptionsWidget(_('Filter'));
         $widget->addRadioButton(
@@ -2450,7 +2432,7 @@ class Resources_RoomRequestController extends AuthenticatedController
 
             URLHelper::addLinkParam('resource_id', $this->resource->id);
             $this->resource = $this->resource->getDerivedClassInstance();
-            $this->privileged = $room->userHasPermission($this->current_user, 'autor');
+            $this->privileged = $this->resource->userHasPermission($this->current_user, 'autor');
 
             if ($this->filter['semester']) {
                 $this->semester = Semester::find($this->filter['semester']);

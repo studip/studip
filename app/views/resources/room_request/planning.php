@@ -1,3 +1,17 @@
+<form method="get" class="default" action="<?= $controller->planning() ?>">
+    <fieldset>
+        <legend><?= _('Bitte wählen Sie einen Raum aus') ?></legend>
+
+        <select name="room_id" aria-labelledby="<?= _('Raum') ?>" onchange="this.form.submit()">
+            <option><?= _('Bitte wählen') ?></option>
+            <? foreach ($this->available_rooms as $room) : ?>
+                <option value="<?= $room->id ?>" <?= $resource && $resource->id === $room->id ? 'selected' : '' ?>>
+                    <?= htmlReady($room->name) ?>
+                </option>
+            <? endforeach ?>
+        </select>
+    </fieldset>
+</form>
 <? if ($resource): ?>
     <?
     $min_time = Config::get()->INSTITUTE_COURSE_PLAN_START_HOUR . ':00';
@@ -286,6 +300,6 @@
     </form>
 <? endif ?>
 
-<? if(!$requests && $resource) : ?>
+<? if (!$requests && $resource) : ?>
     <?= MessageBox::info(_('Es sind keine Anfragen vorhanden!')) ?>
 <? endif ?>
