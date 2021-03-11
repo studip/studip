@@ -27,7 +27,7 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         $this->current_user = User::findCurrent();
 
-        if (in_array($action, ['overview','planning', 'export_list', 'resolve', 'decline'])) {
+        if (in_array($action, ['overview', 'planning', 'export_list', 'resolve', 'decline'])) {
             $this->current_user = User::findCurrent();
             $user_is_global_resource_autor = ResourceManager::userHasGlobalPermission($this->current_user, 'autor');
             if (!RoomManager::userHasRooms($this->current_user, 'autor', true) && !$user_is_global_resource_autor) {
@@ -39,16 +39,20 @@ class Resources_RoomRequestController extends AuthenticatedController
 
             $this->filter =& $_SESSION[__CLASS__]['filter'];
 
-            if(in_array($action, ['resolve', 'decline'])) {
+            if (in_array($action, ['resolve', 'decline'])) {
                 $this->filter['get_only_request_ids'] = true;
                 $this->filter['filter_request_id'] = $args[0];
             } else {
                 $this->filter['get_only_request_ids'] = false;
             }
+            $this->filter['only_regular_dates'] = false;
+            if ($action === 'planning') {
+                $this->filter['only_regular_dates'] = true;
+            }
 
             if (Request::get('reset_filter')) {
                 $this->filter = [
-                    'marked' => -1,
+                    'marked'       => -1,
                     'own_requests' => 1
                 ];
             } else {
@@ -69,6 +73,10 @@ class Resources_RoomRequestController extends AuthenticatedController
                 if (Request::submitted('toggle_periodic_requests')) {
                     $this->filter['periodic_requests'] = $this->filter['periodic_requests'] ? 0 : 1;
                     $this->filter['aperiodic_requests'] = 0;
+                }
+                if (Request::submitted('disable_periodic_and_aperiodic_requests')) {
+                    $this->filter['aperiodic_requests'] = 0;
+                    $this->filter['periodic_requests'] = 0;
                 }
                 if (Request::submitted('toggle_aperiodic_requests')) {
                     $this->filter['aperiodic_requests'] = $this->filter['aperiodic_requests'] ? 0 : 1;
@@ -213,7 +221,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 )
             )';
         } elseif ($this->filter['periodic_requests']) {
-            $common_seminar_sql = '(resource_requests.metadate_id IN (
+            $common_seminar_sql = '(resource_requests.metadate_id != "" AND resource_requests.metadate_id IN (
                     SELECT metadate_id FROM seminar_cycle_dates
                     INNER JOIN seminare
                     USING (seminar_id)
@@ -314,9 +322,9 @@ class Resources_RoomRequestController extends AuthenticatedController
                 $course_types = [$course_type[1]];
             }
             $sql .= ' AND ' . sprintf(
-                $common_seminar_sql,
-                'seminare.status IN(:course_types)'
-            );
+                    $common_seminar_sql,
+                    'seminare.status IN(:course_types)'
+                );
             $sql_params[':course_types'] = $course_types;
         }
 
@@ -325,14 +333,16 @@ class Resources_RoomRequestController extends AuthenticatedController
             $sql = 'TRUE ';
         }
 
+        if ($this->filter['only_regular_dates']) {
+            $sql .= ' AND resource_requests.metadate_id != ""';
+        }
         $sql .= " GROUP BY resource_requests.id ORDER BY mkdate ASC";
-
         $requests = RoomRequest::findBySql($sql, $sql_params);
-        if($this->filter['get_only_request_ids']) {
+        if ($this->filter['get_only_request_ids']) {
             $request_ids = SimpleCollection::createFromArray($requests);
-            if($this->filter['filter_request_id']) {
+            if ($this->filter['filter_request_id']) {
                 $req_id = $this->filter['filter_request_id'];
-                $requests_ids = $request_ids->filter(function($req) use ($req_id) {
+                $requests_ids = $request_ids->filter(function ($req) use ($req_id) {
                     return $req->id !== $req_id;
                 });
             }
@@ -535,6 +545,11 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         $widget = new OptionsWidget(_('Filter'));
         $widget->addRadioButton(
+            _('Alle Anfragen'),
+            $this->overviewURL($this->filter['marked'] != '-1' ? ['marked' => '-1'] : []),
+            $this->filter['marked'] == -1
+        );
+        $widget->addRadioButton(
             _('Nur markierte Anfragen'),
             $this->overviewURL($this->filter['marked'] != '1' ? ['marked' => '1'] : []),
             $this->filter['marked'] == 1
@@ -545,6 +560,12 @@ class Resources_RoomRequestController extends AuthenticatedController
             $this->filter['marked'] == 0
         );
         $widget->addElement(new WidgetElement('<br>'));
+
+        $widget->addRadioButton(
+            _('Alle Termine'),
+            $this->overviewURL(['disable_periodic_and_aperiodic_requests' => 1]),
+            !$this->filter['periodic_requests'] && !$this->filter['aperiodic_requests']
+        );
         $widget->addRadioButton(
             _('Nur regelmäßige Termine'),
             $this->overviewURL(['toggle_periodic_requests' => 1]),
@@ -578,24 +599,24 @@ class Resources_RoomRequestController extends AuthenticatedController
             ),
             'dow-all'
         );
-        foreach (range(1,7) as $day) {
+        foreach (range(1, 7) as $day) {
             $dow_selector->addElement(new SelectElement(
-                $day, strftime('%A', strtotime('this monday +' . ($day-1) . ' day')), $this->filter['dow'] == $day
+                $day, strftime('%A', strtotime('this monday +' . ($day - 1) . ' day')), $this->filter['dow'] == $day
             ), 'dow-' . $day);
         }
         $sidebar->addWidget($dow_selector, 'filter-dow');
 
         $relevant_export_url_params = [
-            'institut_id' => 'institute',
-            'semester_id' => 'semester',
-            'course_type' => 'course_type',
-            'group' => 'group',
-            'room_id' => null,
-            'marked' => 'marked',
-            'toggle_periodic_requests' => 'periodic_requests',
+            'institut_id'               => 'institute',
+            'semester_id'               => 'semester',
+            'course_type'               => 'course_type',
+            'group'                     => 'group',
+            'room_id'                   => null,
+            'marked'                    => 'marked',
+            'toggle_periodic_requests'  => 'periodic_requests',
             'toggle_aperiodic_requests' => 'aperiodic_requests',
-            'toggle_specific_requests' => 'specific_requests',
-            'dow' => 'dow'
+            'toggle_specific_requests'  => 'specific_requests',
+            'dow'                       => 'dow'
         ];
         $export_url_params = [];
         foreach ($relevant_export_url_params as $param => $filter_name) {
@@ -931,9 +952,9 @@ class Resources_RoomRequestController extends AuthenticatedController
         //Since all Stud.IP users are allowed to create requests,
         //there is no restriction for creating requests.
         $user_may_edit_request = $this->resource->userHasPermission(
-            $current_user,
-            'autor'
-        ) || $this->request->user_id == $current_user->id;
+                $current_user,
+                'autor'
+            ) || $this->request->user_id == $current_user->id;
 
         if (!$user_may_edit_request) {
             throw new AccessDeniedException();
@@ -1123,9 +1144,9 @@ class Resources_RoomRequestController extends AuthenticatedController
         );
 
         $user_may_delete_request = ResourceManager::userHasGlobalPermission(
-            $this->current_user,
-            'autor'
-        ) || $this->request->user_id == $this->current_user->id;
+                $this->current_user,
+                'autor'
+            ) || $this->request->user_id == $this->current_user->id;
 
         if (!$user_may_delete_request) {
             throw new AccessDeniedException();
@@ -1173,10 +1194,10 @@ class Resources_RoomRequestController extends AuthenticatedController
             'autor'
         );
         $request_ids = $this->getFilteredRoomRequests();
-        if($request_ids) {
+        if ($request_ids) {
             $this->next_request = array_shift($request_ids);
         }
-        if($request_ids) {
+        if ($request_ids) {
             $this->prev_request = array_shift($request_ids);
         }
         //$this->current_user is set in the before_filter.
@@ -1235,7 +1256,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             //Get all single dates directly, ordered by date.
             $this->request_time_intervals = [
                 '' => [
-                    'metadate' => null,
+                    'metadate'  => null,
                     'intervals' => $this->request->getTimeIntervals(true, true)
                 ]
             ];
@@ -1366,7 +1387,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 $previously_selected_rooms = Resource::findBySql(
                     'id IN ( :room_ids ) AND id <> :request_room_id',
                     [
-                        'room_ids' => $previously_selected_room_ids,
+                        'room_ids'        => $previously_selected_room_ids,
                         'request_room_id' => $this->request->resource_id
                     ]
                 );
@@ -1584,7 +1605,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                             [
                                 [
                                     'begin' => $course_date->date,
-                                    'end' => $course_date->end_time
+                                    'end'   => $course_date->end_time
                                 ]
                             ],
                             null,
@@ -1621,7 +1642,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                                     [
                                         [
                                             'begin' => $date->date,
-                                            'end' => $date->end_time
+                                            'end'   => $date->end_time
                                         ]
                                     ],
                                     null,
@@ -1656,7 +1677,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                             [
                                 [
                                     'begin' => $this->request->begin,
-                                    'end' => $this->request->end
+                                    'end'   => $this->request->end
                                 ]
                             ],
                             null,
@@ -1723,10 +1744,10 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
         $this->delete_mode = Request::get('delete');
         $request_ids = $this->getFilteredRoomRequests();
-        if($request_ids) {
+        if ($request_ids) {
             $this->next_request = array_shift($request_ids);
         }
-        if($request_ids) {
+        if ($request_ids) {
             $this->prev_request = array_shift($request_ids);
         }
         if ($this->request->resource) {
@@ -1808,9 +1829,9 @@ class Resources_RoomRequestController extends AuthenticatedController
     protected function getSingleDateDataForExportRow(CourseDate $date)
     {
         return [
-            'date_amount' => '1',
-            'day_of_week' => getWeekday(date('w', $date->date)),
-            'time_string' => sprintf(
+            'date_amount'    => '1',
+            'day_of_week'    => getWeekday(date('w', $date->date)),
+            'time_string'    => sprintf(
                 '%1$s - %2$s',
                 date('H:i', $date->date),
                 date('H:i', $date->end_time)
@@ -1958,9 +1979,9 @@ class Resources_RoomRequestController extends AuthenticatedController
                         date('H:i', $interval['end'])
                     );
                     $date_data[] = [
-                        'date_amount' => '1',
-                        'day_of_week' => $day_of_week,
-                        'time_string' => $time_string,
+                        'date_amount'    => '1',
+                        'day_of_week'    => $day_of_week,
+                        'time_string'    => $time_string,
                         'first_date_str' => $first_date_str
                     ];
                 }
@@ -1970,7 +1991,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             foreach ($date_data as $date_row) {
                 $table_body[] = [
                     (                                  //Anfragende Person
-                        $request->user instanceof User
+                    $request->user instanceof User
                         ? $request->user->getFullName()
                         : ''
                     ),
@@ -2013,13 +2034,13 @@ class Resources_RoomRequestController extends AuthenticatedController
         $booking = ResourceBooking::find($booking_id);
         $cdate = CourseDate::find($booking->range_id);
 
-        if(!$cdate) {
+        if (!$cdate) {
             $this->response->add_header('X-Dialog-Close', 1);
             $this->render_nothing();
             return;
         }
 
-         if (Request::submitted('delete_confirm')) {
+        if (Request::submitted('delete_confirm')) {
             CSRFProtection::verifyUnsafeRequest();
 
             if (!$booking->resource->userHasPermission($this->current_user, 'tutor') && !$GLOBALS['perm']->have_perm('root')) {
@@ -2043,9 +2064,9 @@ class Resources_RoomRequestController extends AuthenticatedController
                 $request->setProperty('seats', $resource->getProperty('seats'));
             }
 
-            if($request->store()) {
+            if ($request->store()) {
                 $booking_deleted = false;
-                foreach($cycle->getAllDates() as $bcdate) {
+                foreach ($cycle->getAllDates() as $bcdate) {
                     $bcdate_booking = ResourceBooking::findOneBySQL('range_id=?', [$bcdate->id]);
                     if ($bcdate_booking && $bcdate_booking->resource_id == $booking->resource_id) {
                         $booking_deleted = boolVal($bcdate_booking->delete());
@@ -2074,9 +2095,9 @@ class Resources_RoomRequestController extends AuthenticatedController
         $this->booking = $booking;
 
         $this->user_has_user_perms = $this->booking->resource->userHasPermission(
-            $this->current_user,
-            'user'
-        ) || $GLOBALS['perm']->have_perm('root');
+                $this->current_user,
+                'user'
+            ) || $GLOBALS['perm']->have_perm('root');
 
         if (!$this->user_has_user_perms) {
             $resource = $this->booking->resource->getDerivedClassInstance();
@@ -2155,7 +2176,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     [
                         [
                             'begin' => $course_date->date,
-                            'end' => $course_date->end_time
+                            'end'   => $course_date->end_time
                         ]
                     ],
                     null,
@@ -2191,7 +2212,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                             [
                                 [
                                     'begin' => $date->date,
-                                    'end' => $date->end_time
+                                    'end'   => $date->end_time
                                 ]
                             ],
                             null,
@@ -2226,7 +2247,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     [
                         [
                             'begin' => $this->request->begin,
-                            'end' => $this->request->end
+                            'end'   => $this->request->end
                         ]
                     ],
                     null,
@@ -2388,30 +2409,26 @@ class Resources_RoomRequestController extends AuthenticatedController
         $sidebar->addWidget($widget);
 
         $widget = new OptionsWidget(_('Filter'));
-        $widget->addCheckbox(
+        $widget->addRadioButton(
+            _('Alle Anfragen'),
+            $this->planningURL($this->filter['marked'] != '-1' ? ['marked' => '-1'] : []),
+            $this->filter['marked'] == -1
+        );
+        $widget->addRadioButton(
             _('Nur markierte Anfragen'),
-            $this->filter['marked'] == 1,
-            $this->planningURL($this->filter['marked'] != '1' ? ['marked' => '1'] : [])
+            $this->planningURL($this->filter['marked'] != '1' ? ['marked' => '1'] : []),
+            $this->filter['marked'] == 1
         );
-        $widget->addCheckbox(
+        $widget->addRadioButton(
             _('Nur unmarkierte Anfragen'),
-            $this->filter['marked'] == 0,
-            $this->planningURL($this->filter['marked'] != '0' ? ['marked' => '0'] : [])
+            $this->planningURL($this->filter['marked'] != '0' ? ['marked' => '0'] : []),
+            $this->filter['marked'] == 0
         );
-        $widget->addCheckbox(
-            _('Nur regelmäßige Termine'),
-            $this->filter['periodic_requests'],
-            $this->planningURL(['toggle_periodic_requests' => 1])
-        );
-        $widget->addCheckbox(
-            _('Nur unregelmäßige Termine'),
-            $this->filter['aperiodic_requests'],
-            $this->planningURL(['toggle_aperiodic_requests' => 1])
-        );
+        $widget->addElement(new WidgetElement('<br>'));
         $widget->addCheckbox(
             _('Nur mit Raumangabe'),
+            $this->planningURL(['toggle_specific_requests' => 1]),
             $this->filter['specific_requests'],
-            $this->planningURL(['toggle_specific_requests' => 1])
         );
         $widget->addCheckbox(
             _('Eigene Anfragen anzeigen'),
@@ -2441,13 +2458,13 @@ class Resources_RoomRequestController extends AuthenticatedController
                 $this->semester = Semester::find(Semester::findCurrent()->id);
             }
 
-            $booking_colour                        = ColourValue::find('Resources.BookingPlan.Booking.Bg');
-            $course_booking_colour                 = ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
-            $lock_colour                           = ColourValue::find('Resources.BookingPlan.Lock.Bg');
-            $preparation_colour                    = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
-            $reservation_colour                    = ColourValue::find('Resources.BookingPlan.Reservation.Bg');
-            $request_colour                        = ColourValue::find('Resources.BookingPlan.Request.Bg');
-            $this->table_keys                      = [
+            $booking_colour = ColourValue::find('Resources.BookingPlan.Booking.Bg');
+            $course_booking_colour = ColourValue::find('Resources.BookingPlan.CourseBooking.Bg');
+            $lock_colour = ColourValue::find('Resources.BookingPlan.Lock.Bg');
+            $preparation_colour = ColourValue::find('Resources.BookingPlan.PreparationTime.Bg');
+            $reservation_colour = ColourValue::find('Resources.BookingPlan.Reservation.Bg');
+            $request_colour = ColourValue::find('Resources.BookingPlan.Request.Bg');
+            $this->table_keys = [
                 [
                     'colour' => (string)$booking_colour,
                     'text'   => _('Manuelle Buchung')
