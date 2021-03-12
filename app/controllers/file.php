@@ -534,13 +534,13 @@ class FileController extends AuthenticatedController
             if (!$plugin) {
                 throw new Trails_Exception(404, _('Plugin existiert nicht.'));
             }
-            $this->file_ref = $plugin->getPreparedFile($file_id);
+            $this->file = $plugin->getPreparedFile($file_id);
             $this->from_plugin = Request::get("from_plugin");
         } else {
             $this->file_ref = FileRef::find($file_ref_id);
             $this->file = $this->file_ref->getFileType();
         }
-        $this->folder = $this->file_ref->foldertype;
+        $this->folder = $this->file->getFolderType();
 
         if (!$this->file->isEditable($GLOBALS['user']->id)) {
             throw new AccessDeniedException();
@@ -556,13 +556,17 @@ class FileController extends AuthenticatedController
             //Form was sent
             if (Request::isPost() && is_array($_FILES['file'])) {
 
-                $result = FileManager::updateFileRef(
-                    $this->file_ref,
-                    User::findCurrent(),
-                    $_FILES['file'],
-                    $update_filename,
-                    $update_all_instances
-                );
+                if ($this->file_ref) {
+                    $result = FileManager::updateFileRef(
+                        $this->file_ref,
+                        User::findCurrent(),
+                        $_FILES['file'],
+                        $update_filename,
+                        $update_all_instances
+                    );
+                } else {
+
+                }
 
                 if (!$result instanceof FileRef) {
                     $this->errors = array_merge($this->errors, $result);
@@ -811,6 +815,7 @@ class FileController extends AuthenticatedController
                 $this->to_folder_type = new StandardFolder($folder);
             }
         }
+
         if (Request::get('to_plugin')) {
             $folder_id = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], "dispatch.php/file/choose_folder") + strlen("dispatch.php/file/choose_folder"));
             if (strpos($folder_id, "?") !== false) {

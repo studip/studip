@@ -1,4 +1,4 @@
-<form action="<?= $controller->link_for('file/update/' . $file_ref->id, ['from_plugin' => $from_plugin]) ?>"
+<form action="<?= $controller->link_for('file/update/' . $file->getId(), ['from_plugin' => $from_plugin]) ?>"
       enctype="multipart/form-data" method="post" class="default">
 
     <?= CSRFProtection::tokenTag() ?>
@@ -7,7 +7,7 @@
         <label class="file-upload">
             <?= sprintf(
                 _('Bitte die neue Version der Datei %s auswählen.'),
-                htmlReady($file_ref->name)
+                htmlReady($file->getFilename())
             ) ?>
             <input type="file" name="file">
         </label>
@@ -15,13 +15,17 @@
             <input type="checkbox" name="update_filename" value="1">
             <?= _('Dateinamen aus neuer Dateiversion übernehmen.') ?>
         </label>
-    <? $count = count($file_ref->file->refs) ?>
-    <? if ($count > 1) : ?>
-        <label>
-            <input type="checkbox" name="update_all_instances" value="1">
-            <?= sprintf(_('Alle weiteren %u Vorkommen aktualisieren.'), $count - 1) ?>
-        </label>
-    <? endif ?>
+        <? if ($file_ref) : ?>
+            <? $count = count($file_ref->file->refs) ?>
+            <? if ($count > 1) : ?>
+                <label>
+                    <input type="checkbox" name="update_all_instances" value="1">
+                    <?= sprintf(_('Alle weiteren %u Vorkommen aktualisieren.'), $count - 1) ?>
+                </label>
+            <? endif ?>
+        <? endif ?>
+
+
     </fieldset>
     <footer data-dialog-button>
         <?= Studip\Button::createAccept(_('Aktualisieren'), 'confirm') ?>
