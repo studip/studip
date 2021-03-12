@@ -70,17 +70,13 @@ class Resources_RoomRequestController extends AuthenticatedController
                 if (Request::submitted('marked')) {
                     $this->filter['marked'] = Request::get('marked');
                 }
-                if (Request::submitted('toggle_periodic_requests')) {
-                    $this->filter['periodic_requests'] = $this->filter['periodic_requests'] ? 0 : 1;
-                    $this->filter['aperiodic_requests'] = 0;
-                }
-                if (Request::submitted('disable_periodic_and_aperiodic_requests')) {
-                    $this->filter['aperiodic_requests'] = 0;
-                    $this->filter['periodic_requests'] = 0;
-                }
-                if (Request::submitted('toggle_aperiodic_requests')) {
-                    $this->filter['aperiodic_requests'] = $this->filter['aperiodic_requests'] ? 0 : 1;
-                    $this->filter['periodic_requests'] = 0;
+                if (Request::submitted('request_periods')) {
+                    $request_periods = Request::get('request_periods');
+                    if (in_array($request_periods, ['aperiodic', 'periodic'])) {
+                        $this->filter['request_periods'] = $request_periods;
+                    } else {
+                        $this->filter['request_periods'] = null;
+                    }
                 }
                 if (Request::submitted('toggle_specific_requests')) {
                     $this->filter['specific_requests'] = $this->filter['specific_requests'] ? 0 : 1;
@@ -201,7 +197,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
         $common_seminar_sql = '';
 
-        if (!$this->filter['periodic_requests'] && !$this->filter['aperiodic_requests']) {
+        if (!$this->filter['request_periods']) {
             $common_seminar_sql = '(resource_requests.course_id IN (
                 SELECT seminar_id FROM seminare
                 WHERE %1$s
@@ -220,16 +216,20 @@ class Resources_RoomRequestController extends AuthenticatedController
                     WHERE %1$s
                 )
             )';
-        } elseif ($this->filter['periodic_requests']) {
-            $common_seminar_sql = '(resource_requests.metadate_id != "" AND resource_requests.metadate_id IN (
+        } elseif ($this->filter['request_periods'] == 'periodic') {
+            $common_seminar_sql = '(resource_requests.metadate_id <> \'\'
+                 AND resource_requests.metadate_id IN (
                     SELECT metadate_id FROM seminar_cycle_dates
                     INNER JOIN seminare
                     USING (seminar_id)
                     WHERE %1$s
                 )
             )';
-        } elseif ($this->filter['aperiodic_requests']) {
-            $common_seminar_sql = '(resource_requests.termin_id IN (
+        } elseif ($this->filter['request_periods'] == 'aperiodic') {
+            $common_seminar_sql = '((resource_requests.metadate_id = \'\'
+                    OR resource_requests.metadate_id IS NULL
+                )
+                AND resource_requests.termin_id IN (
                     SELECT termin_id from termine
                     INNER JOIN seminare
                     ON termine.range_id = seminare.seminar_id
@@ -301,7 +301,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                     AND seminare.start_time = :semester_begin)
                     ) ";
 
-                if (!$this->filter['periodic_requests'] && !$this->filter['aperiodic_requests']) {
+                if (!$this->filter['request_periods']) {
                     $sql .= ' OR (
                             ((CAST(resource_requests.begin AS SIGNED) - resource_requests.preparation_time)
                              BETWEEN :semester_begin AND :semester_end)
@@ -326,6 +326,8 @@ class Resources_RoomRequestController extends AuthenticatedController
                     'seminare.status IN(:course_types)'
                 );
             $sql_params[':course_types'] = $course_types;
+        } else if ($this->filter['request_periods']) {
+            $sql .= ' AND ' . sprintf($common_seminar_sql, 'TRUE');
         }
 
         if (!$sql) {
@@ -563,18 +565,18 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         $widget->addRadioButton(
             _('Alle Termine'),
-            $this->overviewURL(['disable_periodic_and_aperiodic_requests' => 1]),
-            !$this->filter['periodic_requests'] && !$this->filter['aperiodic_requests']
+            $this->overviewURL(['request_periods' => '0']),
+            !$this->filter['request_periods']
         );
         $widget->addRadioButton(
             _('Nur regelmäßige Termine'),
-            $this->overviewURL(['toggle_periodic_requests' => 1]),
-            $this->filter['periodic_requests']
+            $this->overviewURL(['request_periods' => 'periodic']),
+            $this->filter['request_periods'] == 'periodic'
         );
         $widget->addRadioButton(
             _('Nur unregelmäßige Termine'),
-            $this->overviewURL(['toggle_aperiodic_requests' => 1]),
-            $this->filter['aperiodic_requests']
+            $this->overviewURL(['request_periods' => 'aperiodic']),
+            $this->filter['request_periods'] == 'aperiodic'
         );
         $widget->addElement(new WidgetElement('<br>'));
         $widget->addCheckbox(
@@ -613,8 +615,7 @@ class Resources_RoomRequestController extends AuthenticatedController
             'group'                     => 'group',
             'room_id'                   => null,
             'marked'                    => 'marked',
-            'toggle_periodic_requests'  => 'periodic_requests',
-            'toggle_aperiodic_requests' => 'aperiodic_requests',
+            'request_periods'           => 'request_periods',
             'toggle_specific_requests'  => 'specific_requests',
             'dow'                       => 'dow'
         ];
