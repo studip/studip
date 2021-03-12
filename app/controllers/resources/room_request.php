@@ -2410,7 +2410,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         $widget->addCheckbox(
             _('Nur mit Raumangabe'),
             $this->planningURL(['toggle_specific_requests' => 1]),
-            $this->filter['specific_requests'],
+            $this->filter['specific_requests']
         );
         $widget->addCheckbox(
             _('Eigene Anfragen anzeigen'),
