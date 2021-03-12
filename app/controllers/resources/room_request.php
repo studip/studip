@@ -45,9 +45,9 @@ class Resources_RoomRequestController extends AuthenticatedController
             } else {
                 $this->filter['get_only_request_ids'] = false;
             }
-            $this->filter['only_regular_dates'] = false;
+
             if ($action === 'planning') {
-                $this->filter['only_regular_dates'] = true;
+                $this->filter['request_periods'] ='periodic';
             }
 
             if (Request::get('reset_filter')) {
@@ -335,9 +335,6 @@ class Resources_RoomRequestController extends AuthenticatedController
             $sql = 'TRUE ';
         }
 
-        if ($this->filter['only_regular_dates']) {
-            $sql .= ' AND resource_requests.metadate_id != ""';
-        }
         $sql .= " GROUP BY resource_requests.id ORDER BY mkdate ASC";
         $requests = RoomRequest::findBySql($sql, $sql_params);
         if ($this->filter['get_only_request_ids']) {
@@ -788,7 +785,6 @@ class Resources_RoomRequestController extends AuthenticatedController
             $begin->add(new DateInterval('P1D'));
             $begin->setTime(
                 $begin->format('H'),
-                0,
                 0
             );
             $end = clone($begin);
@@ -2417,8 +2413,8 @@ class Resources_RoomRequestController extends AuthenticatedController
         $widget->addElement(new WidgetElement('<br>'));
         $widget->addCheckbox(
             _('Nur mit Raumangabe'),
-            $this->planningURL(['toggle_specific_requests' => 1]),
-            $this->filter['specific_requests']
+            $this->filter['specific_requests'],
+            $this->planningURL(['toggle_specific_requests' => 1])
         );
         $widget->addCheckbox(
             _('Eigene Anfragen anzeigen'),
