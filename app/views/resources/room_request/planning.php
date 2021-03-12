@@ -3,7 +3,7 @@
         <legend><?= _('Bitte wählen Sie einen Raum aus') ?></legend>
 
         <select name="room_id" aria-labelledby="<?= _('Raum') ?>" onchange="this.form.submit()">
-            <option><?= _('Bitte wählen') ?></option>
+            <option value=""><?= _('Bitte wählen') ?></option>
             <? foreach ($this->available_rooms as $room) : ?>
                 <option value="<?= $room->id ?>" <?= $resource && $resource->id === $room->id ? 'selected' : '' ?>>
                     <?= htmlReady($room->name) ?>
