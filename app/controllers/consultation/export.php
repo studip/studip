@@ -14,7 +14,7 @@ class Consultation_ExportController extends ConsultationController
     {
         parent::before_filter($action, $args);
 
-        if (!$this->range->userMayEditRange()) {
+        if (!$this->range->isEditableByUser()) {
             throw new AccessDeniedException();
         }
     }

@@ -79,7 +79,7 @@ abstract class ConsultationController extends AuthenticatedController
 
         $block = ConsultationBlock::find($block_id);
 
-        if (!$block->range->userMayAccessRange()) {
+        if (!$block->range->isVisibleToUser()) {
             throw new AccessDeniedException();
         }
 

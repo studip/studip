@@ -273,7 +273,7 @@ class Institute extends SimpleORMap implements Range
      * @return bool
      * @todo Check permissions
      */
-    public function userMayAccessRange($user_id = null)
+    public function isVisibleToUser($user_id = null)
     {
         return true;
     }
@@ -285,7 +285,7 @@ class Institute extends SimpleORMap implements Range
      * @return bool
      * @todo Check permissions
      */
-    public function userMayEditRange($user_id = null)
+    public function isEditableByUser($user_id = null)
     {
         if ($user_id === null) {
             $user_id = $GLOBALS['user']->id;
@@ -302,7 +302,7 @@ class Institute extends SimpleORMap implements Range
      * @return bool
      * @todo Check permissions
      */
-    public function userMayManageRange($user_id = null)
+    public function isManagableByUser($user_id = null)
     {
         if ($user_id === null) {
             $user_id = $GLOBALS['user']->id;
@@ -310,15 +310,5 @@ class Institute extends SimpleORMap implements Range
         $member = $this->members->findOneBy('user_id', $user_id);
         return ($member && $member->status === 'admin')
             || User::find($user_id)->perms === 'root';
-    }
-
-    /**
-     * @param  string|null $user_id
-     * @return bool
-     * @deprecated since Stud.IP 5.0
-     */
-    public function userMayAdministerRange($user_id = null)
-    {
-        return $this->userMayManageRange($user_id);
     }
 }

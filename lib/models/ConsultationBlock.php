@@ -270,7 +270,7 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
      */
     public function isVisibleForUser($user_id = null)
     {
-        return $this->range->userMayAccessRange();
+        return $this->range->isVisibleToUser();
     }
 
     /**

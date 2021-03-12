@@ -536,7 +536,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
      * @return bool
      * @todo Check permissions
      */
-    public function userMayAccessRange($user_id = null)
+    public function isVisibleToUser($user_id = null)
     {
         if ($user_id === null) {
             $user_id = $GLOBALS['user']->id;
@@ -551,7 +551,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
      * @return bool
      * @todo Check permissions
      */
-    public function userMayEditRange($user_id = null)
+    public function isEditableByUser($user_id = null)
     {
         if ($user_id === null) {
             $user_id = $GLOBALS['user']->id;
@@ -566,22 +566,12 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
      * @return bool
      * @todo Check permissions
      */
-    public function userMayManageRange($user_id = null)
+    public function isManagableByUser($user_id = null)
     {
         if ($user_id === null) {
             $user_id = $GLOBALS['user']->id;
         }
         return $GLOBALS['perm']->have_studip_perm('admin', $this->id, $user_id);
-    }
-
-    /**
-     * @param  string|null $user_id
-     * @return bool
-     * @deprecated since Stud.IP 5.0
-     */
-    public function userMayAdministerRange($user_id = null)
-    {
-        return $this->userMayManageRange($user_id);
     }
 
     /**

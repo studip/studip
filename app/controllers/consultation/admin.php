@@ -16,7 +16,7 @@ class Consultation_AdminController extends ConsultationController
     {
         parent::before_filter($action, $args);
 
-        if (!$this->range->userMayEditRange()) {
+        if (!$this->range->isEditableByUser()) {
             throw new AccessDeniedException();
         }
 

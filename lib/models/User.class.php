@@ -1380,7 +1380,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
      * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      */
-    public function userMayAccessRange($user_id = null)
+    public function isVisibleToUser($user_id = null)
     {
         // TODO: Visibility checks
         if ($user_id === null) {
@@ -1397,7 +1397,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
      * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      */
-    public function userMayEditRange($user_id = null)
+    public function isEditableByUser($user_id = null)
     {
         if ($user_id === null) {
             $user_id = $GLOBALS['user']->id;
@@ -1412,19 +1412,9 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
      * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      */
-    public function userMayManageRange($user_id = null)
+    public function isManagableByUser($user_id = null)
     {
-        return $this->userMayEditRange($user_id);
-    }
-
-    /**
-     * @param  string|null $user_id
-     * @return bool
-     * @deprecated since Stud.IP 5.0
-     */
-    public function userMayAdministerRange($user_id = null)
-    {
-        return $this->userMayManageRange($user_id);
+        return $this->isEditableByUser($user_id);
     }
 
     /**

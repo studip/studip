@@ -14,7 +14,7 @@ class ConsultationNavigation extends Navigation
     {
         parent::initItem();
 
-        if ($this->range->userMayEditRange()) {
+        if ($this->range->isEditableByUser()) {
             $this->setURL('dispatch.php/consultation/admin');
         }
     }
@@ -45,7 +45,7 @@ class ConsultationNavigation extends Navigation
     {
         parent::initSubNavigation();
 
-        if ($this->range->userMayEditRange()) {
+        if ($this->range->isEditableByUser()) {
             $this->addSubNavigation('admin', new Navigation(
                 _('Verwaltung'),
                 'dispatch.php/consultation/admin'

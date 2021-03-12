@@ -1,7 +1,10 @@
 <?php
 // "Rules"/definitions for critical changes in 5.0
 return [
-    'userMayAdministerRange' => '#{Changed} - Use #{yellow:userMayManageRange} instead',
+    // https://develop.studip.de/trac/ticket/11250
+    'userMayAccessRange' => '#{Changed} - Use #{yellow:isVisibleToUser} instead',
+    'userMayEditRange' => '#{Changed} - Use #{yellow:isEditableByUser} instead',
+    'userMayAdministerRange' => '#{Changed} - Use #{yellow:isManagableByUser} instead',
 
     // UTF8-Encode/Decode legacy functions
     'studip_utf8encode' => '#{red:Removed} - Use utf8_encode().',
