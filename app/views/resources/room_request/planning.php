@@ -1,8 +1,8 @@
 <form method="get" class="default" action="<?= $controller->planning() ?>">
     <fieldset>
-        <legend><?= _('Bitte wählen Sie einen Raum aus') ?></legend>
+        <legend><?= _('Raumauswahl') ?></legend>
 
-        <select name="room_id" aria-labelledby="<?= _('Raum') ?>" onchange="this.form.submit()">
+        <select name="room_id" aria-labelledby="<?= _('Bitte wählen Sie einen Raum aus') ?>" onchange="this.form.submit()">
             <option value=""><?= _('Bitte wählen') ?></option>
             <? foreach ($this->available_rooms as $room) : ?>
                 <option value="<?= $room->id ?>" <?= $resource && $resource->id === $room->id ? 'selected' : '' ?>>
