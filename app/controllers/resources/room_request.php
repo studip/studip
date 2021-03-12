@@ -1338,12 +1338,13 @@ class Resources_RoomRequestController extends AuthenticatedController
             //If no room is selected, it cannot be declared fully available.
             $this->requested_room_fully_available = false;
             $this->room_availability_share[$selected_room->id] = 0.0;
-            if (!$this->expand_metadates) {
-                foreach ($this->request_time_intervals as $data) {
-                    if ($data['metadate'] instanceof SeminarCycleDate) {
-                        $this->show_expand_metadates_button = true;
-                        break;
-                    }
+            foreach ($this->request_time_intervals as $data) {
+                if ($data['metadate'] instanceof SeminarCycleDate && !$this->expand_metadates) {
+                    $this->show_expand_metadates_button = true;
+                    $this->visible_dates++;
+                    break;
+                } else {
+                    $this->visible_dates += count($data['intervals']);
                 }
             }
         }
@@ -1537,6 +1538,12 @@ class Resources_RoomRequestController extends AuthenticatedController
             $this->request->reply_comment = $this->reply_comment;
             if ($this->request->isDirty()) {
                 $this->request->store();
+            }
+            if (!$this->selected_rooms) {
+                PageLayout::postError(
+                    _('Es wurde kein Raum ausgewählt!')
+                );
+                return;
             }
 
             if (count($this->selected_rooms) < $this->visible_dates && !$force_resolve) {
