@@ -361,16 +361,17 @@ class FileController extends AuthenticatedController
                 throw new Trails_Exception(404, _('Plugin existiert nicht.'));
             }
 
-            $this->file_ref = $plugin->getPreparedFile($file_id);
+            $this->file = $plugin->getPreparedFile($file_id);
             $this->from_plugin = Request::get("from_plugin");
 
         } else {
             $this->file_ref = FileRef::find($file_ref_id);
+            $this->file = $this->file_ref->getFileType();
         }
-        $this->file = $this->file_ref->getFileType();
-        $this->folder = $this->file_ref->foldertype;
 
-        if (!$this->folder || !$this->folder->isFileEditable($this->file_ref->id, $GLOBALS['user']->id)) {
+        $this->folder = $this->file->getFoldertype();
+
+        if (!$this->folder || !$this->folder->isFileEditable($this->file->getId(), $GLOBALS['user']->id)) {
             throw new AccessDeniedException();
         }
 
@@ -477,12 +478,12 @@ class FileController extends AuthenticatedController
             }
         }
 
-        $this->name = $this->file_ref->name;
-        if ($this->file_ref->isLink()) {
+        $this->name = $this->file->getFilename();
+        if (false && $this->file_ref->isLink()) {
             $this->url = $this->file_ref->file->getURL();
         }
-        $this->description = $this->file_ref->description;
-        $this->content_terms_of_use_id = $this->file_ref->content_terms_of_use_id;
+        $this->description = $this->file->getDescription();
+        $this->content_terms_of_use = $this->file->getTermsOfUse();
     }
 
     public function edit_urlfile_action($file_ref_id)
@@ -811,9 +812,12 @@ class FileController extends AuthenticatedController
             }
         }
         if (Request::get('to_plugin')) {
-            $folder_id = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], "dispatch.php/file/choose_folder/") + strlen("dispatch.php/file/choose_folder/"));
+            $folder_id = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], "dispatch.php/file/choose_folder") + strlen("dispatch.php/file/choose_folder"));
             if (strpos($folder_id, "?") !== false) {
                 $folder_id = substr($folder_id, 0, strpos($folder_id, "?"));
+            }
+            if ($folder_id[0] === "/") {
+                $folder_id = substr($folder_id, 1);
             }
 
             $this->filesystemplugin = PluginManager::getInstance()->getPlugin(Request::get('to_plugin'));
@@ -1257,14 +1261,14 @@ class FileController extends AuthenticatedController
 
     public function choose_file_action($folder_id = null)
     {
-        if (!Request::get('to_folder_id')) {
-            throw new Exception('target folder_id must be set.');
-        }
         if (Request::get('to_plugin')) {
             $to_plugin = PluginManager::getInstance()->getPlugin(Request::get('to_plugin'));
-            $this->to_folder_type = $to_plugin->getFolder(Request::get('to_folder_id'));
+            $this->to_folder_type = $to_plugin->getFolder(Request::get('to_folder_id', ''));
         } else {
-            $folder = new Folder(Request::option('to_folder_id'));
+            if (!Request::get('to_folder_id')) {
+                throw new Exception('target folder_id must be set.');
+            }
+            $folder = new Folder(Request::option('to_folder_id', ''));
             $this->to_folder_type = $folder->getTypedFolder();
         }
 
@@ -1272,51 +1276,48 @@ class FileController extends AuthenticatedController
             //copy
             if (Request::get('from_plugin')) {
                 $plugin = PluginManager::getInstance()->getPlugin(Request::get('from_plugin'));
-                $filedata = $file = $plugin->getPreparedFile(Request::get('file_id'), true);
-                if (!isset($file['tmp_name'])) {
-                    if ($file->path_to_blob) {
-                        //Cloud-file
-                        $fileobject = [
-                            'name' => $file['name'],
-                            'tmp_name' => $file->path_to_blob,
-                            'type' => $file->mime_type ?: get_mime_type($file['name']),
-                            'size' => $file->size
-                        ];
-                        $file = $fileobject;
-                    } elseif($file['url']) {
-                        //URL-file
-                        $fileobject = new File();
-                        $fileobject->url = $file['url'];
-                        $fileobject->name = $file['name'];
-                        $fileobject->url_access_type = $file['url_access_type'] ?: 'redirect';
-
-                        $meta = FileManager::fetchURLMetadata($file['url']);
-                        if ($meta['response_code'] === 200) {
-                            if (!$fileobject->name) {
-                                $fileobject->name = $meta['filename'] ?: 'unknown';
-                            }
-                            $fileobject->size = $meta['Content-Length'];
-                            $fileobject->mime_type = mb_strstr($meta['Content-Type'], ';', true);
-                        }
-
-                        $file = $fileobject;
-                    }
-                }
+                $file = $plugin->getPreparedFile(Request::get('file_id'), true);
             } else {
                 $from_file_ref = FileRef::find(Request::get('file_id'));
-                $file = $from_file_ref->file;
+                $file = $from_file_ref->getFileType();
             }
 
-            $error = $this->to_folder_type->validateUpload($file, $GLOBALS['user']->id);
-            if (!$error) {
-                if ($from_file_ref) {
-                    $file_ref = FileManager::copyFileRef($from_file_ref, $this->to_folder_type, User::findCurrent());
-                } else {
-                    //do the copy
-                    $file_ref = $this->to_folder_type->addFile($file);
+            $newfile = FileManager::copyFile(
+                $file,
+                $this->to_folder_type,
+                User::findCurrent()
+            );
+
+            if (Request::isXhr()) {
+                $this->current_folder = $this->to_folder_type;
+                $this->marked_element_ids = [];
+
+                $plugins = PluginManager::getInstance()->getPlugins('FileUploadHook');
+
+                $redirects = [];
+                foreach ($plugins as $plugin) {
+                    $url = $plugin->getAdditionalUploadWizardPage($newfile);
+                    if ($url) {
+                        $redirects[] = $url;
+                    }
                 }
+                $payload = [
+                    'html'     => FilesystemVueDataManager::getFileVueData($newfile, $this->current_folder),
+                    'redirect' => $redirects[0],
+                    'url'      => $this->generateFilesUrl($this->current_folder, $newfile),
+                ];
+
+                $this->response->add_header(
+                    'X-Dialog-Execute',
+                    'STUDIP.Files.addFile'
+                );
+                return $this->render_json($payload);
+            } else {
+                PageLayout::postSuccess(_('Datei wurde hinzugefügt.'));
+                return $this->redirectToFolder($this->to_folder_type);
             }
-            if ($file_ref instanceof FileRef) {
+
+            /*if ($file_ref instanceof FileRef) {
                 if (in_array($this->to_folder_type->range_type, ['course', 'institute']) && !$file_ref->content_terms_of_use_id) {
                     $this->redirect($this->url_for(
                         "file/edit_license/{$this->to_folder_type->getId()}",
@@ -1360,7 +1361,7 @@ class FileController extends AuthenticatedController
                     $error = [$error];
                 }
                 PageLayout::postError(_('Konnte die Datei nicht hinzufügen.'), array_map('htmlReady', $error));
-            }
+            }*/
         }
 
         if (Request::get('from_plugin')) {

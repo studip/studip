@@ -22,7 +22,7 @@
 
             <?= $this->render_partial('file/_terms_of_use_select.php', [
                 'content_terms_of_use_entries' => $content_terms_of_use_entries,
-                'selected_terms_of_use_id'     => $content_terms_of_use_id,
+                'selected_terms_of_use_id'     => $content_terms_of_use->id,
             ]) ?>
 
             <footer data-dialog-button>

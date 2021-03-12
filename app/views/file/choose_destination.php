@@ -25,43 +25,47 @@ $options = array_filter([
 <? endif ?>
 
     <div class="file_select_possibilities">
-    <? if (isset($parent_folder) && ($parent_folder->isWritable($GLOBALS['user']->id) || count($parent_folder->getSubfolders()))): ?>
-        <!-- neu -->
-        <button formaction="<?= $controller->link_for('/choose_folder/' . $parent_folder->getId()) ?>" <? if ($options['from_plugin']): ?> name="to_plugin" value="<?= htmlReady($options['from_plugin']) ?>"<? endif; ?>>
-            <?= Icon::create('folder-parent', Icon::ROLE_CLICKABLE)->asImg(50) ?>
-            <?= _('Aktueller Ordner') ?>
-        </button>
-    <? endif ?>
-        <!-- neu -->
-        <button formaction="<?= $controller->link_for('/choose_folder/' . Folder::findTopFolder($GLOBALS['user']->id)->getId()) ?>">
-            <?= Icon::create('files')->asImg(50) ?>
-            <?= _('Meine Dateien') ?>
-        </button>
-
-        <!-- neu -->
-        <button formaction="<?= $controller->link_for('/choose_folder_from_course') ?>">
-            <?= Icon::create('seminar')->asImg(50) ?>
-            <?= _('Meine Veranstaltungen') ?>
-        </button>
-
-        <!-- neu -->
-        <button formaction="<?= $controller->link_for('/choose_folder_from_institute') ?>">
-            <?= Icon::create('institute')->asImg(50) ?>
-            <?= _('Meine Einrichtungen') ?>
-        </button>
-
-    <? foreach (PluginManager::getInstance()->getPlugins('FilesystemPlugin') as $plugin) : ?>
-        <? if ($plugin->isPersonalFileArea()) : ?>
-            <? $nav = $plugin->getFileSelectNavigation() ?>
-            <? if ($nav) : ?>
-                <!-- neu -->
-                <button formaction="<?= $controller->link_for('/choose_folder') ?>" name="to_plugin" value="<?= htmlReady(get_class($plugin)) ?>">
-                    <?= $nav->getImage()->asImg(50) ?>
-                    <?= htmlReady($nav->getTitle()) ?>
-                </button>
-            <? endif ?>
+        <div>
+        <? if (isset($parent_folder) && ($parent_folder->isWritable($GLOBALS['user']->id) || count($parent_folder->getSubfolders()))): ?>
+            <!-- neu -->
+            <button formaction="<?= $controller->link_for('/choose_folder/' . $parent_folder->getId()) ?>" <? if ($options['from_plugin']): ?> name="to_plugin" value="<?= htmlReady($options['from_plugin']) ?>"<? endif; ?>>
+                <?= Icon::create('folder-parent', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                <?= _('Aktueller Ordner') ?>
+            </button>
         <? endif ?>
-    <? endforeach ?>
+            <!-- neu -->
+            <button formaction="<?= $controller->link_for('/choose_folder/' . Folder::findTopFolder($GLOBALS['user']->id)->getId()) ?>">
+                <?= Icon::create('files')->asImg(50) ?>
+                <?= _('Meine Dateien') ?>
+            </button>
+
+            <!-- neu -->
+            <button formaction="<?= $controller->link_for('/choose_folder_from_course') ?>">
+                <?= Icon::create('seminar')->asImg(50) ?>
+                <?= _('Meine Veranstaltungen') ?>
+            </button>
+
+            <!-- neu -->
+            <button formaction="<?= $controller->link_for('/choose_folder_from_institute') ?>">
+                <?= Icon::create('institute')->asImg(50) ?>
+                <?= _('Meine Einrichtungen') ?>
+            </button>
+
+        <? foreach (PluginManager::getInstance()->getPlugins('FilesystemPlugin') as $plugin) : ?>
+            <? if ($plugin->isPersonalFileArea()) : ?>
+                <? $nav = $plugin->getFileSelectNavigation() ?>
+                <? if ($nav) : ?>
+                    <!-- neu -->
+                    <button formaction="<?= $controller->link_for('/choose_folder') ?>"
+                            name="to_plugin"
+                            value="<?= htmlReady(get_class($plugin)) ?>">
+                        <?= $nav->getImage()->asImg(50) ?>
+                        <?= htmlReady($nav->getTitle()) ?>
+                    </button>
+                <? endif ?>
+            <? endif ?>
+        <? endforeach ?>
+        </div>
     </div>
 
 

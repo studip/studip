@@ -535,6 +535,9 @@ class FilesController extends AuthenticatedController
      */
     public function index_action($topFolderId = '')
     {
+        if (Request::get("from_plugin")) {
+            $this->redirect("files/index/".$topFolderId);
+        }
         if (Navigation::hasItem('/files/my_files')) {
             Navigation::activateItem('/files/my_files');
         }

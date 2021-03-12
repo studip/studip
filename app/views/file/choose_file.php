@@ -115,35 +115,35 @@ if (Request::get('to_folder_id')) {
     </tbody>
     <? if (count($top_folder->getFiles())) : ?>
         <tbody>
-        <? foreach ($top_folder->getFiles() as $fileref) : ?>
+        <? foreach ($top_folder->getFiles() as $file) : ?>
             <tr>
                 <td class="document-icon" data-sort-value="1">
-                <? if ($top_folder->isFileDownloadable($fileref, $GLOBALS['user']->id)): ?>
+                <? if ($file->isDownloadable()): ?>
                     <form action="<?= $controller->link_for('file/choose_file/' . $top_folder->id, $options) ?>" method="post" data-dialog>
-                        <input type="hidden" name="file_id" value="<?= htmlReady($fileref->id) ?>">
+                        <input type="hidden" name="file_id" value="<?= htmlReady($file->getId()) ?>">
                         <a href="#" onclick="jQuery(this).closest('form').submit(); return false;">
-                            <?= FileManager::getIconForFileRef($fileref)->asImg(24) ?>
+                            <?= FileManager::getIconForMimeType($file->getMimetype())->asImg(24) ?>
                         </a>
                     </form>
                 <? else: ?>
-                    <?= FileManager::getIconForFileRef($fileref, Icon::ROLE_INACTIVE)->asImg(24) ?>
+                    <?= FileManager::getIconForMimeType($file->getMimetype(), Icon::ROLE_INACTIVE)->asImg(24) ?>
                 <? endif ?>
                 </td>
                 <td>
-                <? if ($top_folder->isFileDownloadable($fileref, $GLOBALS['user']->id)) : ?>
+                <? if ($file->isDownloadable()) : ?>
                     <form action="<?= $controller->link_for('file/choose_file/' . $top_folder->id, $options) ?>" method="post" data-dialog>
-                        <input type="hidden" name="file_id" value="<?= htmlReady($fileref->id) ?>">
+                        <input type="hidden" name="file_id" value="<?= htmlReady($file->getId()) ?>">
                         <a href="#" onclick="jQuery(this).closest('form').submit(); return false;">
-                            <?= htmlReady($fileref->name) ?>
-                            <? if ($fileref->description) : ?>
-                                <div style="color: grey; font-size: 0.8em;"><?= htmlReady($fileref->description) ?></div>
+                            <?= htmlReady($file->getFilename()) ?>
+                            <? if ($file->getDescription()) : ?>
+                                <div style="color: grey; font-size: 0.8em;"><?= htmlReady($file->getDescription()) ?></div>
                             <? endif ?>
                         </a>
                     </form>
                 <? else: ?>
-                    <?= htmlReady($fileref->name) ?>
-                    <? if ($fileref->description): ?>
-                        <div style="color: grey; font-size: 0.8em;"><?= htmlReady($fileref->description) ?></div>
+                    <?= htmlReady($file->getFilename()) ?>
+                    <? if ($file->getDescription()): ?>
+                        <div style="color: grey; font-size: 0.8em;"><?= htmlReady($file->getDescription()) ?></div>
                     <? endif ?>
                 <? endif; ?>
                 </td>
