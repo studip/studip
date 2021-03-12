@@ -1388,7 +1388,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         }
         return $user_id === $this->user_id
             || self::find($user_id)->perms === 'root'
-            || !in_array(self::find($user_id)->visible, ['no', 'never']);
+            || !in_array(self::find($this->user_id)->visible, ['no', 'never']);
     }
 
     /**
