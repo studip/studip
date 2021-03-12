@@ -1,11 +1,12 @@
 <?php
-class MessengerController extends PluginController {
-
-    function before_filter(&$action, &$args)
+class MessengerController extends PluginController
+{
+    public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
         $this->assets_url = $this->plugin->getPluginURL() . '/assets/';
 
+        PageLayout::setBodyElementId('blubber-index');
         PageLayout::setHelpKeyword("Basis/InteraktionBlubber");
     }
 
