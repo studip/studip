@@ -271,22 +271,22 @@ class UnknownFolderType implements FolderType
 
     public function getAdditionalColumns()
     {
-
+        return [];
     }
 
     public function getContentForAdditionalColumn($column_index)
     {
-
+        return null;
     }
 
     public function getAdditionalColumnOrderWeigh($column_index)
     {
-
+        return 0;
     }
 
     public function getAdditionalActionButtons()
     {
-
+        return [];
     }
 
     /**

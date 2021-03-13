@@ -301,17 +301,17 @@ class VirtualFolderType implements FolderType
 
     public function getContentForAdditionalColumn($column_index)
     {
-
+        return null;
     }
 
     public function getAdditionalColumnOrderWeigh($column_index)
     {
-
+        return 0;
     }
 
     public function getAdditionalActionButtons()
     {
-
+        return [];
     }
 
     /**
