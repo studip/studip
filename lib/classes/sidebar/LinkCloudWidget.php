@@ -28,6 +28,9 @@ class LinkCloudWidget extends LinksWidget
      */
     public function &addLink($label, $url, $icon = null, $attributes = [], $index = null)
     {
+        // TODO: Remove this some versions after 5.0
+        $url = html_entity_decode($url);
+
         $content = sprintf(
             '<a href="%s" class="%s">%s</a>',
             htmlReady($url),

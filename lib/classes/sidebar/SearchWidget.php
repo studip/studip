@@ -26,6 +26,9 @@ class SearchWidget extends SidebarWidget
     {
         parent::__construct();
 
+        // TODO: Remove this some versions after 5.0
+        $url = html_entity_decode($url);
+
         $this->url      = $url ?: $_SERVER['REQUEST_URI'];
         $this->title    = _('Suche');
         $this->template = 'sidebar/search-widget';
@@ -136,7 +139,7 @@ class SearchWidget extends SidebarWidget
             $query_params = [];
         }
 
-        $this->template_variables['url']        = URLHelper::getURL($this->url);
+        $this->template_variables['url']        = $this->url;
         $this->template_variables['url_params'] = $query_params;
 
         $this->template_variables['method'] = $this->method;

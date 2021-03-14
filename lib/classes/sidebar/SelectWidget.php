@@ -36,15 +36,18 @@ class SelectWidget extends SidebarWidget
      */
     public function setUrl($url)
     {
+        // TODO: Remove this some versions after 5.0
+        $url = html_entity_decode($url);
+
         $query = parse_url($url, PHP_URL_QUERY);
         if ($query) {
             $url = str_replace('?' . $query , '', $url);
-            parse_str(html_entity_decode($query) ?: '', $query_params);
+            parse_str($query ?: '', $query_params);
         } else {
             $query_params = [];
         }
 
-        $this->template_variables['url']    = URLHelper::getLink($url);
+        $this->template_variables['url']    = $url;
         $this->template_variables['params'] = $query_params;
     }
 
@@ -119,12 +122,6 @@ class SelectWidget extends SidebarWidget
      */
     public function render($variables = [])
     {
-        $attributes = [];
-        foreach ((array) $this->template_variables['attributes'] as $key => $value) {
-            $attributes[] = sprintf('%s="%s"', htmlReady($key), htmlReady($value));
-        }
-        $this->template_variables['attributes'] = implode(' ', $attributes) ?: '';
-
         $variables['__is_nested'] = $this->hasNestedElements();
 
         //submit-upon-select is not helpful if we have the multiple version

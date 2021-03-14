@@ -24,7 +24,7 @@ class LinkElement extends WidgetElement implements ArrayAccess
         $url        = $attributes['href'] ?: '#';
         unset($attributes['href']);
 
-        return new self($match['label'], $url, $icon, $attributes);
+        return new self(html_entity_decode($match['label']), html_entity_decode($url), $icon, $attributes);
     }
 
     /**
@@ -49,7 +49,7 @@ class LinkElement extends WidgetElement implements ArrayAccess
         if (preg_match_all($pattern, $text, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $attributes[$match['n']] = isset($match['v'])
-                                         ? trim($match['v'], '\'"')
+                                         ? html_entity_decode(trim($match['v'], '\'"'))
                                          : null;
             }
         }
@@ -74,6 +74,9 @@ class LinkElement extends WidgetElement implements ArrayAccess
     public function __construct($label, $url, \Icon $icon = null, $attributes = [])
     {
         parent::__construct();
+
+        // TODO: Remove this some versions after 5.0
+        $url = html_entity_decode($url);
 
         $this->label      = $label;
         $this->url        = $url;
