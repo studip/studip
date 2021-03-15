@@ -62,13 +62,6 @@ STUDIP.loadChunk = (function () {
 
                         mathjax_loaded = true;
 
-                        return window.MathJax;
-                    }).then(MathJax => {
-                        const script = document.createElement('script');
-                        script.type = 'text/x-mathjax-config';
-                        script.innerText = "MathJax.Hub.Config({tex2jax: {inlineMath: [ ['$', '$'], ['$$', '$$'], ['\\\\(', '\\\\)'], ['[tex]', '[/tex]'] ]}});";
-                        document.querySelector('head').appendChild(script);
-
                         return MathJax;
                     }).catch(() => {
                         mathjax_loaded = false;
