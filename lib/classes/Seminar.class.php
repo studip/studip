@@ -2191,7 +2191,7 @@ class Seminar
         $user_domains = UserDomain::getUserDomainsForUser($user_id);
         if (count($user_domains) > 0) {
             $seminar_domains = UserDomain::getUserDomainsForSeminar($this->getId());
-            $same_domain = count(array_intersect($seminar_domains, $user_domains)) > 0;
+            $same_domain = UserDomain::checkUserVisibility($seminar_domains, $user_domains);;
         }
         if (!$same_domain && !$this->isStudygroup()) {
             $info['enrolment_allowed'] = false;
