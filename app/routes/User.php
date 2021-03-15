@@ -136,7 +136,7 @@ class User extends \RESTAPI\RouteMap
             $datafields[] = [
                 'type'  => $entry->getType(),
                 'id'    => $entry->getId(),
-                'name'  => $entry->getName(),
+                'name'  => (string) $entry->getName(),
                 'value' => $entry->getValue(),
             ];
         }
