@@ -42,6 +42,7 @@
  */
 class StudipAutoloader
 {
+    protected static $base_path = null;
     public static $autoload_paths = [];
     public static $class_lookup = [];
 
@@ -73,6 +74,22 @@ class StudipAutoloader
         spl_autoload_unregister('static::loadClass');
     }
 
+    /**
+     * Sets the base path to use.
+     *
+     * @param string $path
+     */
+    public static function setBasePath($path)
+    {
+        if (!$path) {
+            self::$base_path = null;
+        } elseif (!is_dir($path)) {
+            throw new Exception('Given base path is invalid');
+        } else {
+            self::$base_path = rtrim($path, '/');
+        }
+    }
+
 
     /**
      * Adds another path to the list of paths where to search for
@@ -86,7 +103,7 @@ class StudipAutoloader
      */
     public static function addAutoloadPath($path, $prefix = '')
     {
-        $path = realpath($path);
+        $path = self::sanitizePath($path);
         if ($prefix) {
             $prefix = rtrim($prefix, '\\') . '\\';
         }
@@ -103,7 +120,7 @@ class StudipAutoloader
      */
     public static function removeAutoloadPath($path, $prefix = '')
     {
-        $path = realpath($path);
+        $path = self::sanitizePath($path);
 
         foreach (self::$autoload_paths as $index => $item) {
             if ($item['path'] === $path && $item['prefix'] === $prefix) {
@@ -123,8 +140,8 @@ class StudipAutoloader
      */
     public static function addClassLookup($class, $path)
     {
-        foreach ((array)$class as $one_class) {
-            self::$class_lookup[$one_class] = $path;
+        foreach ((array) $class as $one_class) {
+            self::$class_lookup[$one_class] = self::sanitizePath($path);
         }
     }
 
@@ -136,6 +153,7 @@ class StudipAutoloader
      */
     public static function addClassLookups(array $map)
     {
+        $map = array_map('self::sanitizePath', $map);
         self::$class_lookup = array_merge(self::$class_lookup, $map);
     }
 
@@ -181,7 +199,7 @@ class StudipAutoloader
             return false;
         }
 
-        $file = self::$class_lookup[$class];
+        $file = self::expandPath(self::$class_lookup[$class]);
         if (file_exists($file)) {
             return $file;
         }
@@ -249,6 +267,8 @@ class StudipAutoloader
      */
     private static function resolvePathAndFilename($path, $class_file)
     {
+        $path = self::expandPath($path);
+
         // Skip invalid paths immediately
         if (!is_dir($path)) {
             return false;
@@ -282,5 +302,30 @@ class StudipAutoloader
             }
         }
         return false;
+    }
+
+    /**
+     * Sanitizes a given path by removing the stud.ip base path from it.
+     *
+     * @param  string $path]
+     * @return string
+     */
+    private static function sanitizePath($path)
+    {
+        if ($path[0] === '/') {
+            return ltrim(str_replace($GLOBALS['STUDIP_BASE_PATH'], '', $path), '/');
+        }
+        return $path;
+    }
+
+    /**
+     * Expands a given path by adding the stud.ip base path to it.
+     * @param  string $path
+     * @return string
+     */
+    private static function expandPath($path)
+    {
+        $base_path = self::$base_path ?? $GLOBALS['STUDIP_BASE_PATH'];
+        return "{$base_path}/{$path}";
     }
 }

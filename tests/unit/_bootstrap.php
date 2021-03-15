@@ -41,19 +41,19 @@ require __DIR__ . '/../../composer/autoload.php';
 require 'lib/classes/StudipAutoloader.php';
 require 'lib/functions.php';
 
-$STUDIP_BASE_PATH = realpath(__DIR__ . '/../..');
-
+StudipAutoloader::setBasePath(realpath(__DIR__ . '/../..'));
 StudipAutoloader::register();
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/activities', 'Studip\\Activity');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/models');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes', 'Studip');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/exceptions');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes/sidebar');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/classes/helpbar');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/plugins/engine');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/plugins/core');
-StudipAutoloader::addAutoloadPath($STUDIP_BASE_PATH . '/lib/plugins/db');
+
+StudipAutoloader::addAutoloadPath('lib/activities', 'Studip\\Activity');
+StudipAutoloader::addAutoloadPath('lib/models');
+StudipAutoloader::addAutoloadPath('lib/classes');
+StudipAutoloader::addAutoloadPath('lib/classes', 'Studip');
+StudipAutoloader::addAutoloadPath('lib/exceptions');
+StudipAutoloader::addAutoloadPath('lib/classes/sidebar');
+StudipAutoloader::addAutoloadPath('lib/classes/helpbar');
+StudipAutoloader::addAutoloadPath('lib/plugins/engine');
+StudipAutoloader::addAutoloadPath('lib/plugins/core');
+StudipAutoloader::addAutoloadPath('lib/plugins/db');
 
 // load config-variables
 StudipFileloader::load(

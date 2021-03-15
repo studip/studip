@@ -7,58 +7,58 @@ require 'lib/classes/StudipAutoloader.php';
 StudipAutoloader::register();
 
 // General classes folders
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/models');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/models/resources');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes', 'Studip');
+StudipAutoloader::addAutoloadPath('lib/models');
+StudipAutoloader::addAutoloadPath('lib/models/resources');
+StudipAutoloader::addAutoloadPath('lib/classes');
+StudipAutoloader::addAutoloadPath('lib/classes', 'Studip');
 
 // Plugins
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/plugins/core');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/plugins/db');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/plugins/engine');
+StudipAutoloader::addAutoloadPath('lib/plugins/core');
+StudipAutoloader::addAutoloadPath('lib/plugins/db');
+StudipAutoloader::addAutoloadPath('lib/plugins/engine');
 
 // Specialized folders
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/admission');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/admission/userfilter');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/auth_plugins');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/calendar');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/exportdocument');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/globalsearch');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/helpbar');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/librarysearch/resultparsers');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/librarysearch/searchmodules');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/librarysearch');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/searchtypes');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/sidebar');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/visibility');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/classes/coursewizardsteps');
+StudipAutoloader::addAutoloadPath('lib/classes/admission');
+StudipAutoloader::addAutoloadPath('lib/classes/admission/userfilter');
+StudipAutoloader::addAutoloadPath('lib/classes/auth_plugins');
+StudipAutoloader::addAutoloadPath('lib/classes/calendar');
+StudipAutoloader::addAutoloadPath('lib/classes/exportdocument');
+StudipAutoloader::addAutoloadPath('lib/classes/globalsearch');
+StudipAutoloader::addAutoloadPath('lib/classes/helpbar');
+StudipAutoloader::addAutoloadPath('lib/classes/librarysearch/resultparsers');
+StudipAutoloader::addAutoloadPath('lib/classes/librarysearch/searchmodules');
+StudipAutoloader::addAutoloadPath('lib/classes/librarysearch');
+StudipAutoloader::addAutoloadPath('lib/classes/searchtypes');
+StudipAutoloader::addAutoloadPath('lib/classes/sidebar');
+StudipAutoloader::addAutoloadPath('lib/classes/visibility');
+StudipAutoloader::addAutoloadPath('lib/classes/coursewizardsteps');
 
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/calendar');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/calendar', 'Studip\\Calendar');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/exceptions');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/exceptions/resources');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/filesystem');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/migrations');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/modules');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/navigation');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/phplib');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/raumzeit');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/resources');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/activities', 'Studip\\Activity');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/evaluation/classes');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/evaluation/classes/db');
+StudipAutoloader::addAutoloadPath('lib/calendar');
+StudipAutoloader::addAutoloadPath('lib/calendar', 'Studip\\Calendar');
+StudipAutoloader::addAutoloadPath('lib/exceptions');
+StudipAutoloader::addAutoloadPath('lib/exceptions/resources');
+StudipAutoloader::addAutoloadPath('lib/filesystem');
+StudipAutoloader::addAutoloadPath('lib/migrations');
+StudipAutoloader::addAutoloadPath('lib/modules');
+StudipAutoloader::addAutoloadPath('lib/navigation');
+StudipAutoloader::addAutoloadPath('lib/phplib');
+StudipAutoloader::addAutoloadPath('lib/raumzeit');
+StudipAutoloader::addAutoloadPath('lib/resources');
+StudipAutoloader::addAutoloadPath('lib/activities', 'Studip\\Activity');
+StudipAutoloader::addAutoloadPath('lib/evaluation/classes');
+StudipAutoloader::addAutoloadPath('lib/evaluation/classes/db');
 
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/extern/lib');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/calendar/lib');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/elearning');
-StudipAutoloader::addAutoloadPath($GLOBALS['STUDIP_BASE_PATH'] . '/lib/ilias_interface');
+StudipAutoloader::addAutoloadPath('lib/extern/lib');
+StudipAutoloader::addAutoloadPath('lib/calendar/lib');
+StudipAutoloader::addAutoloadPath('lib/elearning');
+StudipAutoloader::addAutoloadPath('lib/ilias_interface');
 
 // Messy file names
 StudipAutoloader::addClassLookups([
-    'email_validation_class' => $GLOBALS['STUDIP_BASE_PATH'] . '/lib/phplib/email_validation.class.php',
-    'messaging'              => $GLOBALS['STUDIP_BASE_PATH'] . '/lib/messaging.inc.php',
-    'StudipPlugin'           => $GLOBALS['STUDIP_BASE_PATH'] . '/lib/plugins/core/StudIPPlugin.class.php',
-    'MVVController'          => $GLOBALS['STUDIP_BASE_PATH'] . '/app/controllers/module/mvv_controller.php'
+    'email_validation_class' => 'lib/phplib/email_validation.class.php',
+    'messaging'              => 'lib/messaging.inc.php',
+    'StudipPlugin'           => 'lib/plugins/core/StudIPPlugin.class.php',
+    'MVVController'          => 'app/controllers/module/mvv_controller.php'
 ]);
 
 // Trails
@@ -71,32 +71,32 @@ $trails_classes = [
 ];
 StudipAutoloader::addClassLookup(
     $trails_classes,
-    $GLOBALS['STUDIP_BASE_PATH'] . '/vendor/trails/trails.php'
+    'vendor/trails/trails.php'
 );
 StudipAutoloader::addClassLookup(
     'StudipController',
-    $GLOBALS['STUDIP_BASE_PATH'] . '/app/controllers/studip_controller.php'
+    'app/controllers/studip_controller.php'
 );
 StudipAutoloader::addClassLookup(
     'AuthenticatedController',
-    $GLOBALS['STUDIP_BASE_PATH'] . '/app/controllers/authenticated_controller.php'
+    'app/controllers/authenticated_controller.php'
 );
 StudipAutoloader::addClassLookup(
     'PluginController',
-    $GLOBALS['STUDIP_BASE_PATH'] . '/app/controllers/plugin_controller.php'
+    'app/controllers/plugin_controller.php'
 );
 
 // Vendor
 StudipAutoloader::addClassLookups([
-    'PasswordHash' => $GLOBALS['STUDIP_BASE_PATH'] . '/vendor/phpass/PasswordHash.php',
+    'PasswordHash' => 'vendor/phpass/PasswordHash.php',
 ]);
 
 // XMLRpc
 StudipAutoloader::addClassLookup(
     ['xmlrpcval', 'xmlrpcmsg', 'xmlrpcresp', 'xmlrpc_client'],
-    $GLOBALS['STUDIP_BASE_PATH'] . '/composer/phpxmlrpc/phpxmlrpc/lib/xmlrpc.inc'
+    'composer/phpxmlrpc/phpxmlrpc/lib/xmlrpc.inc'
 );
 StudipAutoloader::addClassLookup(
     ['xmlrpc_server'],
-    $GLOBALS['STUDIP_BASE_PATH'] . '/composer/phpxmlrpc/phpxmlrpc/lib/xmlrpcs.inc'
+    'composer/phpxmlrpc/phpxmlrpc/lib/xmlrpcs.inc'
 );
