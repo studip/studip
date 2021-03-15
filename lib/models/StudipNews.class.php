@@ -364,29 +364,32 @@ class StudipNews extends SimpleORMap implements PrivacyObject
         );
     }
 
-    public static function DoGarbageCollect($news_deletion_days = 0)
+    public static function DoGarbageCollect($news_deletion_days = false)
     {
         $db = DBManager::get();
         if (!Config::get()->NEWS_DISABLE_GARBAGE_COLLECT) {
-            $query = "SELECT news.news_id
-                      FROM news
-                      WHERE date + expire + ? < UNIX_TIMESTAMP()
+            $queries = [];
+            $parameters = [];
 
-                      UNION DISTINCT
+            if ($news_deletion_days !== false) {
+                $queries[] = "SELECT news.news_id
+                              FROM news
+                              WHERE date + expire + ? < UNIX_TIMESTAMP()";
+                $parameters = (int) $news_deletion_days;
+            }
 
-                      SELECT news_range.news_id
-                      FROM news_range
-                      LEFT JOIN news USING (news_id)
-                      WHERE news.news_id IS NULL
+            $queries[] = "SELECT news_range.news_id
+                          FROM news_range
+                          LEFT JOIN news USING (news_id)
+                          WHERE news.news_id IS NULL";
+            $queries[] = "SELECT news.news_id
+                          FROM news
+                          LEFT JOIN news_range USING (news_id)
+                          WHERE range_id IS NULL";
 
-                      UNION DISTINCT
-
-                      SELECT news.news_id
-                      FROM news
-                      LEFT JOIN news_range USING (news_id)
-                      WHERE range_id IS NULL";
+            $query = implode(' UNION DISTINCT ', $queries);
             $stm = $db->prepare($query);
-            $stm->execute([$news_deletion_days]);
+            $stm->execute($parameters);
             $result = $stm->fetchAll(PDO::FETCH_COLUMN);
 
             if (count($result) > 0) {

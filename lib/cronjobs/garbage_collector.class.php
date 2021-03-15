@@ -64,7 +64,7 @@ class GarbageCollectorJob extends CronJob
 
         // delete outdated news
         $news_deletion_days = 0;
-        if($parameters['news_deletion_days'] > 0) {
+        if ($parameters['news_deletion_days'] > 0) {
             $news_deletion_days =  (int) $parameters['news_deletion_days'] * 86400;
         }
         $deleted_news = StudipNews::DoGarbageCollect($news_deletion_days);
