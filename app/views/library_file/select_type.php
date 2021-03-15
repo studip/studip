@@ -3,8 +3,8 @@
           action="<?= $controller->link_for('library_file/create/' . htmlReady($folder_id)) ?>">
         <?= CSRFProtection::tokenTag() ?>
         <label>
-            <?= _('Von welchem Dokumenttyp ist der Bibliothekseintrag?') ?>
-            <select name="document_type">
+            <span class="required"><?= _('Von welchem Dokumenttyp ist der Bibliothekseintrag?') ?></span>
+            <select name="document_type" required>
                 <option value=""><?= _('Bitte wählen') ?></option>
                 <? foreach ($document_types as $type) : ?>
                     <?
