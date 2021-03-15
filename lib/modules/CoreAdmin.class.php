@@ -96,7 +96,7 @@ class CoreAdmin implements StudipModule
                 }
             }
 
-            if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id)) {
+            if (Config::get()->LITERATURE_ENABLE && $GLOBALS['perm']->have_studip_perm('tutor', $course_id)) {
                 $item = new Navigation(
                     _('Zitationsstil'),
                     URLHelper::getURL(
