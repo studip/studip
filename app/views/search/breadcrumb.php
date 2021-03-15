@@ -7,10 +7,10 @@
     <? $link = $controller->link_for('/' . $point['actn'], $point['id'], $id2); ?>
     <? if (is_array($point['add'])) : ?>
         <? $mvv_object = $type::find($point['id']); ?>
-        <? if ($type == 'Fach' && $additional_object = Abschluss::find($point['add']['Abschluss'])) : ?>
+        <? if ($mvv_object && $type == 'Fach' && $additional_object = Abschluss::find($point['add']['Abschluss'])) : ?>
             <a href="<?= $link ?>"><?= htmlReady($mvv_object->getDisplayName() . ' (' . $additional_object->name . ')') ?></a>
         <? endif; ?>
-        <? if ($type == 'StgteilBezeichnung' && $additional_object = StudiengangTeil::find($point['add']['StudiengangTeil'])) : ?>
+        <? if ($mvv_object && $type == 'StgteilBezeichnung' && $additional_object = StudiengangTeil::find($point['add']['StudiengangTeil'])) : ?>
             <a href="<?= $link ?>"><?= htmlReady($mvv_object->getDisplayName() . ': ' . $additional_object->getDisplayName(ModuleManagementModel::DISPLAY_FACH)) ?></a>
         <? endif; ?>
     <? else : ?>
