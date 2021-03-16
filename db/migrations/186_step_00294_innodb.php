@@ -86,11 +86,11 @@ class StEP00294InnoDB extends Migration
             if (version_compare($version, '5.5', '>=')) {
                 // Get innodb_file_per_table setting
                 $data = DBManager::get()->fetchOne("SHOW VARIABLES LIKE 'innodb_file_per_table'");
-                $file_per_table = $data['Value'];
+                $file_per_table = $data['Value'] ?: 'on';
 
                 // Check if Barracuda file format is enabled
                 $data = DBManager::get()->fetchOne("SHOW VARIABLES LIKE 'innodb_file_format'");
-                $file_format = $data['Value'];
+                $file_format = $data['Value'] ?: 'barracuda';
 
                 // All settings ok, use Barracuda.
                 if (strtolower($file_per_table) == 'on' && strtolower($file_format) == 'barracuda') {
