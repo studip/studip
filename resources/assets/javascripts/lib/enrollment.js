@@ -87,6 +87,10 @@ export default function enrollment() {
 
         $('#available-courses [data-id="' + id + '"]').addClass('visible');
 
+        $('#enrollment #selected-courses li:not(.empty)').each(function (index) {
+            $(this).find('input[type="hidden"]').val(index + 1);
+        });
+
         return false;
     }).disableSelection();
 

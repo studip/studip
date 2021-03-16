@@ -99,7 +99,7 @@ asort($user_prio);
                         <?= Icon::create('arr_1up', Icon::ROLE_SORT)->asInput([
                             'name'  => 'admission_prio_order_up[' . htmlReady($id) . ']',
                             'type'  => 'submit',
-                            'class' => 'hidden-medium-up delete',
+                            'class' => 'hidden-medium-up',
                         ]) ?>
                     <? endif; ?>
 
@@ -107,7 +107,7 @@ asort($user_prio);
                         <?= Icon::create('arr_1down', Icon::ROLE_SORT)->asInput([
                             'name'  => 'admission_prio_order_down[' . htmlReady($id) . ']',
                             'type'  => 'submit',
-                            'class' => 'hidden-medium-up delete',
+                            'class' => 'hidden-medium-up',
                         ])?>
                     <? endif; ?>
 
