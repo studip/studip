@@ -1,6 +1,6 @@
 <? $range_object = $request->getRangeObject(); ?>
 Your request from <?= date('d.m.Y', $request->mkdate) ?>
- <?= $range_object instanceof Course ? sprintf('for the Course %s', htmlReady($range_object->name)) : ''?> has been denied
+ <?= $range_object instanceof Course ? sprintf('for the Course %s', htmlReady($range_object->getFullname())) : ''?> has been denied
  <?= $request->last_modifier instanceof User
    ? 'by ' . $request->last_modifier->getFullName()
  : ''
