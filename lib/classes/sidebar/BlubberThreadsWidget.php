@@ -40,7 +40,9 @@ class BlubberThreadsWidget extends SidebarWidget
                 'avatar' => $thread->getAvatar(),
                 'name' => $thread->getName(),
                 'timestamp' => (int) $thread->getLatestActivity(),
-                'unseen_comments' => $unseen_comments
+                'unseen_comments' => $unseen_comments,
+                'notifications' => $thread->id === 'global' || ($thread->context_type === 'course' && !$GLOBALS['perm']->have_perm('admin')),
+                'followed' => $thread->isFollowed(),
             ];
         }
 

@@ -165,22 +165,25 @@ const Blubber = {
     refreshThread (data) {
         STUDIP.Blubber.App.changeActiveThread(data.thread_id);
     },
-    followunfollow () {
-        let thread_id = jQuery(this).data("thread_id");
-        let unfollowed = jQuery(this).hasClass("unfollowed");
-        if (unfollowed) {
-            jQuery(this).removeClass("unfollowed");
-            unfollowed = false;
-        } else {
-            jQuery(this).addClass("unfollowed");
-            unfollowed = true;
+    followunfollow (thread_id, follow) {
+        const elements = $(`.blubber_panel .followunfollow[data-thread_id="${thread_id}"]`);
+        if (follow === undefined) {
+            follow = elements.hasClass('unfollowed');
         }
-        if (unfollowed) {
-            STUDIP.api.DELETE(`blubber/threads/${thread_id}/follow`);
-        } else {
-            STUDIP.api.POST(`blubber/threads/${thread_id}/follow`);
-        }
-        return false;
+        elements.addClass('loading');
+
+        const promise = follow
+            ? STUDIP.api.POST(`blubber/threads/${thread_id}/follow`)
+            : STUDIP.api.DELETE(`blubber/threads/${thread_id}/follow`);
+
+        promise.done(() => {
+            elements.toggleClass('unfollowed', !follow);
+            return follow;
+        }).always(() => {
+            elements.removeClass('loading');
+        });
+
+        return promise;
     },
     Composer: {
         vue: null,

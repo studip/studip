@@ -799,7 +799,9 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                 $this->getId(),
                 $this->getLastVisit() ?: object_get_visit_threshold(),
                 $user_id
-            ])
+            ]),
+            'notifications' => $this->id === 'global' || ($this->context_type === 'course' && !$GLOBALS['perm']->have_perm('admin')),
+            'followed' => $this->isFollowed(),
         ];
         $context_info = $this->getContextTemplate();
         if ($context_info) {
