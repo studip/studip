@@ -176,9 +176,9 @@ const Blubber = {
             unfollowed = true;
         }
         if (unfollowed) {
-            STUDIP.api.POST(`blubber/threads/${thread_id}/unfollow`);
+            STUDIP.api.DELETE(`blubber/threads/${thread_id}/follow`);
         } else {
-            STUDIP.api.DELETE(`blubber/threads/${thread_id}/unfollow`);
+            STUDIP.api.POST(`blubber/threads/${thread_id}/follow`);
         }
         return false;
     },

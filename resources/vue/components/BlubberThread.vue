@@ -116,7 +116,12 @@
                     data: {
                         content: text
                     }
-                }).done((data) => {
+                }).then(data => {
+                    STUDIP.api.GET(`blubber/threads/${this.thread_data.thread_posting.thread_id}/follow`).then(followed => {
+                        jQuery('.followunfollow').toggleClass('unfollowed', !followed);
+                    });
+                    return data;
+                }).done(data => {
                     comment.comment_id = data.comment_id;
                     comment.avatar = data.avatar;
                     comment.user_name = data.user_name;
