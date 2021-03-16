@@ -1,4 +1,4 @@
-<form class="default" method="post"
+<form class="default" method="post" id="decline-request"
       action="<?= $controller->link_for('resources/room_request/decline/' . $request->id) ?>"
       data-dialog>
     <?= CSRFProtection::tokenTag() ?>
@@ -14,7 +14,7 @@
             ) ?>
         <? endif ?>
         <fieldset>
-            <legend><?= _('Daten zur Anfrage') ?></legend>
+            <legend><?= _('Informationen zur Anfrage') ?></legend>
             <?= $this->render_partial(
                 'resources/room_request/index',
                 [
@@ -33,7 +33,7 @@
         <? if ($prev_request) : ?>
             <?= \Studip\LinkButton::create(
                 _('Vorherige Anfrage'),
-                $controller->resolveURL($prev_request),
+                $controller->declineURL($prev_request),
                 ['data-dialog' => 'size=big']
             ) ?>
         <? endif ?>
@@ -43,12 +43,12 @@
             ['data-dialog' => 'size=big']
         ) ?>
         <? if ($show_form) : ?>
-            <?= \Studip\Button::create($delete_mode ? _('Löschen') : _('Ablehnen'), 'confirm') ?>
+            <?= \Studip\Button::createAccept($delete_mode ? _('Löschen') : _('Ablehnen'), 'confirm') ?>
         <? endif ?>
         <? if ($next_request) : ?>
             <?= \Studip\LinkButton::create(
                 _('Nächste Anfrage'),
-                $controller->resolveURL($next_request),
+                $controller->declineURL($next_request),
                 ['data-dialog' => 'size=big']
             ) ?>
         <? endif ?>

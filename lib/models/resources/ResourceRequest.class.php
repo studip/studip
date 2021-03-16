@@ -132,6 +132,8 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $config['registered_callbacks']['before_store'][] = 'validate';
         }
         $config['registered_callbacks']['after_create'][] = 'cbLogNewRequest';
+        $config['registered_callbacks']['after_store'][] = 'cbAfterStore';
+
 
         parent::configure($config);
     }
@@ -547,37 +549,25 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
     }
 
-    public function store()
-    {
-        $new_request = $this->isNew();
-
-        if (!parent::store()) {
-            return false;
-        }
-
-        if ($new_request) {
-            $this->sendNewRequestMail();
-        } elseif ($this->closed == '3') {
-            $this->sendRequestDeniedMail();
-        }
-
-        return true;
-    }
-
     /**
      * A callback method that creates a Stud.IP log entry
      * when a new request has been made.
      */
     public function cbLogNewRequest()
     {
-        StudipLog::log(
-            'RES_REQUEST_NEW',
-            $this->id,
-            $this->resource_id,
-            null,
-            null,
-            null
-        );
+        $this->sendNewRequestMail();
+        StudipLog::log('RES_REQUEST_NEW', $this->id, $this->resource_id);
+    }
+
+    /**
+     * A callback method that send a mail
+     * when a new request has been udpated.
+     */
+    public function cbAfterStore()
+    {
+        if($this->closed == '3') {
+            $this->sendRequestDeniedMail();
+        }
     }
 
     /**

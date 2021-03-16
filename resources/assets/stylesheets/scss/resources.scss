@@ -428,6 +428,27 @@ article.room-list-item {
     padding: 0.4em;
 }
 
+form#resolve-request, form#decline-request {
+    dl {
+        dt, dd {
+            &:not(:last-child) {
+                margin-bottom: 5px;
+            }
+        }
+        dt {
+            grid-column: 1;
+        }
+
+        dd {
+            grid-column: 2;
+        }
+
+        margin: 0;
+        display: grid;
+        grid-template-columns: 40% auto;
+
+    }
+}
 
 @media all and (min-width: 1600px) {
     form#resolve-request {
@@ -475,28 +496,9 @@ article.room-list-item {
                 padding-top: 0;
             }
         }
-
-        dl {
-            dt, dd {
-                &:not(:last-child) {
-                    margin-bottom: 5px;
-                }
-            }
-            dt {
-                grid-column: 1;
-            }
-
-            dd {
-                grid-column: 2;
-            }
-
-            margin: 0;
-            display: grid;
-            grid-template-columns: 40% auto;
-
-        }
     }
 }
+
 
 @media all and (max-width: 1599px) {
     form#resolve-request article.right-part {

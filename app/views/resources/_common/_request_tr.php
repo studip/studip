@@ -103,7 +103,7 @@
                     'data-dialog' => 'size=big'
                 ])
             ->addLink(
-                $controller->link_for('resources/room_request/decline/' . $request->id),
+                $controller->link_for('resources/room_request/decline/' . $request->id, ['single-request' => 1]),
                 _('Anfrage ablehnen'),
                 Icon::create('decline'),
                 [
