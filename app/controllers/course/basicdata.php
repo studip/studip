@@ -325,7 +325,7 @@ class Course_BasicdataController extends AuthenticatedController
         $this->deputies_enabled = $deputies_enabled;
 
         if ($this->deputies_enabled) {
-            $this->deputies = Deputy::findDeputies  ($this->course_id);
+            $this->deputies = Deputy::findDeputies($this->course_id);
             $this->deputySearch = new PermissionSearch(
                     "user_not_already_in_sem_or_deputy",
                     sprintf(_("%s suchen"), get_title_for_status('deputy', 1, $sem->status)),

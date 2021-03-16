@@ -41,7 +41,7 @@
                         ]
                     ) ?>
                 </a>
-                <a href="<?= $controller->link_for('my_courses/delete_boss/' . $boss['user_id']) ?>"
+                <a href="<?= $controller->link_for('my_courses/delete_boss/' . $boss->range_id) ?>"
                    data-confirm="<?= sprintf(_('Wollen Sie sich wirklich als Standardvertretung von %s austragen?'), htmlReady($boss_fullname)) ?>">
                     <?= Icon::create('trash',
                         Icon::ROLE_CLICKABLE,

@@ -785,17 +785,17 @@ class MyCoursesController extends AuthenticatedController
      */
     public function delete_boss_action($boss_id)
     {
-        $deputy = Deputy::find([$GLOBALS['user']->id, $boss_id]);
-        $user = $deputy->deputy;
+        $deputy = Deputy::find([$boss_id, $GLOBALS['user']->id]);
+        $boss = $deputy->boss;
         if ($deputy && $deputy->delete()) {
             PageLayout::postSuccess(sprintf(
                 _('Sie wurden als Standardvertretung von %s entfernt.'),
-                htmlReady($user->getFullname())
+                htmlReady($boss->getFullname())
             ));
         } else {
             PageLayout::postError(sprintf(
                 _('Sie konnten nicht als Standardvertretung von %s entfernt werden.'),
-                htmlReady($user->getFullname())
+                htmlReady($boss->getFullname())
             ));
         }
         $this->redirect($this->url_for('my_courses'));

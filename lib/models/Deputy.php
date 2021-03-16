@@ -210,7 +210,10 @@ class Deputy extends SimpleORMap
         }
 
         return SimpleCollection::createFromArray(
-            self::findBySQL('user_id = ?', [$user_id])
+            self::findBySQL('JOIN auth_user_md5 ON (deputies.range_id = auth_user_md5.user_id) 
+                WHERE deputies.user_id = ?',
+                [$user_id]
+            )
         )->orderBy('boss_nachname ASC, boss_vorname ASC');
     }
 

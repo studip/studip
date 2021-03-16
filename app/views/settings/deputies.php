@@ -1,10 +1,7 @@
-<? if ($deputies): ?>
+<? if ($deputies && count($deputies)): ?>
     <form method="post" action="<?= $controller->link_for('settings/deputies/store') ?>" class="default">
         <?= CSRFProtection::tokenTag() ?>
         <table class="default no-hover">
-            <caption>
-                <?= _('Standardvertretungen') ?>
-            </caption>
             <colgroup>
                 <col>
                 <? if ($edit_about_enabled): ?>
@@ -30,7 +27,7 @@
                         <?= htmlReady($deputy_fullname . ' (' . $deputy->username . ', ' . _('Status') . ': ' . $deputy->perms . ')') ?>
                     </td>
                     <? if ($edit_about_enabled): ?>
-                        <td align="center">
+                        <td style="text-align: center">
                             <div class="hgroup">
                                 <label>
                                     <input type="radio" name="edit_about[<?= $deputy->user_id ?>]" value="1"
@@ -45,11 +42,11 @@
                                 </label>
                             </div>
                         </td>
-                    <? endif; ?>
+                    <? endif ?>
                     <td class="actions">
                         <?= Icon::create('trash')->asInput(
                             [
-                                'formaction' => $controller->deleteURL($deputy),
+                                'formaction'   => $controller->deleteURL($deputy),
                                 'data-confirm' => _('Wollen Sie die Standardvertretung wirklich löschen?')
                             ]
                         ) ?>
