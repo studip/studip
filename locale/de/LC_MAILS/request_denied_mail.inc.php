@@ -14,5 +14,5 @@ Begründung/Kommentar: <?= $request->reply_comment ?>
 Die angefragten Zeiträume waren:
 
 <?= implode('', array_map(function($a) {
-    return "<br>- " . $a . "<br>";
+    return "\n- " . $a . "\n";
 }, $request->getTimeIntervalStrings()))?>
