@@ -8,18 +8,18 @@ echo $flash['message'];
             <?= _("Vorhandene Raumanfragen") ?>
         </caption>
         <colgroup>
-            <col style="width: 50%">
-            <col style="width: 15%">
-            <col style="width: 25px">
+            <col style="width: 40%">
+            <col style="width: 20%">
             <col>
+            <col style="width: 50px">
         </colgroup>
         <thead>
-            <tr>
-                <th><?= _('Art der Anfrage') ?></th>
-                <th><?= _('Anfragender') ?></th>
-                <th><?= _('Bearbeitungsstatus') ?></th>
-                <th></th>
-            </tr>
+        <tr>
+            <th><?= _('Art der Anfrage') ?></th>
+            <th><?= _('Anfragender') ?></th>
+            <th><?= _('Bearbeitungsstatus') ?></th>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
         <? foreach ($room_requests as $rr): ?>
@@ -65,29 +65,34 @@ echo $flash['message'];
                         $dialog
                     ) ?>
 
-                    <? $user_has_permissions = false;
-                    $user = User::findCurrent();
-                    if ($rr->room) {
+                    <?php
+                    $user_has_permissions = false;
+                    if ($rr->room && !$GLOBALS['perm']->have_perm('root')) {
                         $user_has_permissions = (
-                            $rr->room->userHasPermission($user, 'admin') &&
+                            $rr->room->userHasPermission($current_user, 'admin') &&
                             (RoomRequest::countBySql(
-                                "id = :request_id
+                                    "id = :request_id
                                 AND closed = '0'
                                 AND user_id = :user_id",
-                                [
-                                    'request_id' => $rr->id,
-                                    'user_id' => $GLOBALS['user']->id
-                                ]
-                            ) > 0
+                                    [
+                                        'request_id' => $rr->id,
+                                        'user_id'    => $current_user->id
+                                    ]
+                                ) > 0
                             )
                         );
                     } else {
-                        $user_has_permissions = ResourceManager::userHasGlobalPermission($user, 'admin');
+                        $user_has_permissions = ResourceManager::userHasGlobalPermission($current_user, 'admin');
                     } ?>
-                    <? if ($user_has_permissions): ?>
+
+                    <? if ($user_has_permissions && (int)$rr->closed === 0): ?>
                         <? $actionMenu->addLink(
-                            URLHelper::getLink(
-                                'dispatch.php/resources/room_request/resolve/' . $rr->id
+                            URLHelper::getURL(
+                                'dispatch.php/resources/room_request/resolve/' . $rr->id,
+                                [
+                                    'reload-on-close' => 1,
+                                    'single-request'  => 1
+                                ]
                             ),
                             _('Diese Anfrage selbst auflösen'),
                             Icon::create(

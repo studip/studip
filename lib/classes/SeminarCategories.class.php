@@ -42,8 +42,8 @@ class SeminarCategories {
     /**
      * Enter description here...
      *
-     * @param unknown_type $id
-     * @return unknown
+     * @param String $id
+     * @return Array
      */
     public static function Get($id){
         if(is_null(self::$seminar_categories[$id])){
@@ -60,7 +60,7 @@ class SeminarCategories {
     /**
      * Enter description here...
      *
-     * @return unknown
+     * @return Array
      */
     public static function GetAll(){
         $ret = [];
@@ -73,8 +73,8 @@ class SeminarCategories {
     /**
      * Enter description here...
      *
-     * @param unknown_type $id
-     * @return unknown
+     * @param String $id
+     * @return String
      */
     public static function GetByTypeId($id){
         return self::Get($GLOBALS['SEM_TYPE'][$id]['class']);
@@ -83,8 +83,8 @@ class SeminarCategories {
     /**
      * Enter description here...
      *
-     * @param unknown_type $seminar_id
-     * @return unknown
+     * @param String $seminar_id
+     * @return SeminarCategories
      */
     public static function GetBySeminarId($seminar_id){
         return self::GetByTypeId(Seminar::GetInstance($seminar_id)->status);
@@ -93,7 +93,7 @@ class SeminarCategories {
     /**
      * Enter description here...
      *
-     * @param unknown_type $sem_class_id
+     * @param String $sem_class_id
      */
     private function __construct($sem_class_id) {
         if(isset($GLOBALS['SEM_CLASS'][$sem_class_id])){
@@ -110,8 +110,8 @@ class SeminarCategories {
     /**
      * Enter description here...
      *
-     * @param unknown_type $type_id
-     * @return unknown
+     * @param String $type_id
+     * @return String
      */
     public function getNameOfType($type_id){
         return isset($this->sem_type_data[$type_id]) ? $this->sem_type_data[$type_id] : '';
@@ -120,7 +120,7 @@ class SeminarCategories {
     /**
      * Enter description here...
      *
-     * @return unknown
+     * @return Array
      */
     public function getTypes(){
         return $this->sem_type_data;

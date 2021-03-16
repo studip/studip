@@ -24,14 +24,12 @@ class Course_RoomRequestsController extends AuthenticatedController
      */
     public function before_filter(&$action, &$args)
     {
-        global $perm;
-
         $this->current_action = $action;
 
         parent::before_filter($action, $args);
 
         $course_id = $args[0];
-
+        $this->current_user = User::findCurrent();
         $this->course_id = Request::option('cid', $course_id);
         $pagetitle = '';
         //Navigation in der Veranstaltung:
@@ -41,7 +39,7 @@ class Course_RoomRequestsController extends AuthenticatedController
 
         if (!get_object_type($this->course_id, ['sem']) ||
             SeminarCategories::GetBySeminarId($this->course_id)->studygroup_mode ||
-            !$perm->have_studip_perm("tutor", $this->course_id)
+            !$GLOBALS['perm']->have_studip_perm("tutor", $this->course_id)
         ) {
             throw new Trails_Exception(400);
         }
@@ -209,7 +207,6 @@ class Course_RoomRequestsController extends AuthenticatedController
     protected function loadData($session_data, $step = 1)
     {
         $this->course_id = Context::getId();
-        $this->current_user = User::findCurrent();
         $this->user_is_global_resource_admin = ResourceManager::userHasGlobalPermission(
             $this->current_user,
             'admin'
@@ -944,12 +941,10 @@ class Course_RoomRequestsController extends AuthenticatedController
             _('Hier können Sie Angaben zu gewünschten Raumeigenschaften machen.')
         );
 
-        $this->current_user = User::findCurrent();
         $this->user_is_global_resource_admin = ResourceManager::userHasGlobalPermission(
             $this->current_user,
             'admin'
         );
-        $config = Config::get();
     }
 
 

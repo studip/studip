@@ -1190,12 +1190,15 @@ class Resources_RoomRequestController extends AuthenticatedController
             $this->current_user,
             'autor'
         );
-        $request_ids = $this->getFilteredRoomRequests();
-        if ($request_ids) {
-            $this->next_request = array_shift($request_ids);
-        }
-        if ($request_ids) {
-            $this->prev_request = array_shift($request_ids);
+
+        if (!Request::submitted('single-request')) {
+            $request_ids = $this->getFilteredRoomRequests();
+            if ($request_ids) {
+                $this->next_request = array_shift($request_ids);
+            }
+            if ($request_ids) {
+                $this->prev_request = array_shift($request_ids);
+            }
         }
         //$this->current_user is set in the before_filter.
 
