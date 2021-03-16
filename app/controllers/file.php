@@ -1469,7 +1469,7 @@ class FileController extends AuthenticatedController
         if ($folder_id == 'bulk') {
             $this->show_description_field = false;
         }
-        $this->origin_folder_id = $folder_id;
+
         if (Request::isPost()) {
             CSRFProtection::verifyUnsafeRequest();
             if (($folder_id == 'bulk') && !Request::submitted('accept')) {
