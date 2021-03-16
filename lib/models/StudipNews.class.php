@@ -375,7 +375,7 @@ class StudipNews extends SimpleORMap implements PrivacyObject
                 $queries[] = "SELECT news.news_id
                               FROM news
                               WHERE date + expire + ? < UNIX_TIMESTAMP()";
-                $parameters = (int) $news_deletion_days;
+                $parameters[] = (int) $news_deletion_days;
             }
 
             $queries[] = "SELECT news_range.news_id
