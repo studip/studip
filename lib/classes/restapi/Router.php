@@ -452,7 +452,6 @@ class Router
                 $router->registerRoutes($route);
             }
         );
-        \PluginEngine::getPlugins('SystemPlugin');
     }
 
     /**
