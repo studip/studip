@@ -1,5 +1,4 @@
-<? $range_object = $request->getRangeObject(); ?>
-Your request from <?= date('d.m.Y', $request->mkdate) ?>
+Your room request from <?= date('d.m.Y', $request->mkdate) ?>
  <?= $range_object instanceof Course ? sprintf('for the Course %s', htmlReady($range_object->getFullname())) : ''?> has been denied
  <?= $request->last_modifier instanceof User
    ? 'by ' . $request->last_modifier->getFullName()
@@ -10,9 +9,8 @@ Your request from <?= date('d.m.Y', $request->mkdate) ?>
 Explanation/Comment: <?= $request->reply_comment ?>
 <? endif ?>
 
-
 The requested time ranges were:
 
 <?= implode('', array_map(function($a) {
-    return "\n- " . $a . "\n";
+    return "- " . $a . "\n";
 }, $request->getTimeIntervalStrings()))?>

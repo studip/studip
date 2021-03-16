@@ -2069,8 +2069,17 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $user_lang_path . '/LC_MAILS/request_denied_mail.inc.php'
         );
 
-        $mail_title = _('Ihre Anfrage wurde abgelehnt!');
-        $mail_text  = $template->render(['request' => $this]);
+        $range_object = $this->getRangeObject();
+        $mail_title = _('Raumanfrage wurde abgelehnt');
+        if($range_object instanceof Course) {
+            $mail_title .= ': ' . $range_object->getFullname();
+        }
+        $mail_text  = $template->render(
+            [
+                'request' => $this,
+                'range_object' => $range_object
+            ]
+        );
 
         //Send the mail:
         Message::send(
