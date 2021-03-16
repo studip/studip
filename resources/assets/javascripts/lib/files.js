@@ -25,6 +25,9 @@ const Files = {
                                 }
                             }
                             return false;
+                        },
+                        removeFile(id) {
+                            this.files = this.files.filter(file => file.id != id)
                         }
                     },
                     components: { FilesTable, },
@@ -225,7 +228,7 @@ const Files = {
 
     addFileDisplay: (html, delay = 0) => {
         if (!Array.isArray(html)) {
-            html = [html];
+            html = html === null ? [] : [html];
         }
         html.forEach((value, i) => {
             let insert = true;
@@ -256,7 +259,7 @@ const Files = {
 
     addFolderDisplay: function (html, delay = 0) {
         if (!Array.isArray(html)) {
-            html = [html];
+            html = html === null ? [] : [html];
         }
         html.forEach((value, i) => {
             STUDIP.Files.filesapp.folders.push(value);

@@ -230,7 +230,7 @@ class FileController extends AuthenticatedController
                             }
                         }
 
-                        $payload['added_folders'][] = FilesystemVueDataManager::getFolderVueData($fileref->getFolderType());
+                        $payload['added_folders'][] = FilesystemVueDataManager::getFolderVueData($fileref->getFolderType(), $this->current_folder);
 
                         $added_folders[] = $fileref->folder->id;
                     }

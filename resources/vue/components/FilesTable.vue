@@ -283,18 +283,10 @@
                 return classes;
             },
             removeFile (id) {
-                this.files.forEach((file, i) => {
-                    if (file.id === id) {
-                        this.$delete(this.files, i);
-                    }
-                });
+                this.files = this.files.filter(file => file.id != id)
             },
             removeFolder (id) {
-                this.folders.forEach((folder, i) => {
-                    if (folder.id === id) {
-                        this.$delete(this.folders, i);
-                    }
-                });
+                this.folders = this.folders.filter(folder => folder.id != id)
             },
             sortArray (array) {
                 if (!array.length) {
@@ -302,7 +294,7 @@
                 }
 
                 // Determine whether the sorted array items have the key to sort by
-                const arrayHasKey = Object.keys(array.find(item => true)).indexOf(this.sortedBy) !== 1.
+                const arrayHasKey = Object.keys(array.find(item => true)).includes(this.sortedBy);
 
                 // Define sort direction by this factor
                 const directionFactor = this.sortDirection === "asc" ? 1 : -1;
@@ -311,7 +303,7 @@
                 let sortFunction = (a, b) => a[this.sortedBy].localeCompare(b[this.sortedBy]);
 
                 // Sort numerically by field
-                if (["size", "downloads", "chdate"].indexOf(this.sortedBy) !== -1 && arrayHasKey) {
+                if (["size", "downloads", "chdate"].includes(this.sortedBy) && arrayHasKey) {
                     sortFunction = (a, b) => parseInt(a[this.sortedBy], 10) - parseInt(b[this.sortedBy], 10);
                 }
 
