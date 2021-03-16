@@ -24,9 +24,6 @@ class ProfileController extends AuthenticatedController
     {
         parent::before_filter($action, $args);
 
-        // Remove cid
-        Context::close();
-
         Navigation::activateItem('/profile/index');
         URLHelper::addLinkParam('username', Request::username('username'));
         PageLayout::setHelpKeyword('Basis.Homepage');

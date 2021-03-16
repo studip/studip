@@ -50,10 +50,6 @@ class CourseNavigation extends Navigation
 
         parent::initSubNavigation();
 
-        if (!Context::getId()) {
-            return;
-        }
-
         // list of used modules
         $Modules = new Modules();
         $modules = $Modules->getLocalModules(Context::getId(), Context::getClass(), false, Context::getArtNum());
