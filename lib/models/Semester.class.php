@@ -281,14 +281,18 @@ class Semester extends SimpleORMap
     protected function seminarCounter($field)
     {
         if ($this->seminar_counts === null) {
-            $query = "SELECT SUM(duration_time = -1 AND start_time < :beginn) AS continuous,
-                             SUM(duration_time > 0 AND start_time < :beginn AND start_time + duration_time >= :ende) AS duration,
-                             SUM(start_time = :beginn) AS absolute
-                      FROM seminare
-                      WHERE start_time <= :beginn";
+            $query = "
+                SELECT SUM(IF(semester_courses.semester_id IS NULL, 1, 0)) AS continuous,
+                       0 AS duration,
+                       SUM(IF(semester_courses.semester_id IS NOT NULL, 1, 0)) AS absolute
+                FROM seminare
+                    LEFT JOIN semester_courses ON (seminare.Seminar_id = semester_courses.course_id)
+                WHERE start_time <= :beginn
+                    AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = :semester_id)
+            ";
             $statement = DBManager::get()->prepare($query);
             $statement->bindValue(':beginn', $this['beginn']);
-            $statement->bindValue(':ende', $this['ende']);
+            $statement->bindValue(':semester_id', $this['semester_id']);
             $statement->execute();
             $this->seminar_counts = $statement->fetch(PDO::FETCH_ASSOC);
         }

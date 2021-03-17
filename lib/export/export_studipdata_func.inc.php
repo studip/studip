@@ -185,13 +185,14 @@ function export_range($range_id)
 
                 $query = "SELECT DISTINCT Institut_id
                           FROM seminare
-                          INNER JOIN seminar_sem_tree USING (seminar_id)";
+                          INNER JOIN seminar_sem_tree USING (seminar_id)
+                          INNER JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id) ";
                 if ($semester) {
                     $query     .= " WHERE seminare.start_time <= :begin
-                                  AND (:begin <= (seminare.start_time + seminare.duration_time) OR
-                                       seminare.duration_time = -1)";
+                                  AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = :semester_id)";
                     $statement = DBManager::get()->prepare($query);
                     $statement->bindValue(':begin', $semester->beginn);
+                    $statement->bindValue(':semester_id', $semester->semester_id);
                     $statement->execute();
                 } else {
                     $statement = DBManager::get()->query($query);
@@ -341,8 +342,10 @@ function export_sem($inst_id, $ex_sem_id = 'all')
     $parameters = [];
 
     if (isset($ex_sem) && $semester = Semester::find($ex_sem)) {
-        $addquery             = " AND seminare.start_time <= :begin AND (:begin <= (seminare.start_time + seminare.duration_time) OR seminare.duration_time = -1) ";
+        $addjoin              = " LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id) ";
+        $addquery             = " AND seminare.start_time <= :begin AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = :semester_id) ";
         $parameters[':begin'] = $semester->beginn;
+        $parameters[':semester_id'] = $semester->id;
     }
 
     if ($ex_sem_id != 'all') {
@@ -374,6 +377,7 @@ function export_sem($inst_id, $ex_sem_id = 'all')
         $query                       = "SELECT seminare.*,Seminar_id as seminar_id, Institute.Name AS heimateinrichtung
                   FROM seminare
                   LEFT JOIN Institute USING (Institut_id)
+                  {$addjoin}
                   WHERE Institut_id = :institute_id {$addquery}
                   ORDER BY " . $order;
         $parameters[':institute_id'] = $inst_id;
@@ -382,6 +386,7 @@ function export_sem($inst_id, $ex_sem_id = 'all')
                   FROM seminar_inst
                   LEFT JOIN seminare USING (Seminar_id)
                   LEFT JOIN Institute ON seminare.Institut_id = Institute.Institut_id
+                  {$addjoin}
                   WHERE seminar_inst.Institut_id = :institute_id {$addquery}
                   ORDER BY " . $order;
         $parameters[':institute_id'] = $inst_id;
@@ -421,7 +426,8 @@ function export_sem($inst_id, $ex_sem_id = 'all')
         $data_object    .= $group_string;
         $object_counter += 1;
         $data_object    .= xml_open_tag($xml_groupnames_lecture['object'], $row['seminar_id']);
-        $sem_obj        = new Seminar($row['seminar_id']);
+        $course_object  = new Course($row['seminar_id']);
+        $sem_obj        = new Seminar($course_object);
         foreach ($xml_names_lecture as $key => $val) {
             if (!$val) {
                 $val = $key;
@@ -443,15 +449,20 @@ function export_sem($inst_id, $ex_sem_id = 'all')
                 $data_object .= xml_close_tag($xml_groupnames_lecture['childgroup3']);
             } elseif ($key === 'lvgruppe' && $SEM_CLASS[$SEM_TYPE[$row['status']]['class']]['module']) {
                 $data_object .= xml_open_tag($xml_groupnames_lecture['childgroup3a']);
-                ModuleManagementModelTreeItem::setObjectFilter('Modul', function ($modul) use ($sem_obj) {
+                ModuleManagementModelTreeItem::setObjectFilter('Modul', function ($modul) use ($course_object) {
                     // check for public status
                     if (!$GLOBALS['MVV_MODUL']['STATUS']['values'][$modul->stat]['public']) {
                         return false;
                     }
                     $modul_start = Semester::find($modul->start)->beginn ?: 0;
                     $modul_end   = Semester::find($modul->end)->beginn ?: PHP_INT_MAX;
-                    return $sem_obj->start_time <= $modul_end &&
-                        ($modul_start <= $sem_obj->start_time + $sem_obj->duration_time || $sem_obj->duration_time == -1);
+                    return ($course_object->start_time <= $modul_end)
+                        && (
+                            ($course_object->start_time >= $modul_start)
+                            || $course_object->isOpenEnded()
+                            || $course_object->getEndSemester()->ende <= $modul_end
+                            || $course_object->getEndSemester()->ende >= $modul_start
+                        );
                 });
                 ModuleManagementModelTreeItem::setObjectFilter('StgteilVersion', function ($version) {
                     return $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'][$version->stat]['public'];

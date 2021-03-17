@@ -664,27 +664,31 @@ class NewsController extends StudipController
         }
 
         if ($term === '__THIS_SEMESTER__') {
-            $nr = 0;
             $current_semester = Semester::findCurrent();
             $query = "SELECT seminare.Name AS sem_name, seminare.Seminar_id, seminare.visible
-                      FROM seminar_user LEFT JOIN seminare  USING (Seminar_id)
-                      WHERE seminar_user.user_id = :user_id AND seminar_user.status IN('tutor', 'dozent')
-                      AND seminare.start_time <= :start
-                      AND (:start <= (seminare.start_time + seminare.duration_time)
-                      OR seminare.duration_time = -1)";
+                      FROM seminar_user
+                          LEFT JOIN seminare USING (Seminar_id)
+                          LEFT JOIN semester_courses ON (semester_courses.course_id = seminar_user.Seminar_id)
+                      WHERE seminar_user.user_id = :user_id
+                          AND seminar_user.status IN('tutor', 'dozent')
+                          AND seminare.start_time <= :start
+                          AND (semester_courses.semester_id = :semester_id OR semester_courses.semester_id IS NULL)
+                          ";
             if (Config::get()->DEPUTIES_ENABLE) {
                 $query .= " UNION SELECT CONCAT(seminare.Name, ' ["._("Vertretung")."]') AS sem_name, seminare.Seminar_id,
                             seminare.visible
-                            FROM deputies JOIN seminare ON (deputies.range_id=seminare.Seminar_id)
+                            FROM deputies
+                                LEFT JOIN seminare ON (deputies.range_id=seminare.Seminar_id)
+                                LEFT JOIN semester_courses ON (semester_courses.course_id = deputies.range_id)
                             WHERE deputies.user_id = :user_id
                             AND seminare.start_time <= :start
-                            AND (:start <= (seminare.start_time + seminare.duration_time)
-                            OR seminare.duration_time = -1)";
+                            AND (semester_courses.semester_id = :semester_id OR semester_courses.semester_id IS NULL)";
             }
             $query .= " ORDER BY sem_name ASC";
             $statement = DBManager::get()->prepare($query);
             $statement->bindValue(':user_id', $GLOBALS['user']->id);
             $statement->bindValue(':start', $current_semester->beginn);
+            $statement->bindValue(':semester_id', $current_semester->semester_id);
             $statement->execute();
             $seminars = $statement->fetchAll(PDO::FETCH_ASSOC);
             foreach($seminars as $key => $sem) {
@@ -695,27 +699,30 @@ class NewsController extends StudipController
             }
             $term = '';
         } elseif ($term === '__NEXT_SEMESTER__') {
-            $nr = 0;
             $next_semester = Semester::findNext();
             $query = "SELECT seminare.Name AS sem_name, seminare.Seminar_id, seminare.visible
-                      FROM seminar_user LEFT JOIN seminare  USING (Seminar_id)
-                      WHERE seminar_user.user_id = :user_id AND seminar_user.status IN('tutor', 'dozent')
-                      AND seminare.start_time <= :start
-                      AND (:start <= (seminare.start_time + seminare.duration_time)
-                      OR seminare.duration_time = -1)";
+                      FROM seminar_user
+                          LEFT JOIN seminare  USING (Seminar_id)
+                          LEFT JOIN semester_courses ON (semester_courses.course_id = seminar_user.Seminar_id)
+                      WHERE seminar_user.user_id = :user_id
+                          AND seminar_user.status IN('tutor', 'dozent')
+                          AND seminare.start_time <= :start
+                          AND (semester_courses.semester_id = :semester_id OR semester_courses.semester_id IS NULL)";
             if (Config::get()->DEPUTIES_ENABLE) {
                 $query .= " UNION SELECT CONCAT(seminare.Name, ' ["._("Vertretung")."]') AS sem_name, seminare.Seminar_id,
                             seminare.visible
-                            FROM deputies JOIN seminare ON (deputies.range_id=seminare.Seminar_id)
+                            FROM deputies
+                                LEFT JOIN seminare ON (deputies.range_id=seminare.Seminar_id)
+                                LEFT JOIN semester_courses ON (semester_courses.course_id = deputies.range_id)
                             WHERE deputies.user_id = :user_id
-                            AND seminare.start_time <= :start
-                            AND (:start <= (seminare.start_time + seminare.duration_time)
-                            OR seminare.duration_time = -1)";
+                                AND seminare.start_time <= :start
+                                AND (semester_courses.semester_id = :semester_id OR semester_courses.semester_id IS NULL)";
             }
             $query .= " ORDER BY sem_name ASC";
             $statement = DBManager::get()->prepare($query);
             $statement->bindValue(':user_id', $GLOBALS['user']->id);
             $statement->bindValue(':start', $next_semester->beginn);
+            $statement->bindValue(':semester_id', $next_semester->semester_id);
             $statement->execute();
             $seminars = $statement->fetchAll(PDO::FETCH_ASSOC);
             foreach($seminars as $key => $sem) {

@@ -401,8 +401,8 @@ class SeminarCycleDate extends SimpleORMap
             }
 
             if (is_null($this->end_offset)) {
-                // check if seminar is endless (duration_time == -1)
-                if ($course->duration_time == -1) {
+                // check if seminar is endless
+                if ($course->isOpenEnded()) {
                     $last_sem = Semester::findOneBySQL('1 ORDER BY beginn DESC');
                     $end_time_offset = $last_sem->vorles_ende;
                 } else {
@@ -468,8 +468,8 @@ class SeminarCycleDate extends SimpleORMap
 
         // check if cycle has a fix end (end_offset == null -> endless)
         if (is_null($this->end_offset)) {
-            // check if seminar is endless (duration_time == -1)
-            if ($course->duration_time == -1) {
+            // check if seminar is endless
+            if ($course->isOpenEnded()) {
                 $last_sem = Semester::findOneBySQL('1 ORDER BY beginn DESC');
                 $sem_end = $last_sem->vorles_ende;
             } else {
@@ -545,8 +545,8 @@ class SeminarCycleDate extends SimpleORMap
 
         // check if cycle has a fix end (end_offset == null -> endless)
         if (is_null($this->end_offset)) {
-            // check if seminar is endless (duration_time == -1)
-            if ($course->duration_time == -1) {
+            // check if seminar is endless
+            if ($course->isOpenEnded()) {
                 $last_sem = Semester::findOneBySQL('1 ORDER BY beginn DESC');
                 $end_time_offset = $last_sem->vorles_ende;
             } else {

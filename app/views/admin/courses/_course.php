@@ -86,11 +86,7 @@ if (!$values['parent_course'] || !in_array($values['parent_course'], array_keys(
         <? endif ?>
         <? if (in_array('semester', $view_filter)) : ?>
             <td>
-                <?= htmlReady(Seminar::GetInstance($semid)->start_semester->name) ?>
-
-                <? if ((int)$values['duration_time'] > 0) : ?>
-                    <?= sprintf(' - %s', htmlReady(Seminar::GetInstance($semid)->end_semester->name)) ?>
-                <? endif?>
+                <?= htmlReady($course->semester_text) ?>
             </td>
         <? endif?>
         <? if (in_array('requests', $view_filter)) : ?>

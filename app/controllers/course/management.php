@@ -80,7 +80,7 @@ class Course_ManagementController extends AuthenticatedController
 
                 if ((Config::get()->ALLOW_DOZENT_VISIBILITY || $GLOBALS['perm']->have_perm('admin')) && !LockRules::Check($course->id, 'seminar_visibility')) {
                     $is_visible = $course->visible;
-                    if ($course->duration_time == -1 || $course->end_semester->visible) {
+                    if ($course->isOpenEnded() || $course->end_semester->visible) {
                         $actions->addLink(
                             _('Sichtbarkeit ändern') . ' (' .  ($is_visible ? _('sichtbar') : _('unsichtbar')) . ')',
                             URLHelper::getURL($this->url_for('course/management/change_visibility'), ['studip_ticket' => Seminar_Session::get_ticket()]),
@@ -137,7 +137,7 @@ class Course_ManagementController extends AuthenticatedController
             && check_ticket(Request::option('studip_ticket')))
         {
             $course = Course::findCurrent();
-            if ($course->duration_time == -1 || $course->end_semester->visible) {
+            if ($course->isOpenEnded() || $course->end_semester->visible) {
                 if (!$course->visible) {
                     StudipLog::log('SEM_VISIBLE', $course->id);
                     $course->visible = true;

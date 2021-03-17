@@ -66,16 +66,20 @@ class UserScheduleShow extends JsonApiController
         $ids = $stmt->fetchFirst();
 
         // fetch seminar-entries
-        $stmt = \DBManager::get()->prepare(
-            'SELECT s.seminar_id FROM seminar_user as su
-            LEFT JOIN seminare as s USING (seminar_id)
+        $stmt = \DBManager::get()->prepare('
+            SELECT s.seminar_id
+            FROM seminar_user as su
+                LEFT JOIN seminare as s USING (seminar_id)
+                LEFT JOIN semester_courses ON (s.Seminar_id = semester_courses.course_id)
             WHERE su.user_id = :userid
-              AND (
-                s.start_time = :begin
-                OR (s.start_time <= :begin AND s.duration_time = -1)
-                OR (s.start_time + s.duration_time >= :begin AND s.start_time <= :begin))'
-        );
-        $stmt->execute(['userid' => $user->id, ':begin' => $semester['beginn']]);
+                AND s.start_time <= :begin
+                AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = :semester_id)
+        ');
+        $stmt->execute([
+            'userid'      => $user->id,
+            'begin'       => $semester->beginn,
+            'semester_id' => $semester->id,
+        ]);
 
         return array_reduce(
             array_unique(array_merge($ids, $stmt->fetchFirst())),

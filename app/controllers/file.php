@@ -733,18 +733,23 @@ class FileController extends AuthenticatedController
 
         $this->plugin = Request::get('from_plugin');
         if (!$GLOBALS['perm']->have_perm("admin")) {
-            $query = "SELECT seminare.*
+            $query = "SELECT seminare.*, COUNT(semester_courses.semester_id) AS semesters
                       FROM seminare
                       INNER JOIN seminar_user ON (seminar_user.Seminar_id = seminare.Seminar_id)
-                      WHERE seminar_user.user_id = :user_id";
+                      LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id)
+                      WHERE seminar_user.user_id = :user_id
+                      GROUP BY seminare.Seminar_id
+                      ";
             if (Config::get()->DEPUTIES_ENABLE) {
                 $query .= " UNION
-                    SELECT `seminare`.*
+                    SELECT `seminare`.*, COUNT(semester_courses.semester_id) AS semesters
                     FROM `seminare`
                     INNER JOIN `deputies` ON (`deputies`.`range_id` = `seminare`.`Seminar_id`)
-                    WHERE `deputies`.`user_id` = :user_id";
+                    LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id)
+                    WHERE `deputies`.`user_id` = :user_id
+                    GROUP BY seminare.Seminar_id";
             }
-            $query .= " ORDER BY duration_time = -1, start_time DESC, Name ASC";
+            $query .= " ORDER BY semesters = 0 DESC, start_time DESC, Name ASC";
             $statement = DBManager::get()->prepare($query);
             $statement->execute([':user_id' => $GLOBALS['user']->id]);
             $this->courses = [];
@@ -1242,18 +1247,22 @@ class FileController extends AuthenticatedController
         $this->folder_id = $folder_id;
         $this->plugin = Request::get('to_plugin');
         if (!$GLOBALS['perm']->have_perm('admin')) {
-            $query = "SELECT seminare.*
+            $query = "SELECT seminare.*, COUNT(semester_courses.semester_id) AS semesters
                       FROM seminare
                       INNER JOIN seminar_user ON (seminar_user.Seminar_id = seminare.Seminar_id)
-                      WHERE seminar_user.user_id = :user_id";
+                      LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id)
+                      WHERE seminar_user.user_id = :user_id
+                      GROUP BY seminare.Seminar_id";
             if (Config::get()->DEPUTIES_ENABLE) {
                 $query .= " UNION
-                    SELECT `seminare`.*
+                    SELECT `seminare`.*, COUNT(semester_courses.semester_id) AS semesters
                     FROM `seminare`
                     INNER JOIN `deputies` ON (`deputies`.`range_id` = `seminare`.`Seminar_id`)
-                    WHERE `deputies`.`user_id` = :user_id";
+                    LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id)
+                    WHERE `deputies`.`user_id` = :user_id
+                    GROUP BY seminare.Seminar_id";
             }
-            $query .= " ORDER BY duration_time = -1, start_time DESC, Name ASC";
+            $query .= " ORDER BY semesters = 0 DESC, start_time DESC, Name ASC";
             $statement = DBManager::get()->prepare($query);
             $statement->execute(['user_id' => $GLOBALS['user']->id]);
 

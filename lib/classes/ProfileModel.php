@@ -107,9 +107,8 @@ class ProfileModel
                 if (Config::get()->HIDE_STUDYGROUPS_FROM_PROFILE && $c->status == 99) {
                     return false;
                 }
-                if ($c->duration_time != -1) {
-                    return $c->start_time <= $one->beginn
-                        && $one->beginn <= $c->start_time + $c->duration_time;
+                if (!$c->isOpenEnded()) {
+                    return $c->isInSemester($one);
                 } elseif ($one->isCurrent()) {
                     return $c;
                 }

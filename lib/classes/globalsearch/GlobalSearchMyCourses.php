@@ -48,9 +48,12 @@ class GlobalSearchMyCourses extends GlobalSearchModule
         // generate SQL for the given sidebar filter (semester, institute, seminar_type)
         if ($filter['category'] === self::class || $filter['category'] == 'show_all_categories') {
             if ($filter['semester']) {
-                $semester_condition = " AND (`courses`.start_time <= " .DBManager::get()->quote($filter['semester']).
-                            " AND (`courses`.start_time + `courses`.duration_time >= " .DBManager::get()->quote($filter['semester']).
-                            " OR `courses`.duration_time = -1)) ";
+                $semester = Semester::findByTimestamp($filter['semester']);
+                $semester_join = "LEFT JOIN semester_courses ON (courses.Seminar_id = semester_courses.course_id) ";
+                $semester_condition = " AND (
+                    `courses`.start_time <= " .DBManager::get()->quote($filter['semester'])."
+                     AND (`semester_courses`.semester_id IS NULL OR semester_courses.semester_id = " .DBManager::get()->quote($semester->getId()). " )
+                ) ";
             }
             if ($filter['institute']) {
                 $institutes = self::getInstituteIdsForSQL($filter['institute']);
@@ -65,9 +68,11 @@ class GlobalSearchMyCourses extends GlobalSearchModule
         $search = str_replace(" ", "% ", $search);
         $query = DBManager::get()->quote("%{$search}%");
         $user_id = DBManager::get()->quote($GLOBALS['user']->id);
-        $sql = "SELECT SQL_CALC_FOUND_ROWS courses.* FROM `seminare` AS  courses
+        $sql = "SELECT SQL_CALC_FOUND_ROWS courses.*
+                FROM `seminare` AS  courses
                 JOIN `seminar_user` USING (`Seminar_id`)
                 JOIN `sem_types` ON (courses.`status` = `sem_types`.`id`)
+                {$semester_join}
                 WHERE `user_id` = {$user_id}
                   AND (courses.`Name` LIKE {$query}
                     OR courses.`VeranstaltungsNummer` LIKE {$query}
@@ -76,6 +81,7 @@ class GlobalSearchMyCourses extends GlobalSearchModule
                   {$institute_condition}
                   {$seminar_type_condition}
                   {$semester_condition}
+                GROUP BY courses.Seminar_id
                 ORDER BY `start_time` DESC
                 LIMIT " . $limit;
         return $sql;

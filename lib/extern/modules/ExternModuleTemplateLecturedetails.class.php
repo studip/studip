@@ -229,7 +229,8 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
 
     function getContent ($args = NULL, $raw = FALSE) {
         $this->seminar_id = $args["seminar_id"];
-        $seminar = new Seminar($this->seminar_id);
+        $course_object = new Course($this->seminar_id);
+        $seminar = new Seminar($course_object);
 
         $visible = $this->config->getValue("Main", "visible");
 
@@ -357,15 +358,20 @@ class ExternModuleTemplateLecturedetails extends ExternModule {
             }
 
             if ($seminar->getSemClass()['module']) {
-                ModuleManagementModelTreeItem::setObjectFilter('Modul', function ($modul) use ($seminar) {
+                ModuleManagementModelTreeItem::setObjectFilter('Modul', function ($modul) use ($course_object) {
                     // check for public status
                     if (!$GLOBALS['MVV_MODUL']['STATUS']['values'][$modul->stat]['public']) {
                         return false;
                     }
                     $modul_start = Semester::find($modul->start)->beginn ?: 0;
                     $modul_end = Semester::find($modul->end)->beginn ?: PHP_INT_MAX;
-                    return $seminar->start_time <= $modul_end &&
-                           ($modul_start <= $seminar->start_time + $seminar->duration_time || $seminar->duration_time == -1);
+                    return ($course_object->start_time <= $modul_end)
+                        && (
+                            ($course_object->start_time >= $modul_start)
+                            || $course_object->isOpenEnded()
+                            || $course_object->getEndSemester()->ende <= $modul_end
+                            || $course_object->getEndSemester()->ende >= $modul_start
+                        );
                 });
                 ModuleManagementModelTreeItem::setObjectFilter('StgteilVersion', function ($version) {
                     return $GLOBALS['MVV_STGTEILVERSION']['STATUS']['values'][$version->stat]['public'];

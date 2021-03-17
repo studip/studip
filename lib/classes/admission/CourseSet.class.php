@@ -521,11 +521,17 @@ class CourseSet
      */
     public function getSemester() {
         $db = DBManager::get();
-        $timestamp = $db->fetchColumn("SELECT MAX(start_time + duration_time)
-                 FROM seminare WHERE duration_time <> -1
-                 AND seminar_id IN(?)", [$this->getCourses()]);
-        $semester = Semester::findByTimestamp($timestamp);
-        if (!$semester) {
+        $data = $db->fetchOne("
+            SELECT semester_data.*
+            FROM semester_data
+                INNER JOIN semester_courses ON (semester_data.semester_id = semester_courses.semester_id)
+            WHERE semester_courses.course_id IN (?)
+            ORDER BY semester_data.ende DESC
+            LIMIT 1
+        ", [$this->getCourses()]);
+        if ($data) {
+            $semester = Semester::buildExisting($data);
+        } else {
             $semester = $_SESSION['_default_sem'] ? Semester::find($_SESSION['_default_sem']) : Semester::findCurrent();
         }
         return $semester->id;

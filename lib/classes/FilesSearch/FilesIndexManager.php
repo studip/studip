@@ -265,15 +265,15 @@ class FilesIndexManager
                    folders.folder_type,
 
                    seminare.status AS course_status,
-                   sd1.beginn AS semester_start,
-                   sd2.ende AS semester_end
+                   MIN(semester_data.beginn) AS semester_start,
+                   MIN(semester_data.ende) AS semester_end
             FROM file_refs
-            JOIN folders ON (file_refs.folder_id = folders.id)
-            LEFT JOIN seminare ON (folders.range_type = \'course\' AND folders.range_id = seminare.Seminar_id)
-            LEFT JOIN semester_data sd1 ON (seminare.start_time BETWEEN sd1.beginn AND sd1.ende)
-            LEFT JOIN semester_data sd2 ON (seminare.start_time + seminare.duration_time
-                                            BETWEEN sd2.beginn AND sd2.ende)
+                JOIN folders ON (file_refs.folder_id = folders.id)
+                LEFT JOIN seminare ON (folders.range_type = \'course\' AND folders.range_id = seminare.Seminar_id)
+                LEFT JOIN semester_courses ON (seminare.Seminar_id = semester_courses.course_id)
+                LEFT JOIN semester_data ON (semester_courses.semester_id = semester_data.semester_id)
             %s
+            GROUP BY file_refs.id
         ', $table, $where['sql']);
 
         DBManager::get()->execute($query, $where['params']);

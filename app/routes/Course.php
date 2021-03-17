@@ -140,7 +140,7 @@ class Course extends \RESTAPI\RouteMap
                     return
                         $course->start_time == $semester->beginn
                         || ($course->start_time <= $semester->beginn
-                            && ($course->duration_time == -1 || $semester->beginn <= $course->end_time));
+                            && ($course->isOpenEnded() || $semester->beginn <= $course->end_time));
                 });
         }
 

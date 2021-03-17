@@ -20,18 +20,18 @@
             <?= _('Dauer') ?>
             <select name="endSemester" id="endSemester">
                 <option value="0"
-                    <?= (int)$course->duration_time == 0 ? 'selected' : '' ?>>
+                    <?= $course->end_semester->id === $course->start_semester->id ? 'selected' : '' ?>>
                     <?= _('Ein Semester') ?></option>
                 <? foreach ($semester as $sem) : ?>
                     <? if ($sem->beginn >= $course->start_semester->beginn) : ?>
                         <option value="<?= $sem->semester_id ?>"
-                            <?= (int)$course->duration_time != 0 && (($course->start_time + $course->duration_time) == $sem->beginn) ? 'selected' : '' ?>>
+                            <?= (count($course->semesters) > 1) && $course->end_semester->id == $sem->id ? 'selected' : '' ?>>
                             <?= htmlReady($sem->name) ?>
                         </option>
                     <? endif; ?>
                 <? endforeach; ?>
                 <option value="-1"
-                    <?= (int)$course->duration_time == -1 ? 'selected' : '' ?>>
+                    <?= $course->isOpenEnded() ? 'selected' : '' ?>>
                     <?= _('Unbegrenzt') ?></option>
             </select>
         </label>

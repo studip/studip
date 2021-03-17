@@ -61,7 +61,7 @@ class Course_TimesroomsController extends AuthenticatedController
         URLHelper::bindLinkParam('semester_filter', $this->semester_filter);
 
         if (empty($this->semester_filter)) {
-            if (!$this->course->hasDatesOutOfDuration() && $this->course->duration_time == 0) {
+            if (!$this->course->hasDatesOutOfDuration() && count($this->course->semesters) == 1) {
                 $this->semester_filter = $this->course->start_semester->id;
             } else {
                 $this->semester_filter = 'all';
@@ -76,7 +76,7 @@ class Course_TimesroomsController extends AuthenticatedController
 
         $selectable_semesters = new SimpleCollection(Semester::getAll());
         $start                = $this->course->start_time;
-        $end                  = $this->course->duration_time == -1 ? PHP_INT_MAX : $this->course->end_time;
+        $end                  = $this->course->getEndSemester()->ende;
         $selectable_semesters = $selectable_semesters->findBy('beginn', [$start, $end], '>=<=')->toArray();
         if (count($selectable_semesters) > 1 || (count($selectable_semesters) == 1 && $this->course->hasDatesOutOfDuration())) {
             $selectable_semesters[] = ['name' => _('Alle Semester'), 'semester_id' => 'all'];
@@ -194,6 +194,7 @@ class Course_TimesroomsController extends AuthenticatedController
                     $single_dates[$sem->id] = new SimpleCollection();
                 }
                 $single_dates[$sem->id]->append($val);
+
                 $matched[] = $val->id;
                 if ($check_room_requests) {
                     $this->single_date_room_request_c += ResourceRequest::countBySql(
@@ -230,7 +231,6 @@ class Course_TimesroomsController extends AuthenticatedController
         $this->current_semester = Semester::findCurrent();
         if (Request::submitted('save')) {
             CSRFProtection::verifyUnsafeRequest();
-            $current_semester = Semester::findCurrent();
             $start_semester = Semester::find(Request::get('startSemester'));
             if (Request::get('endSemester') != '-1' && Request::get('endSemester') != '0') {
                 $end_semester = Semester::find(Request::get('endSemester'));
@@ -238,7 +238,7 @@ class Course_TimesroomsController extends AuthenticatedController
                 $end_semester = Request::int('endSemester');
             }
 
-            $course = $this->course;
+            $course = Course::findCurrent();
 
             if ($start_semester == $end_semester) {
                 $end_semester = 0;
@@ -247,30 +247,44 @@ class Course_TimesroomsController extends AuthenticatedController
             if ($end_semester != 0 && $end_semester != -1 && $start_semester->beginn >= $end_semester->beginn) {
                 PageLayout::postError(_('Das Startsemester liegt nach dem Endsemester!'));
             } else {
-
-                $course->setStartSemester($start_semester->beginn);
-                if (is_object($end_semester)) {
-                    $course->setEndSemester($end_semester->beginn);
+                //set the new semester array:
+                if ($end_semester == -1) {
+                    $course->setSemesters([]);
+                } elseif($end_semester == 0)  {
+                    $course->setSemesters([$start_semester]);
                 } else {
-                    $course->setEndSemester($end_semester);
+                    $selected_semesters = [];
+                    foreach (Semester::getAll() as $sem) {
+                        if ($sem['beginn'] >= $start_semester['beginn'] && $sem['ende'] <= $end_semester['ende']) {
+                            $selected_semesters[] = $sem;
+                        }
+                    }
+                    $course->setSemesters($selected_semesters);
                 }
-                $old_start_weeks = isset($course->start_semester) ? $course->start_semester->getStartWeeks($course->duration_time) : [];
+
+                //deprecated: this is the old way
+                $course['start_time'] = $start_semester['beginn'];
+                $course['duration_time'] = $end_semester <= 0
+                    ? $end_semester
+                    : $end_semester['ende'] - $start_semester['beginn'];
+
+                $old_start_weeks = $course->end_semester ? $course->end_semester->getStartWeeks() : [];
                 // set the semester-chooser to the first semester
-                $course->setFilter($course->getStartSemester());
+                $this->course->setFilter($course->getStartSemester());
                 $this->semester_filter = $start_semester->semester_id;
 
                 $course->store();
 
-                $new_start_weeks = $course->start_semester->getStartWeeks($course->duration_time);
-                SeminarCycleDate::removeOutRangedSingleDates($course->getStartSemester(), $course->getEndSemesterVorlesEnde(), $course->id);
-                $cycles = SeminarCycleDate::findBySeminar_id($course->seminar_id);
+                $new_start_weeks = $course->start_semester->getStartWeeks();
+                SeminarCycleDate::removeOutRangedSingleDates($this->course->getStartSemester(), $this->course->getEndSemesterVorlesEnde(), $course->id);
+                $cycles = SeminarCycleDate::findBySeminar_id($course->id);
                 foreach ($cycles as $cycle) {
                     $cycle->end_offset = $this->getNewEndOffset($cycle, $old_start_weeks, $new_start_weeks);
                     $cycle->generateNewDates();
                     $cycle->store();
                 }
 
-                $messages = $course->getStackedMessages();
+                $messages = $this->course->getStackedMessages();
                 foreach ($messages as $type => $msg) {
                     PageLayout::postMessage(MessageBox::$type($msg['title'], $msg['details']));
                 }
@@ -1016,19 +1030,14 @@ class Course_TimesroomsController extends AuthenticatedController
         }
 
 
-        $duration = $this->course->duration_time;
-        if ($duration == -1) { // course with endless lifespan
-            $end_semester = Semester::findBySQL('beginn >= :beginn ORDER BY beginn',
-                                                [':beginn' => $this->course->getStartSemester()]);
-        } else if ($duration > 0) { // course over more than one semester
-            $end_semester = Semester::findBySQL('beginn >= :beginn AND beginn <= :ende ORDER BY beginn',
-                                                [':beginn' => $this->course->getStartSemester(),
-                                                      ':ende'   => $this->course->getEndSemester()]);
-        } else { // one semester course
-            $end_semester[] = $this->course->start_semester;
+        $course = Course::find($this->course->id);
+        if ($this->course->isOpenEnded()) { // course with endless lifespan
+            $end_semester = Semester::findBySQL("beginn >= ? ", [$this->course->start_time]);
+        } else { // course over more than one semester
+            $end_semester = $course->semesters;
         }
 
-        $this->start_weeks = $this->course->start_semester->getStartWeeks($duration);
+        $this->start_weeks = $this->course->end_semester->getStartWeeks();
 
         if (!empty($end_semester)) {
             $this->end_semester_weeks = [];

@@ -88,11 +88,12 @@ case "s":
         $query = "SELECT seminar_inst.seminar_id
                   FROM seminar_inst
                   LEFT JOIN seminare AS s ON (seminar_inst.seminar_id = s.Seminar_id)
-                  INNER JOIN semester_data sd
-                     ON ((s.start_time <= sd.beginn AND sd.beginn <= (s.start_time + s.duration_time )
-                         OR (s.start_time <= sd.beginn AND s.duration_time = -1))
-                      AND semester_id = ?)
-                  WHERE seminar_inst.Institut_id = ?";
+                  LEFT JOIN semester_courses ON (semester_courses.course_id = s.Seminar_id)
+                  WHERE (
+                          semester_courses.semester_id = ?
+                          OR semester_courses.semester_id IS NULL
+                      )
+                      AND seminar_inst.Institut_id = ?";
         array_unshift($parameters, $show_semester);
     } else {
         $query = "SELECT seminar_inst.seminar_id

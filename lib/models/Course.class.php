@@ -157,18 +157,16 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
             'on_store'   => 'store',
         ];
 
-        $config['belongs_to']['start_semester'] = [
-            'class_name'        => 'Semester',
-            'foreign_key'       => 'start_time',
-            'assoc_func'        => 'findByTimestamp',
-            'assoc_foreign_key' => 'beginn',
+        $config['has_and_belongs_to_many']['semesters'] = [
+            'class_name'     => 'Semester',
+            'thru_table'     => 'semester_courses',
+            'thru_key'       => 'course_id',
+            'thru_assoc_key' => 'semester_id',
+            'order_by'       => 'ORDER BY beginn ASC',
+            'on_delete'      => 'delete',
+            'on_store'       => 'store',
         ];
-        $config['belongs_to']['end_semester'] = [
-            'class_name'        => 'Semester',
-            'foreign_key'       => 'end_time',
-            'assoc_func'        => 'findByTimestamp',
-            'assoc_foreign_key' => 'beginn',
-        ];
+
         $config['belongs_to']['home_institut'] = [
             'class_name'  => 'Institute',
             'foreign_key' => 'institut_id',
@@ -220,6 +218,22 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
 
         $config['additional_fields']['end_time'] = true;
 
+        $config['additional_fields']['start_semester'] = [
+            'get' => 'getStartSemester'
+        ];
+        $config['additional_fields']['end_semester'] = [
+            'get' => 'getEndSemester'
+        ];
+        $config['additional_fields']['semester_text'] = [
+            'get' => 'getTextualSemester'
+        ];
+
+        $config['additional_fields']['config'] = [
+            'get' => function ($course) {
+                return CourseConfig::get($course->id);
+            }
+        ];
+
         $config['notification_map']['after_create'] = 'CourseDidCreateOrUpdate';
         $config['notification_map']['after_store'] = 'CourseDidCreateOrUpdate';
 
@@ -233,10 +247,6 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         $config['i18n_fields']['leistungsnachweis'] = true;
         $config['i18n_fields']['ort'] = true;
 
-        $config['additional_fields']['config']['get'] = function ($course) {
-            return CourseConfig::get($course->id);
-        };
-
         $config['registered_callbacks']['before_update'][] = 'logStore';
         $config['registered_callbacks']['after_delete'][] = function ($course) {
             CourseAvatar::getAvatar($course->id)->reset();
@@ -248,17 +258,144 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
 
     public function getEnd_Time()
     {
-        return $this->duration_time == -1 ? -1 : $this->start_time + $this->duration_time;
+        if (!$this->semesters) {
+            return -1;
+        }
+
+        return $this->semesters->last()->ende;
     }
 
     public function setEnd_Time($value)
     {
-        if ($value == -1) {
-            $this->duration_time = -1;
-        } elseif ($this->start_time > 0 && $value > $this->start_time) {
-            $this->duration_time = $value - $this->start_time;
+        throw new Exception("This function is unavailable.");
+    }
+
+    /**
+     * Sets the start semester of the course.
+     */
+    public function setStartSemester(Semester $semester)
+    {
+        $this->start_semester = $semester;
+    }
+
+    /**
+     * Sets the end semester of the course.
+     */
+    public function setEndSemester(Semester $semester)
+    {
+        $this->end_semester = $semester;
+    }
+
+    public function setSemesters($semesters)
+    {
+        $semester_ids = array_map(function ($s) {
+            return $s->id;
+        }, $semesters);
+
+        if (count($semester_ids) > 0) {
+            $delete = DBManager::get()->prepare("
+                DELETE FROM semester_courses
+                WHERE semester_id NOT IN (:semester_ids)
+                    AND course_id = :course_id
+            ");
+            $delete->execute([
+                'semester_ids' => $semester_ids,
+                'course_id' => $this->id,
+            ]);
         } else {
-            $this->duration_time = 0;
+            $delete = DBManager::get()->prepare("
+                DELETE FROM semester_courses
+                WHERE course_id = :course_id
+            ");
+            $delete->execute([
+                'course_id' => $this->id,
+            ]);
+        }
+        $insert = DBManager::get()->prepare("
+            INSERT IGNORE INTO semester_courses
+            SET course_id = :course_id,
+                semester_id = :semester_id,
+                mkdate = UNIX_TIMESTAMP(),
+                chdate = UNIX_TIMESTAMP()
+        ");
+        foreach ($semesters as $semester) {
+            $insert->execute([
+                'course_id' => $this->id,
+                'semester_id' => $semester->id,
+            ]);
+        }
+        $this->resetRelation('semesters');
+    }
+
+    /**
+     * Retrieves the first semester of a course, if applicable.
+     *
+     * @returns Semester|null Either the first semester of the course
+     *     or null, if no semester could be found.
+     */
+    public function getStartSemester()
+    {
+        if (count($this->semesters) > 0) {
+            return $this->semesters->first();
+        } else {
+            return Semester::findByTimestamp($this['start_time']);
+        }
+    }
+
+    /**
+     * Retrieves the last semester of a course, if applicable.
+     *
+     * @returns Semester|null Either the last semester of the course
+     *     or null, if no semester could be found.
+     */
+    public function getEndSemester()
+    {
+        if (count($this->semesters) > 0) {
+            return $this->semesters->last();
+        }
+        return null;
+    }
+
+    /**
+     * Returns the readable semester duration as as string
+     * @return string : readable semester
+     */
+    public function getTextualSemester()
+    {
+        if (count($this->semesters) > 1) {
+            return $this->start_semester->name . ' - ' . $this->end_semester->name;
+        } elseif (count($this->semesters) === 1) {
+            return $this->start_semester->name;
+        } else {
+            return $this->start_semester->name .' - ' . _('unbegrenzt');
+        }
+    }
+
+    /**
+     * Returns true if this course has no end-semester. Else false.
+     * @return bool : true if there is no end-semester
+     */
+    public function isOpenEnded()
+    {
+        return count($this->semesters) === 0;
+    }
+
+    /**
+     * Returns if this course is in the given semester
+     * @param Semester $semester : instance of the given semester
+     * @return bool : true if this course is part of this semester
+     */
+    public function isInSemester(Semester $semester)
+    {
+        if (count($this->semesters) > 0) {
+            foreach ($this->semesters as $s) {
+                if ($s->id === $semester->id) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return $this->start_time <= $semester->beginn;
         }
     }
 
@@ -597,9 +734,17 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
 
     /**
      * Generates a general log entry if the course were changed.
+     * Furthermore, this method emits notifications when the
+     * start and/or the end semester has/have changed.
      */
     protected function logStore()
     {
+        if ($this->isFieldDirty('start_semester')) {
+            //Log change of start semester:
+            StudipLog::log('SEM_SET_STARTSEMESTER', $this->id, $this->start_semester->beginn);
+            NotificationCenter::postNotification('CourseDidChangeSchedule', $this);
+        }
+
         $log = [];
         if ($this->isFieldDirty('admission_prelim')) {
             $log[] = $this->admission_prelim ?  _('Neuer Anmeldemodus: Vorläufiger Eintrag') : _('Neuer Anmeldemodus: Direkter Eintrag');
@@ -753,8 +898,15 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
      */
     public static function findByUser($user_id, $perms = [], $with_deputies = true)
     {
+        if (!$user_id) {
+            return [];
+        }
+
         $db = DBManager::get();
-        $sql = 'SELECT seminar_id FROM `seminar_user` WHERE `seminar_user`.`user_id` = :user_id';
+        $sql = 'SELECT seminar_id FROM `seminar_user` ';
+        $sql = 'INNER JOIN `seminar_user` USING (`Seminar_id`) ';
+        $sql .= 'LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id) ';
+        $sql .= 'WHERE `seminar_user`.`user_id` = :user_id';
         $sql_params = ['user_id' => $user_id];
         if (is_array($perms) && count($perms)) {
             $sql .= ' AND `seminar_user`.`status` IN ( :perms )';
@@ -765,6 +917,6 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
             $sql = 'SELECT range_id FROM `deputies` WHERE `deputies`.`user_id` = :user_id';
             $seminar_ids = array_merge($seminar_ids, $db->fetchFirst($sql, $sql_params));
         }
-        return Course::findMany($seminar_ids, 'ORDER BY duration_time = -1, start_time DESC, Name ASC');
+        return Course::findMany($seminar_ids, 'ORDER BY IF(semester_courses.semester_id IS NULL, 1, 0) DESC, start_time DESC, Name ASC');
     }
 }

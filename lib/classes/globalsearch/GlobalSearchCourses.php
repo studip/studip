@@ -62,9 +62,13 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
         // generate SQL for the given sidebar filter (semester, institute, seminar_type)
         if ($filter['category'] === self::class || $filter['category'] === 'show_all_categories') {
             if ($filter['semester']) {
-                $semester_condition = " AND (`courses`.start_time <= " . DBManager::get()->quote($filter['semester']) .
-                            " AND (`courses`.start_time + `courses`.duration_time >= " . DBManager::get()->quote($filter['semester']).
-                            " OR `courses`.duration_time = -1)) ";
+                $semester = Semester::findByTimestamp($filter['semester']);
+                $semester_join = "LEFT JOIN semester_courses ON (courses.Seminar_id = semester_courses.course_id) ";
+                $semester_condition = "
+                    AND (
+                        `courses`.start_time <= " . DBManager::get()->quote($filter['semester']) ."
+                        AND (`semester_courses`.semester_id IS NULL OR semester_courses.semester_id = " . DBManager::get()->quote($semester->getId()).")
+                    ) ";
             }
             if ($filter['institute']) {
                 $institutes = self::getInstituteIdsForSQL($filter['institute']);
@@ -88,6 +92,7 @@ class GlobalSearchCourses extends GlobalSearchModule implements GlobalSearchFull
                 JOIN `sem_types` ON (courses.`status` = `sem_types`.`id`)
                 JOIN `seminar_user` u ON (u.`Seminar_id` = courses.`Seminar_id` AND u.`status` = 'dozent')
                 JOIN `auth_user_md5` a ON (a.`user_id` = u.`user_id`)
+                {$semester_join}
                 WHERE {$visibility}
                     (
                         IFNULL(`i18n`.`value`, courses.`Name`) LIKE {$query}

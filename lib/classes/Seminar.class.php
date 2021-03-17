@@ -456,9 +456,8 @@ class Seminar
      *
      * @return  array
      */
-    public function getSettings()
-    {
-        $settings = $this->course->toArray();
+    public function getSettings() {
+        $settings = $this->course->toRawArray();
         unset($settings['config']);
         return $settings;
     }
@@ -2038,7 +2037,7 @@ class Seminar
                 foreach ($termine as $termin_id) {
                     $statement->execute([$termin_id, $user_id]);
                 }
-                if (Deputy::isActivated()) {
+                if (isDefaultDeputyActivated()) {
                     $other_dozenten = array_diff(array_keys($dozenten), [$user_id]);
                     foreach (Deputy::findByRange_id($user_id) as $default_deputy) {
                         if ($default_deputy->user_id != $GLOBALS['user']->id &&

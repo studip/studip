@@ -700,14 +700,16 @@ class ExternModuleTemplatePersondetails extends ExternModule {
             "SELECT s.Name, s.Seminar_id, s.Untertitel, s.VeranstaltungsNummer "
             . "FROM seminar_user su "
             . "LEFT JOIN seminare s USING(seminar_id) "
-            . "WHERE user_id = ? AND su.status LIKE 'dozent' "
-            . "AND start_time <= ? AND (? <= start_time + duration_time OR duration_time = -1) "
+            . "LEFT JOIN semester_courses ON (semester_courses.course_id = s.Seminar_id) "
+            . "WHERE user_id = ? "
+            . "AND su.status LIKE 'dozent' "
+            . "AND start_time <= ? AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = ?) "
             . "AND s.status IN (?) AND s.visible = 1 "
             . "ORDER BY Name");
 
         $i = 0;
         for (;$current_sem <= $last_sem; $last_sem--) {
-            $stm->execute([$this->user_id, $all_semester[$last_sem]['beginn'], $all_semester[$last_sem]['beginn'], $types ?: '']);
+            $stm->execute([$this->user_id, $all_semester[$last_sem]['beginn'], $all_semester[$last_sem]['semester_id'], $types ?: '']);
             $result = $stm->fetchAll();
 
             if ($result && sizeof($result)) {

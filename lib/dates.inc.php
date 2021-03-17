@@ -331,27 +331,14 @@ function get_sem_num_sem_browse () {
     return $ret;
 }
 
-/*
-Die Funktion get_semester gibt den oder die Semester einer speziellen Veranstaltung aus.
-*/
-
-function get_semester($seminar_id, $start_sem_only=FALSE)
+/**
+ * Die Funktion get_semester gibt den oder die Semester einer speziellen Veranstaltung aus.
+ * @deprecated
+ */
+function get_semester($seminar_id)
 {
-    $query = "SELECT start_time, duration_time FROM seminare WHERE seminar_id = ?";
-    $statement = DBManager::get()->prepare($query);
-    $statement->execute([$seminar_id]);
-    $temp = $statement->fetch(PDO::FETCH_ASSOC);
-
-    $return_string = get_sem_name($temp['start_time']);
-    if (!$start_sem_only) {
-        if ($temp['duration_time'] > 0) {
-            $return_string .= ' - ' . get_sem_name($temp['start_time'] + $temp['duration_time']);
-        }
-        if ($temp['duration_time'] == -1) {
-            $return_string .= ' ' . _('bis unbegrenzt');
-        }
-    }
-    return $return_string;
+    $course = Course::find($seminar_id);
+    return $course->semester_text;
 }
 
 /*

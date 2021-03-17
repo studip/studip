@@ -439,6 +439,9 @@ class BasicDataWizardStep implements CourseWizardStep
                 $institutes = array_merge($institutes, array_keys($values['participating']));
             }
             $seminar->setInstitutes($institutes);
+            $course->setSemesters([
+                Semester::findByTimestamp($values['start_time'])
+            ]);
             if (isset($values['lecturers']) && is_array($values['lecturers'])) {
                 foreach (array_keys($values['lecturers']) as $user_id) {
                     $seminar->addMember($user_id, 'dozent');

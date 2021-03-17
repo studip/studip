@@ -848,8 +848,8 @@ class MyCoursesController extends AuthenticatedController
 
         $query = "SELECT semester_data.semester_id
                   FROM seminare
-                  LEFT JOIN semester_data ON (semester_data.beginn >= seminare.start_time
-                      AND (semester_data.beginn <= seminare.start_time + seminare.duration_time OR seminare.duration_time = -1))
+                  LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id)
+                  LEFT JOIN semester_data ON (semester_courses.semester_id = semester_data.semester_id)
                   LEFT JOIN seminar_user USING (Seminar_id)
                   WHERE seminar_user.user_id = ? AND seminare.status <> 99
                   GROUP BY semester_data.semester_id";

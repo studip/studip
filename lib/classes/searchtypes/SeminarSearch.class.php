@@ -63,12 +63,12 @@ class SeminarSearch extends SearchType
              return [];
          }
 
-         $query = "SELECT s.Seminar_id, CONCAT_WS(' ', s.VeranstaltungsNummer, s.name, CONCAT(' (', 
-            IF(s.duration_time = -1, CONCAT_WS(' - ', sem1.name, '" . _('unbegrenzt') . "'),
-                IF(s.duration_time != 0, CONCAT_WS(' - ', sem1.name, sem2.name), sem1.name)), ')')) AS Name
+         $query = "SELECT s.Seminar_id, CONCAT_WS(' ', s.VeranstaltungsNummer, s.name, CONCAT(' (',
+            IF(semester_courses.semester_id IS NULL,  '" . _('unbegrenzt') . "',
+                IF(COUNT(DISTINCT semester_courses.semester_id) > 1, CONCAT_WS(' - ', (SELECT start_semester.name FROM `semester_data` AS start_semester WHERE start_semester.semester_id = semester_courses.semester_id ORDER BY `beginn` ASC LIMIT 1), (SELECT end_semester.name FROM `semester_data` AS end_semester WHERE end_semester.semester_id = semester_courses.semester_id ORDER BY `beginn` DESC LIMIT 1)), sem1.name)), ')')) AS Name
                    FROM seminare AS s
-                   JOIN `semester_data` sem1 ON (s.`start_time` = sem1.`beginn`)
-                        LEFT JOIN `semester_data` sem2 ON (s.`start_time` + s.`duration_time` = sem2.`beginn`)
+                   LEFT JOIN semester_courses ON (semester_courses.course_id = s.Seminar_id)
+                   LEFT JOIN `semester_data` sem1 ON (semester_courses.semester_id = sem1.semester_id)
                    LEFT JOIN seminar_user AS su ON (su.Seminar_id = s.Seminar_id AND su.status='dozent')
                    LEFT JOIN auth_user_md5 USING (user_id)
                    WHERE s.Seminar_id IN (?)

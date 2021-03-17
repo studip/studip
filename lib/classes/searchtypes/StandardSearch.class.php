@@ -111,12 +111,13 @@ class StandardSearch extends SQLSearch
                         " ORDER BY Nachname ASC, Vorname ASC";
             case "Seminar_id":
                 $semester = "CONCAT(' (',
-                    IF(seminare.`duration_time` = -1, CONCAT_WS(' - ', sem1.`name`, '" . _('unbegrenzt') . "'),
-                        IF(seminare.`duration_time` != 0, CONCAT_WS(' - ', sem1.`name`, sem2.`name`), sem1.`name`)), ')')";
+                    IF(semester_courses.semester_id IS NULL, '" . _('unbegrenzt') . "',
+                        IF(COUNT(DISTINCT semester_courses.semester_id) > 1, CONCAT_WS(' - ', (SELECT start_semester.name FROM `semester_data` AS start_semester WHERE start_semester.semester_id = semester_courses.semester_id ORDER BY `beginn` ASC LIMIT 1), (SELECT end_semester.name FROM `semester_data` AS end_semester WHERE end_semester.semester_id = semester_courses.semester_id ORDER BY `beginn` DESC LIMIT 1)), sem1.name)),
+                    ')')";
                 return "SELECT DISTINCT seminare.Seminar_id, CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.Name,  ".$semester.") " .
                     "FROM seminare " .
+                    "LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id) " .
                     "JOIN `semester_data` sem1 ON (seminare.`start_time` = sem1.`beginn`) " .
-                    "LEFT JOIN `semester_data` sem2 ON (seminare.`start_time` + seminare.`duration_time` = sem2.`beginn`) " .
                     "LEFT JOIN seminar_user ON (seminar_user.Seminar_id = seminare.Seminar_id AND seminar_user.status = 'dozent') " .
                     "LEFT JOIN auth_user_md5 ON (auth_user_md5.user_id = seminar_user.user_id) " .
                     "WHERE (seminare.Name LIKE :input " .
@@ -128,17 +129,18 @@ class StandardSearch extends SQLSearch
                     "OR seminare.Sonstiges LIKE :input) " .
                     "AND seminare.visible = 1 " .
                     "AND seminare.status NOT IN ('".implode("', '", studygroup_sem_types())."') " .
-                    " ORDER BY IFNULL(sem2.`beginn`, sem1.`beginn`) DESC, " .
+                    " ORDER BY sem1.`beginn` DESC, " .
                     (Config::get()->IMPORTANT_SEMNUMBER ? "seminare.`VeranstaltungsNummer`, " : "") .
                     "seminare.`Name`";
             case "AnySeminar_id":
                 $semester = "CONCAT(' (',
-                    IF(seminare.`duration_time` = -1, CONCAT_WS(' - ', sem1.`name`, '" . _('unbegrenzt') . "'),
-                        IF(seminare.`duration_time` != 0, CONCAT_WS(' - ', sem1.`name`, sem2.`name`), sem1.`name`)), ')')";
+                    IF(semester_courses.semester_id IS NULL, '" . _('unbegrenzt') . "',
+                        IF(COUNT(DISTINCT semester_courses.semester_id) > 1, CONCAT_WS(' - ', (SELECT start_semester.name FROM `semester_data` AS start_semester WHERE start_semester.semester_id = semester_courses.semester_id ORDER BY `beginn` ASC LIMIT 1), (SELECT end_semester.name FROM `semester_data` AS end_semester WHERE end_semester.semester_id = semester_courses.semester_id ORDER BY `beginn` DESC LIMIT 1)), sem1.name)),
+                    ')')";
                 return "SELECT DISTINCT seminare.Seminar_id, CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.Name,  ".$semester.") " .
                     "FROM seminare " .
+                    "LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id) " .
                     "JOIN `semester_data` sem1 ON (seminare.`start_time` = sem1.`beginn`) " .
-                    "LEFT JOIN `semester_data` sem2 ON (seminare.`start_time` + seminare.`duration_time` = sem2.`beginn`) " .
                     "LEFT JOIN seminar_user ON (seminar_user.Seminar_id = seminare.Seminar_id AND seminar_user.status = 'dozent') " .
                     "LEFT JOIN auth_user_md5 ON (auth_user_md5.user_id = seminar_user.user_id) " .
                     "WHERE (seminare.Name LIKE :input " .
@@ -150,7 +152,7 @@ class StandardSearch extends SQLSearch
                     "OR seminare.Beschreibung LIKE :input " .
                     "OR seminare.Ort LIKE :input " .
                     "OR seminare.Sonstiges LIKE :input) " .
-                    " ORDER BY IFNULL(sem2.`beginn`, sem1.`beginn`) DESC, " .
+                    " ORDER BY sem1.`beginn` DESC, " .
                     (Config::get()->IMPORTANT_SEMNUMBER ? "seminare.`VeranstaltungsNummer`, " : "") .
                     "seminare.`Name`";
             case "Arbeitsgruppe_id":

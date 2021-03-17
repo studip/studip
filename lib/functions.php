@@ -795,9 +795,8 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
     };
 
     $search_result = [];
-    $show_sem_sql1 = ",s.start_time,sd1.name AS startsem,IF(s.duration_time=-1, '"._("unbegrenzt")."', sd2.name) AS endsem ";
-    $show_sem_sql2 = "LEFT JOIN semester_data sd1 ON (start_time BETWEEN sd1.beginn AND sd1.ende)
-                      LEFT JOIN semester_data sd2 ON (start_time + duration_time BETWEEN sd2.beginn AND sd2.ende)";
+    $show_sem_sql1 = ", s.start_time, (SELECT semester_data.name FROM semester_data WHERE s.start_time >= semester_data.`beginn` AND s.start_time <= semester_data.`ende` LIMIT 1) AS startsem, IF(semester_courses.semester_id IS NULL, '"._("unbegrenzt")."', (SELECT semester_data.name FROM semester_data LEFT JOIN semester_courses USING (semester_id) WHERE semester_courses.course_id = s.Seminar_id ORDER BY semester_data.`beginn` DESC LIMIT 1)) AS endsem ";
+    $show_sem_sql2 = "LEFT JOIN semester_courses ON (semester_courses.course_id = s.Seminar_id) ";
 
 
     if ($search_str && $perm->have_perm('root')) {
@@ -821,6 +820,7 @@ function search_range($search_str = false, $search_user = false, $show_sem = tru
         $query = "SELECT Seminar_id, IF(s.visible = 0, CONCAT(s.Name, ' {$_hidden}'), s.Name) AS Name %s
                   FROM seminare AS s %s
                   WHERE s.Name LIKE CONCAT('%%', ?, '%%')
+                  GROUP BY s.Seminar_id
                   ORDER BY start_time DESC, Name";
         $query = $show_sem
                ? sprintf($query, $show_sem_sql1, $show_sem_sql2)

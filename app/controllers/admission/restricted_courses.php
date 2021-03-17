@@ -55,7 +55,10 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
             $_SESSION['_default_sem'] = $this->current_semester_id;
         }
         $semester = Semester::find($this->current_semester_id);
-        $sem_condition .= "AND seminare.start_time <=" . (int)$semester["beginn"]." AND (" . (int)$semester["beginn"] . " <= (seminare.start_time + seminare.duration_time) OR seminare.duration_time = -1) ";
+        $sem_condition .= "
+            AND seminare.start_time <=" . (int)$semester["beginn"]."
+            AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = " . DBManager::get()->quote($semester->getId()) . ")
+        ";
         if ($this->sem_name_prefix) {
             $sem_condition .= sprintf('AND (seminare.Name LIKE %1$s OR seminare.VeranstaltungsNummer LIKE %1$s) ', DBManager::get()->quote($this->sem_name_prefix . '%'));
         }
@@ -138,6 +141,7 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
                 FROM seminar_courseset
                 INNER JOIN courseset_rule csr ON csr.set_id=seminar_courseset.set_id AND csr.type='ParticipantRestrictedAdmission'
                 INNER JOIN seminare ON seminar_courseset.seminar_id=seminare.seminar_id
+                LEFT JOIN semester_courses ON (seminare.Seminar_id = semester_courses.course_id)
                 ";
         if ($institut_id == 'all'  && $perm->have_perm('root')) {
             $sql .= "WHERE 1 {$seminare_condition} ";
@@ -198,10 +202,13 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
         // Prepare institute statement
         $query = "SELECT a.Institut_id, a.Name, COUNT(courseset_rule.type) AS num_sem
         FROM Institute AS a
-        LEFT JOIN seminare ON (seminare.Institut_id = a.Institut_id {$seminare_condition})
+        LEFT JOIN seminare ON (seminare.Institut_id = a.Institut_id)
+        LEFT JOIN semester_courses ON (seminare.Seminar_id = semester_courses.course_id)
         LEFT JOIN seminar_courseset on seminar_courseset.seminar_id=seminare.seminar_id
         LEFT JOIN courseset_rule ON courseset_rule.type='ParticipantRestrictedAdmission' AND seminar_courseset.set_id=courseset_rule.set_id
-        WHERE fakultaets_id = ? AND a.Institut_id != fakultaets_id
+        WHERE fakultaets_id = ?
+            AND a.Institut_id != fakultaets_id
+            {$seminare_condition}
         GROUP BY a.Institut_id
         ORDER BY a.Name, num_sem DESC";
         $institute_statement = DBManager::get()->prepare($query);
@@ -210,8 +217,10 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
         if ($perm->have_perm('root')) {
             $query = "SELECT COUNT(*) FROM courseset_rule
                       INNER JOIN seminar_courseset on seminar_courseset.set_id=courseset_rule.set_id
-                      INNER JOIN seminare ON seminar_courseset.seminar_id=seminare.seminar_id
-                      WHERE courseset_rule.type='ParticipantRestrictedAdmission' {$seminare_condition}";
+                      INNER JOIN seminare ON (seminar_courseset.seminar_id = seminare.seminar_id)
+                      LEFT JOIN semester_courses ON (seminare.Seminar_id = semester_courses.course_id)
+                      WHERE courseset_rule.type='ParticipantRestrictedAdmission'
+                          {$seminare_condition}";
             $statement = DBManager::get()->query($query);
             $num_sem = $statement->fetchColumn();
 
@@ -222,20 +231,25 @@ class Admission_RestrictedCoursesController extends AuthenticatedController
             ];
             $query = "SELECT a.Institut_id, a.Name, 1 AS is_fak, COUNT(courseset_rule.type) AS num_sem
             FROM Institute AS a
-            LEFT JOIN seminare ON (seminare.Institut_id = a.Institut_id {$seminare_condition})
+            LEFT JOIN seminare ON (seminare.Institut_id = a.Institut_id)
+            LEFT JOIN semester_courses ON (seminare.Seminar_id = semester_courses.course_id)
             LEFT JOIN seminar_courseset on seminar_courseset.seminar_id=seminare.seminar_id
             LEFT JOIN courseset_rule ON courseset_rule.type='ParticipantRestrictedAdmission' AND seminar_courseset.set_id=courseset_rule.set_id
             WHERE a.Institut_id = fakultaets_id
+                {$seminare_condition}
             GROUP BY a.Institut_id
             ORDER BY is_fak, Name, num_sem DESC";
         } else {
             $query = "SELECT s.inst_perms,b.Institut_id, b.Name, b.Institut_id = b.fakultaets_id AS is_fak, COUNT( courseset_rule.type ) AS num_sem
             FROM user_inst AS s
             LEFT JOIN Institute AS b USING ( Institut_id )
-            LEFT JOIN seminare ON ( seminare.Institut_id = b.Institut_id {$seminare_condition})
+            LEFT JOIN seminare ON ( seminare.Institut_id = b.Institut_id)
+            LEFT JOIN semester_courses ON (seminare.Seminar_id = semester_courses.course_id)
             LEFT JOIN seminar_courseset on seminar_courseset.seminar_id=seminare.seminar_id
             LEFT JOIN courseset_rule ON courseset_rule.type='ParticipantRestrictedAdmission' AND seminar_courseset.set_id=courseset_rule.set_id
-            WHERE s.user_id = ? AND s.inst_perms IN ('admin', 'dozent')
+            WHERE s.user_id = ?
+                AND s.inst_perms IN ('admin', 'dozent')
+                {$seminare_condition}
             GROUP BY b.Institut_id
             ORDER BY is_fak, Name, num_sem DESC";
             $parameters[] = $user->id;

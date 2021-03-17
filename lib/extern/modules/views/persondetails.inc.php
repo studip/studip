@@ -395,9 +395,11 @@ function lehre (&$module, $row, $alias_content, $text_div, $text_div_end)
 
     $query = "SELECT *
               FROM seminar_user AS su
-              LEFT JOIN seminare AS s USING (seminar_id)
+                  LEFT JOIN seminare AS s USING (seminar_id)
+                  LEFT JOIN semester_courses ON (s.Seminar_id = semester_courses.course_id)
               WHERE user_id = :user_id AND su.status = 'dozent'
-                AND start_time <= :beginn AND (:beginn <= start_time + duration_time OR duration_time = -1)
+                AND start_time <= :beginn
+                AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = :semester_id)
                 AND s.status IN (:types) AND s.visible = 1";
     if (Config::get()->IMPORTANT_SEMNUMBER) {
         $query .= " ORDER BY s.`VeranstaltungsNummer`, s.`Name`";
@@ -411,6 +413,7 @@ function lehre (&$module, $row, $alias_content, $text_div, $text_div_end)
     $out = '';
     for (;$current_sem <= $last_sem; $last_sem--) {
         $statement->bindValue(':beginn', $all_semester[$last_sem]['beginn']);
+        $statement->bindValue(':semester_id', $all_semester[$last_sem]['semester_id']);
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
 

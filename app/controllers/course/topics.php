@@ -173,9 +173,10 @@ class Course_TopicsController extends AuthenticatedController
         }
         if ($GLOBALS['perm']->have_perm("root")) {
             $this->courseSearch = new SQLSearch("
-                SELECT seminare.Seminar_id, CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.name, '(', IF(seminare.duration_time = 0, semester_data.name, 'unbegrenzt'), ') (', COUNT(issue_id), ')')
+                SELECT seminare.Seminar_id, CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.name, '(', IF(seminare.semester_id IS NULL, GROUP_CONCAT(', ', semester_data.name), 'unbegrenzt'), ') (', COUNT(issue_id), ')')
                 FROM seminare
-                INNER JOIN semester_data ON (semester_data.beginn = seminare.start_time)
+                LEFT JOIN semester_courses ON (seminare.Seminar_id = semester_courses.course_id)
+                LEFT JOIN semester_data ON (semester_data.semester_id = semester_courses.semester_id)
                 INNER JOIN themen ON themen.seminar_id = seminare.Seminar_id
                 WHERE seminare.VeranstaltungsNummer LIKE :input OR seminare.name LIKE :input
                 GROUP BY seminare.Seminar_id
@@ -186,11 +187,12 @@ class Course_TopicsController extends AuthenticatedController
             );
         } elseif ($GLOBALS['perm']->have_perm("admin")) {
             $this->courseSearch = new SQLSearch("
-                SELECT seminare.Seminar_id, CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.name, '(', IF(seminare.duration_time = 0, semester_data.name, 'unbegrenzt'), ') (', COUNT(issue_id), ')')
+                SELECT seminare.Seminar_id, CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.name, '(', CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.name, '(', IF(seminare.semester_id IS NULL, GROUP_CONCAT(', ', semester_data.name), 'unbegrenzt'), ') (', COUNT(issue_id), ')')
                 FROM seminare
                     INNER JOIN seminar_inst ON (seminare.Seminar_id = seminar_inst.seminar_id)
                     INNER JOIN user_inst ON (user_inst.Institut_id = seminar_inst.institut_id)
-                    INNER JOIN semester_data ON (semester_data.beginn = seminare.start_time)
+                    LEFT JOIN semester_courses ON (seminare.Seminar_id = semester_courses.course_id)
+                    LEFT JOIN semester_data ON (semester_data.semester_id = semester_courses.semester_id)
                     INNER JOIN themen ON themen.seminar_id = seminare.Seminar_id
 
                 WHERE seminare.VeranstaltungsNummer LIKE :input OR seminare.name LIKE :input
@@ -204,10 +206,11 @@ class Course_TopicsController extends AuthenticatedController
             );
         } else {
             $this->courseSearch = new SQLSearch("
-                SELECT seminare.Seminar_id, CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.name, '(', IF(seminare.duration_time = 0, semester_data.name, 'unbegrenzt'), ') (', COUNT(issue_id), ')')
+                SELECT seminare.Seminar_id, CONCAT_WS(' ', seminare.VeranstaltungsNummer, seminare.name, '(', IF(seminare.semester_id IS NULL, GROUP_CONCAT(', ', semester_data.name), 'unbegrenzt'), ') (', COUNT(issue_id), ')')
                 FROM seminare
                     INNER JOIN seminar_user ON (seminare.Seminar_id = seminar_user.Seminar_id)
-                    INNER JOIN semester_data ON (semester_data.beginn = seminare.start_time)
+                    LEFT JOIN semester_courses ON (seminare.Seminar_id = semester_courses.course_id)
+                    LEFT JOIN semester_data ON (semester_data.semester_id = semester_courses.semester_id)
                     INNER JOIN themen ON themen.seminar_id = seminare.Seminar_id
                 WHERE seminare.VeranstaltungsNummer LIKE :input OR seminare.name LIKE :input
                     AND seminar_user.status IN ('tutor', 'dozent')

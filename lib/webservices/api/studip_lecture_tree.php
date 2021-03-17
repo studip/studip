@@ -17,12 +17,17 @@ class StudipLectureTreeHelper
         $db = DBManager::get();
         $semester = Semester::find($term_id);
 
-        $stmt = $db->prepare('SELECT s.Seminar_id AS seminar_id, s.Name AS name
-                              FROM seminar_sem_tree st
-                              JOIN seminare s ON (st.seminar_id = s.Seminar_id)
-                              WHERE st.sem_tree_id = ?  AND s.start_time <= ?
-                              AND (s.start_time + s.duration_time >= ? OR duration_time = -1)');
-        $stmt->execute([$sem_tree_id, $semester->beginn, $semester->beginn]);
+        $stmt = $db->prepare('
+            SELECT s.Seminar_id AS seminar_id, s.Name AS name
+            FROM seminar_sem_tree st
+                LEFT JOIN seminare s ON (st.seminar_id = s.Seminar_id)
+                LEFT JOIN semester_courses ON (s.Seminar_id = semester_courses.course_id)
+            WHERE st.sem_tree_id = ?
+                AND s.start_time <= ?
+                AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = ?)
+            GROUP BY s.Seminar_id
+        ');
+        $stmt->execute([$sem_tree_id, $semester->beginn, $semester->semester_id]);
 
         return $stmt->fetchAll();
     }

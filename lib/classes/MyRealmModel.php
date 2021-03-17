@@ -201,8 +201,8 @@ class MyRealmModel
 
         $sem_data = Semester::getAllAsArray();
 
-        $min_sem           = $sem_data[$min_sem_key];
-        $max_sem           = $sem_data[$max_sem_key];
+        $min_sem           = Semester::buildExisting($sem_data[$min_sem_key]);
+        $max_sem           = Semester::buildExisting($sem_data[$max_sem_key]);
         $studygroup_filter = !$params['studygroups_enabled'] ? false : true;
         $ordering          = '';
         // create ordering
@@ -242,8 +242,7 @@ class MyRealmModel
             });
         }
         $courses = $courses->filter(function ($a) use ($min_sem, $max_sem) {
-            return $a->start_time <= $max_sem['beginn'] &&
-                   ($min_sem['beginn'] <= $a->start_time + $a->duration_time || $a->duration_time == -1);
+            return $a->isInSemester($min_sem) || $a->isInSemester($max_sem);
         });
         $courses = self::sortCourses($courses, $ordering);
 
@@ -386,14 +385,14 @@ class MyRealmModel
             $_course['visitdate']      = $visits[$course->id]['sem']['visitdate'];
             $_course['user_status']    = $user_status;
             $_course['gruppe']         = !$is_deputy ? @$member_ships[$course->id]['gruppe'] : self::getDeputieGroup($course->id);
-            $_course['sem_number_end'] = $course->duration_time == -1 ? $max_sem_key : Semester::getIndexById($course->end_semester->id);
+            $_course['sem_number_end'] = $course->isOpenEnded() ? $max_sem_key : Semester::getIndexById($course->end_semester->id);
             $_course['sem_number']     = Semester::getIndexById($course->start_semester->id);
             $_course['modules']        = $modules->getLocalModules($course->id, 'sem', $course->modules, $course->status);
             $_course['name']           = $course->name;
             $_course['temp_name']      = $course->name;
             $_course['number']         = $course->veranstaltungsnummer;
             $_course['is_deputy']      = $is_deputy;
-            if ($show_semester_name && $course->duration_time != 0 && !$course->getSemClass()->offsetGet('studygroup_mode')) {
+            if ($show_semester_name && count($course->semesters) !== 0 && !$course->getSemClass()['studygroup_mode']) {
                 $_course['name'] .= ' (' . $course->getFullname('sem-duration-name') . ')';
             }
             if ($course->parent_course) {
@@ -411,7 +410,7 @@ class MyRealmModel
             // add the the course to the correct semester
 
             if (!$_course['parent_course']) {
-                if ($course->duration_time == -1) {
+                if ($course->isOpenEnded()) {
                     if ($current_semester_nr >= $min_sem_key && $current_semester_nr <= $max_sem_key) {
                         $sem_courses[$current_semester_nr][$course->id] = $_course;
                         $semester_assign[$course->id] = $current_semester_nr;

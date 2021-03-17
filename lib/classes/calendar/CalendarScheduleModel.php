@@ -314,11 +314,13 @@ class CalendarScheduleModel
         // fetch seminar-entries
         $stmt = DBManager::get()->prepare("SELECT s.Seminar_id FROM seminar_user as su
             LEFT JOIN seminare as s USING (Seminar_id)
-            WHERE su.user_id = :userid AND (s.start_time = :begin
-                OR (s.start_time <= :begin AND s.duration_time = -1)
-                OR (s.start_time + s.duration_time >= :begin
-                    AND s.start_time <= :begin))");
+            LEFT JOIN semester_courses ON (semester_courses.course_id = s.Seminar_id)
+            WHERE su.user_id = :userid
+                AND s.start_time <= :begin
+                AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = :semester_id)
+               ");
         $stmt->bindParam(':begin', $semester['beginn']);
+        $stmt->bindParam(':semester_id', $semester['semester_id']);
         $stmt->bindParam(':userid', $user_id);
         $stmt->execute();
 
@@ -370,13 +372,16 @@ class CalendarScheduleModel
 
         // fetch seminar-entries
         $visibility_perms = $GLOBALS['perm']->have_perm(Config::get()->SEM_VISIBILITY_PERM);
-        $stmt = DBManager::get()->prepare("SELECT * FROM seminare
-            WHERE Institut_id = :institute AND (start_time = :begin
-                OR (start_time < :begin AND duration_time = -1)
-                OR (start_time + duration_time >= :begin AND start_time <= :begin)) "
+        $stmt = DBManager::get()->prepare("SELECT *
+            FROM seminare
+            LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id)
+            WHERE Institut_id = :institute
+                AND start_time <= :begin
+                AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = :semester_id) "
                 . (!$visibility_perms ? " AND visible='1'" : ""));
 
         $stmt->bindParam(':begin', $semester['beginn']);
+        $stmt->bindParam(':semester_id', $semester['semester_id']);
         $stmt->bindParam(':institute', $institute_id);
         $stmt->execute();
 

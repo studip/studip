@@ -19,7 +19,7 @@ class MvvOverlappingSelection extends SimpleORMap
 
     /**
      * Configures the model.
-     * 
+     *
      * @param array  $config Configuration
      */
     protected static function configure($config = array())
@@ -57,7 +57,7 @@ class MvvOverlappingSelection extends SimpleORMap
         ];
         parent::configure($config);
     }
-    
+
     /**
      * Creates a selection id and stores the selection.
      *
@@ -76,12 +76,12 @@ class MvvOverlappingSelection extends SimpleORMap
         }
         return parent::store();
     }
-    
+
     /**
      * Sets the given Fachsemester. Expects an array or a comma
      * separated list of Fachsemester.
-     * 
-     * @param array|string $semtypes 
+     *
+     * @param array|string $semtypes
      */
     public function setFachsemester($fachsems)
     {
@@ -91,12 +91,12 @@ class MvvOverlappingSelection extends SimpleORMap
         }
         $this->fachsems = $fachsems;
     }
-    
+
     /**
      * Sets the given course types (semtypes). Expects an array or a comma
      * separated list of course types.
-     * 
-     * @param array|string $semtypes 
+     *
+     * @param array|string $semtypes
      */
     public function setCoursetypes($semtypes)
     {
@@ -106,7 +106,7 @@ class MvvOverlappingSelection extends SimpleORMap
         }
         $this->semtypes = $semtypes;
     }
-    
+
     /**
      * Store this selection with its all conflicts.
      *
@@ -115,7 +115,7 @@ class MvvOverlappingSelection extends SimpleORMap
      */
     public function storeConflicts()
     {
-        
+
         $query = "
             SELECT DISTINCT `cbase`.`metadate_id` AS `cbase_metadate_id`,
                 `cbase`.`seminar_id` AS `cbase_seminar_id`,
@@ -146,13 +146,14 @@ class MvvOverlappingSelection extends SimpleORMap
                             ON (`mvv_modul`.`start` = `start_sem`.`semester_id`)
                         LEFT JOIN `semester_data` AS `end_sem`
                             ON (`mvv_modul`.`end` = `end_sem`.`semester_id`)
+                        LEFT JOIN `semester_courses` ON (`seminare`.`Seminar_id` = `semester_courses`.`course_id`)
                     WHERE `mvv_stgteilabschnitt`.`version_id` = :base_version
                         AND `mvv_modulteil_stgteilabschnitt`.`fachsemester` IN (:fachsem)
                         AND ((`start_sem`.`beginn` < :sem_end OR ISNULL(`start_sem`.`beginn`))
                             AND (`end_sem`.`ende` > :sem_start OR ISNULL(`end_sem`.`ende`)))
                         AND `seminare`.`status` IN (:typ)
                         AND `seminare`.`start_time` <= :sem_end
-                        AND `seminare`.`start_time` + `seminare`.`duration_time` >= :sem_start
+                        AND (`semester_courses`.`semester_id` IS NULL OR `semester_courses`.`semester_id` = :semester_id)
                 ) AS `sembase` ON (`sembase`.`seminar_id` = `cbase`.`seminar_id`)
                 INNER JOIN `seminar_cycle_dates` AS `ccomp`
                     ON (`cbase`.`seminar_id` != `ccomp`.`seminar_id`
@@ -190,13 +191,14 @@ class MvvOverlappingSelection extends SimpleORMap
                             ON (`mvv_modul`.`start` = `start_sem`.`semester_id`)
                         LEFT JOIN `semester_data` AS `end_sem`
                             ON (`mvv_modul`.`end` = `end_sem`.`semester_id`)
+                        LEFT JOIN `semester_courses` ON (`seminare`.`Seminar_id` = `semester_courses`.`course_id`)
                     WHERE `mvv_stgteilabschnitt`.`version_id` = :comp_version
                         AND `mvv_modulteil_stgteilabschnitt`.`fachsemester` IN (:fachsem)
                         AND ((`start_sem`.`beginn` < :sem_end OR ISNULL(`start_sem`.`beginn`))
                             AND (`end_sem`.`ende` > :sem_start OR ISNULL(`end_sem`.`ende`)))
                         AND `seminare`.`status` IN (:typ)
                         AND `seminare`.`start_time` <= :sem_end
-                        AND `seminare`.`start_time` + `seminare`.`duration_time` >= :sem_start
+                        AND (`semester_courses`.`semester_id` IS NULL OR `semester_courses`.`semester_id` = :semester_id)
                 ) AS `semcomp` ON (`semcomp`.`seminar_id` = `ccomp`.`seminar_id`)
                 INNER JOIN `mvv_modulteil_stgteilabschnitt` AS `mms1`
                     ON (`mms1`.`abschnitt_id` = `semcomp`.`abschnitt_id` AND `mms1`.`modulteil_id` = `semcomp`.`modulteil_id`)
@@ -206,11 +208,11 @@ class MvvOverlappingSelection extends SimpleORMap
                         WHERE `mms2`.`abschnitt_id` = `sembase`.`abschnitt_id`
                             AND `mms2`.`modulteil_id` = `sembase`.`modulteil_id`)
             ORDER BY `cbase_seminar_id`";
-        
+
         // if no filter is set use all types and fachsems
         $fachsems = $this->fachsems ? $this->fachsems : implode(',', range(1, 6));
         $semtypes = $this->semtypes ? $this->semtypes : implode(',', array_keys(SemType::getTypes()));
-        
+
         $db = DBManager::get();
         $conflicts = $db->fetchAll($query, [
             ':base_version' => $this->base_version_id,
@@ -218,9 +220,10 @@ class MvvOverlappingSelection extends SimpleORMap
             ':fachsem'      => explode(',', $fachsems),
             ':typ'          => explode(',', $semtypes),
             ':sem_start'    => $this->semester->beginn,
-            ':sem_end'      => $this->semester->ende
+            ':sem_end'      => $this->semester->ende,
+            ':semester_id'  => $this->semester->id
         ]);
-        
+
         $conlicts = [];
         foreach ($conflicts as $conflict) {
             $ovl_conflict = new MvvOverlappingConflict();
@@ -237,10 +240,10 @@ class MvvOverlappingSelection extends SimpleORMap
         }
         return $this->store();
     }
-    
+
     /**
      * Returns all conflicts of all selections with the given selection id.
-     * 
+     *
      * @param string $selection_id The selection id.
      * @param boolean $only_visible Returns only visible conflicts.
      * @return SimpleORMapCollection All conflicts of appropriate selections.
@@ -265,10 +268,10 @@ class MvvOverlappingSelection extends SimpleORMap
             ])
         );
     }
-    
+
     /**
      * Returns a md5 hash over all given parameters.
-     * 
+     *
      * @param string $base_version The id of the base version.
      * @param string $comp_versions The id of the compared version.
      * @param array|string $fachsems An array or a string with comma separated fachsem numbers.
@@ -302,10 +305,10 @@ class MvvOverlappingSelection extends SimpleORMap
             trim($semtypes) ? $semtypes : 'x'
         ]));
     }
-    
+
     /**
      * Returns all excluded (hidden) conflicts of this selection.
-     * 
+     *
      * @return SimpleORMapCollection The excluded (hidden) conflicts.
      */
     public function getExcludedConflicts()

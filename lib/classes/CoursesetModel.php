@@ -44,23 +44,33 @@ class CoursesetModel
             $query = "SELECT su.`Seminar_id`
                       FROM `seminar_user` su
                       INNER JOIN `seminare` s USING (`Seminar_id`)
+                      LEFT JOIN semester_courses ON (semester_courses.course_id = s.Seminar_id)
                       WHERE s.status NOT IN(?)
                         AND s.`start_time` <= ?
-                        AND (? <= (s.`start_time` + s.`duration_time`) OR s.`duration_time` = -1)
-                        AND su.`user_id` = ?";
-            $parameters = [$excludeTypes, $currentSemester->beginn, $currentSemester->beginn, $GLOBALS['user']->id];
+                        AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = ?)
+                        AND su.`user_id` = ?
+                      GROUP BY su.`Seminar_id`  ";
+            $parameters = [
+                $excludeTypes,
+                $currentSemester->beginn,
+                $currentSemester->id,
+                $GLOBALS['user']->id
+            ];
 
             if (Config::get()->DEPUTIES_ENABLE) {
                 $query .= " UNION ";
                 $query .= "SELECT s.`Seminar_id`
                            FROM `seminare` s
                            INNER JOIN `deputies` d ON (s.`Seminar_id`=d.`range_id`)
+                           LEFT JOIN semester_courses ON (semester_courses.course_id = s.Seminar_id)
                            WHERE s.`start_time` <= ?
-                             AND (? <= (s.`start_time` + s.`duration_time`) OR s.`duration_time` = -1)
-                             AND d.`user_id` = ?";
+                             AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = ?)
+                             AND d.`user_id` = ?
+                           GROUP BY s.`Seminar_id`
+                             ";
                 $parameters = array_merge(
                     $parameters,
-                    [$currentSemester->beginn, $currentSemester->beginn, $GLOBALS['user']->id]
+                    [$currentSemester->beginn, $currentSemester->id, $GLOBALS['user']->id]
                 );
             }
             $courses = $db->fetchFirst($query, $parameters);
@@ -69,10 +79,11 @@ class CoursesetModel
                       FROM seminare s
                       INNER JOIN seminar_user su
                          ON s.seminar_id = su.seminar_id AND su.status = 'dozent'
+                      LEFT JOIN semester_courses ON (semester_courses.course_id = s.Seminar_id)
                       INNER JOIN auth_user_md5 aum USING (user_id)
                       WHERE s.status NOT IN (:exclude_types)
                         AND s.start_time <= :sembegin
-                        AND (:sembegin <= (s.start_time + s.duration_time) OR s.duration_time = -1)
+                        AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = :semester_id)
                         AND s.Institut_id IN (:institutes)
                         AND (
                             s.name LIKE :filter
@@ -82,6 +93,7 @@ class CoursesetModel
             $courses = $db->fetchFirst($query, [
                 'exclude_types' => $excludeTypes,
                 'sembegin'      => $currentSemester->beginn,
+                'semester_id'   => $currentSemester->id,
                 'institutes'    => $instituteIds,
                 'filter'        => '%' . $filter .'%',
             ]);
@@ -113,7 +125,7 @@ class CoursesetModel
             $data[$course->id] = [
                 'seminar_id'           => $course->Seminar_id,
                 'VeranstaltungsNummer' => $course->VeranstaltungsNummer,
-                'Name'                 => $course->Name . ($course->duration_time == -1 ? ' ' . _('(unbegrenzt)') : ''),
+                'Name'                 => $course->Name . ($course->isOpenEnded() ? ' ' . _('(unbegrenzt)') : ''),
                 'admission_turnout'    => $course->admission_turnout,
                 'visible'              => $course->visible,
             ];

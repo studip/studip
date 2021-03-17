@@ -344,10 +344,10 @@ class Admin_CourseplanningController extends AuthenticatedController
             $begin_date->setTimezone(new DateTimeZone('UTC'));
             $end_date->setTimezone(new DateTimeZone('UTC'));
 
-            $this->course = new Seminar(Course::find($course_id));
-            $duration = $this->course->duration_time;
-            if ($duration == -1|| $duration > 0) { // course over more than one semester
-                $start_weeks = $this->course->start_semester->getStartWeeks($duration);
+            $course = Course::find($course_id);
+            $this->seminar = new Seminar($course);
+            if ($course->isOpenEnded() || count($course->semesters) > 1) { // course over more than one semester
+                $start_weeks = $this->seminar->end_semester->getStartWeeks();
 
                 $sem_duration = $this->semester->ende - $this->semester->beginn;
                 $sem_weeks        = $this->semester->getStartWeeks($sem_duration);

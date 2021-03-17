@@ -541,7 +541,7 @@ class Admin_CoursesController extends AuthenticatedController
                 }
 
                 if (in_array('semester', $filter_config)) {
-                    $row['semester'] = $sem->start_semester->name;
+                    $row['semester'] = $course->semester_text;
                 }
 
                 foreach (PluginManager::getInstance()->getPlugins('AdminCourseContents') as $plugin) {
@@ -743,7 +743,7 @@ class Admin_CoursesController extends AuthenticatedController
                 if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id)) {
                     $course = Course::find($course_id);
 
-                    if ($course->duration_time == -1 || $course->end_semester->visible) {
+                    if ($course->isOpenEnded() || $course->end_semester->visible) {
                         $visibility = $visibilites[$course_id] ?: 0;
 
                         if ($course->visible == $visibility) {

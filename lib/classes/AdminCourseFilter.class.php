@@ -167,8 +167,13 @@ class AdminCourseFilter
         if (!$semester) {
             throw new Exception("Das ausgewählte Semester scheint nicht zu existieren.");
         }
-        $this->settings['query']['where']['semester'] = "(seminare.start_time <= :semester_beginn AND ((:semester_beginn <= seminare.start_time + seminare.duration_time) OR (seminare.duration_time = -1)))";
+        $this->settings['query']['joins']['semester_courses'] = [
+            'join' => "LEFT JOIN",
+            'on' => "semester_courses.course_id = seminare.Seminar_id"
+        ];
+        $this->settings['query']['where']['semester'] = "(seminare.start_time <= :semester_beginn AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = :semester_id))";
         $this->settings['parameter']['semester_beginn'] = $semester['beginn'];
+        $this->settings['parameter']['semester_id'] = $semester['id'];
         return $this;
     }
 

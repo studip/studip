@@ -25,6 +25,7 @@ class Course_OverviewController extends AuthenticatedController
         if (!$this->course) {
             throw new CheckObjectException(_('Sie haben kein Objekt gewählt.'));
         }
+
         $this->course_id = $this->course->id;
 
         PageLayout::setHelpKeyword('Basis.InVeranstaltungKurzinfo');
