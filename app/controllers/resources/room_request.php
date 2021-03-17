@@ -2163,7 +2163,6 @@ class Resources_RoomRequestController extends AuthenticatedController
         $booking = null;
         //Get the range object:
         $range_data = explode('_', $range_str);
-
         if ($range_data[0] == 'CourseDate') {
             $course_date = CourseDate::find($range_data[1]);
             if (!($course_date instanceof CourseDate)) {
@@ -2175,7 +2174,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 );
                 return;
             }
-
+            $range_name = $course_date->course->getFullname();
             try {
                 $booking = $room->createBooking(
                     $this->current_user,
@@ -2210,6 +2209,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 );
                 return;
             }
+            $range_name = $metadate->course->getFullname();
             if ($metadate->dates) {
                 foreach ($metadate->dates as $date) {
                     try {
@@ -2247,6 +2247,7 @@ class Resources_RoomRequestController extends AuthenticatedController
                 );
                 return;
             }
+            $range_name = $user->getFullName();
             try {
                 $booking = $room->createBooking(
                     $this->current_user,
@@ -2284,7 +2285,10 @@ class Resources_RoomRequestController extends AuthenticatedController
                 $booking->delete();
             }
             PageLayout::postError(
-                _('Es traten Fehler beim Auflösen der Anfrage auf!'),
+                sprintf(
+                    _('Es traten Fehler beim Auflösen der Anfrage auf für %s!'),
+                    htmlReady($range_name)
+                ),
                 $errors
             );
         } else {
@@ -2297,22 +2301,23 @@ class Resources_RoomRequestController extends AuthenticatedController
             if ($success) {
                 $this->show_form = false;
                 PageLayout::postSuccess(
-                    _('Die Anfrage wurde aufgelöst!')
+                    sprintf(_('Die Anfrage für %s wurde aufgelöst!'), htmlReady($range_name))
                 );
             } else {
                 PageLayout::postWarning(
-                    _('Die Anfrage wurde aufgelöst, konnte aber nicht geschlossen werden!')
+                    sprintf(
+                        _('Die Anfrage für %s wurde aufgelöst, konnte aber nicht geschlossen werden!'),
+                        htmlReady($range_name)
+                    )
                 );
             }
         }
 
         if (Request::isAjax()) {
-            echo json_encode('done booking');
-            die();
+            $this->render_nothing();
         } else {
             $this->relocate($this->url_for("resources/room_request/planning"));
         }
-
     }
 
     public function planning_action()
