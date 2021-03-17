@@ -70,8 +70,8 @@ class ChangeBlubberThreadFollowing extends Migration
                     AND NOT EXISTS (
                       SELECT 1
                       FROM `blubber_threads_follow`
-                      WHERE tmp.`thread_id` = `blubber_threads_unfollow`.`thread_id`
-                        AND tmp.`user_id` = `blubber_threads_unfollow`.`user_id`
+                      WHERE tmp.`thread_id` = `blubber_threads_follow`.`thread_id`
+                        AND tmp.`user_id` = `blubber_threads_follow`.`user_id`
                     )";
         DBManager::get()->exec($query);
 
