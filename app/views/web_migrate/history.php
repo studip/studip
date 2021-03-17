@@ -89,7 +89,7 @@
                             $lock->getFilename()
                         )
                     ]) ?>
-                    <?= Studip\LinkButton::create(_('Sperre aufheben'), $controller->releaseURL($target)) ?>
+                    <?= Studip\LinkButton::create(_('Sperre aufheben'), $controller->link_for('release', $target)) ?>
                 <? else: ?>
                     <?= Studip\Button::createAccept(_('Starten'), 'start')?>
                 <? endif; ?>
