@@ -201,8 +201,13 @@ class MyRealmModel
 
         $sem_data = Semester::getAllAsArray();
 
-        $min_sem           = Semester::buildExisting($sem_data[$min_sem_key]);
-        $max_sem           = Semester::buildExisting($sem_data[$max_sem_key]);
+        $semester_ids      = [];
+        for ($i = $min_sem_key; $i <= $max_sem_key; $i++) {
+            if ($sem_data[$i]['semester_id']) {
+                $semester_ids[] = $sem_data[$i]['semester_id'];
+            }
+        }
+        $semesters = Semester::findMany($semester_ids);
         $studygroup_filter = !$params['studygroups_enabled'] ? false : true;
         $ordering          = '';
         // create ordering
@@ -241,8 +246,13 @@ class MyRealmModel
                 return (int)$a['status'] != 99;
             });
         }
-        $courses = $courses->filter(function ($a) use ($min_sem, $max_sem) {
-            return $a->isInSemester($min_sem) || $a->isInSemester($max_sem);
+        $courses = $courses->filter(function ($a) use ($semesters) {
+            foreach ($semesters as $semester) {
+                if ($a->isInSemester($semester)) {
+                    return true;
+                }
+            }
+            return false;
         });
         $courses = self::sortCourses($courses, $ordering);
 
