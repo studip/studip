@@ -1282,7 +1282,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         $query = "UPDATE IGNORE blubber_threads SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$new_id, $old_id]);
-        $query = "UPDATE IGNORE blubber_threads_follow SET user_id = ? WHERE user_id = ?";
+        $query = "UPDATE IGNORE blubber_threads_unfollow SET user_id = ? WHERE user_id = ?";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$new_id, $old_id]);
 

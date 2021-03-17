@@ -12,8 +12,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  * @since       4.5
- *
- * @property BlubberThread thread related thread
  */
 
 class BlubberComment extends SimpleORMap implements PrivacyObject
@@ -38,7 +36,6 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
         ];
 
         $config['registered_callbacks']['before_create'][] = 'transformMentions';
-        $config['registered_callbacks']['before_create'][] = 'cbAddFollowing';
         $config['registered_callbacks']['after_create'][] = 'cbCreateNotifications';
         $config['registered_callbacks']['before_delete'][] = 'cbCreateDeleteEvent';
 
@@ -97,6 +94,11 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
         return OpenGraph::extract($this['content']);
     }
 
+    public function cbCreateNotifications()
+    {
+        $this->thread->notifyUsersForNewComment($this);
+    }
+
     public function transformMentions()
     {
         BlubberThread::$mention_thread_id = $this->thread_id;
@@ -114,29 +116,6 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
         );
         $this['content'] = \Studip\Markup::purifyHtml($this['content']);
         $this['content'] = transformBeforeSave($this['content']);
-    }
-
-    public function cbAddFollowing()
-    {
-        $query = "SELECT 1
-                  FROM `blubber_comments`
-                  WHERE `thread_id` = :thread_id
-                    AND `user_id` = :user_id";
-        $has_commented = DBManager::get()->fetchColumn($query, [
-            ':thread_id' => $this->thread_id,
-            ':user_id'   => $GLOBALS['user']->id,
-        ]);
-
-        if ($has_commented) {
-            return;
-        }
-
-        $this->thread->addFollowingByUser();
-    }
-
-    public function cbCreateNotifications()
-    {
-        $this->thread->notifyUsersForNewComment($this);
     }
 
     public function cbCreateDeleteEvent()

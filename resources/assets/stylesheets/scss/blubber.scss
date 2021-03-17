@@ -14,9 +14,6 @@
     }
     .context_info {
         .followunfollow {
-            &.loading {
-                pointer-events: none;
-            }
             > .follow {
                 display: none;
             }
@@ -82,10 +79,6 @@
         }
     }
 
-    .context_info {
-        border-bottom: 1px solid $content-color-40;
-        text-align: center;
-    }
     .writer {
         border-top: 1px solid $content-color-40;
     }
@@ -722,10 +715,4 @@ ol.tagcloud {
 }
 .blubberthreadwidget-list-enter, .blubberthreadwidget-list-leave-to {
     transform: translateY(-70px);
-}
-
-.responsive-display {
-    .blubber_thread {
-        margin-right: 0;
-    }
 }

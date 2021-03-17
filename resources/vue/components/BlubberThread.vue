@@ -3,18 +3,6 @@
          :id="'blubberthread_' + thread_data.thread_posting.thread_id"
          @dragover.prevent="dragover" @dragleave.prevent="dragleave"
          @drop.prevent="upload">
-        <div class="responsive-visible context_info" v-if="thread_data.notifications">
-            <a href="#"
-               @click.prevent="toggleFollow()"
-               class="followunfollow"
-               :class="{unfollowed: !thread_data.followed}"
-               :title="$gettext('Benachrichtigungen für diese Konversation abstellen.')"
-               :data-thread_id="thread_data.thread_posting.thread_id">
-                <StudipIcon shape="remove/notification2" :size="20" class="follow text-bottom"></StudipIcon>
-                <StudipIcon shape="notification2" :size="20" class="unfollow text-bottom"></StudipIcon>
-                {{ $gettext('Benachrichtigungen aktiviert') }}
-            </a>
-        </div>
         <div class="scrollable_area" v-scroll>
             <div class="all_content">
                 <div class="thread_posting" v-if="thread_data.thread_posting.content.trim()">
@@ -128,12 +116,7 @@
                     data: {
                         content: text
                     }
-                }).then(data => {
-                    STUDIP.api.GET(`blubber/threads/${this.thread_data.thread_posting.thread_id}/follow`).then(followed => {
-                        jQuery('.followunfollow').toggleClass('unfollowed', !followed);
-                    });
-                    return data;
-                }).done(data => {
+                }).done((data) => {
                     comment.comment_id = data.comment_id;
                     comment.avatar = data.avatar;
                     comment.user_name = data.user_name;
@@ -341,14 +324,6 @@
                         this.editComment(comment.data('comment_id'));
                     }
                 }
-            },
-            toggleFollow () {
-                STUDIP.Blubber.followunfollow(
-                    this.thread_data.thread_posting.thread_id,
-                    !this.thread_data.followed
-                ).done(state => {
-                    this.thread_data.followed = state;
-                });
             }
         },
         directives: {

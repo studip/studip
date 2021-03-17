@@ -17,43 +17,30 @@ class BlubberGlobalThread extends BlubberThread
         $template = $GLOBALS['template_factory']->open('blubber/global_context');
         $template->thread = $this;
         $template->hashtags = $this->getHashtags(time() - 86400 * 365);
-        $template->unfollowed = !$this->isFollowed();
+        $template->unfollowed = $this->isUnfollowed();
         return $template;
     }
 
     public function notifyUsersForNewComment($comment)
     {
-        $query = "SELECT auth_user_md5.user_id
-                  FROM auth_user_md5
-                  JOIN blubber_threads_follow ON (
-                      blubber_threads_follow.thread_id = :thread_id
-                      AND blubber_threads_follow.user_id = auth_user_md5.user_id
-                  )
-                  WHERE auth_user_md5.user_id != :user_id";
-        $parameters = [
-            ':user_id'   => $GLOBALS['user']->id,
-            ':thread_id' => $this->id,
-        ];
-
-        DBManager::get()->fetchAll(
-            $query,
-            $parameters,
-            function ($row) {
-                $user_id = $row['user_id'];
-
-                setTempLanguage($user_id);
-
-                PersonalNotifications::add(
-                    $user_id,
-                    $this->getURL(),
-                    sprintf(_('%s hat eine Nachricht geschrieben.'), get_fullname()),
-                    'blubberthread_' . $this->id,
-                    Icon::create('blubber'),
-                    true
-                );
-
-                restoreLanguage();
-            }
+        $query = "
+            SELECT auth_user_md5.user_id
+            FROM auth_user_md5
+                LEFT JOIN blubber_threads_unfollow ON (blubber_threads_unfollow.user_id = auth_user_md5.user_id AND blubber_threads_unfollow.thread_id = :thread_id)
+            WHERE auth_user_md5.user_id != :me
+                AND blubber_threads_unfollow.thread_id IS NULL
+        ";
+        $user_ids = DBManager::get()->fetchFirst($query, [
+            'me'         => $GLOBALS['user']->id,
+            'thread_id'  => $this->getId()
+        ]);
+        PersonalNotifications::add(
+            $user_ids,
+            $this->getURL(),
+            sprintf(_('%s hat eine Nachricht geschrieben.'), get_fullname()),
+            'blubberthread_' . $this->getId(),
+            Icon::create('blubber'),
+            true
         );
     }
 
