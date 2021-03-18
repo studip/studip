@@ -195,51 +195,21 @@ class Resources_RoomRequestController extends AuthenticatedController
             $sql .= " AND resource_requests.user_id <> :current_user_id ";
             $sql_params['current_user_id'] = User::findCurrent()->id;
         }
-        $common_seminar_sql = '';
 
-        if (!$this->filter['request_periods']) {
-            $common_seminar_sql = '(resource_requests.course_id IN (
-                SELECT seminar_id FROM seminare
-                WHERE %1$s
-                )
-                OR
-                resource_requests.metadate_id IN (
-                    SELECT metadate_id FROM seminar_cycle_dates
-                    INNER JOIN seminare
-                    USING (seminar_id)
-                    WHERE %1$s
-                ) OR
-                resource_requests.termin_id IN (
-                    SELECT termin_id from termine
-                    INNER JOIN seminare
-                    ON termine.range_id = seminare.seminar_id
-                    WHERE %1$s
-                )
-            )';
-        } elseif ($this->filter['request_periods'] == 'periodic') {
-            $common_seminar_sql = '(resource_requests.metadate_id <> \'\'
-                 AND resource_requests.metadate_id IN (
-                    SELECT metadate_id FROM seminar_cycle_dates
-                    INNER JOIN seminare
-                    USING (seminar_id)
-                    WHERE %1$s
-                )
-            )';
-        } elseif ($this->filter['request_periods'] == 'aperiodic') {
-            $common_seminar_sql = '((resource_requests.metadate_id = \'\'
-                    OR resource_requests.metadate_id IS NULL
-                )
-                AND resource_requests.termin_id IN (
-                    SELECT termin_id from termine
-                    INNER JOIN seminare
-                    ON termine.range_id = seminare.seminar_id
-                    WHERE %1$s
-                )
-            )';
+        if ($this->filter['request_periods'] == 'periodic') {
+            $sql .= " AND resource_requests.termin_id = '' ";
         }
+        if ($this->filter['request_periods'] == 'aperiodic') {
+            $sql .= " AND resource_requests.termin_id <> '' ";
+        }
+
 
         $institute_id = $this->filter['institute'];
         if ($institute_id) {
+            $common_seminar_sql = 'resource_requests.course_id IN (
+                SELECT seminar_id FROM seminare
+                WHERE %1$s
+                )';
             $include_children = false;
             if (preg_match('/_withinst$/', $institute_id)) {
                 $include_children = true;
@@ -286,20 +256,13 @@ class Resources_RoomRequestController extends AuthenticatedController
                 if ($sql) {
                     $sql .= ' AND ';
                 }
-                $sql .= "((resource_requests.termin_id IN (
-                    SELECT DISTINCT termin_id FROM termine
-                    WHERE date BETWEEN :semester_begin AND :semester_end
-                    OR end_time BETWEEN :semester_begin AND :semester_end
-                    )
-                    OR resource_requests.metadate_id IN (
-                    SELECT DISTINCT metadate_id FROM termine
-                    WHERE date BETWEEN :semester_begin AND :semester_end
-                    OR end_time BETWEEN :semester_begin AND :semester_end
-                    )
-                    OR EXISTS (SELECT * FROM seminare
-                    WHERE resource_requests.course_id=seminare.seminar_id
-                    AND seminare.start_time = :semester_begin)
-                    ) ";
+                $sql .= "(
+                (resource_requests.termin_id <> '' AND EXISTS (SELECT * FROM termine WHERE termine.termin_id=resource_requests.termin_id AND termine.date BETWEEN :semester_begin AND :semester_end))
+                    OR
+                    (resource_requests.metadate_id <> '' AND EXISTS (SELECT * FROM termine WHERE termine.metadate_id=resource_requests.metadate_id AND termine.date BETWEEN :semester_begin AND :semester_end))
+                    OR
+                    (resource_requests.termin_id = '' AND resource_requests.metadate_id = '' AND EXISTS (SELECT * FROM termine WHERE termine.range_id=resource_requests.course_id AND termine.date BETWEEN :semester_begin AND :semester_end))
+                     ";
 
                 if (!$this->filter['request_periods']) {
                     $sql .= ' OR (
@@ -321,13 +284,10 @@ class Resources_RoomRequestController extends AuthenticatedController
             } else {
                 $course_types = [$course_type[1]];
             }
-            $sql .= ' AND ' . sprintf(
-                    $common_seminar_sql,
-                    'seminare.status IN(:course_types)'
-                );
+            $sql .= " AND EXISTS (SELECT * FROM seminare
+                    WHERE resource_requests.course_id=seminare.seminar_id
+                    AND seminare.status IN(:course_types)) ";
             $sql_params[':course_types'] = $course_types;
-        } else if ($this->filter['request_periods']) {
-            $sql .= ' AND ' . sprintf($common_seminar_sql, 'TRUE');
         }
 
         if (!$sql) {
@@ -336,6 +296,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
 
         $sql .= " GROUP BY resource_requests.id ORDER BY mkdate ASC";
+
         $requests = RoomRequest::findBySql($sql, $sql_params);
         if ($this->filter['get_only_request_ids']) {
             $request_ids = SimpleCollection::createFromArray($requests);
