@@ -1,6 +1,6 @@
 import "highlight.js/styles/tomorrow.css"
 
-import hljs from "highlight.js/lib/highlight.js"
+import hljs from "highlight.js/lib/core.js"
 
 hljs.registerLanguage('cpp', require('highlight.js/lib/languages/cpp'))
 hljs.registerLanguage('css', require('highlight.js/lib/languages/css'))
