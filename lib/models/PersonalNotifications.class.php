@@ -67,7 +67,7 @@ class PersonalNotifications extends SimpleORMap
         $user_ids = $statement->fetchAll(PDO::FETCH_COLUMN);
 
         foreach ($user_ids as $user_id) {
-            PersonalNotifications::expireCache($user_id);
+            self::expireCache($user_id);
         }
     }
 
@@ -120,13 +120,7 @@ class PersonalNotifications extends SimpleORMap
         $notification->store();
 
         foreach ($user_ids as $user_id) {
-            self::expireCache($user_id);
-
-            $assignment = new PersonalNotificationsUser();
-            $assignment['personal_notification_id'] = $notification->id;
-            $assignment['user_id'] = $user_id;
-            $assignment['seen'] = 0;
-            $assignment->store();
+            $notification->link($user_id);
         }
 
         return true;
@@ -445,6 +439,32 @@ class PersonalNotifications extends SimpleORMap
             $this->unseen = 0 + $statement->fetchColumn();
         }
         return $this->unseen;
+    }
+
+    /**
+     * Links this notification to user.
+     *
+     * @param User|string $user_id_or_object User object or id of user
+     * @return PersonalNotificationsUser|false
+     */
+    public function link($user_id_or_object): PersonalNotificationsUser
+    {
+        $user_id = $user_id_or_object instanceof User ? $user_id_or_object->id : $user_id_or_object;
+
+        // If not activated, return false
+        if (!self::isActivated($user_id)) {
+            return false;
+        }
+
+        // Expire cache for user
+        self::expireCache($user_id);
+
+        // Create link from notification to user
+        return PersonalNotificationsUser::create([
+            'personal_notification_id' => $this->id,
+            'user_id'                  => $user_id,
+            'seen'                     => 0,
+        ]);
     }
 
 }

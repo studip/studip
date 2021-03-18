@@ -271,44 +271,46 @@ class Blubber extends \RESTAPI\RouteMap
     }
 
     /**
-     * User unfollows a thread.
+     * Does the current user follow the thread?
      *
-     * @post /blubber/threads/:thread_id/unfollow
-     *
-     * @param string $thread_id   id of the blubber thread
+     * @get /blubber/threads/:thread_id/follow
      */
-    public function unfollowThread($thread_id)
+    public function threadIsFollowed($thread_id)
     {
-        if (!$GLOBALS['perm']->have_perm('autor')) {
-            $this->error(401);
-        }
-
-        $thread = new \BlubberThread($thread_id);
-        if (!$thread->isReadable()) {
-            $this->error(401);
-            return;
-        }
-
-        $statement = \DBManager::get()->prepare("
-            INSERT IGNORE INTO blubber_threads_unfollow
-            SET user_id = :me,
-                thread_id = :thread_id,
-                mkdate = UNIX_TIMESTAMP()
-        ");
-        $statement->execute([
-            'me'        => $GLOBALS['user']->id,
-            'thread_id' => $thread_id
-        ]);
+        return $this->requireThread($thread_id)->isFollowedByUser();
     }
 
     /**
      * User follows a thread.
      *
-     * @delete /blubber/threads/:thread_id/unfollow
+     * @post /blubber/threads/:thread_id/follow
      *
      * @param string $thread_id   id of the blubber thread
      */
     public function followThread($thread_id)
+    {
+        $this->requireThread($thread_id)->addFollowingByUser();
+    }
+
+    /**
+     * User unfollows a thread.
+     *
+     * @delete /blubber/threads/:thread_id/follow
+     *
+     * @param string $thread_id   id of the blubber thread
+     */
+    public function unfollowThread($thread_id)
+    {
+        $this->requireThread($thread_id)->removeFollowingByUser();
+    }
+
+    /**
+     * Returns a blubber thread and checks permissions.
+     *
+     * @param string $thread_id Id of the blubber thread
+     * @return \BlubberThread
+     */
+    private function requireThread($thread_id)
     {
         if (!$GLOBALS['perm']->have_perm('autor')) {
             $this->error(401);
@@ -317,20 +319,8 @@ class Blubber extends \RESTAPI\RouteMap
         $thread = new \BlubberThread($thread_id);
         if (!$thread->isReadable()) {
             $this->error(401);
-            return;
         }
 
-        $statement = \DBManager::get()->prepare("
-            DELETE FROM blubber_threads_unfollow
-            WHERE user_id = :me
-                AND thread_id = :thread_id
-        ");
-        $statement->execute([
-            'me'        => $GLOBALS['user']->id,
-            'thread_id' => $thread_id
-        ]);
+        return \BlubberThread::upgradeThread($thread);
     }
-
-
-
 }

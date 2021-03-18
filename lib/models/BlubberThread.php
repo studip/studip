@@ -410,7 +410,10 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                 'thread_id' => $this->getId(),
                 'me'        => $GLOBALS['user']->id,
             ]);
-            $names = $statement->fetchAll(PDO::FETCH_COLUMN, 0);
+            $names = $statement->fetchFirst();
+            $names = array_map(function ($name) {
+                return $name ?? _('unbekannt');
+            }, $names);
 
             $names[] = _('ich');
             $names = implode(', ', $names);
@@ -491,7 +494,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             $template->tutors         = $tutors;
             $template->students_count = $students_count;
             $template->hashtags       = $this->getHashtags();
-            $template->unfollowed     = $this->isUnfollowed();
+            $template->unfollowed     = !$this->isFollowedByUser();
             return $template;
         }
 
@@ -529,20 +532,56 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         }
     }
 
-    public function isUnfollowed($user_id = null)
+    /**
+     * Lets a user follow a thread
+     *
+     * @param string|null $user_id Id of the user (optional, defaults to current user
+     */
+    public function addFollowingByUser($user_id = null)
     {
-        $user_id || $user_id = $GLOBALS['user']->id;
-        $is_unfollowed = \DBManager::get()->prepare("
-                SELECT 1
-                FROM blubber_threads_unfollow
-                WHERE user_id = :me
-                    AND thread_id = :thread_id
-            ");
-        $is_unfollowed->execute([
-            'me'        => $user_id,
-            'thread_id' => $this->getId()
+        $query = "DELETE FROM `blubber_threads_followstates`
+                  WHERE `thread_id` = :thread_id
+                    AND `user_id` = :user_id";
+        DBManager::get()->execute($query, [
+            ':thread_id' => $this->id,
+            ':user_id'   => $user_id ?? $GLOBALS['user']->id,
         ]);
-        return (bool) $is_unfollowed->fetch();
+    }
+
+    /**
+     * Lets a user unfollow a thread
+     *
+     * @param string|null $user_id Id of the user (optional, defaults to current user
+     */
+    public function removeFollowingByUser($user_id = null)
+    {
+        $query = "REPLACE INTO `blubber_threads_followstates`
+                  VALUES (:thread_id, :user_id, 'unfollowed', UNIX_TIMESTAMP())";
+        DBManager::get()->execute($query, [
+            ':thread_id' => $this->id,
+            ':user_id'   => $user_id ?? $GLOBALS['user']->id,
+        ]);
+    }
+
+    /**
+     * Returns whether a user follows a thread.
+     *
+     * @param string|null $user_id Id of the user (optional, defaults to current user
+     * @return bool
+     */
+    public function isFollowedByUser($user_id = null)
+    {
+        $query = "SELECT 1
+                  FROM `blubber_threads_followstates`
+                  WHERE `thread_id` = :thread_id
+                    AND `user_id` = :user_id
+                    AND `state` = 'unfollowed'";
+        $unfollowed = (bool) DBManager::get()->fetchColumn($query, [
+            ':thread_id' => $this->id,
+            ':user_id'   => $user_id ?? $GLOBALS['user']->id,
+        ]);
+
+        return !$unfollowed;
     }
 
     public function getOpenGraphURLs()
@@ -576,64 +615,129 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
 
     public function notifyUsersForNewComment($comment)
     {
-        $user_ids = [];
-        if ($this['context_type'] === 'public') {
-            $query = "SELECT DISTINCT user_id
-                      FROM blubber_comments
-                      WHERE thread_id = :thread_id
-                          AND external_contact = 0
-                          AND user_id != :me";
-            $user_ids = DBManager::get()->fetchFirst($query, [
-                'thread_id' => $this->getId(),
-                'me'        => $GLOBALS['user']->id,
-            ]);
-            if (!$this['external_contact'] && $this['user_id'] !== $GLOBALS['user']->id && !in_array($this['user_id'], $user_ids)) {
-                $user_ids[] = $this['user_id'];
+        $data = $this->getNotificationUsersQueryAndParameters();
+
+        if ($data === false) {
+            return;
+        }
+
+        $query = "SELECT user_id, `preferred_language` AS language
+                  FROM `user_info`
+                  WHERE `user_id` IN (
+                      {$data['query']}
+                  )";
+
+        $statement = DBManager::get()->prepare($query);
+        foreach ($data['parameters'] as $key => $value) {
+            $statement->bindValue($key, $value);
+        }
+        $statement->execute();
+        $statement->setFetchMode(PDO::FETCH_ASSOC);
+
+        $notifications = [];
+        foreach ($statement as $row) {
+            $user_id  = $row['user_id'];
+            $language = $row['language'] ?? Config::get()->DEFAULT_LANGUAGE;
+
+            if (!isset($notifications[$language])) {
+                setTempLanguage(false, $language);
+
+                $notifications[$language] = PersonalNotifications::create([
+                    'url'     => $this->getURL(),
+                    'text'    => sprintf(_('%s hat eine Nachricht geschrieben.'), get_fullname()),
+                    'avatar'  => Icon::create('blubber')->asImagePath(),
+                    'dialog'  => true,
+                    'html_id' => "blubberthread_{$this->id}",
+                ]);
+
+                restoreLanguage();
             }
-        } elseif ($this['context_type'] === 'private') {
+
+            $notifications[$language]->link($user_id);
+        }
+    }
+
+    /**
+     * Returns an array that includes the query and parameters to retrieve the
+     * user ids of all users that should be notified by a new post in this
+     * thread.
+     *
+     * The array needs to have the following structure:
+     *
+     * [
+     *     'query' => ...,
+     *     'parameters' => ...
+     * ]
+     *
+     * @return array|false
+     */
+    protected function getNotificationUsersQueryAndParameters()
+    {
+        // Default set of parameters
+        $parameters = [
+            ':thread_id' => $this->id,
+            ':user_id'   =>  $GLOBALS['user']->id,
+        ];
+
+        // Public context: Notify all users that participated
+        if ($this->context_type === 'public') {
+            $query = "SELECT DISTINCT `user_id`
+                      FROM `blubber_comments`
+                      WHERE `thread_id` = :thread_id
+                          AND `external_contact` = 0
+                          AND `user_id` != :user_id";
+
+            if (!$this->external_contact && $this->user_id !== $GLOBALS['user']->id) {
+                $query .= " UNION SELECT '{$this->user_id} AS `user_id`";
+            }
+
+            return compact('query', 'parameters');
+        }
+
+        // Private context: Notify all mentioned users
+        if ($this->context_type === 'private') {
             $query = "SELECT user_id
                       FROM blubber_mentions
                       WHERE thread_id = :thread_id
                         AND external_contact = 0
-                        AND user_id != :me";
-            $user_ids = DBManager::get()->fetchFirst($query, [
-                'thread_id' => $this->getId(),
-                'me'        => $GLOBALS['user']->id,
-            ]);
-        } elseif ($this['context_type'] === 'course') {
+                        AND user_id != :user_id";
+
+            return compact('query', 'parameters');
+        }
+
+        // Course context: Notify all members of the course except the ones that
+        // turned the notifications off
+        if ($this->context_type === 'course') {
             $query = "SELECT seminar_user.user_id
                       FROM seminar_user
-                          LEFT JOIN blubber_threads_unfollow ON (
-                              seminar_user.user_id = blubber_threads_unfollow.user_id
-                              AND blubber_threads_unfollow.thread_id = :thread_id
-                          )
+                      LEFT JOIN blubber_threads_followstates ON (
+                          seminar_user.user_id = blubber_threads_followstates.user_id
+                          AND blubber_threads_followstates.thread_id = :thread_id
+                          AND blubber_threads_followstates.state = 'unfollowed'
+                      )
                       WHERE seminar_user.Seminar_id = :context_id
-                          AND seminar_user.user_id != :me
-                          AND blubber_threads_unfollow.user_id IS NULL
-            ";
-            $user_ids = DBManager::get()->fetchFirst($query, [
-                'context_id' => $this['context_id'],
-                'me'         => $GLOBALS['user']->id,
-                'thread_id'  => $this->getId()
-            ]);
-        } elseif ($this['context_type'] === 'institute') {
+                          AND seminar_user.user_id != :user_id
+                          AND blubber_threads_followstates.user_id IS NULL";
+
+            $parameters[':context_id'] = $this->context_id;
+
+            return compact('query', 'parameters');
+        }
+
+        // Institute context: Notify all members of the institute
+        if ($this->context_type === 'institute') {
             $query = "SELECT user_id
                       FROM user_inst
                       WHERE Institut_id = :context_id
-                          AND user_id != :me";
-            $user_ids = DBManager::get()->fetchFirst($query, [
-                'context_id' => $this['context_id'],
-                'me'         => $GLOBALS['user']->id,
-            ]);
+                          AND user_id != :user_id";
+
+            unset($parameters[':thread_id']);
+            $parameters[':context_id'] = $this->context_id;
+
+            return compact('query', 'parameters');
         }
-        PersonalNotifications::add(
-            $user_ids,
-            $this->getURL(),
-            sprintf(_('%s hat eine Nachricht geschrieben.'), get_fullname()),
-            'blubberthread_' . $this->getId(),
-            Icon::create('blubber'),
-            true
-        );
+
+        return false;
     }
 
     public function isVisibleInStream()
@@ -748,7 +852,9 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                 $this->getId(),
                 $this->getLastVisit() ?: object_get_visit_threshold(),
                 $user_id
-            ])
+            ]),
+            'notifications' => $this->id === 'global' || ($this->context_type === 'course' && !$GLOBALS['perm']->have_perm('admin')),
+            'followed' => $this->isFollowedByUser(),
         ];
         $context_info = $this->getContextTemplate();
         if ($context_info) {

@@ -452,8 +452,7 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
      */
     public static function create($data)
     {
-        $class = get_called_class();
-        $record = new $class();
+        $record = new static();
         $record->setData($data, false);
         if ($record->store()) {
             return $record;

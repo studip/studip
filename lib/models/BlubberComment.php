@@ -12,6 +12,8 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  * @category    Stud.IP
  * @since       4.5
+ *
+ * @property BlubberThread thread related thread
  */
 
 class BlubberComment extends SimpleORMap implements PrivacyObject
@@ -36,6 +38,7 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
         ];
 
         $config['registered_callbacks']['before_create'][] = 'transformMentions';
+        $config['registered_callbacks']['before_create'][] = 'cbAddFollowing';
         $config['registered_callbacks']['after_create'][] = 'cbCreateNotifications';
         $config['registered_callbacks']['before_delete'][] = 'cbCreateDeleteEvent';
 
@@ -94,11 +97,6 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
         return OpenGraph::extract($this['content']);
     }
 
-    public function cbCreateNotifications()
-    {
-        $this->thread->notifyUsersForNewComment($this);
-    }
-
     public function transformMentions()
     {
         BlubberThread::$mention_thread_id = $this->thread_id;
@@ -116,6 +114,46 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
         );
         $this['content'] = \Studip\Markup::purifyHtml($this['content']);
         $this['content'] = transformBeforeSave($this['content']);
+    }
+
+    /**
+     * Adds a following on a first comment to the global stream if it is
+     * configured to be opt-in.
+     */
+    public function cbAddFollowing()
+    {
+        // Everything is opt-out, no need to add a following
+        if (Config::get()->BLUBBER_GLOBAL_THREAD_OPTOUT) {
+            return;
+        }
+
+        // Only global thread is opt-out
+        if ($this->thread->id !== 'global') {
+            return;
+        }
+
+        // Check whether user has commented before and thus already had
+        // a following inserted
+        $query = "SELECT 1
+                  FROM `blubber_comments`
+                  WHERE `thread_id` = :thread_id
+                    AND `user_id` = :user_id";
+        $has_commented = DBManager::get()->fetchColumn($query, [
+            ':thread_id' => $this->thread_id,
+            ':user_id'   => $GLOBALS['user']->id,
+        ]);
+
+        if ($has_commented) {
+            return;
+        }
+
+        // Add following
+        $this->thread->addFollowingByUser();
+    }
+
+    public function cbCreateNotifications()
+    {
+        $this->thread->notifyUsersForNewComment($this);
     }
 
     public function cbCreateDeleteEvent()
