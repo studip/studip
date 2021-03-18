@@ -211,22 +211,36 @@ class RoomManagementMigration extends Migration
     {
         if ($GLOBALS['RESOURCE_MIGRATION_MIGRATE_COURSE_PERMISSIONS']) {
             //Get all permissions where the range_id
-            //represents a course-ID:
+            //represents a course-ID or an institute-ID:
 
-            $course_permissions = $db->query(
-                "SELECT user_id, resource_id, perms
+            $permissions = $db->query(
+                "SELECT user_id, resource_id, perms, 'course' AS 'range'
                 FROM resource_permissions
                 WHERE
                 user_id IN (
                     SELECT seminar_id FROM seminare
-                );"
+                )
+                UNION
+                SELECT user_id, resource_id, perms, 'institute' AS 'range'
+                FROM resource_permissions
+                WHERE
+                user_id IN (
+                    SELECT Institut_id FROM Institute
+                )"
             )->fetchAll();
 
-            $participant_stmt = $db->prepare(
+            $course_participant_stmt = $db->prepare(
                 "SELECT user_id
                 FROM seminar_user
                 WHERE
                 Seminar_id = :course_id"
+            );
+
+            $institute_participant_stmt = $db->prepare(
+                "SELECT user_id, inst_perms
+                FROM user_inst
+                WHERE
+                Institut_id = :institute_id"
             );
 
             $get_user_permission_stmt = $db->prepare(
@@ -254,22 +268,36 @@ class RoomManagementMigration extends Migration
                 (:course_id, :resource_id, UNIX_TIMESTAMP(), UNIX_TIMESTAMP());"
             );
 
-            foreach ($course_permissions as $course_permission) {
-                //Get all participants of that course:
-                $participant_stmt->execute(
-                    [
-                        'course_id' => $course_permission['user_id']
-                    ]
-                );
-
-                $participants = $participant_stmt->fetchAll();
+            foreach ($permissions as $permission) {
+                //Get all participants of the course/institute:
+                $participants = [];
+                if ($permission['range'] == 'course') {
+                    $course_participant_stmt->execute(
+                        [
+                            'course_id' => $permission['user_id']
+                        ]
+                    );
+                    $participants = $course_participant_stmt->fetchAll();
+                } elseif ($permission['range'] == 'institute') {
+                    $institute_participant_stmt->execute(
+                        [
+                            'institute_id' => $permission['user_id']
+                        ]
+                    );
+                    $participants = $institute_participant_stmt->fetchAll();
+                }
 
                 foreach ($participants as $participant) {
+                    if (($permission['range'] == 'institute') &&
+                        !in_array($participant['inst_perms'], ['autor', 'tutor', 'dozent', 'admin'])) {
+                        //The permission level in the institute is too low.
+                        continue;
+                    }
                     //Check if a permission exists for that participant:
                     $get_user_permission_stmt->execute(
                         [
                             'user_id' => $participant['user_id'],
-                            'resource_id' => $course_permission['resource_id']
+                            'resource_id' => $permission['resource_id']
                         ]
                     );
                     $existing_perm = $get_user_permission_stmt->fetch(PDO::FETCH_COLUMN);
@@ -280,7 +308,7 @@ class RoomManagementMigration extends Migration
                             $update_user_permission_stmt->execute(
                                 [
                                     'user_id' => $participant['user_id'],
-                                    'resource_id' => $course_permission['resource_id'],
+                                    'resource_id' => $permission['resource_id'],
                                     'perms' => 'autor'
                                 ]
                             );
@@ -292,7 +320,7 @@ class RoomManagementMigration extends Migration
                         $create_user_permission_stmt->execute(
                             [
                                 'user_id' => $participant['user_id'],
-                                'resource_id' => $course_permission['resource_id'],
+                                'resource_id' => $permission['resource_id'],
                                 'perms' => 'autor'
                             ]
                         );
@@ -302,8 +330,8 @@ class RoomManagementMigration extends Migration
                 if ($GLOBALS['RESOURCE_MIGRATION_SPECIALRESOURCESPLUGIN']) {
                     $create_specialresources_entry->execute(
                         [
-                            'course_id' => $course_permission['user_id'],
-                            'resource_id' => $course_permission['resource_id']
+                            'course_id' => $permission['user_id'],
+                            'resource_id' => $permission['resource_id']
                         ]
                     );
                 }
