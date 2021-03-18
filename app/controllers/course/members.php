@@ -636,16 +636,18 @@ class Course_MembersController extends AuthenticatedController
                 $csv_nachname = trim($csv_name[0]);
                 $csv_vorname = trim($csv_name[1]);
 
-                if ($csv_nachname) {
-                    if (Request::quoted('csv_import_format') == 'realname') {
-                        $csv_users = $this->members->getMemberByIdentification($csv_nachname, $csv_vorname);
-                    } elseif (Request::quoted('csv_import_format') == 'username') {
-                        $csv_users = $this->members->getMemberByUsername($csv_nachname);
-                    } elseif (Request::quoted('csv_import_format') == 'email') {
-                        $csv_users = $this->members->getMemberByEmail($csv_nachname);
-                    } else {
-                        $csv_users = $this->members->getMemberByDatafield($csv_nachname, $datafield_id);
-                    }
+                if (!$csv_nachname) {
+                    continue;
+                }
+
+                if (Request::option('csv_import_format') == 'realname') {
+                    $csv_users = $this->members->getMemberByIdentification($csv_nachname, $csv_vorname);
+                } elseif (Request::option('csv_import_format') == 'username') {
+                    $csv_users = $this->members->getMemberByUsername($csv_nachname);
+                } elseif (Request::option('csv_import_format') == 'email') {
+                    $csv_users = $this->members->getMemberByEmail($csv_nachname);
+                } else {
+                    $csv_users = $this->members->getMemberByDatafield($csv_nachname, $datafield_id);
                 }
 
                 // if found more then one result to given name
