@@ -142,34 +142,8 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 $this->reset_search('Studiengang');
             }
 
-            //Special handling for names and short names:
-            //These can be copied from a "fach" object, if such an object
-            //has been selected via the quick search element.
-            //In such a case the studiengang_id parameter contains a MD5 sum
-            //instead of text.
-
-            $fach_id = Request::get('fach_id');
-            $this->fach = null;
-
-            //check, if fach_id contains a MD5 sum:
-            if (preg_match('/[a-f0-9]{32}/', $fach_id)) {
-                //We have a MD5 sum of a "fach":
-                //Lookup the "fach" object in the database:
-                $this->fach = Fach::find($fach_id);
-            }
-
-            if ($this->fach) {
-                //"fach" object exists: use its value
-                //for the names and short names of the "studiengang"
-                $this->studiengang->name = $this->fach->name;
-                $this->studiengang->name_kurz = $this->fach->name_kurz;
-            } else {
-                //No "fach" object has been found:
-                //Use the entered names and short names
-                $this->studiengang->name = Request::i18n('name')->trim();
-                $this->studiengang->name_kurz = Request::i18n('name_kurz')->trim();
-            }
-
+            $this->studiengang->name = Request::i18n('name')->trim();
+            $this->studiengang->name_kurz = Request::i18n('name_kurz')->trim();
             $this->studiengang->abschluss_id     = Request::option('abschluss_id');
             $this->studiengang->beschreibung     = Request::i18n('beschreibung')->trim();
             $this->studiengang->institut_id      = Request::option('institut_item');
