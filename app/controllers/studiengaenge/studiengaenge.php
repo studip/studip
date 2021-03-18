@@ -732,12 +732,25 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 return trim($v) == '' ? null : (string) $v;
             }, $fach->toArray());
 
-            $data['name'] = $fach->name->original();
-            $data['name_kurz'] = $fach->name_kurz->original();
-
-            $data['name_en'] = $fach->name->translation('en_GB') ?: null;
-            $data['name_kurz_en'] = $fach->name_kurz->translation('en_GB') ?: null;
-
+            $content_locales = array_keys(Config::get()->CONTENT_LANGUAGES);
+            if (count($content_locales) > 1) {
+                $is_original = true;
+                foreach ($content_locales as $locale) {
+                    if ($is_original) {
+                        $data['name'] = $fach->name->original();
+                        $data['name_kurz'] = $fach->name_kurz->original();
+                        $is_original = false;
+                    } else {
+                        $locale_part = strstr($locale, '_', true);
+                        $data['name_' . $locale_part] = $fach->name->translation($locale) ?: null;
+                        $data['name_kurz_' . $locale_part] = $fach->name_kurz->translation($locale) ?: null;
+                    }
+                }
+            } else {
+                $data['name'] = $fach->name;
+                $data['name_kurz'] = $fach->name_kurz;
+            }
+            
             $this->render_json($data);
         } else {
             $this->set_status(404, 'Not Found');
