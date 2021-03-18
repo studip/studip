@@ -16,7 +16,7 @@
     <? if ($nextdate) : ?>
         <div>
             <h4><?= _("Nächster Termin") ?></h4>
-            <a href="<?= URLhelper::getLink("dispatch.php/course/dates/details/".$nextdate->getId()) ?>">
+            <a href="<?= URLHelper::getLink("dispatch.php/course/dates/details/".$nextdate->getId(), ['cid' => $course->id]) ?>">
                 <?= Icon::create("date", "clickable")->asImg(16, ['class' => "text-bottom"]) ?>
                 <?= htmlReady($nextdate->getFullname()) ?>
             </a>
