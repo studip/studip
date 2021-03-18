@@ -15,9 +15,9 @@
     </div>
     <? if ($nextdate) : ?>
         <div>
-            <h4><?= _("Nächster Termin") ?></h4>
-            <a href="<?= URLHelper::getLink("dispatch.php/course/dates/details/".$nextdate->getId(), ['cid' => $course->id]) ?>">
-                <?= Icon::create("date", "clickable")->asImg(16, ['class' => "text-bottom"]) ?>
+            <h4><?= _('Nächster Termin') ?></h4>
+            <a href="<?= URLHelper::getLink("dispatch.php/course/dates/details/".$nextdate->getId(), ['cid' => $course->id]) ?>" data-dialog="size=auto">
+                <?= Icon::create('date')->asImg(['class' => "text-bottom"]) ?>
                 <?= htmlReady($nextdate->getFullname()) ?>
             </a>
         </div>

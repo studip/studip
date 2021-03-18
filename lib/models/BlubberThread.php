@@ -480,7 +480,11 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                 }
             }
 
-            $nextdate       = CourseDate::findOneBySQL("range_id = ? AND `date` >= UNIX_TIMESTAMP() ORDER BY `date` ASC", [$this['context_id']]);
+            $nextdate = false;
+            if ($modulemanager->checkLocal('schedule', $course->Id, 'sem') && $sem_class->getModule('schedule', $course->id)) {
+                $nextdate = CourseDate::findOneBySQL("range_id = ? AND `date` >= UNIX_TIMESTAMP() ORDER BY `date` ASC", [$this['context_id']]);
+            }
+
             $teachers       = CourseMember::findBySQL("Seminar_id = ? AND status = 'dozent' ORDER BY position ASC", [$this['context_id']]);
             $tutors         = CourseMember::findBySQL("Seminar_id = ? AND status = 'tutor' ORDER BY position ASC", [$this['context_id']]);
             $students_count = CourseMember::countBySQL("Seminar_id = ? AND status IN ('autor', 'user') ORDER BY position ASC", [$this['context_id']]);
