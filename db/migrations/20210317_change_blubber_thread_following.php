@@ -41,6 +41,10 @@ class ChangeBlubberThreadFollowing extends Migration
             ':type'        => 'boolean',
             ':value'       => '1'
         ]);
+
+        // Activate added routes
+        require_once $GLOBALS['STUDIP_BASE_PATH'] . '/app/routes/Blubber.php';
+        RESTAPI\ConsumerPermissions::get()->activateRouteMap(new RESTAPI\Routes\Blubber());
     }
 
     public function down()
@@ -65,9 +69,5 @@ class ChangeBlubberThreadFollowing extends Migration
         // Rename table
         $query = "RENAME TABLE `blubber_threads_followstates` TO `blubber_threads_unfollow`";
         DBManager::get()->exec($query);
-
-        // Activate added routes
-        require_once $GLOBALS['STUDIP_BASE_PATH'] . '/app/routes/Blubber.php';
-        RESTAPI\ConsumerPermissions::get()->activateRouteMap(new RESTAPI\Routes\Blubber());
     }
 }
