@@ -155,8 +155,8 @@ class ExternSemBrowseTable extends SemBrowse {
             }
             $sem_types_array = [];
             if (count($selected_semtypes)) {
-                for ($i = 0; $i < count($selected_semtypes); $i++) {
-                    if ($selected_semtypes[$i] == '1') {
+                foreach ($selected_semtypes as $i => $active) {
+                    if ($active == '1') {
                         $sem_types_array[] = $i + 1;
                     }
                 }
