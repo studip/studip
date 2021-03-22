@@ -37,8 +37,6 @@ class Course_PlusController extends AuthenticatedController
 
         PageLayout::setTitle($this->sem->getFullname() . " - " . PageLayout::getTitle());
 
-        $this->save();
-
         $this->modules = new AdminModules();
         $this->registered_modules = $this->modules->registered_modules;
 
@@ -120,7 +118,6 @@ class Course_PlusController extends AuthenticatedController
         }
     }
 
-
     private function deleteContent($plugmodlist)
     {
         $name = Request::get('name');
@@ -152,7 +149,6 @@ class Course_PlusController extends AuthenticatedController
                 . LinkButton::createCancel(_('Nein'))));
         }
     }
-
 
     private function setupSidebar()
     {
@@ -370,206 +366,6 @@ class Course_PlusController extends AuthenticatedController
         return $sortedcats;
     }
 
-
-    protected function save()
-    {
-        $seminar_id = $_SESSION['admin_modules_data']['range_id'];
-        $modules = new AdminModules();
-        $plugins = PluginEngine::getPlugins('StandardPlugin');
-        //consistency: kill objects
-        foreach ($modules->registered_modules as $key => $val) {
-            $moduleXxDeactivate = "module" . $key . "Deactivate";
-            if ((Request::option('delete_' . $key) == 'TRUE')) {
-                if (method_exists($modules, $moduleXxDeactivate)) {
-                    $modules->$moduleXxDeactivate($seminar_id);
-                    if ($this->sem_class) {
-                        $studip_module = $this->sem_class->getModule($key);
-                        $this->setPluginActivated($studip_module, false);
-                    }
-                }
-                $modules->clearBit($_SESSION['admin_modules_data']["changed_bin"], $modules->registered_modules[$key]["id"]);
-                unset($_SESSION['admin_modules_data']["conflicts"][$key]);
-                $resolve_conflicts = true;
-            }
-        }
-
-        //consistency: cancel kill objects
-        foreach ($modules->registered_modules as $key => $val) {
-            if (Request::option('cancel_' . $key) == 'TRUE') {
-                $modules->setBit($_SESSION['admin_modules_data']["changed_bin"], $modules->registered_modules[$key]["id"]);
-                unset($_SESSION['admin_modules_data']["conflicts"][$key]);
-                $resolve_conflicts = true;
-            }
-        }
-
-        if (Request::submitted('uebernehmen') || Request::get('retry')) {
-            if (Request::submitted('uebernehmen')) {
-                foreach ($modules->registered_modules as $key => $val) {
-                    //after sending, set all "conflicts" to TRUE (we check them later)
-                    $_SESSION['admin_modules_data']["conflicts"][$key] = true;
-
-                    if ($this->sem_class) {
-                        $studip_module = $this->sem_class->getModule($key);
-                        $mod = $this->sem_class->getSlotModule($key);
-
-                        //skip the modules that are not changeable
-                        if ($mod && (!$this->sem_class->isModuleAllowed($mod) || $this->sem_class->isModuleMandatory($mod)) ||
-                            method_exists($studip_module, 'isActivatableForContext') && !$studip_module->isActivatableForContext($this->sem)) {
-                            continue;
-                        }
-                    }
-
-                    $info = ($studip_module instanceOf StudipModule) ? $studip_module->getMetadata() : ($val['metadata'] ? $val['metadata'] : []);
-                    $info ["category"] = $info ["category"] ? : 'Sonstiges';
-
-                    if (!isset($_SESSION['plus']) || $_SESSION['plus']['Kategorie'][$info ["category"]]) {
-
-                        if (Request::option($key . '_value') == "TRUE") {
-                            $modules->setBit($_SESSION['admin_modules_data']["changed_bin"], $modules->registered_modules[$key]["id"]);
-                        } else {
-                            $modules->clearBit($_SESSION['admin_modules_data']["changed_bin"], $modules->registered_modules[$key]["id"]);
-                        }
-
-                    }
-
-                    if ($this->sem_class) {
-                        $studip_module = $this->sem_class->getModule($key);
-                        $this->setPluginActivated(
-                            $studip_module,
-                            Request::option("{$key}_value") === 'TRUE'
-                        );
-                    } else {
-                        // check, if the passed module is represented by a core-plugin
-                        if (mb_strtolower(get_parent_class('core' . $key)) == 'studipplugin') {
-                            $plugin = PluginEngine::getPlugin('core' . $key);
-                            $this->setPluginActivated(
-                                $plugin,
-                                Request::option("{$key}_value") === 'TRUE'
-                            );
-                        }
-                    }
-                }
-                // Setzen der Plugins
-                foreach ($plugins as $plugin) {
-                    if ((!$this->sem_class && !$plugin->isCorePlugin()) || ($this->sem_class && !$this->sem_class->isSlotModule(get_class($plugin)))) {
-
-                        $check = ($_POST["plugin_" . $plugin->getPluginId()] == "TRUE");
-                        $setting = $plugin->isActivated($seminar_id);
-
-                        if ($check != $setting) {
-                            array_push($_SESSION['plugin_toggle'], $plugin->getPluginId());
-                        }
-                    }
-                }
-            }
-
-            //consistency checks
-            foreach ($modules->registered_modules as $key => $val) {
-                $delete_xx = "delete_" . $key;
-                $cancel_xx = "cancel_" . $key;
-
-                //checks for deactivating a module
-                $getModuleXxExistingItems = "getModule" . $key . "ExistingItems";
-
-                if (method_exists($modules, $getModuleXxExistingItems)) {
-                    if (($modules->isBit($_SESSION['admin_modules_data']["orig_bin"], $modules->registered_modules[$key]["id"])) &&
-                        (!$modules->isBit($_SESSION['admin_modules_data']["changed_bin"], $modules->registered_modules[$key]["id"])) &&
-                        ($modules->$getModuleXxExistingItems($_SESSION['admin_modules_data']["range_id"])) &&
-                        ($_SESSION['admin_modules_data']["conflicts"][$key])
-                    ) {
-
-                        $msg = $modules->registered_modules[$key]["msg_warning"];
-                        $msg .= "<br>";
-                        $msg .= LinkButton::createAccept(_('Ja'), URLHelper::getURL("?delete_$key=TRUE&retry=TRUE"));
-                        $msg .= "&nbsp; \n";
-                        $msg .= LinkButton::createCancel(_('NEIN!'), URLHelper::getURL("?cancel_$key=TRUE&retry=TRUE"));
-                        PageLayout::postMessage(MessageBox::info($msg));
-                    } else {
-                        unset($_SESSION['admin_modules_data']["conflicts"][$key]);
-                    }
-                } else {
-                    unset($_SESSION['admin_modules_data']["conflicts"][$key]);
-                }
-
-                //checks for activating a module
-                $moduleXxActivate = "module" . $key . "Activate";
-
-                if (method_exists($modules, $moduleXxActivate)) {
-                    if ((!$modules->isBit($_SESSION['admin_modules_data']["orig_bin"], $modules->registered_modules[$key]["id"])) &&
-                        ($modules->isBit($_SESSION['admin_modules_data']["changed_bin"], $modules->registered_modules[$key]["id"]))
-                    ) {
-
-                        $modules->$moduleXxActivate($seminar_id);
-                        if ($this->sem_class) {
-                            $studip_module = $this->sem_class->getModule($key);
-                            $this->setPluginActivated($studip_module, true);
-                        }
-                    }
-                }
-
-            }
-        }
-        if (empty($_SESSION['admin_modules_data']["conflicts"])) {
-            $changes = false;
-            $anchor = "";
-            // Inhaltselemente speichern
-            if ($_SESSION['admin_modules_data']["orig_bin"] != $_SESSION['admin_modules_data']["changed_bin"]) {
-                $modules->writeBin($_SESSION['admin_modules_data']["range_id"], $_SESSION['admin_modules_data']["changed_bin"]);
-
-                $old_mods = $modules->generateModulesArrayFromModulesInteger($_SESSION['admin_modules_data']["orig_bin"]);
-                $new_mods = $modules->generateModulesArrayFromModulesInteger($_SESSION['admin_modules_data']["changed_bin"]);
-                foreach (array_diff_assoc($old_mods, $new_mods) as $changed_mod => $value) {
-                    $mod = $modules->registered_modules[$changed_mod];
-                    if ($value) {
-                        PageLayout::postSuccess(sprintf(_('"%s" wurde deaktiviert.'), htmlReady($mod['name'])));
-                    } else {
-                        PageLayout::postSuccess(sprintf(_('"%s" wurde aktiviert.'), htmlReady($mod['name'])));
-                    }
-                    $anchor = '#m_' . $mod['id'];
-                }
-
-                $_SESSION['admin_modules_data']["orig_bin"] = $_SESSION['admin_modules_data']["changed_bin"];
-                $_SESSION['admin_modules_data']["modules_list"] = $modules->getLocalModules($_SESSION['admin_modules_data']["range_id"]);
-                $changes = true;
-            }
-            // Plugins speichern
-            if (!empty($_SESSION['plugin_toggle'])) {
-                $plugin_manager = PluginManager::getInstance();
-
-                foreach ($plugins as $plugin) {
-                    $plugin_id = $plugin->getPluginId();
-
-                    if (!in_array($plugin_id, $_SESSION['plugin_toggle'])) {
-                        continue;
-                    }
-
-                    $activated = $this->setPluginActivated($plugin);
-
-                    if ($activated === null) {
-                        continue;
-                    }
-
-                    $changes = true;
-                    // logging
-                    if ($activated) {
-                        StudipLog::log('PLUGIN_ENABLE', $seminar_id, $plugin_id, $GLOBALS['user']->id);
-                        NotificationCenter::postNotification('PluginForSeminarDidEnabled', $seminar_id, $plugin_id);
-                        PageLayout::postSuccess(sprintf(_('"%s" wurde aktiviert.'), htmlReady($plugin->getPluginName())));
-                    } else {
-                        StudipLog::log('PLUGIN_DISABLE', $seminar_id, $plugin_id, $GLOBALS['user']->id);
-                        NotificationCenter::postNotification('PluginForSeminarDidDisabled', $seminar_id, $plugin_id);
-                        PageLayout::postSuccess(sprintf(_('"%s" wurde deaktiviert.'), htmlReady($plugin->getPluginName())));
-                    }
-                    $anchor = '#p_' . $plugin->getPluginId();
-                }
-                $_SESSION['plugin_toggle'] = [];
-            }
-            if ($changes) {
-                $this->redirect($this->url_for('course/plus/index/' . $seminar_id . $anchor));
-            }
-        }
-    }
-
     private function setPluginActivated(StudIPModule $plugin = null, bool $state = null)
     {
         static $manager = null;
@@ -589,6 +385,16 @@ class Course_PlusController extends AuthenticatedController
         }
 
         $manager->setPluginActivated($plugin->getPluginId(), Context::getId(), $state);
+
+        if (Context::isCourse()) {
+            if ($state) {
+                StudipLog::log('PLUGIN_ENABLE', Context::getId(), $plugin->getPluginId(), $GLOBALS['user']->id);
+                NotificationCenter::postNotification('PluginDidActivate', Context::getId(), $plugin->getPluginId());
+            } else {
+                StudipLog::log('PLUGIN_DISABLE', Context::getId(), $plugin->getPluginId(), $GLOBALS['user']->id);
+                NotificationCenter::postNotification('PluginDidDeactivate', Context::getId(), $plugin->getPluginId());
+            }
+        }
 
         return $manager->isPluginActivated($plugin->getPluginId(), Context::getId());
     }
