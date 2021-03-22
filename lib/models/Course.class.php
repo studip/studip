@@ -673,7 +673,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
      * @return bool
      * @todo Check permissions
      */
-    public function isVisibleToUser($user_id = null)
+    public function isAccessibleToUser($user_id = null)
     {
         if ($user_id === null) {
             $user_id = $GLOBALS['user']->id;
@@ -694,21 +694,6 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
             $user_id = $GLOBALS['user']->id;
         }
         return $GLOBALS['perm']->have_studip_perm('tutor', $this->id, $user_id);
-    }
-
-    /**
-     * Decides whether the user may manage the range.
-     *
-     * @param string|null $user_id Optional id of a user, defaults to current user
-     * @return bool
-     * @todo Check permissions
-     */
-    public function isManagableByUser($user_id = null)
-    {
-        if ($user_id === null) {
-            $user_id = $GLOBALS['user']->id;
-        }
-        return $GLOBALS['perm']->have_studip_perm('admin', $this->id, $user_id);
     }
 
     /**

@@ -1380,7 +1380,7 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
      * @param string|null $user_id Optional id of a user, defaults to current user
      * @return bool
      */
-    public function isVisibleToUser($user_id = null)
+    public function isAccessibleToUser($user_id = null)
     {
         // TODO: Visibility checks
         if ($user_id === null) {
@@ -1404,17 +1404,6 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
         }
         return $user_id === $this->user_id
             || self::find($user_id)->perms === 'root';
-    }
-
-    /**
-     * Decides whether the user may manage the range.
-     *
-     * @param string|null $user_id Optional id of a user, defaults to current user
-     * @return bool
-     */
-    public function isManagableByUser($user_id = null)
-    {
-        return $this->isEditableByUser($user_id);
     }
 
     /**

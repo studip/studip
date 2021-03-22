@@ -2,9 +2,9 @@
 // "Rules"/definitions for critical changes in 5.0
 return [
     // https://develop.studip.de/trac/ticket/11250
-    'userMayAccessRange' => '#{Changed} - Use #{yellow:isVisibleToUser} instead',
-    'userMayEditRange' => '#{Changed} - Use #{yellow:isEditableByUser} instead',
-    'userMayAdministerRange' => '#{Changed} - Use #{yellow:isManagableByUser} instead',
+    'userMayAccessRange' => '#{yellow:Changed} - Use #{yellow:isAccessibleToUser} instead',
+    'userMayEditRange' => '#{yellow:Changed} - Use #{yellow:isEditableByUser} instead',
+    'userMayAdministerRange' => '#{red:Removed}',
 
     // UTF8-Encode/Decode legacy functions
     'studip_utf8encode' => '#{red:Removed} - Use utf8_encode().',

@@ -273,7 +273,7 @@ class Institute extends SimpleORMap implements Range
      * @return bool
      * @todo Check permissions
      */
-    public function isVisibleToUser($user_id = null)
+    public function isAccessibleToUser($user_id = null)
     {
         return true;
     }
@@ -292,23 +292,6 @@ class Institute extends SimpleORMap implements Range
         }
         $member = $this->members->findOneBy('user_id', $user_id);
         return ($member && in_array($member->inst_perms, ['tutor', 'dozent', 'admin']))
-            || User::find($user_id)->perms === 'root';
-    }
-
-    /**
-     * Decides whether the user may manage the range.
-     *
-     * @param string|null $user_id Optional id of a user, defaults to current user
-     * @return bool
-     * @todo Check permissions
-     */
-    public function isManagableByUser($user_id = null)
-    {
-        if ($user_id === null) {
-            $user_id = $GLOBALS['user']->id;
-        }
-        $member = $this->members->findOneBy('user_id', $user_id);
-        return ($member && $member->status === 'admin')
             || User::find($user_id)->perms === 'root';
     }
 }
