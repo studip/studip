@@ -323,20 +323,21 @@ class LogEvent extends SimpleORMap implements PrivacyObject
                     }
                     break;
                 case 'file':
-                    if (!file_exists($this->action->filename)) {
-                        require_once($this->action->filename);
+                    if (file_exists($this->action->filename)) {
+                        require_once $this->action->filename;
+
                         $class_name = $this->action->class;
-                        if ($class_name instanceof Loggable) {
+                        if ($class_name && in_array(Loggable::class, class_implements($class_name))) {
                             return $class_name::logFormat($this);
                         }
                     }
                     break;
                 case 'core':
                     $class_name = $this->action->class;
-                    $interfaces = class_implements($class_name);
-                    if (isset($interfaces['Loggable'])) {
+                    if ($class_name && in_array(Loggable::class, class_implements($class_name))) {
                         return $class_name::logFormat($this);
                     }
+                    break;
             }
         }
         return $this->action->info_template;
