@@ -82,10 +82,6 @@ class WebMigrateController extends StudipController
             $this->migrator->relevantMigrations(0),
             $this->migrator->relevantMigrations(null)
         );
-        $this->info = array_combine(
-            array_keys($this->history),
-            array_map([$this->version, 'getVersionInfo'], array_keys($this->history))
-        );
     }
 
     public function revert_action()

@@ -16,8 +16,6 @@
         <? endif; ?>
             <col style="width: 120px">
             <col>
-            <col style="width: 150px">
-            <col>
         </colgroup>
         <thead>
             <tr>
@@ -30,8 +28,6 @@
             <? endif; ?>
                 <th><?= _('Nr.') ?></th>
                 <th><?= _('Beschreibung') ?></th>
-                <th><?= _('Ausgeführt') ?></th>
-                <th><?= _('Von') ?></th>
             </tr>
         </thead>
         <tbody>
@@ -53,29 +49,13 @@
                     <em><?= _('keine Beschreibung vorhanden') ?></em>
                 <? endif ?>
                 </td>
-                <td>
-                <? if ($info[$number]): ?>
-                    <?= strftime('%x %X', $info[$number]['mkdate']) ?>
-                <? else: ?>
-                    &ndash;
-                <? endif; ?>
-                </td>
-                <td>
-                <? if (!$info[$number]): ?>
-                    &ndash;
-                <? elseif ($user = User::find($info[$number]['user_id'])): ?>
-                    <?= htmlReady($user->getFullName('no_title')) ?>
-                <? else: ?>
-                    <?= htmlReady($info[$number]['user_id']) ?>
-                <? endif; ?>
-                </td>
             </tr>
         <? endforeach; ?>
         </tbody>
     <? if (STUDIP\ENV === 'development'): ?>
         <tfoot>
             <tr>
-                <td colspan="5">
+                <td colspan="3">
                 <? if ($lock->isLocked($lock_data)): ?>
                     <?= MessageBox::info(sprintf(
                         _('Die Migration wurde %s von %s bereits angestossen und läuft noch.'),
