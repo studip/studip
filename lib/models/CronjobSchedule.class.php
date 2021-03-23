@@ -103,8 +103,9 @@ class CronjobSchedule extends SimpleORMap
      */
     public static function describePriority($priority)
     {
-        $mapping = self::getPriorities();
+        $priority = $priority ?? 'normal';
 
+        $mapping = self::getPriorities();
         if (!isset($mapping[$priority])) {
             throw new RuntimeException('Access to unknown priority "' . $priority . '"');
         }
@@ -128,7 +129,16 @@ class CronjobSchedule extends SimpleORMap
             $this->parameters = json_encode($this->parameters ?: null);
         }
         if (in_array($type, ['after_initialize', 'after_store']) && is_string($this->parameters)) {
-            $this->parameters = json_decode($this->parameters, true) ?: [];
+            $parameters = json_decode($this->parameters, true) ?: [];
+            if ($this->task->valid) {
+                $default_parameters = $this->task->extractDefaultParameters();
+                foreach ($default_parameters as $key => $value) {
+                    if (!isset($parameters[$key])) {
+                        $parameters[$key] = $value;
+                    }
+                }
+            }
+            $this->parameters = $parameters;
         }
     }
 

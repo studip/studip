@@ -17,8 +17,8 @@
     <dt><?= _('Parameter') ?></dt>
     <dd>
         <ul>
-        <? foreach ($schedule->parameters as $parameter): ?>
-            <li><?= htmlReady($parameter) ?></li>
+        <? foreach ($schedule->parameters as $key => $value): ?>
+            <li><?= htmlReady($key) ?>: <?= htmlReady($value) ?></li>
         <? endforeach; ?>
         </ul>
     </dd>
@@ -66,11 +66,13 @@
 <? endif; ?>
 </dl>
 
-<div data-dialog-button>>
-    <a href="<?= $controller->link_for('admin/cronjobs/logs/schedule', $schedule) ?>">
-        <?= _('Log anzeigen') ?>
-    </a>
-    <a href="<?= $controller->edit($schedule) ?>">
-        <?= _('Cronjob bearbeiten') ?>
-    </a>
+<div data-dialog-button>
+    <?= Studip\LinkButton::create(
+        _('Log anzeigen'),
+        $controller->url_for('admin/cronjobs/logs/schedule', $schedule)
+    ) ?>
+    <?= Studip\LinkButton::create(
+        _('Cronjob bearbeiten'),
+        $controller->editURL($schedule)
+    ) ?>
 </div>

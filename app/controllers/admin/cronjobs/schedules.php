@@ -141,6 +141,7 @@ class Admin_Cronjobs_SchedulesController extends AuthenticatedController
         if (Request::submitted('store')) {
             $parameters = Request::getArray('parameters');
 
+            $schedule->priority    = Request::option('priority', 'normal');
             $schedule->title       = Request::get('title');
             $schedule->description = Request::get('description');
             $schedule->active      = Request::int('active', 0);

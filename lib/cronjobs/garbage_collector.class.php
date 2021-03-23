@@ -41,17 +41,12 @@ class GarbageCollectorJob extends CronJob
             ],
             'message_deletion_days' => [
                 'type'        => 'integer',
-                'default'     => 365,
+                'default'     => 30,
                 'status'      => 'optional',
                 'description' => _('(Systemnachrichten): Nach wie vielen Tagen sollen die '
                                  .'Systemnachrichten gelöscht werden (0 für sofort, Default: 30 Tage)?'),
             ],
         ];
-    }
-
-    public function setUp()
-    {
-
     }
 
     public function execute($last_result, $parameters = [])
@@ -63,10 +58,7 @@ class GarbageCollectorJob extends CronJob
         }
 
         // delete outdated news
-        $news_deletion_days = 0;
-        if ($parameters['news_deletion_days'] > 0) {
-            $news_deletion_days =  (int) $parameters['news_deletion_days'] * 86400;
-        }
+        $news_deletion_days = $parameters['news_deletion_days'] * 86400;
         $deleted_news = StudipNews::DoGarbageCollect($news_deletion_days);
 
         // delete messages
@@ -90,7 +82,7 @@ class GarbageCollectorJob extends CronJob
                   WHERE `autor_id` = '____%system%____'
                     AND DATE(FROM_UNIXTIME(`message`.`mkdate`)) + INTERVAL :days DAY < DATE(NOW())";
         DBManager::get()->execute($query, [
-            ':days' => $parameter['message_deletion_days'] ?? 0,
+            ':days' => $parameters['message_deletion_days'],
         ]);
 
         // Remove outdated opengraph urls
