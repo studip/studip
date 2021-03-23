@@ -1348,18 +1348,15 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
             $begin_date = date('Ymd', $this->begin);
             $end_date   = date('Ymd', $this->end);
             if($this->resource) {
-                $room_link = sprintf('<a href="%s" target="_blank">%s</a>',
-                    $this->resource->getActionURL('booking_plan'),
-                    htmlReady($this->resource->name)
-                );
+                $resource_name = htmlReady($this->resource->getFullName());
             }
             if ($begin_date == $end_date) {
                 $strings[] = strftime('%a., %x, %R', $this->begin) . ' - '
-                           . strftime('%R', $this->end) . ' ' . $room_link;
+                           . strftime('%R', $this->end) . ' ' . $resource_name;
             } else {
                 //Begin and end are on differnt dates
                 $strings[] = strftime('%a., %x, %R', $this->begin) . ' - '
-                    . strftime('%a., %x, %R', $this->end) . ' ' . $room_link;
+                    . strftime('%a., %x, %R', $this->end) . ' ' . $resource_name;
             }
         }
 
