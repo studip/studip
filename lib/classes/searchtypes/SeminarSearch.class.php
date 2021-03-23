@@ -74,9 +74,9 @@ class SeminarSearch extends SearchType
                    WHERE s.Seminar_id IN (?)
                    GROUP BY s.Seminar_id";
          if (Config::get()->IMPORTANT_SEMNUMBER) {
-             $query .= " ORDER BY IFNULL(sem2.beginn, sem1.beginn) DESC, s.VeranstaltungsNummer, s.Name";
+             $query .= " ORDER BY IFNULL(MAX(sem1.beginn), s.start_time) DESC, s.VeranstaltungsNummer, s.Name";
          } else {
-             $query .= " ORDER BY IFNULL(sem2.beginn, sem1.beginn) DESC, s.Name";
+             $query .= " ORDER BY IFNULL(MAX(sem1.beginn), s.start_time) DESC, s.Name";
          }
          $statement = DBManager::get()->prepare($query);
          $statement->execute([
