@@ -50,13 +50,17 @@
                             <? endif ?>
                         </dd>
                     <? endif ?>
-                    <dt><?= _('Art der Anfrage') ?></dt>
-                    <dd><?= htmlReady($request->getTypeString()) ?></dd>
                     <? if ($request->course): ?>
                         <dt><?= _('Anzahl Teilnehmende') ?></dt>
                         <dd>
                             <?= htmlReady($request->course->getNumParticipants()) ?>
                         </dd>
+                    <? endif ?>
+                    <dt><?= _('Art der Anfrage') ?></dt>
+                    <dd><?= htmlReady($request->getTypeString()) ?></dd>
+                    <? if ($request_semester_string): ?>
+                        <dt><?= _('Semester')?></dt>
+                        <dd><?= htmlReady($request_semester_string) ?></dd>
                     <? endif ?>
                     <dt><?= _('Angeforderte Belegungszeiten') ?></dt>
                     <dd>
@@ -64,10 +68,8 @@
                         <? if ($dates) : ?>
                             <?= implode('<br>', $dates) ?>
                         <? endif ?>
-                        <? if ($request_semester_string): ?>
-                            <br>(<?= htmlReady($request_semester_string) ?>)
-                        <? endif ?>
                     </dd>
+
                     <? if ($room_request->preparation_time): ?>
                         <? $preparation_time_minutes = intval($room_request->preparation_time / 60) ?>
                         <dt><?= _('Rüstzeit') ?></dt>
@@ -214,14 +216,13 @@
                                 <?php
                                 $date_string1 = getWeekday($data['metadate']->weekday);
                                 $date_string2 = sprintf(
-                                    '%s:%s - %s:%s',
+                                    '%02s:%02s - %02s:%02s',
                                     $data['metadate']->start_hour,
                                     $data['metadate']->start_minute,
                                     $data['metadate']->end_hour,
                                     $data['metadate']->end_minute
                                 );
                                 ?>
-
                                 <th class="nowrap">
                                     <?= htmlReady($date_string1) ?>
                                     <br>

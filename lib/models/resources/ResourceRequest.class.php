@@ -1316,44 +1316,50 @@ class ResourceRequest extends SimpleORMap implements PrivacyObject, Studip\Calen
     {
         $strings = [];
         if (count($this->appointments)) {
-            $string = '';
             $parts  = [];
             foreach ($this->appointments as $rra) {
                 if ($rra->appointment) {
-                    $parts[] = $rra->appointment->getFullname();
+                    $parts[] = $rra->appointment->getFullname('include-room');
                 }
             }
             $strings[] .= implode('; ', $parts);
         } elseif ($this->termin_id) {
             if ($this->date) {
-                $strings[] = $this->date->getFullname();
+                $strings[] = $this->date->getFullname('include-room');
             }
         } elseif ($this->metadate_id) {
             if ($this->cycle) {
-                $strings[] = $this->cycle->toString('full');
+                $this->cycle->dates->map(function($date) use(&$strings){
+                    $strings[] = $date->getFullname('include-room');
+                });
             }
         } elseif ($this->course_id) {
             $course = new Seminar($this->course_id);
-
             if ($course) {
                 $strings[] = $course->getDatesExport(
                     [
                         'short'     => true,
                         'shrink'    => true,
-                        'show_room' => false
+                        'show_room' => true
                     ]
                 );
             }
         } elseif ($this->begin && $this->end) {
             $begin_date = date('Ymd', $this->begin);
             $end_date   = date('Ymd', $this->end);
+            if($this->resource) {
+                $room_link = sprintf('<a href="%s" target="_blank">%s</a>',
+                    $this->resource->getActionURL('booking_plan'),
+                    htmlReady($this->resource->name)
+                );
+            }
             if ($begin_date == $end_date) {
                 $strings[] = strftime('%a., %x, %R', $this->begin) . ' - '
-                           . strftime('%R', $this->end);
+                           . strftime('%R', $this->end) . ' ' . $room_link;
             } else {
                 //Begin and end are on differnt dates
                 $strings[] = strftime('%a., %x, %R', $this->begin) . ' - '
-                    . strftime('%a., %x, %R', $this->end);
+                    . strftime('%a., %x, %R', $this->end) . ' ' . $room_link;
             }
         }
 

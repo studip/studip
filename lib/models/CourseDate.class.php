@@ -254,26 +254,36 @@ class CourseDate extends SimpleORMap implements PrivacyObject
     /**
      * Returns the full qualified name of this date.
      *
-     * @param String $format Optional format type (only 'default' and
+     * @param String $format Optional format type (only 'default', 'include-room' and
      *                       'verbose' are supported by now)
      * @return String containing the full name of this date.
      */
     public function getFullname($format = 'default')
     {
-        if (!$this->date || !in_array($format, ['default', 'verbose'])) {
+        if (!$this->date || !in_array($format, ['default', 'verbose', 'include-room'])) {
             return '';
         }
 
-        $latter_template = $format === 'verbose'
-                         ? _('%R Uhr')
-                         : '%R';
+        $latter_template = $format === 'verbose' ? _('%R Uhr') : '%R';
 
         if (($this->end_time - $this->date) / 60 / 60 > 23) {
-            return strftime('%a., %x (' . _('ganztägig') . ')' , $this->date);
+            $string = strftime('%a., %x (' . _('ganztägig') . ')' , $this->date);
+        } else {
+            $string =  strftime('%a., %x, %R', $this->date) . ' - '
+                . strftime($latter_template, $this->end_time);
         }
 
-        return strftime('%a., %x, %R', $this->date) . ' - '
-             . strftime($latter_template, $this->end_time);
+        if($format === 'include-room') {
+            $room = $this->getRoom();
+            if($room) {
+                $string = sprintf('%s <a href="%s" target="_blank">%s</a>',
+                    $string,
+                    $room->getActionURL('booking_plan'),
+                    htmlReady($room->name)
+                );
+            }
+        }
+        return $string;
     }
 
     /**
