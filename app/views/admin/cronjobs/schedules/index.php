@@ -63,31 +63,31 @@
 <form class="cronjobs" action="<?= $controller->bulk($pagination->getCurrentPage()) ?>" method="post">
     <?= CSRFProtection::tokenTag() ?>
 
-<table class="default cronjobs">
+<table class="default cronjobs sortable-table" data-sortlist="[[1, 0]]">
     <colgroup>
-        <col width="20px">
+        <col style="width: 20px">
         <col>
-        <col width="40px">
-        <col width="100px">
-        <col width="30px">
-        <col width="30px">
-        <col width="30px">
-        <col width="30px">
-        <col width="30px">
-        <col width="90px">
+        <col style="width: 40px">
+        <col style="width: 100px">
+        <col style="width: 30px">
+        <col style="width: 30px">
+        <col style="width: 30px">
+        <col style="width: 30px">
+        <col style="width: 30px">
+        <col style="width: 90px">
     </colgroup>
     <thead>
         <tr>
-            <th>
+            <th data-sort="false">
                 <input type="checkbox" name="all" value="1"
                        data-proxyfor=":checkbox[name='ids[]']"
                        data-activates=".cronjobs select[name=action]">
             </th>
-            <th><?= _('Cronjob') ?></th>
-            <th><?= _('Aktiv') ?></th>
-            <th><?= _('Typ') ?></th>
-            <th colspan="5"><?= _('Ausführung') ?></th>
-            <th><?= _('Optionen') ?></th>
+            <th data-sort="text"><?= _('Cronjob') ?></th>
+            <th data-sort="htmldata"><?= _('Aktiv') ?></th>
+            <th data-sort="text"><?= _('Typ') ?></th>
+            <th colspan="5" data-sort="false"><?= _('Ausführung') ?></th>
+            <th data-sort="false"><?= _('Optionen') ?></th>
         </tr>
     </thead>
     <tbody>
@@ -102,7 +102,7 @@
                 <input type="checkbox" name="ids[]" value="<?= htmlReady($schedule->id) ?>">
             </td>
             <td><?= htmlReady($schedule->title ?: $schedule->task->name) ?></td>
-            <td style="text-align: center;">
+            <td style="text-align: center;" data-sort-value="'<?= (int) ($schedule->active && $schedule->task->active) ?>'">
             <? if (!$schedule->task->active): ?>
                 <?= Icon::create('checkbox-unchecked', Icon::ROLE_INACTIVE)->asImg(['title' => _('Cronjob kann nicht aktiviert werden, da die zugehörige '.'Aufgabe deaktiviert ist.')]) ?>
             <? elseif ($schedule->active): ?>

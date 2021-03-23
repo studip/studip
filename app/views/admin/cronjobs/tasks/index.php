@@ -3,27 +3,27 @@
 <form action="<?= $controller->bulk($pagination->getCurrentPage()) ?>" method="post" class="default">
     <?= CSRFProtection::tokenTag() ?>
 
-    <table class="default cronjobs">
+    <table class="default cronjobs sortable-table" data-sortlist="[[1,0]]">
         <colgroup>
-            <col width="20px">
-            <col width="200px">
+            <col style="width: 20px">
+            <col style="width: 200px">
             <col>
-            <col width="100px">
-            <col width="40px">
-            <col width="70px">
+            <col style="width: 100px">
+            <col style="width: 40px">
+            <col style="width: 70px">
         </colgroup>
         <thead>
             <tr>
-                <th>
+                <th data-sort="false">
                     <input type="checkbox" name="all" value="1"
                            data-proxyfor=":checkbox[name='ids[]']"
                            data-activates=".cronjobs select[name=action]">
                 </th>
-                <th><?= _('Aufgabe') ?></th>
-                <th><?= _('Beschreibung') ?></th>
-                <th><?= _('Herkunft') ?></th>
-                <th><?= _('Aktiv') ?></th>
-                <th><?= _('Optionen') ?></th>
+                <th data-sort="text"><?= _('Aufgabe') ?></th>
+                <th data-sort="text"><?= _('Beschreibung') ?></th>
+                <th data-sort="text"><?= _('Herkunft') ?></th>
+                <th data-sort="htmldata"><?= _('Aktiv') ?></th>
+                <th data-sort="false"><?= _('Optionen') ?></th>
             </tr>
         </thead>
         <tbody>
@@ -40,7 +40,7 @@
                 <td><?= htmlReady($task->name) ?></td>
                 <td><?= htmlReady($task->description) ?></td>
                 <td><?= $task->isCore() ? _('Kern') : _('Plugin') ?></td>
-                <td style="text-align: center;">
+                <td style="text-align: center;" data-sort-value="'<?= (int) $task->active ?>'">
                 <? if ($task->active): ?>
                     <a href="<?= $controller->deactivate($task, $pagination->getCurrentPage()) ?>" data-behaviour="ajax-toggle">
                         <?= Icon::create('checkbox-checked')->asImg(['title' => _('Aufgabe deaktivieren')]) ?>
