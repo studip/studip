@@ -61,8 +61,8 @@
         <legend><?= _('Aufgabe') ?></legend>
         <table class="default cron-task">
             <colgroup>
-                <col width="300px">
-                <col width="150px">
+                <col style="width: 300px">
+                <col style="width: 150px">
                 <col>
             </colgroup>
             <thead>
@@ -123,11 +123,11 @@
         <section>
             <table class="default">
                 <colgroup>
-                    <col width="20%">
-                    <col width="20%">
-                    <col width="20%">
-                    <col width="20%">
-                    <col width="20%">
+                    <col style="width: 20%">
+                    <col style="width: 20%">
+                    <col style="width: 20%">
+                    <col style="width: 20%">
+                    <col style="width: 20%">
                 </colgroup>
                 <thead>
                     <tr>
