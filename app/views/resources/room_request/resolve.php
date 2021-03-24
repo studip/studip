@@ -204,42 +204,24 @@
             </article>
             <article class="studip assign-dates">
                 <header><h1><?= _('Termine zuordnen') ?></h1></header>
-                <table id="resolve-dates-table" class="default">
-                    <thead>
-                    <tr>
-                        <th class="nowrap"><?= _('Raum') ?></th>
-                        <? if (count($request_time_intervals) > 1) : ?>
-                            <th class="nowrap"><?= _('Alle Termine') ?></th>
-                        <? endif ?>
-                        <? foreach ($request_time_intervals as $metadate_id => $data): ?>
-                            <? if ($data['metadate'] instanceof SeminarCycleDate) : ?>
-                                <?php
-                                $date_string1 = getWeekday($data['metadate']->weekday);
-                                $date_string2 = sprintf(
-                                    '%02s:%02s - %02s:%02s',
-                                    $data['metadate']->start_hour,
-                                    $data['metadate']->start_minute,
-                                    $data['metadate']->end_hour,
-                                    $data['metadate']->end_minute
-                                );
-                                ?>
-                                <th class="nowrap">
-                                    <?= htmlReady($date_string1) ?>
-                                    <br>
-                                    <?= htmlReady($date_string2) ?>
-                                </th>
-                            <? else : ?>
-                                <? foreach ($data['intervals'] as $time_interval) : ?>
-                                    <?
-                                    $date_string1 = sprintf(
-                                        '%1$s., %2$s',
-                                        getWeekday(date('w', $time_interval['begin'])),
-                                        date('d.m', $time_interval['begin'])
-                                    );
+                <div>
+                    <table id="resolve-dates-table" class="default">
+                        <thead>
+                        <tr>
+                            <th class="nowrap"><?= _('Raum') ?></th>
+                            <? if (count($request_time_intervals) > 1) : ?>
+                                <th class="nowrap"><?= _('Alle Termine') ?></th>
+                            <? endif ?>
+                            <? foreach ($request_time_intervals as $metadate_id => $data): ?>
+                                <? if ($data['metadate'] instanceof SeminarCycleDate) : ?>
+                                    <?php
+                                    $date_string1 = getWeekday($data['metadate']->weekday);
                                     $date_string2 = sprintf(
-                                        '%1$s - %2$s',
-                                        date('H:i', $time_interval['begin']),
-                                        date('H:i', $time_interval['end'])
+                                        '%02s:%02s - %02s:%02s',
+                                        $data['metadate']->start_hour,
+                                        $data['metadate']->start_minute,
+                                        $data['metadate']->end_hour,
+                                        $data['metadate']->end_minute
                                     );
                                     ?>
                                     <th class="nowrap">
@@ -247,82 +229,102 @@
                                         <br>
                                         <?= htmlReady($date_string2) ?>
                                     </th>
-                                <? endforeach ?>
-                            <? endif ?>
-                        <? endforeach ?>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr class="nohover">
-                        <td><?= _('Keine Auswahl') ?></td>
-                        <? if (count($request_time_intervals) > 1) : ?>
-                            <td>
-                                <input type="checkbox" data-proxyfor="input.radio-null"
-                                       name="all_in_room" value="">
-                            </td>
-                        <? endif ?>
-                        <? foreach ($request_time_intervals as $metadate_id => $data): ?>
-                            <? if (($data['metadate'] instanceof SeminarCycleDate)) : ?>
-                                <?
-                                $range_index = 'SeminarCycleDate' . '_' . $metadate_id;
-                                $room_radio_name = 'selected_rooms[' . $range_index . ']';
-                                ?>
+                                <? else : ?>
+                                    <? foreach ($data['intervals'] as $time_interval) : ?>
+                                        <?
+                                        $date_string1 = sprintf(
+                                            '%1$s., %2$s',
+                                            getWeekday(date('w', $time_interval['begin'])),
+                                            date('d.m', $time_interval['begin'])
+                                        );
+                                        $date_string2 = sprintf(
+                                            '%1$s - %2$s',
+                                            date('H:i', $time_interval['begin']),
+                                            date('H:i', $time_interval['end'])
+                                        );
+                                        ?>
+                                        <th class="nowrap">
+                                            <?= htmlReady($date_string1) ?>
+                                            <br>
+                                            <?= htmlReady($date_string2) ?>
+                                        </th>
+                                    <? endforeach ?>
+                                <? endif ?>
+                            <? endforeach ?>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="nohover">
+                            <td><?= _('Keine Auswahl') ?></td>
+                            <? if (count($request_time_intervals) > 1) : ?>
                                 <td>
-                                    <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
-                                           class="text-bottom radio-null"
-                                           value=""
-                                        <?= $selected_dates[$range_index] == null
-                                            ? 'checked="checked"'
-                                            : '' ?>>
+                                    <input type="checkbox" data-proxyfor="input.radio-null"
+                                           name="all_in_room" value="">
                                 </td>
-                            <? else : ?>
-                                <? $i = 0 ?>
-                                <? foreach ($data['intervals'] as $interval) : ?>
+                            <? endif ?>
+                            <? foreach ($request_time_intervals as $metadate_id => $data): ?>
+                                <? if (($data['metadate'] instanceof SeminarCycleDate)) : ?>
                                     <?
-                                    $range_index = $interval['range'] . '_' . $interval['range_id'];
+                                    $range_index = 'SeminarCycleDate' . '_' . $metadate_id;
                                     $room_radio_name = 'selected_rooms[' . $range_index . ']';
                                     ?>
                                     <td>
                                         <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
-                                               class="radio-null text-bottom"
+                                               class="text-bottom radio-null"
                                                value=""
                                             <?= $selected_dates[$range_index] == null
                                                 ? 'checked="checked"'
                                                 : '' ?>>
                                     </td>
-                                    <? $i++ ?>
-                                <? endforeach ?>
-                            <? endif ?>
-                        <? endforeach ?>
-                    </tr>
-                    <? if ($request_resource instanceof Room): ?>
-                        <?= $this->render_partial(
-                            'resources/room_request/resolve_room_tr.php',
-                            [
-                                'room' => $request_resource,
-                                'time_intervals' => $request_time_intervals,
-                                'availability' => $room_availability[$request_resource->id],
-                                'underload' => $room_underload[$room_request->resource_id],
-                                'selected_dates' => $selected_rooms
-                            ]
-                        ) ?>
-                    <? endif ?>
-                    <? if ($alternative_rooms): ?>
-                        <? foreach ($alternative_rooms as $room): ?>
+                                <? else : ?>
+                                    <? $i = 0 ?>
+                                    <? foreach ($data['intervals'] as $interval) : ?>
+                                        <?
+                                        $range_index = $interval['range'] . '_' . $interval['range_id'];
+                                        $room_radio_name = 'selected_rooms[' . $range_index . ']';
+                                        ?>
+                                        <td>
+                                            <input type="radio" name="<?= htmlReady($room_radio_name) ?>"
+                                                   class="radio-null text-bottom"
+                                                   value=""
+                                                <?= $selected_dates[$range_index] == null
+                                                    ? 'checked="checked"'
+                                                    : '' ?>>
+                                        </td>
+                                        <? $i++ ?>
+                                    <? endforeach ?>
+                                <? endif ?>
+                            <? endforeach ?>
+                        </tr>
+                        <? if ($request_resource instanceof Room): ?>
                             <?= $this->render_partial(
                                 'resources/room_request/resolve_room_tr.php',
                                 [
-                                    'room' => $room,
+                                    'room' => $request_resource,
                                     'time_intervals' => $request_time_intervals,
-                                    'availability' => $this->room_availability[$room->id],
-                                    'underload' => $room_underload[$room->id],
+                                    'availability' => $room_availability[$request_resource->id],
+                                    'underload' => $room_underload[$room_request->resource_id],
                                     'selected_dates' => $selected_rooms
                                 ]
                             ) ?>
-                        <? endforeach ?>
-                    <? endif ?>
-                    </tbody>
-                </table>
+                        <? endif ?>
+                        <? if ($alternative_rooms): ?>
+                            <? foreach ($alternative_rooms as $room): ?>
+                                <?= $this->render_partial(
+                                    'resources/room_request/resolve_room_tr.php',
+                                    [
+                                        'room' => $room,
+                                        'time_intervals' => $request_time_intervals,
+                                        'availability' => $this->room_availability[$room->id],
+                                        'underload' => $room_underload[$room->id],
+                                        'selected_dates' => $selected_rooms
+                                    ]
+                                ) ?>
+                            <? endforeach ?>
+                        <? endif ?>
+                        </tbody>
+                    </table>
+                </div>
             </article>
         <? endif ?>
     <? endif ?>
