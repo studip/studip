@@ -88,7 +88,7 @@
 
         <?
         foreach (PluginManager::getInstance()->getPlugins("QuestionnaireAssignmentPlugin") as $plugin) {
-            $template = $plugin->getQuestionnaireAssignmentEditTemplate($assignment);
+            $template = $plugin->getQuestionnaireAssignmentEditTemplate($this->questionnaire);
             if ($template) {
                 echo $template->render();
             }
