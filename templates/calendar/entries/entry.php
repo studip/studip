@@ -1,7 +1,5 @@
 <?
 
-// $color_background = Color::brighten($entry['color'], 40);
-
 $element_id = md5(uniqid());
 ?>
 

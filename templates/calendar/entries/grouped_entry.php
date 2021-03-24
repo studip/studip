@@ -1,7 +1,4 @@
 <?php
-# Lifter010: TODO
-$color_background = Color::brighten($entry[0]['color'], 20);
-
 $title   = [];
 $heading = [];
 $ids     = [];
@@ -28,10 +25,8 @@ $element_id = md5(uniqid());
         <?= $entry[0]['onClick'] ? 'onClick="STUDIP.Calendar.clickEngine(' . $entry[0]['onClick'] . ', this, event); return false;"' : '' ?>>
 
     <!-- for safari5 we need to set the height for the dl as well -->
-    <dl <?= $calendar_view->getReadOnly() ? '' : 'class="hover"' ?> style="height: <?= $height ?>px;
-        border: 1px solid <?= htmlReady($entry[0]['color']) ?>;
-        background-color: <?= htmlReady($color_background) ?>">
-        <dt style="background-color: <?= htmlReady($entry[0]['color']) ?>">
+    <dl class="schedule-category<?= $entry[0]['color']?> <?= $calendar_view->getReadOnly() ? '' : 'hover' ?>" style="height: <?= $height ?>px;">        <dt>
+        <dt>
             <?= $entry[0]['start_formatted'] ?> - <?= $entry[0]['end_formatted'] ?>
             <?= (count($heading) ? ', <b>' . htmlReady(implode(', ', $heading)) . '</b>' : '') ?>
         </dt>
