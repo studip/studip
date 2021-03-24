@@ -447,7 +447,7 @@ class PersonalNotifications extends SimpleORMap
      * @param User|string $user_id_or_object User object or id of user
      * @return PersonalNotificationsUser|false
      */
-    public function link($user_id_or_object): PersonalNotificationsUser
+    public function link($user_id_or_object)
     {
         $user_id = $user_id_or_object instanceof User ? $user_id_or_object->id : $user_id_or_object;
 
