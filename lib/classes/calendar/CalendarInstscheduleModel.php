@@ -111,7 +111,7 @@ class CalendarInstscheduleModel
             LEFT JOIN seminar_inst ON (seminare.Seminar_id = seminar_inst.seminar_id)
             LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id)
             WHERE seminar_inst.institut_id IN (:institute)
-                AND (start_time <= :begin AND (semester_courses IS NULL OR semester_courses.semester_id = :semester_id))
+                AND (start_time <= :begin AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = :semester_id))
                      "
                     . (!$visibility_perms ? " AND visible='1'" : ""));
 
