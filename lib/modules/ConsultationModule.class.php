@@ -61,7 +61,6 @@ class ConsultationModule extends StudIPPlugin implements StandardPlugin, SystemP
         if ($GLOBALS['user']->id !== 'nobody') {
             return ['consultation' => new ConsultationNavigation(RangeFactory::find($course_id))];
         }
-
     }
 
     /**

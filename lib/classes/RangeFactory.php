@@ -45,7 +45,7 @@ final class RangeFactory
             return new Course($id);
         }
 
-        if ($type === 'institute') {
+        if ($type === 'institute' || $type === 'fak') {
             return new Institute($id);
         }
 
