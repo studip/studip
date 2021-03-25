@@ -393,7 +393,7 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
         }
 
         if ($type === 'array') {
-            return json_decode($value, true);
+            return (array) json_decode($value, true);
         }
 
         if ($type === 'i18n') {
