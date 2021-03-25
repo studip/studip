@@ -52,7 +52,10 @@ class SRULibraryResultParser implements LibraryResultParser
                         continue;
                     }
                     foreach ($collection->getElementsByTagName('record') as $record) {
-                        $result_set[] = $parser->readResultNode($record);
+                        $document = $parser->readResultNode($record);
+                        if ($document->getTitle()) {
+                            $result_set[] = $document;
+                        }
                     }
                 }
             }
@@ -82,7 +85,12 @@ class SRULibraryResultParser implements LibraryResultParser
                 throw new Exception('Invalid data!');
             }
             $parser = new MarcxmlLibraryResultParser();
-            return $parser->readResultNode($record_node);
+            $document = $parser->readResultNode($record);
+            if ($document->getTitle()) {
+                return $document;
+            } else {
+                return null;
+            }
         }
     }
 }
