@@ -657,19 +657,16 @@ class RoomManager
                             //Minimum and maximum are specified:
                             if (($room_prop_state >= $state[0]) && $room_prop_state <= $state[1]) {
                                 $room_property_match++;
-                                break;
                             }
                         } elseif ($state[0]) {
                             //Only a minimum is given:
                             if ($room_prop_state >= $state[0]) {
                                 $room_property_match++;
-                                break;
                             }
                         } elseif ($state[1]) {
                             //Only a maximum is given:
                             if ($room_prop_state <= $state[1]) {
                                 $room_property_match++;
-                                break;
                             }
                         }
                     } elseif ($state) {
