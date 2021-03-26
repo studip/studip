@@ -1,6 +1,16 @@
 import Scroll from './scroll.js';
 
-const Sidebar = {};
+const Sidebar = {
+    stickyEnabled: true,
+    enableSticky() {
+        this.stickyEnabled = true;
+        this.setSticky();
+    },
+    disableSticky() {
+        this.stickyEnabled = false;
+        this.setSticky(false);
+    }
+};
 
 Sidebar.open = function() {
     $('#responsive-toggle').prop('checked', false);
@@ -11,6 +21,10 @@ Sidebar.open = function() {
 // This function inits the sticky sidebar by using the StickyKit lib
 // <http://leafo.net/sticky-kit/>
 Sidebar.setSticky = function(is_sticky) {
+    if (!this.stickyEnabled) {
+        return;
+    }
+
     if (is_sticky === undefined || is_sticky) {
         $('#layout-sidebar .sidebar')
             .stick_in_parent({

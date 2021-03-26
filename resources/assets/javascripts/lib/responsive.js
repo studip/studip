@@ -129,11 +129,12 @@ const Responsive = {
 
     setResponsiveDisplay (state = true) {
         $('html').toggleClass('responsive-display', state);
-        Sidebar.setSticky(!state);
 
         if (state) {
+            Sidebar.disableSticky();
             HeaderMagic.disable();
         } else {
+            Sidebar.ensableSticky();
             HeaderMagic.enable();
         }
     },
