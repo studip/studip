@@ -603,6 +603,7 @@ class Course_TimesroomsController extends AuthenticatedController
             case 'undelete':
                 PageLayout::setTitle(_('Termine stattfinden lassen'));
                 $this->unDeleteStack($cycle_id);
+                break;
             case 'request':
                 PageLayout::setTitle(
                     _('Anfrage auf ausgewählte Termine stellen')
