@@ -28,6 +28,11 @@ class ConnectedIlias
     const OPERATION_WRITE= 'write';
     const OPERATION_COPY= 'copy';
     const OPERATION_DELETE= 'delete';
+    const OPERATION_EDIT_LEARNING_PROGRESS = 'edit_learning_progress';
+    const OPERATION_VIEW_TEST_STATISTICS = 'tst_statistics';
+    const OPERATION_READ_LEARNING_PROGRESS = 'read_learning_progress';
+    const OPERATION_EDIT_SUBMISSION_GRADES = 'edit_submissions_grades';
+    const OPERATION_VIEW_TEST_RESULTS = 'tst_results';
 
     public $index;
     public $ilias_config;
@@ -796,6 +801,25 @@ class ConnectedIlias
         $admin_operations = $this->getOperationArray([self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_WRITE, self::OPERATION_COPY, self::OPERATION_DELETE]);
         $admin_operations_no_delete = $this->getOperationArray([self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_WRITE, self::OPERATION_COPY]);
         $admin_operations_readonly = $this->getOperationArray([self::OPERATION_VISIBLE, self::OPERATION_READ, self::OPERATION_DELETE]);
+        switch ($module_type) {
+            case 'tst':
+                $admin_operations = array_merge($admin_operations, $this->getOperationArray([self::OPERATION_EDIT_LEARNING_PROGRESS, self::OPERATION_VIEW_TEST_STATISTICS, self::OPERATION_READ_LEARNING_PROGRESS, self::OPERATION_VIEW_TEST_RESULTS]));
+                $admin_operations_no_delete = array_merge($admin_operations_no_delete, $this->getOperationArray([self::OPERATION_EDIT_LEARNING_PROGRESS, self::OPERATION_VIEW_TEST_STATISTICS, self::OPERATION_READ_LEARNING_PROGRESS, self::OPERATION_VIEW_TEST_RESULTS]));
+                $admin_operations_readonly = array_merge($admin_operations_readonly, $this->getOperationArray([self::OPERATION_VIEW_TEST_STATISTICS, self::OPERATION_READ_LEARNING_PROGRESS, self::OPERATION_VIEW_TEST_RESULTS]));
+                break;
+            case 'lm':
+            case 'sahs':
+            case 'htlm':
+                $admin_operations = array_merge($admin_operations, $this->getOperationArray([self::OPERATION_EDIT_LEARNING_PROGRESS, self::OPERATION_READ_LEARNING_PROGRESS]));
+                $admin_operations_no_delete = array_merge($admin_operations_no_delete, $this->getOperationArray([self::OPERATION_EDIT_LEARNING_PROGRESS, self::OPERATION_READ_LEARNING_PROGRESS]));
+                $admin_operations_readonly = array_merge($admin_operations_readonly, $this->getOperationArray([self::OPERATION_READ_LEARNING_PROGRESS]));
+                break;
+            case 'exc':
+                $admin_operations = array_merge($admin_operations, $this->getOperationArray([self::OPERATION_EDIT_LEARNING_PROGRESS, self::OPERATION_READ_LEARNING_PROGRESS, self::OPERATION_EDIT_SUBMISSION_GRADES]));
+                $admin_operations_no_delete = array_merge($admin_operations_no_delete, $this->getOperationArray([self::OPERATION_EDIT_LEARNING_PROGRESS, self::OPERATION_READ_LEARNING_PROGRESS, self::OPERATION_EDIT_SUBMISSION_GRADES]));
+                $admin_operations_readonly = array_merge($admin_operations_readonly, $this->getOperationArray([self::OPERATION_READ_LEARNING_PROGRESS]));
+                break;
+        }
         foreach ($local_roles as $key => $role_data) {
             // check only if local role is il_crs_member, -tutor or -admin
             if (mb_strpos($role_data["title"], "il_crs_") === 0) {
@@ -1141,7 +1165,9 @@ class ConnectedIlias
         $ops_array = [];
         if (is_array($operation)) {
             foreach ($operation as $key => $operation_name) {
-                $ops_array[] = $this->operations[$operation_name];
+                if (array_key_exists($operation_name, $this->operations)) {
+                    $ops_array[] = $this->operations[$operation_name];
+                }
             }
         }
         return $ops_array;
