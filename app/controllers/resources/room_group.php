@@ -170,7 +170,28 @@ class Resources_RoomGroupController extends AuthenticatedController
         $this->rooms = Room::findMany($this->room_ids);
 
         $this->show_form = true;
-        if (Request::submitted('save')) {
+        $this->clipboard = $clipboard;
+        if (Request::submitted('bulk_delete')) {
+            CSRFProtection::verifyUnsafeRequest();
+            $selected_user_ids = Request::getArray('selected_permissions');
+
+            $count = ResourcePermission::deleteBySql(
+                'resource_id IN ( :room_ids ) AND user_id IN ( :user_ids )',
+                [
+                    'room_ids' => $this->room_ids,
+                    'user_ids' => $selected_user_ids
+                ]
+            );
+            if ($count > 0) {
+                PageLayout::postSuccess(
+                    _('Die gemeinsamen Berechtigungen wurden gelöscht!')
+                );
+            } else {
+                PageLayout::postWarning(
+                    _('Die gemeinsamen Berechtigungen konnten nicht gelöscht werden!')
+                );
+            }
+        } elseif (Request::submitted('save')) {
             CSRFProtection::verifyUnsafeRequest();
 
             $this->loadRoomsAndPermissions($this->room_ids);
