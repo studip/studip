@@ -112,7 +112,7 @@ class ExportPDF extends TCPDF implements ExportDocument {
 
             // Fetch headers from url, handle possible redirects
             do {
-                $headers = get_headers($url, true);
+                $headers = get_headers($url, true, get_default_http_stream_context($url));
                 list(, $status) = explode(' ', $headers[0]);
 
                 $url = $headers['Location'] ?: $headers['location'] ?: $url;
@@ -336,7 +336,7 @@ class ExportPDF extends TCPDF implements ExportDocument {
         }
 
         $src = 'src=""';
-        $file_content = @file_get_contents($convurl);
+        $file_content = @file_get_contents($convurl, false, get_default_http_stream_context($convurl));
         if ($file_content) {
             $img_size = @getimagesizefromstring($file_content);
             if (is_array($img_size) && $img_size[0] > 0) {
