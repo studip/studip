@@ -22,7 +22,7 @@ if ($folder_id) {
                 <a class="important-item" data-dialog="size=medium-43"
                    href="<?= $controller->link_for('file/add_from_library/' . $folder_id)?>">
                     <div class="icon">
-                        <?= Icon::create('literature', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                        <?= Icon::create('literature')->asImg(50) ?>
                         <div><?= _('Bibliothek') ?></div>
                     </div>
                     <div class="description">
@@ -34,25 +34,25 @@ if ($folder_id) {
         <? endif ?>
         <div>
             <a href="#" onclick="jQuery('.file_selector input[type=file]').first().click(); return false;">
-                <?= Icon::create('computer', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                <?= Icon::create('computer')->asImg(50) ?>
                 <?= _('Mein Computer') ?>
             </a>
             <a href="<?= $controller->link_for('file/add_url/' . $folder_id, array_merge($options, ['from_plugin' => ""])) ?>" data-dialog>
-                <?= Icon::create('globe', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                <?= Icon::create('globe')->asImg(50) ?>
                 <?= _('Webadresse') ?>
             </a>
             <a href="<?= $controller->link_for('file/choose_file/' . Folder::findTopFolder($GLOBALS['user']->id)->getId(), array_merge($options, ['from_plugin' => ""])) ?>" data-dialog>
-                <?= Icon::create('files', Icon::ROLE_CLICKABLE)->asImg(50) ?>
-                <?= _('Meine Dateien') ?>
+                <?= Icon::create('files')->asImg(50) ?>
+                <?= _('Persönlicher Dateibereich') ?>
             </a>
             <a href="<?= $controller->link_for('file/choose_file_from_course/' . htmlReady($folder_id), array_merge($options, ['from_plugin' => ""])) ?>" data-dialog>
-                <?= Icon::create('seminar', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                <?= Icon::create('seminar')->asImg(50) ?>
                 <?= _('Meine Veranstaltungen') ?>
             </a>
             <? if (($range instanceof Course) && $GLOBALS['perm']->have_perm('dozent') && $show_library_functions) : ?>
                 <a href="<?= $controller->link_for('library_file/select_type/' . htmlReady($folder_id)) ?>"
                    data-dialog="size=auto">
-                    <?= Icon::create('literature', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                    <?= Icon::create('literature')->asImg(50) ?>
                     <?= _('Literatur') ?>
                 </a>
             <? endif ?>

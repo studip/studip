@@ -272,7 +272,7 @@ class FilesController extends AuthenticatedController
         )->setActive($current_view == 'all_files');
 
         $views->addLink(
-            _('Meine Dateien'),
+            _('Persönlicher Dateibereich'),
             $this->url_for('files/overview', ['view' => 'my_uploaded_files']),
             null,
             [],
@@ -506,7 +506,7 @@ class FilesController extends AuthenticatedController
             }
         } elseif ($this->current_view == 'my_uploaded_files') {
             $this->addFiltersToOverviewSidebar(['time_range', 'course']);
-            $this->table_title = _('Meine Dateien');
+            $this->table_title = _('Persönlicher Dateibereich');
             $file_refs = FileRef::findUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, $this->course_id);
             $this->files_c = FileRef::countUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, $this->course_id);
             $this->files = [];

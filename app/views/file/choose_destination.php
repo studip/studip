@@ -36,7 +36,7 @@ $options = array_filter([
             <!-- neu -->
             <button formaction="<?= $controller->link_for('/choose_folder/' . Folder::findTopFolder($GLOBALS['user']->id)->getId()) ?>">
                 <?= Icon::create('files')->asImg(50) ?>
-                <?= _('Meine Dateien') ?>
+                <?= _('Persönlicher Dateibereich') ?>
             </button>
 
             <!-- neu -->

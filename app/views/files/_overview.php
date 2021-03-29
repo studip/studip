@@ -45,7 +45,7 @@
                      :files="files"
                      :topfolder="topfolder"
                      enable_table_filter="false"
-                     table_title="<?= _('Meine Dateien') ?>"
+                     table_title="<?= _('Persönlichr Dateibereich') ?>"
                      :show_bulk_actions="false"
                      :tfoot_link="<?= htmlReady(json_encode($tfoot_link)) ?>"
         ></files-table>
