@@ -888,13 +888,12 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         }
 
         $db = DBManager::get();
-        $sql = 'SELECT seminar_id FROM `seminar_user` ';
-        $sql = 'INNER JOIN `seminar_user` USING (`Seminar_id`) ';
-        $sql .= 'LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id) ';
-        $sql .= 'WHERE `seminar_user`.`user_id` = :user_id';
+        $sql = "SELECT `seminar_id`
+                FROM `seminar_user`
+                WHERE `seminar_user`.`user_id` = :user_id";
         $sql_params = ['user_id' => $user_id];
         if (is_array($perms) && count($perms)) {
-            $sql .= ' AND `seminar_user`.`status` IN ( :perms )';
+            $sql .= ' AND `seminar_user`.`status` IN (:perms)';
             $sql_params['perms'] = $perms;
         }
         $seminar_ids = $db->fetchFirst($sql, $sql_params);
@@ -902,6 +901,11 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
             $sql = 'SELECT range_id FROM `deputies` WHERE `deputies`.`user_id` = :user_id';
             $seminar_ids = array_merge($seminar_ids, $db->fetchFirst($sql, $sql_params));
         }
-        return Course::findMany($seminar_ids, 'ORDER BY IF(semester_courses.semester_id IS NULL, 1, 0) DESC, start_time DESC, Name ASC');
+        return Course::findBySQL(
+            "LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id)
+             WHERE Seminar_id IN (?)
+             ORDER BY IF(semester_courses.semester_id IS NULL, 1, 0) DESC, start_time DESC, Name ASC",
+            [$seminar_ids]
+        );
     }
 }
