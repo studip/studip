@@ -113,7 +113,7 @@ class ConsultationModule extends StudIPPlugin implements StandardPlugin, SystemP
         $storage->addTabularData(
             _('Terminblöcke'),
             'consultation_blocks',
-            ConsultationBooking::findAndMapBySQL(
+            ConsultationBlock::findAndMapBySQL(
                 function ($block) {
                     return $block->toRawArray();
                 },
