@@ -529,7 +529,10 @@ Dialog.calculateDimensions = function (instance, content, options) {
     }
 
     // Adjust size if neccessary
-    if (options.size && (options.size === 'auto' || options.size === 'fit')) {
+    if (!options.size) {
+        width  = instance.dimensions?.width ?? width;
+        height = instance.dimensions?.height ?? height;
+    } else if (options.size === 'auto' || options.size === 'fit') {
         // Render off screen
         helper = $('<div class="ui-dialog ui-widget ui-widget-content">');
         helper.addClass(Dialog.getClasses(options));
@@ -573,27 +576,27 @@ Dialog.calculateDimensions = function (instance, content, options) {
         }
         // Remove helper element
         helper.remove();
-    } else if (options.size && options.size === 'big') {
+    } else if (options.size === 'big') {
         width = $('body').width() * 0.9;
         height = $('body').height() * 0.8;
-    } else if (options.size && options.size === 'medium') {
+    } else if (options.size === 'medium') {
         width = $('body').width() * 0.6;
         height = $('body').height() * 0.5;
-    } else if (options.size && options.size === 'medium-43') {
+    } else if (options.size === 'medium-43') {
         //Medium size in 4:3 aspect ratio
         height = $('body').height() * 0.8;
         width = parseInt(height) * 1.33333333;
         if (width > $('body').width()) {
             width = $('body').width() * 0.9;
         }
-    } else if (options.size && options.size === 'small') {
+    } else if (options.size === 'small') {
         width = 300;
         height = 200;
-    } else if (options.size && options.size.match(/^\d+x\d+$/)) {
+    } else if (options.size.match(/^\d+x\d+$/)) {
         temp = options.size.split('x');
         width = temp[0];
         height = temp[1];
-    } else if (options.size && !options.size.match(/\D/)) {
+    } else if (!options.size.match(/\D/)) {
         width = height = options.size;
     }
 
