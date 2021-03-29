@@ -69,6 +69,7 @@ const Dialog = {
         if (!this.hasInstance(id)) {
             this.instances[id] = {
                 open: false,
+                fixedDimensions: false,
                 element: $('<div>'),
                 options: {},
                 previous: this.stack[0] || false
@@ -316,8 +317,8 @@ Dialog.fromURL = function(url, options) {
 };
 
 // Opens or updates the dialog
-Dialog.show = function(content, options) {
-    options = $.extend({}, Dialog.options, options);
+Dialog.show = function(content, options = {}) {
+    options = Object.assign({}, Dialog.options, options);
 
     options.wikilink = options.wikilink === undefined ? true : options.wikilink;
 
@@ -349,7 +350,7 @@ Dialog.show = function(content, options) {
         buttons: options.buttons || {},
         title: options.title,
         modal: true,
-        resizable: options.hasOwnProperty('resize') ? options.resize : true,
+        resizable: options.resize ?? true,
         create: function(event) {
             $(event.target)
                 .parent()
@@ -364,6 +365,9 @@ Dialog.show = function(content, options) {
                 .parent()
                 .css('position', 'fixed');
             $(event.target).dialog('option', 'position', position);
+
+            instance.fixedDimensions = true;
+            instance.dimensions = ui.size;
         },
         open: function() {
             PageLayout.title = dialog_options.title;
@@ -509,6 +513,10 @@ Dialog.calculateDimensions = function (instance, content, options) {
     var max_height = $(window).height() * 0.9;
     var helper;
     var temp;
+
+    if (instance.fixedDimensions) {
+        return instance.dimensions;
+    }
 
     if ($('html').is('.responsive-display')) {
         max_width  = $(window).width() - 6; // Subtract border
