@@ -177,7 +177,7 @@ class StudipAutoloader
         $file = self::lookupClass($class) ?: self::findFile($class);
 
         if ($file) {
-            self::$class_lookup[$class] = $file;
+            self::addClassLookup($class, $file);
 
             include $file;
 
@@ -247,8 +247,7 @@ class StudipAutoloader
         $class = mb_substr($class, mb_strlen($prefix));
 
         // Convert namespace into directory structure
-        $namespaced = str_replace('\\', DIRECTORY_SEPARATOR, $class);
-        $filename   = dirname($namespaced) . DIRECTORY_SEPARATOR . basename($namespaced);
+        $filename = str_replace('\\', DIRECTORY_SEPARATOR, $class);
 
         return $filename;
     }
