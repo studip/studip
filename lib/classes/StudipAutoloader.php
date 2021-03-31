@@ -90,7 +90,6 @@ class StudipAutoloader
         }
     }
 
-
     /**
      * Adds another path to the list of paths where to search for
      * classes.
@@ -110,7 +109,6 @@ class StudipAutoloader
 
         self::$autoload_paths[] = compact('path', 'prefix');
     }
-
 
     /**
      * Removes a path from the list of paths.
@@ -312,8 +310,8 @@ class StudipAutoloader
      */
     private static function sanitizePath($path)
     {
-        if ($path[0] === '/') {
-            return ltrim(str_replace($GLOBALS['STUDIP_BASE_PATH'], '', $path), '/');
+        if (mb_strpos($path, $GLOBALS['STUDIP_BASE_PATH']) === 0) {
+            return ltrim(str_replace($GLOBALS['STUDIP_BASE_PATH'], '', $path), DIRECTORY_SEPARATOR);
         }
         return $path;
     }
@@ -325,7 +323,11 @@ class StudipAutoloader
      */
     private static function expandPath($path)
     {
+        if ($path[0] === DIRECTORY_SEPARATOR) {
+            return $path;
+        }
+
         $base_path = self::$base_path ?? $GLOBALS['STUDIP_BASE_PATH'];
-        return "{$base_path}/{$path}";
+        return $base_path . DIRECTORY_SEPARATOR . $path;
     }
 }
