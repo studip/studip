@@ -382,7 +382,7 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
      * @param  string $field
      * @return mixed
      */
-    protected function convertFromDatabase($type, $value, $field)
+    public function convertFromDatabase($type, $value, $field)
     {
         if ($type === 'integer') {
             return (int) $value;
@@ -415,7 +415,7 @@ class Config implements ArrayAccess, Countable, IteratorAggregate
      * @param  string $field
      * @return mixed
      */
-    protected function convertForDatabase($type, $value, $field)
+    public function convertForDatabase($type, $value, $field)
     {
         if ($type === 'boolean') {
             return (bool) $value;
