@@ -988,7 +988,7 @@ class ConnectedIlias
             }
 
             // create course
-            $lang_array = explode('_',$DEFAULT_LANGUAGE);
+            $lang_array = explode('_', Config::get()->DEFAULT_LANGUAGE);
             $course_data['language'] = $lang_array[0];
             if ($this->ilias_config['course_semester'] === 'old' || $this->ilias_config['course_semester'] === 'old_bracket') {
                 $course_data['title'] = sprintf(_('Stud.IP-Veranstaltung "%s"'), $seminar->getName());

@@ -28,8 +28,6 @@ require_once 'lib/export/export_tmp_gc.inc.php';
 ob_start();
 page_open(["sess" => "Seminar_Session", "auth" => "Seminar_Auth", "perm" => "Seminar_Perm", "user" => "Seminar_User"]);
 
-$EVAL_AUSWERTUNG_GRAPH_FORMAT = Config::get()->EVAL_AUSWERTUNG_GRAPH_FORMAT ?: 'gif';
-
 include ('lib/seminar_open.php'); // initialise Stud.IP-Session
 
 $eval_id = Request::option('eval_id');

@@ -61,7 +61,7 @@ function startpage_redirect($page_code) {
 }
 
 global $i_page,
-       $DEFAULT_LANGUAGE, $SessionSeminar,
+       $SessionSeminar,
        $sess, $auth, $user, $perm, $_language_path;
 
 //get the name of the current page in $i_page
@@ -77,10 +77,12 @@ if ($_SESSION['SessionStart'] == 0) {
     $_SESSION['object_cache'] = [];
 
     // try to get accepted languages from browser
-    if (!isset($_SESSION['_language']))
+    if (!isset($_SESSION['_language'])) {
         $_SESSION['_language'] = get_accepted_languages();
-    if (!$_SESSION['_language'])
-        $_SESSION['_language'] = $DEFAULT_LANGUAGE; // else use system default
+    }
+    if (!$_SESSION['_language']) {
+        $_SESSION['_language'] = Config::get()->DEFAULT_LANGUAGE;
+    }
 }
 
 // user init starts here

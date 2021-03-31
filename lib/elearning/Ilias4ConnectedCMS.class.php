@@ -134,7 +134,7 @@ class Ilias4ConnectedCMS extends Ilias3ConnectedCMS
      */
     function createCourse($seminar_id)
     {
-        global $messages, $DEFAULT_LANGUAGE, $ELEARNING_INTERFACE_MODULES;
+        global $messages, $ELEARNING_INTERFACE_MODULES;
 
         $crs_id = ObjectConnections::getConnectionModuleId($seminar_id, "crs", $this->cms_type);
         $this->soap_client->setCachingStatus(false);
@@ -160,7 +160,7 @@ class Ilias4ConnectedCMS extends Ilias3ConnectedCMS
             }
 
             // Kurs anlegen
-            $lang_array = explode("_",$DEFAULT_LANGUAGE);
+            $lang_array = explode("_", Config::get()->DEFAULT_LANGUAGE);
             $course_data["language"] = $lang_array[0];
             $course_data["title"] = "Stud.IP-Kurs " . $seminar->getName();
             $course_data["description"] = "";

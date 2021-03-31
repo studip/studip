@@ -27,7 +27,7 @@ page_open([
 include 'lib/seminar_open.php';
 
 // this page must be accessible during visibility decision
-$USER_VISIBILITY_CHECK = false;
+Config::get()->USER_VISIBILITY_CHECK = false;
 
 PageLayout::setTitle(_('Erläuterungen zum Datenschutz'));
 
