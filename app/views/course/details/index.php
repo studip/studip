@@ -21,9 +21,14 @@
     </header>
     <table class="default">
         <colgroup>
-            <col width="40%">
+            <col style="width: 40%">
+            <col style="width: 60%">
         </colgroup>
         <tbody>
+            <tr>
+                <td><strong><?= _('Veranstaltungsname') ?></strong></td>
+                <td><?= htmlReady($course->getFullName()) ?></td>
+            </tr>
         <? if ($course->untertitel) : ?>
             <tr>
                 <td><strong><?= _('Untertitel') ?></strong></td>
