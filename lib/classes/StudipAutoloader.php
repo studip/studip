@@ -86,7 +86,7 @@ class StudipAutoloader
         } elseif (!is_dir($path)) {
             throw new Exception('Given base path is invalid');
         } else {
-            self::$base_path = rtrim($path, '/');
+            self::$base_path = rtrim($path, DIRECTORY_SEPARATOR);
         }
     }
 
