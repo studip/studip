@@ -402,7 +402,6 @@ class Admin_InstallController extends Trails_Controller
         session_destroy();
 
         header('Location: ' . dirname($_SERVER['SCRIPT_NAME']) . '/web_migrate.php');
-        page_close();
         die;
     }
 
@@ -419,7 +418,6 @@ class Admin_InstallController extends Trails_Controller
             && $this->valid
         ) {
             header('Location: ' . $this->url_for($this->next_step));
-            page_close();
             die;
         }
     }
