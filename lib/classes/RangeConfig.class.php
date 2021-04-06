@@ -100,10 +100,14 @@ class RangeConfig extends Config
                 $this->metadata[$field] = Config::get()->getMetadata($field);
             }
             try {
-                $query = "SELECT `field`, `value`
+                $query = "SELECT `config_values`.`field`, `config_values`.`value`
                           FROM `config_values`
+                          LEFT JOIN `config` USING (`field`)
                           WHERE `range_id` = :id
-                            AND `field` IN (:fields)";
+                            AND (
+                                `field` IN (:fields)
+                                OR `config`.`field` IS NULL
+                            )";
                 $statement = DBManager::get()->prepare($query);
                 $statement->bindValue(':id', $this->range_id);
                 $statement->bindValue(':fields', array_keys($this->data));
