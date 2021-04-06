@@ -369,10 +369,10 @@ class TourController extends AuthenticatedController
             $this->response-add_header('X-Action', 'complete');
         } else {
             $this->response->add_header('X-Action', 'question');
-            return (string)QuestionBox::create(
-                sprintf(_('Wollen Sie die Tour "%s" wirklich löschen?'), $this->tour->name),
+            return (string) QuestionBox::create(
+                sprintf(_('Wollen Sie die Tour "%s" wirklich löschen?'), htmlReady($this->tour->name)),
                 $this->url_for('tour/admin_overview', ['confirm_delete_tour' => 1, 'tour_id' => $tour_id]),
-                $this->url_for('tour/admin_overview', [])
+                $this->url_for('tour/admin_overview')
             );
         }
         return '';
@@ -400,10 +400,10 @@ class TourController extends AuthenticatedController
             $this->response->add_header('X-Action', 'complete');
         } else {
             $this->response->add_header('X-Action', 'question');
-            return (string)QuestionBox::create(
+            return (string) QuestionBox::create(
                 sprintf(_('Wollen Sie Schritt %s wirklich löschen?'), $step_nr),
                 $this->url_for('tour/admin_overview',  ['confirm_delete_tour_step' => $step_nr, 'tour_id' => $tour_id, 'step_nr' => $step_nr]),
-                $this->url_for('tour/admin_overview', [])
+                $this->url_for('tour/admin_overview')
             );
         }
         return '';

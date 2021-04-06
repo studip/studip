@@ -11,8 +11,8 @@
               'news_body' => $news->body,
               'news_startdate' => $news->date ? date('d.m.Y H:i', $news->date) : '',
               'news_enddate' => $news->expire ? date('d.m.Y H:i', $news->date + $news->expire) : ''] ?>
-    <?= (string)QuestionBox::create(
-        $flash['question_text'],
+    <?= (string) QuestionBox::create(
+        htmlReady($flash['question_text']),
         URLHelper::getURL('dispatch.php/'.$route.'#anker', array_merge($flash['question_param'], $form_content)),
         URLHelper::getURL('dispatch.php/'.$route.'#anker', $form_content)
     );?>

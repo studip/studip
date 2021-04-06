@@ -1,5 +1,5 @@
 <? if (isset($flash['delete'])): ?>
-    <?= (string)QuestionBox::create(
+    <?= QuestionBox::create(
         _('Wollen Sie das Banner wirklich löschen?'),
         $controller->deleteURL($flash['delete']['banner_id'], ['delete' => 1]),
         $controller->deleteURL($flash['delete']['banner_id'], ['back' => 1])

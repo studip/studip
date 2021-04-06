@@ -1,5 +1,5 @@
 <? if (isset($flash['decline_inst'])) : ?>
-    <?= (string)QuestionBox::create(
+    <?= QuestionBox::create(
         sprintf(
             _('Wollen Sie sich aus dem/der %s wirklich austragen?'),
             htmlReady($flash['name'])

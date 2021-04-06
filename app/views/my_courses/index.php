@@ -1,6 +1,6 @@
 <? if (isset($flash['decline_course'])) : ?>
-    <?= (string)QuestionBox::create(
-        $flash['message'],
+    <?= QuestionBox::create(
+        htmlReady($flash['message']),
         $controller->declineURL($flash['course_id'], ['cmd' => $flash['cmd'], 'studipticket' => $flash['studipticket']]),
         $controller->declineURL($flash['course_id'], ['cmd' => 'back', 'studipticket' => $flash['studipticket']])
     ) ?>

@@ -1,8 +1,8 @@
 <? if (isset($flash['delete'])): ?>
-    <?= (string)QuestionBox::create(
+    <?= QuestionBox::create(
         sprintf(
             _('Wollen Sie das Datenfeld "%s" wirklich löschen? Bedenken Sie bitte, dass noch Einträge dazu existieren können'),
-            $flash['delete']['name']
+            htmlReady($flash['delete']['name'])
         ),
        $controller->deleteURL($flash['delete']['datafield_id'],['delete' => 1]),
        $controller->deleteURL($flash['delete']['datafield_id'],['back' => 1])
@@ -98,7 +98,7 @@
             <td>
             <? if (in_array($val->type, words('selectbox selectboxmultiple radio combo'))): ?>
                 <a data-dialog="size=auto" href="<?= $controller->url_for('admin/datafields/config/'. $val->id) ?>">
-                    <?= Icon::create('edit', Icon::ROLE_CLICKABLE)->asImg(['class'=> 'text-top', 'title' => 'Einträge bearbeiten']) ?>
+                    <?= Icon::create('edit')->asImg(['class'=> 'text-top', 'title' => 'Einträge bearbeiten']) ?>
                 </a>
             <? endif; ?>
                  <span><?= htmlReady($val->type) ?></span>
@@ -171,10 +171,10 @@
             <td><?= count($val) ?></td>
             <td class="actions">
                 <a href="<?=$controller->url_for('admin/datafields/edit/' . $val->id)?>" data-dialog>
-                    <?= Icon::create('edit', Icon::ROLE_CLICKABLE, ['title' => 'Datenfeld ändern'])->asImg() ?>
+                    <?= Icon::create('edit')->asImg(['title' => 'Datenfeld ändern']) ?>
                 </a>
                 <a href="<?=$controller->url_for('admin/datafields/delete/' . $val->id)?>">
-                    <?= Icon::create('trash', Icon::ROLE_CLICKABLE, ['title' => 'Datenfeld löschen'])->asImg() ?>
+                    <?= Icon::create('trash')->asImg(['title' => 'Datenfeld löschen']) ?>
                 </a>
             </td>
         </tr>
