@@ -58,7 +58,7 @@ class ProfileNavigation extends Navigation
         $navigation = new Navigation(_('Profil'), 'dispatch.php/profile/index');
         $this->addSubNavigation('index', $navigation);
 
-        if ($perm->have_profile_perm('user', $current_user->user_id)) {
+        if ($current_user && $perm->have_profile_perm('user', $current_user->user_id)) {
             // profile data
             $navigation = new Navigation(_('Persönliche Angaben'));
             $navigation->addSubNavigation('profile', new Navigation(_('Grunddaten'), 'dispatch.php/settings/account'));
