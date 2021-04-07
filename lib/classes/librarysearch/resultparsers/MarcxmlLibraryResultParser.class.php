@@ -33,7 +33,7 @@ class MarcxmlLibraryResultParser implements LibraryResultParser
         '264' => ['field' => 'publisher', 'callback' => 'simpleMap', 'cb_args' => '$a $b'],
         '256' => ['field' => 'note', 'callback' => 'simpleMap', 'cb_args' => '$a' . "\n"],
         '300' => ['field' => 'medium', 'callback' => 'simpleMap', 'cb_args' => '$a $b $c $e'],
-        '440' => ['field' => 'dc_relation', 'callback' => 'simpleMap', 'cb_args' => '$a $v'],
+        '440' => ['field' => 'container-title', 'callback' => 'simpleMap', 'cb_args' => '$a $v'],
         '500' => ['field' => 'note', 'callback' => 'simpleMap', 'cb_args' => '$a' . "\n"],
         '502' => ['field' => 'note', 'callback' => 'simpleMap', 'cb_args' => '$a' . "\n"],
         '518' => ['field' => 'note', 'callback' => 'simpleMap', 'cb_args' => '$a' . "\n"],

@@ -37,7 +37,11 @@ $is_search = !$document->csl_data;
             <? endif ?>
             <? if ($document->catalog) : ?>
                 <dt><?= _('Katalog') ?></dt>
-                <dd><?= htmlReady($document->catalog) ?></dd>
+                <? if ($document->opac_link) : ?>
+                    <dd><a target="_blank" title="<?=_('Im OPAC anzeigen')?>" href="<?=$document->opac_link?>"><?= htmlReady($document->catalog) ?></a></dd>
+                <? else : ?>
+                    <dd><?= htmlReady($document->catalog) ?></dd>
+                <? endif ?>
             <? endif ?>
         </dl>
     <? endif ?>

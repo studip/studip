@@ -136,6 +136,8 @@ switch ($type) {
             //Get the file type:
             if ($file->hasFileAttached()) {
                 $path_file = $file->getPath();
+            } elseif ($file->hasURL()) {
+                $path_file = $file->metadata['url'];
             }
         } else {
             $path_file = is_a($file, "URLFile")
@@ -172,12 +174,6 @@ while (ob_get_level()) {
     ob_end_clean();
 }
 
-if ($file instanceof LibraryFile) {
-    if (!$file->hasFileAttached()) {
-        header('Location: ' . $file->library_document->csl_data['URL']);
-        die();
-    }
-}
 if (isset($file_ref) && $file_ref->file->metadata['access_type'] == 'redirect') {
     $file_ref->incrementDownloadCounter();
     header('Location: ' . $file_ref->file->metadata['url']);

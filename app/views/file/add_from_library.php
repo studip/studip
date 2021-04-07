@@ -88,18 +88,6 @@
                     <header>
                         <span class="title no-overflow"><?= $result->getIcon()->asImg() ?> <?= $result->getTitle('long-comma') ?></span>
                         <nav>
-                            <? if ($result->opac_link) : ?>
-                                <a href="<?= htmlReady($result->opac_link) ?>"
-                                   target="_blank">
-                                    <?= Icon::create('glossary', 'clickable')->asImg(
-                                        20,
-                                        [
-                                            'title' => _('Im OPAC anzeigen'),
-                                            'class' => 'text-bottom'
-                                        ]
-                                    ) ?>
-                                </a>
-                            <? endif ?>
                             <?= Icon::create('accept', 'status-green')->asImg(
                                 20,
                                 ['class' => 'hidden-checkbox-checked-icon']
@@ -126,7 +114,11 @@
                             <? endif ?>
                             <? if ($result->catalog) : ?>
                                 <dt><?= _('Katalog') ?></dt>
-                                <dd><?= htmlReady($result->catalog) ?></dd>
+                                <? if ($result->opac_link) : ?>
+                                    <dd><a target="_blank" title="<?=_('Im OPAC anzeigen')?>" href="<?=$result->opac_link?>"><?= htmlReady($result->catalog) ?></a></dd>
+                                <? else : ?>
+                                    <dd><?= htmlReady($result->catalog) ?></dd>
+                                <? endif ?>
                             <? endif ?>
                         </dl>
                         <? if ($result->csl_data['abstract']) : ?>

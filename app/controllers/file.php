@@ -1127,7 +1127,11 @@ class FileController extends AuthenticatedController
         }
 
         if ($create_only) {
-            $this->redirectToFolder($this->top_folder);
+            $this->redirect($this->url_for('file/edit_license/' . $this->top_folder->getId(), [
+                'file_refs' => [$file->getFileRef()->getId()],
+                're_location' => $this->url_for($this->top_folder->range_type . '/files/index/' . $this->top_folder->getId(), ['cid' => $this->top_folder->range_id])
+            ]));
+            return;
         }
 
         if ($plugin_id) {

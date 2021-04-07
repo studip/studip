@@ -104,13 +104,13 @@ class SRULibrarySearch extends LibrarySearch
                 $query_string .= sprintf(
                     '(%1$s="%2$s" or %3$s="%2$s" or %4$s="%2$s")',
                     self::$field_replacements[$query_format][LibrarySearch::ISBN],
-                    $value,
+                    addslashes($value),
                     self::$field_replacements[$query_format][LibrarySearch::ISSN],
                     self::$field_replacements[$query_format][LibrarySearch::NUMBER]
                 );
             } else {
                 //TODO: escape colon in data!
-                $query_string .= sprintf('%1$s="%2$s"', $key, $value);
+                $query_string .= sprintf('%1$s="%2$s"', $key,addslashes($value));
             }
         }
 

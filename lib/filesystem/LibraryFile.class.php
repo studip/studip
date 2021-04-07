@@ -15,7 +15,7 @@
  */
 
 
-class LibraryFile extends URLFile
+class LibraryFile extends StandardFile
 {
     public $library_document = null;
 
@@ -169,14 +169,10 @@ class LibraryFile extends URLFile
 
     public function getDownloadURL()
     {
-        if ($this->hasFileAttached()) {
+        if ($this->hasFileAttached() || $this->hasURL()) {
             if ($this->fileref instanceof FileRef) {
                 return $this->fileref->getDownloadURL();
             }
-        } elseif (trim($this->library_document->csl_data['URL'])) {
-            return $this->library_document->csl_data['URL'];
-        } elseif (trim($this->library_document->csl_data['document_url'])) {
-            return $this->library_document->csl_data['document_url'];
         }
         return '';
     }
@@ -275,7 +271,7 @@ class LibraryFile extends URLFile
             }
         }
 
-        if ($this->isDownloadable($GLOBALS['user']->id)) {
+        if ($this->isDownloadable($GLOBALS['user']->id) && $this->getDownloadURL()) {
             $buttons[] = Studip\LinkButton::create(
                 $this->hasFileAttached() ? _('Herunterladen') : _('Öffnen'),
                 $this->getDownloadURL(),
@@ -284,20 +280,6 @@ class LibraryFile extends URLFile
         }
 
         return $buttons;
-    }
-
-
-    public function isDownloadable($user_id = null)
-    {
-        if ($this->hasFileAttached()) {
-            return $this->getFolderType()->isFileDownloadable(
-                $this->fileref->getId(),
-                $user_id
-            );
-        } elseif (trim($this->library_document->csl_data['URL'])) {
-            return true;
-        }
-        return false;
     }
 
 
@@ -388,6 +370,11 @@ class LibraryFile extends URLFile
         return file_exists($this->file->path);
     }
 
+    public function hasURL()
+    {
+        return isset($this->file->metadata['url']);
+    }
+
     public function removeDataFile()
     {
         if ($this->hasFileAttached()) {
@@ -395,6 +382,8 @@ class LibraryFile extends URLFile
             $this->file->mime_type = '';
             $this->file->name = '';
             $this->file->size = 0;
+            $this->file->metadata['url'] = null;
+            $this->file->metadata['access_type'] = null;
             $this->fileref->name = '';
             $this->fileref->store();
             return $this->file->store();

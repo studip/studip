@@ -95,12 +95,15 @@ class LibrarySearchManager
                     );
                     foreach ($local_catalog_result_set as $result) {
                         $result->catalog = $catalog_data['name'];
-                        if ($result->opac_document_id) {
-                            $result->opac_link = str_replace(
-                                '{opac_document_id}',
-                                $result->opac_document_id,
-                                $catalog_data['opac_link_template']
-                            );
+                        if ($result->csl_data['id']) {
+                            $result->opac_document_id = $result->csl_data['id'];
+                            if (isset($catalog_data['opac_link_template'])) {
+                                $result->opac_link = str_replace(
+                                    '{opac_document_id}',
+                                    htmlReady($result->opac_document_id),
+                                    $catalog_data['opac_link_template']
+                                );
+                            }
                         }
                     }
                 } else {
@@ -129,6 +132,12 @@ class LibrarySearchManager
         foreach ($result_sets as $set) {
             $iterators[] = new ArrayIterator($set);
         }
+        if (count($local_catalog_result_set)) {
+            foreach ($local_catalog_result_set as $result) {
+                $result->search_params = $search_parameters;
+                $merged_results[$result->getId()] = $result;
+            }
+        }
         while (!$all_empty) {
             $all_empty = true;
             foreach ($iterators as $iterator) {
@@ -140,8 +149,6 @@ class LibrarySearchManager
                     foreach ($local_catalog_result_set as $key => $local_result) {
                         if ($local_result->isEqualTo($result)) {
                             //The result is in the local catalog.
-                            $local_result->search_params = $search_parameters;
-                            $merged_results[$local_result->getId()] = $local_result;
                             unset($local_catalog_result_set[$key]);
                             $found_in_local_catalog = true;
                             break;
@@ -162,6 +169,7 @@ class LibrarySearchManager
                 }
             }
         }
+
 
         //At this point, the search results are sorted.
         return $merged_results;

@@ -250,14 +250,16 @@ class LibraryDocument
      */
     public function toArray(): array
     {
-        $other_data = [
+        $data = [
             'id'            => $this->getId(),
             'type'          => $this->getType(),
             'csl_data'      => $this->csl_data,
             'datafields'    => $this->datafields,
-            'search_params' => $this->search_params
+            'search_params' => $this->search_params,
+            'catalog'       => $this->catalog,
+            'opac_link'     => $this->opac_link
         ];
-        return array_merge($other_data, $this->csl_data);
+        return $data;
     }
 
 
@@ -356,6 +358,8 @@ class LibraryDocument
         $doc->csl_data = $data['csl_data'];
         $doc->datafields = $data['datafields'];
         $doc->search_params = $data['search_params'];
+        $doc->catalog = $data['catalog'];
+        $doc->opac_link = $data['opac_link'];
         return $doc;
     }
 
