@@ -669,7 +669,10 @@ class Resources
                     end: STUDIP.Fullcalendar.toRFC3339String(calendar_event.end)
                 }
             }
-        ).done(function (data) {
+        ).done(function (data, textStatus, xhr_obj) {
+            if (!data || (data.length == 0)) {
+                return;
+            }
             var new_interval_id = data[0].interval_id;
             calendar_event.setExtendedProp('studip_object_id', new_interval_id);
             if (new_interval_id) {
