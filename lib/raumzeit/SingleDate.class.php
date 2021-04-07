@@ -648,7 +648,7 @@ class SingleDate
             $room_link_string = sprintf(
                 '<a href="%1$s" data-dialog="1">%2$s</a>',
                 $room->getActionLink(),
-                $room->name
+                htmlReady($room->name)
             );
 
             $overlaps = $changeAssign->getOverlappingBookings();
@@ -671,9 +671,18 @@ class SingleDate
                 $changeAssign->store();
             } catch (ResourceBookingOverlapException $e) {
                 $room = $changeAssign->resource->getDerivedClassInstance();
+                if($room instanceof Room) {
+                    $room_text = $link = sprintf(
+                        '<a href="%1$s" data-dialog="1">%2$s</a>',
+                        $room->getActionLink(),
+                        htmlReady($room->name)
+                    );
+                } else {
+                    $room_text = $changeAssign->resource->name;
+                }
                 $this->messages['error'][] = sprintf(
                     _('%1$s: Die Buchung vom %2$s bis %3$s konnte wegen Überlappungen nicht gespeichert werden: %4$s'),
-                    $room instanceof Room ? $room->getFullName() : $changeAssign->resource->name,
+                    $room_text,
                     date('d.m.Y H:i', $changeAssign->begin),
                     date('H:i', $changeAssign->end),
                     $e->getMessage()
