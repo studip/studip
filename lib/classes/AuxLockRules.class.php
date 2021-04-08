@@ -60,8 +60,9 @@ class AuxLockRules
     {
         $stmt = DBManager::get()->prepare("SELECT aux_lock_rule FROM seminare WHERE Seminar_id = ?");
         $stmt->execute([$sem_id]);
-        if ($data = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            return AuxLockRules::getLockRuleById($data['aux_lock_rule']);
+        $lock_rule = $stmt->fetchColumn();
+        if ($lock_rule) {
+            return AuxLockRules::getLockRuleById($lock_rule);
         }
         return NULL;
     }
