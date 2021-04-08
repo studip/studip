@@ -32,6 +32,16 @@ class CoreParticipants implements StudipModule
 
         // Is the participants page hidden for students?
         if (!$GLOBALS['perm']->have_studip_perm('tutor', $course_id, $user_id) && $course->config->COURSE_MEMBERS_HIDE) {
+            $tab_navigation = $this->getTabNavigation($course_id);
+            if ($tab_navigation && count($tab_navigation['members']->getSubNavigation()) > 0) {
+                $sub_nav = $tab_navigation['members']->getSubNavigation();
+                $first_nav = reset($sub_nav);
+
+                $navigation = new Navigation($first_nav->getTitle(), $first_nav->getURL());
+                $navigation->setImage(Icon::create('persons', Icon::ROLE_INACTIVE));
+                return $navigation;
+
+            }
             return null;
         }
 
@@ -116,16 +126,13 @@ class CoreParticipants implements StudipModule
         $navigation->setActiveImage(Icon::create('persons', Icon::ROLE_INFO));
 
         $course = Course::find($course_id);
-        $config = CourseConfig::get($course_id);
-
-        if (!$GLOBALS['perm']->have_studip_perm('tutor', $course_id) && $config->COURSE_MEMBERS_HIDE) {
-            return null;
-        }
 
         // Only courses without children have a regular member list and statusgroups.
         if (!$course->getSemClass()->isGroup()) {
-            $navigation->addSubNavigation('view', new Navigation(_('Teilnehmende'), 'dispatch.php/course/members'));
-            if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id) || !$config->COURSE_MEMBERGROUPS_HIDE) {
+            if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id) || !$course->config->COURSE_MEMBERS_HIDE) {
+                $navigation->addSubNavigation('view', new Navigation(_('Teilnehmende'), 'dispatch.php/course/members'));
+            }
+            if ($GLOBALS['perm']->have_studip_perm('tutor', $course_id) || !$course->config->COURSE_MEMBERGROUPS_HIDE) {
                 $navigation->addSubNavigation('statusgroups', new Navigation(_('Gruppen'), 'dispatch.php/course/statusgroups'));
             }
         } else {
@@ -139,7 +146,7 @@ class CoreParticipants implements StudipModule
             $navigation->addSubNavigation('additional', new Navigation(_('Zusatzangaben'), 'dispatch.php/course/members/additional'));
         }
 
-        return ['members' => $navigation];
+        return count($navigation->getSubNavigation()) > 0 ? ['members' => $navigation] : null;
     }
 
     /**

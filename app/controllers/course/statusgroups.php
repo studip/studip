@@ -39,13 +39,7 @@ class Course_StatusgroupsController extends AuthenticatedController
         $this->is_autor  = $perm->have_studip_perm('autor', $this->course_id);
 
         // Hide groups page?
-        if (
-            !$this->is_tutor
-            && (
-                $this->config->COURSE_MEMBERS_HIDE
-                || $this->config->COURSE_MEMBERGROUPS_HIDE
-            )
-        ) {
+        if (!$this->is_tutor && $this->config->COURSE_MEMBERGROUPS_HIDE) {
             throw new AccessDeniedException();
         }
 
@@ -302,15 +296,17 @@ class Course_StatusgroupsController extends AuthenticatedController
         }
         $sidebar->addWidget($actions);
 
-        $options = $sidebar->addWidget(new OptionsWidget());
-        $options->addCheckbox(
-            _('Diese Seite für Studierende verbergen'),
-            $this->config->COURSE_MEMBERGROUPS_HIDE,
-            $this->url_for('course/statusgroups/course_groups_hide/1'),
-            $this->url_for('course/statusgroups/course_groups_hide/0'),
-            ['title' => _('Über diese Option können Sie die Teilnehmendenliste für Studierende der Veranstaltung unsichtbar machen')]
-        );
+        if ($this->is_tutor) {
+            $options = $sidebar->addWidget(new OptionsWidget());
+            $options->addCheckbox(
+                _('Diese Seite für Studierende verbergen'),
+                $this->config->COURSE_MEMBERGROUPS_HIDE,
+                $this->url_for('course/statusgroups/course_groups_hide/1'),
+                $this->url_for('course/statusgroups/course_groups_hide/0'),
+                ['title' => _('Über diese Option können Sie die Teilnehmendenliste für Studierende der Veranstaltung unsichtbar machen')]
+            );
 
+        }
     }
 
     /**

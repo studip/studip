@@ -50,10 +50,6 @@ class Course_MembersController extends AuthenticatedController
             PageLayout::setHelpKeyword("Basis.InVeranstaltungTeilnehmer");
         }
 
-        if (!$this->is_tutor && $this->config->COURSE_MEMBERS_HIDE) {
-            throw new AccessDeniedException();
-        }
-
         // Check lock rules
         $this->dozent_is_locked = LockRules::Check($this->course_id, 'dozent');
         $this->tutor_is_locked  = LockRules::Check($this->course_id, 'tutor');
@@ -102,6 +98,9 @@ class Course_MembersController extends AuthenticatedController
 
     public function index_action()
     {
+        if (!$this->is_tutor && $this->config->COURSE_MEMBERS_HIDE) {
+            throw new AccessDeniedException();
+        }
 
         $sem                = Seminar::getInstance($this->course_id);
         $this->sort_by      = Request::option('sortby', 'nachname');
