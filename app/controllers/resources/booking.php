@@ -80,7 +80,10 @@ class Resources_BookingController extends AuthenticatedController
         //internal comment of the booking.
         $this->make_comment_editable = $this->booking->userIsOwner(
             $this->current_user
-        );
+        ) || $this->booking->resource->userHasPermission(
+                $this->current_user,
+                'tutor'
+            );
         $this->show_internal_comment = (
             (
                 $this->booking->resource->userHasPermission($this->current_user, 'user')
