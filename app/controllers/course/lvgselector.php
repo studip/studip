@@ -276,9 +276,23 @@ class Course_LvgselectorController extends AuthenticatedController
         if ($this->is_locked($course_id)) {
             throw new AccessDeniedException();
         }
-
+        
+        $lv_group_ids = $selection->getLvgruppenIDs();
+        
+        // check whether at least one lv-group or study area is required
+        $study_areas_combined_enabled = CourseWizardStepRegistry::findOneBySQL("
+                `classname` = 'StudyAreasLVGroupsCombinedWizardStep'
+                    AND `enabled` = 1");
+        if ($study_areas_combined_enabled && !count($lv_group_ids)) {
+            $sem_class = $this->course->getSemClass();
+            if ($sem_class['bereiche'] && !count($this->course->study_areas)) {
+                PageLayout::postMessage(MessageBox::error(_('Die Veranstaltung muss mindestens einem Studienbereich oder einer LV-Gruppe zugeordnet sein.')));
+                return;
+            }
+        }
         // write the new lvgruppen to the db
-        LvGruppe::setLvgruppen($course_id, $selection->getLvgruppenIDs());
+        LvGruppe::setLvgruppen($course_id, $lv_group_ids);
+        PageLayout::postMessage(MessageBox::success(_('Die Zuordnung der LV-Gruppen wurde übernommen.')));
     }
 
     /**

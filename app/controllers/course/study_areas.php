@@ -15,7 +15,7 @@
  */
 
 require_once 'lib/webservices/api/studip_lecture_tree.php';
-require_once 'lib/classes/coursewizardsteps/StudyAreasWizardStep.php';
+//require_once 'lib/classes/coursewizardsteps/StudyAreasWizardStep.php';
 
 class Course_StudyAreasController extends AuthenticatedController
 {
@@ -42,11 +42,18 @@ class Course_StudyAreasController extends AuthenticatedController
         }
 
         // Init Studyareas-Step for
-        $this->step = new StudyAreasWizardStep();
+        $lv_groups_enabled = CourseWizardStepRegistry::findOneBySQL("
+                `classname` = 'StudyAreasLVGroupsCombinedWizardStep'
+                    AND `enabled` = 1");
+        if ($lv_groups_enabled) {
+            $this->step = new StudyAreasLVGroupsCombinedWizardStep();
+        } else {
+            $this->step = new StudyAreasWizardStep();
+        }
         $this->values = [];
-        $this->values['StudyAreasWizardStep']['studyareas'] = $this->get_area_ids($this->course->id);
-        $this->values['StudyAreasWizardStep']['ajax_url'] = $this->url_for('course/study_areas/ajax');
-        $this->values['StudyAreasWizardStep']['no_js_url'] = $this->url_for('course/study_areas/show');
+        $this->values[get_class($this->step)]['studyareas'] = $this->get_area_ids($this->course->id);
+        $this->values[get_class($this->step)]['ajax_url'] = $this->url_for('course/study_areas/ajax');
+        $this->values[get_class($this->step)]['no_js_url'] = $this->url_for('course/study_areas/show');
 
         PageLayout::setTitle($this->course->getFullname() . ' - ' . _('Studienbereiche'));
     }
@@ -85,10 +92,10 @@ class Course_StudyAreasController extends AuthenticatedController
             }
         }
         if (Request::get('open_node')) {
-            $this->values['StudyAreasWizardStep']['open_node'] = Request::get('open_node');
+            $this->values[get_class($this->step)]['open_node'] = Request::get('open_node');
         }
 
-        $this->values['StudyAreasWizardStep']['locked'] = $this->locked;
+        $this->values[get_class($this->step)]['locked'] = $this->locked;
         $this->tree                                     = $this->step->getStepTemplate($this->values, 0, 0);
     }
 
@@ -144,7 +151,7 @@ class Course_StudyAreasController extends AuthenticatedController
         } else {
             $studyareas = Request::getArray('studyareas');
 
-            if (empty($studyareas)) {
+            if (empty($studyareas) && $this->is_required()) {
                 PageLayout::postMessage(MessageBox::error(_('Sie müssen mindestens einen Studienbereich auswählen')));
                 $this->redirect($url);
                 return;
@@ -175,7 +182,7 @@ class Course_StudyAreasController extends AuthenticatedController
             }
         }
 
-        if (empty($assigned)) {
+        if (empty($assigned) && $this->is_required()) {
             return _('Sie müssen mindestens einen Studienbereich auswählen');
         }
 
@@ -199,10 +206,29 @@ class Course_StudyAreasController extends AuthenticatedController
     }
 
 
-    function get_area_ids($course_id)
+    public function get_area_ids($course_id)
     {
         $selection = StudipStudyArea::getStudyAreasForCourse($course_id);
 
         return array_keys($selection->toGroupedArray('sem_tree_id'));
+    }
+    
+    /**
+     * Check whether the assignmenet of study areas is required.
+     * 
+     * @return boolean True if required.
+     */
+    private function is_required()
+    {
+        if (get_class($this->step) === 'StudyAreasLVGroupsCombinedWizardStep') {
+            $sem_class = $this->course->getSemClass();
+            if ($sem_class['module']) {
+                $lv_gruppen = Lvgruppe::findBySeminar($this->course->id);
+                if (count($lv_gruppen)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

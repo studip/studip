@@ -28,7 +28,7 @@ class StudyAreasWizardStep implements CourseWizardStep
     public function getStepTemplate($values, $stepnumber, $temp_id)
     {
         // We only need our own stored values here.
-        $values = $values[__CLASS__];
+        $values = $values[get_class($this)];
         // Load template from step template directory.
         $factory = new Flexi_TemplateFactory($GLOBALS['STUDIP_BASE_PATH'].'/app/views/course/wizard/steps');
         $tpl = $factory->open('studyareas/index');
@@ -96,7 +96,7 @@ class StudyAreasWizardStep implements CourseWizardStep
     public function alterValues($values)
     {
         // We only need our own stored values here.
-        $values = $values[__CLASS__];
+        $values = $values[get_class($this)];
         // A node has been clicked in order to open the subtree.
         if (Request::option('open_node')) {
             $values['open_node'] = Request::get('open_node');
@@ -141,7 +141,7 @@ class StudyAreasWizardStep implements CourseWizardStep
     public function validate($values)
     {
         // We only need our own stored values here.
-        $values = $values[__CLASS__];
+        $values = $values[get_class($this)];
         $ok = true;
         $errors = [];
         if (!$values['studyareas']) {
@@ -165,7 +165,7 @@ class StudyAreasWizardStep implements CourseWizardStep
     public function storeValues($course, $values)
     {
         // We only need our own stored values here.
-        $values = $values[__CLASS__];
+        $values = $values[get_class($this)];
         $course->study_areas = SimpleORMapCollection::createFromArray(
             StudipStudyArea::findMany($values['studyareas']));
         if ($course->store()) {
@@ -215,7 +215,7 @@ class StudyAreasWizardStep implements CourseWizardStep
                 $data['studyareas'][] = $a->id;
             }
         }
-        $values[__CLASS__] = $data;
+        $values[get_class($this)] = $data;
         return $values;
     }
 
@@ -264,7 +264,7 @@ class StudyAreasWizardStep implements CourseWizardStep
         return json_encode($result);
     }
 
-    private function buildPartialSemTree($node, $id_only=false) {
+    protected function buildPartialSemTree($node, $id_only=false) {
         $children = [];
         foreach ($node->required_children as $c)
         {
