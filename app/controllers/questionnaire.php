@@ -78,10 +78,11 @@ class QuestionnaireController extends AuthenticatedController
     {
         $this->statusgruppen = Statusgruppen::findByRange_id(Context::get()->id);
         if (!count($this->statusgruppen)) {
-            $this->redirect("questionnaire/edit", [
+            $this->redirect(
+                $this->url_for("questionnaire/edit", [
                 'range_type' => Context::getType(),
                 'range_id' => Context::get()->id
-            ]);
+            ]));
             return;
         }
         PageLayout::setTitle(_("Kontext auswählen"));
