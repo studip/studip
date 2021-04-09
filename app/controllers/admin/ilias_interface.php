@@ -313,12 +313,6 @@ class Admin_IliasInterfaceController extends AuthenticatedController
                     if (Request::getInstance()->offsetExists('ilias_matriculation')) {
                         $this->ilias_configs[$index]['matriculation'] = Request::get('ilias_matriculation');
                     }
-                    if (Request::getInstance()->offsetExists('ilias_delete_ilias_users')) {
-                        $this->ilias_configs[$index]['delete_ilias_users'] = Request::get('ilias_delete_ilias_users');
-                    }
-                    if (Request::getInstance()->offsetExists('ilias_delete_ilias_courses')) {
-                        $this->ilias_configs[$index]['delete_ilias_courses'] = Request::get('ilias_delete_ilias_courses');
-                    }
                     if (Request::getInstance()->offsetExists('ilias_cat_semester')) {
                         $this->ilias_configs[$index]['cat_semester'] = Request::get('ilias_cat_semester');
                     }
@@ -328,6 +322,8 @@ class Admin_IliasInterfaceController extends AuthenticatedController
                     if (Request::getInstance()->offsetExists('ilias_course_veranstaltungsnummer')) {
                         $this->ilias_configs[$index]['course_veranstaltungsnummer'] = Request::get('ilias_course_veranstaltungsnummer');
                     }
+                    $this->ilias_configs[$index]['delete_ilias_users'] = Request::get('ilias_delete_ilias_users');
+                    $this->ilias_configs[$index]['delete_ilias_courses'] = Request::get('ilias_delete_ilias_courses');
                     $this->ilias_configs[$index]['category_create_on_add_module'] = Request::get('ilias_category_create_on_add_module');
                     $this->ilias_configs[$index]['category_to_desktop'] = Request::get('ilias_category_to_desktop');
                     foreach ($this->modules_available as $module_index => $module_name) {
