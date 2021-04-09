@@ -353,7 +353,7 @@ abstract class StudipController extends Trails_Controller
     /**
      * render given data as json, data is converted to utf-8
      *
-     * @param unknown $data
+     * @param mixed $data
      */
     public function render_json($data)
     {
