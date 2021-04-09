@@ -1016,6 +1016,29 @@ class ConnectedIlias
     }
 
     /**
+     * check user
+     *
+     * checks if ILIAS user exists, creates new user if not
+     * @access public
+     * @return boolean returns user status
+     */
+    public function checkUser()
+    {
+        $user_exists = $this->soap_client->getUser($this->user->getId());
+        if (!is_array($user_exists)) {
+            $admin_user_id = $this->soap_client->lookupUser($this->ilias_config['admin']);
+            $admin_user_exists = $this->soap_client->getUser($admin_user_id);
+            if (is_array($admin_user_exists)) {
+                $this->user->unsetConnection(true);
+                if ($this->newUser()) {
+                    PageLayout::postSuccess(_("Neue Verknüpfung zu ILIAS-User angelegt."));
+                }
+            }
+        } else return true;
+        return false;
+    }
+
+    /**
      * check user permissions
      *
      * checks user permissions for connected course and changes setting if necessary
@@ -1032,6 +1055,9 @@ class ConnectedIlias
         if ($GLOBALS['user']->perms == 'root') {
             return true;
         }
+
+        // check if user still exists
+        $this->checkUser();
 
         // get course role folder and local roles
         $user_roles = $this->soap_client->getUserRoles($this->user->getId());
@@ -1058,7 +1084,7 @@ class ConnectedIlias
         if (!$is_member) {
             $member_data["usr_id"] = $this->user->getId();
             $member_data["ref_id"] = $ilias_course_id;
-            $member_data["status"] = CRS_NO_NOTIFICATION;
+            $member_data["status"] = self::CRS_NO_NOTIFICATION;
             $type = "";
             switch ($user_crs_role)
             {

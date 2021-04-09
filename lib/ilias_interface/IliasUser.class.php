@@ -473,9 +473,9 @@ class IliasUser
      * deletes user-connection from database (only for manually connected user)
      * @access public
      */
-    function unsetConnection()
+    function unsetConnection($ignore_usertype = false)
     {
-        if ($this->getUserType() != self::USER_TYPE_ORIGINAL) {
+        if (!$ignore_usertype && ($this->getUserType() != self::USER_TYPE_ORIGINAL)) {
             return;
         }
         
@@ -484,7 +484,7 @@ class IliasUser
         $statement->execute([
                         (string)$this->studip_id,
                         (string)$this->index,
-                        (int)self::USER_TYPE_ORIGINAL,
+                        (int)$this->type
         ]);
         
         $this->is_connected = false;
