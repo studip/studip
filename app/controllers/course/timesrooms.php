@@ -442,7 +442,7 @@ class Course_TimesroomsController extends AuthenticatedController
             } else if ($old_room_id && !$singledate->resource_id) {
                 $this->course->createInfo(sprintf(_("Die Raumbuchung für den Termin %s wurde aufgehoben, da die neuen Zeiten außerhalb der alten liegen!"), '<b>'. $singledate->toString() .'</b>'));
             } else if (Request::get('room_id_parameter')) {
-                $this->course->createInfo(_("Um eine Raumbuchung durchzuführen müssen sie einen Raum aus dem Suchergebnis auswählen!"));
+                $this->course->createInfo(_("Um eine Raumbuchung durchzuführen, müssen Sie einen Raum aus dem Suchergebnis auswählen!"));
             }
         } elseif (Request::option('room') == 'freetext') {
             $singledate->setFreeRoomText(Request::get('freeRoomText_sd'));
@@ -533,7 +533,7 @@ class Course_TimesroomsController extends AuthenticatedController
             $this->course->appendMessages($singledate->getMessages());
         }
         if (Request::get('room_id_parameter')) {
-            $this->course->createInfo(_("Um eine Raumbuchung durchzuführen müssen sie einen Raum aus dem Suchergebnis auswählen!"));
+            $this->course->createInfo(_("Um eine Raumbuchung durchzuführen, müssen Sie einen Raum aus dem Suchergebnis auswählen!"));
         }
 
 
@@ -887,7 +887,7 @@ class Course_TimesroomsController extends AuthenticatedController
                             $this->course->appendMessages($messages);
                         }
                     } else if (Request::get('room_id_parameter')) {
-                        $this->course->createInfo(_("Um eine Raumbuchung durchzuführen müssen sie einen Raum aus dem Suchergebnis auswählen!"));
+                        $this->course->createInfo(_("Um eine Raumbuchung durchzuführen, müssen Sie einen Raum aus dem Suchergebnis auswählen!"));
                     }
                 } elseif (Request::option('action') == 'freetext') {
                     $date->setFreeRoomText(Request::get('freeRoomText'));

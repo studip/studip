@@ -564,12 +564,18 @@ class SingleDate
                 $preparation_time * 60
             );
             if ($booking instanceof ResourceBooking) {
+                $room_link_string = sprintf(
+                    '<a href="%1$s" data-dialog="1">%2$s</a>',
+                    $room->getActionLink(),
+                    htmlReady($room->name)
+                );
+
                 $this->assign_id = $booking->id;
                 SingleDateDB::storeSingleDate($this);
                 $msg = sprintf(
                     _('Für den Termin %1$s wurde der Raum %2$s gebucht.'),
                     $this->toString(),
-                    $room
+                    $room_link_string
                 );
                 $this->messages['success'][] = $msg;
             }

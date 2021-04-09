@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # honkmaster <tiemerding-online@web.de>, 2020
 # Arno <transifex@senlogik.de>, 2020
@@ -13,7 +13,7 @@
 # M S <strohm@data-quest.de>, 2020
 # David Broz, 2020
 # Jan-Hendrik Willms <tleilax@gmail.com>, 2020
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -29327,7 +29327,7 @@ msgstr ""
 #: ../app/controllers/course/timesrooms.php:519
 #: ../app/controllers/course/timesrooms.php:872
 msgid ""
-"Um eine Raumbuchung durchzuführen müssen sie einen Raum aus dem Suchergebnis"
+"Um eine Raumbuchung durchzuführen, müssen Sie einen Raum aus dem Suchergebnis"
 " auswählen!"
 msgstr "To book a room you must first select a room from the search results!"
 
