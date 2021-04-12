@@ -94,6 +94,7 @@ class Course_StudyAreasController extends AuthenticatedController
         if (Request::get('open_node')) {
             $this->values[get_class($this->step)]['open_node'] = Request::get('open_node');
         }
+        $this->must_have_studyareas = $this->is_required();
 
         $this->values[get_class($this->step)]['locked'] = $this->locked;
         $this->tree                                     = $this->step->getStepTemplate($this->values, 0, 0);
@@ -156,6 +157,12 @@ class Course_StudyAreasController extends AuthenticatedController
                 $this->redirect($url);
                 return;
             }
+            if (!empty($studyareas) && !$this->is_required()) {
+                PageLayout::postMessage(MessageBox::error(_('Sie dürfen keine Studienbereiche zuweisen.')));
+                $this->redirect($url);
+                return;
+            }
+
 
             try {
                 $this->course->setStudyAreas($studyareas);
@@ -212,23 +219,15 @@ class Course_StudyAreasController extends AuthenticatedController
 
         return array_keys($selection->toGroupedArray('sem_tree_id'));
     }
-    
+
     /**
      * Check whether the assignmenet of study areas is required.
-     * 
+     *
      * @return boolean True if required.
      */
     private function is_required()
     {
-        if (get_class($this->step) === 'StudyAreasLVGroupsCombinedWizardStep') {
-            $sem_class = $this->course->getSemClass();
-            if ($sem_class['module']) {
-                $lv_gruppen = Lvgruppe::findBySeminar($this->course->id);
-                if (count($lv_gruppen)) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        $sem_class = $this->course->getSemClass();
+        return (bool) $sem_class['bereiche'];
     }
 }
