@@ -46,18 +46,18 @@ class MessagesController extends AuthenticatedController {
         $this->user = User::findCurrent()->id;
 
         if (Request::isPost()) {
-            foreach (Request::getArray("bulk") as $message_id) {
+            foreach (Request::getArray('bulk') as $message_id) {
                 $this->deleteMessage($message_id);
             }
-            PageLayout::postMessage(MessageBox::success(sprintf(_("%u Nachrichten wurden gelöscht"), count(Request::getArray("bulk")))));
+            PageLayout::postMessage(MessageBox::success(sprintf(_('%u Nachrichten wurden gelöscht'), count(Request::getArray('bulk')))));
         }
 
         $this->messages = $this->getMessages(
             true,
-            Request::int("limit", $this->number_of_displayed_messages),
-            Request::int("offset", 0),
-            Request::get("tag"),
-            Request::get("search")
+            Request::int('limit', $this->number_of_displayed_messages),
+            Request::int('offset', 0),
+            Request::get('tag'),
+            Request::get('search')
         );
         $this->received   = true;
         $this->message_id = $message_id;
@@ -72,21 +72,21 @@ class MessagesController extends AuthenticatedController {
             foreach (Request::getArray("bulk") as $message_id) {
                 $this->deleteMessage($message_id);
             }
-            PageLayout::postMessage(MessageBox::success(sprintf(_("%u Nachrichten wurden gelöscht"), count(Request::getArray("bulk")))));
+            PageLayout::postMessage(MessageBox::success(sprintf(_('%u Nachrichten wurden gelöscht'), count(Request::getArray('bulk')))));
         }
 
         $this->messages = $this->getMessages(
             false,
-            Request::int("limit", $this->number_of_displayed_messages),
-            Request::int("offset", 0),
-            Request::get("tag"),
-            Request::get("search")
+            Request::int('limit', $this->number_of_displayed_messages),
+            Request::int('offset', 0),
+            Request::get('tag'),
+            Request::get('search')
         );
         $this->received   = false;
         $this->message_id = $message_id;
         $this->settings   = UserConfig::get($GLOBALS['user']->id)->MESSAGING_SETTINGS;
 
-        $this->render_action("overview");
+        $this->render_action('overview');
 
         return $this->messages;
     }
@@ -705,11 +705,11 @@ class MessagesController extends AuthenticatedController {
                 $this->deleteMessage($returnedMessage);
             }
             if ($this->sndrec == 'rec') {
-                PageLayout::postMessage(MessageBox::success(sprintf(_("Alle empfangenen Nachrichten wurden gelöscht.") )));
-                $this->redirect("messages/overview");
+                PageLayout::postMessage(MessageBox::success(_('Alle empfangenen Nachrichten wurden gelöscht.')));
+                $this->redirect('messages/overview');
             } else if ($this->sndrec == 'snd') {
-                PageLayout::postMessage(MessageBox::success(sprintf(_("Alle gesendeten Nachrichten wurden gelöscht.") )));
-                $this->redirect("messages/sent");
+                PageLayout::postMessage(MessageBox::success(_('Alle gesendeten Nachrichten wurden gelöscht.')));
+                $this->redirect('messages/sent');
             }
         }
     }
