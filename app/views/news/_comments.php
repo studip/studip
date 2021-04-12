@@ -18,7 +18,7 @@
                                 <?= _('Kommentieren') ?>
                             </legend>
                             <label>
-                                <textarea class="add_toolbar wysiwyg" name="comment_content" style="width:70%" rows="8"
+                                <textarea class="add_toolbar wysiwyg" name="comment_content" rows="8"
                                           cols="38" wrap="virtual"
                                           placeholder="<?= _('Geben Sie hier Ihren Kommentar ein!') ?>"></textarea>
                             </label>
