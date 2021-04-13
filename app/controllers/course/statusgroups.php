@@ -303,7 +303,7 @@ class Course_StatusgroupsController extends AuthenticatedController
                 $this->config->COURSE_MEMBERGROUPS_HIDE,
                 $this->url_for('course/statusgroups/course_groups_hide/1'),
                 $this->url_for('course/statusgroups/course_groups_hide/0'),
-                ['title' => _('Über diese Option können Sie die Teilnehmendenliste für Studierende der Veranstaltung unsichtbar machen')]
+                ['title' => _('Über diese Option können Sie die Teilnehmendengruppenliste für Studierende der Veranstaltung unsichtbar machen')]
             );
 
         }
