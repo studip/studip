@@ -28,6 +28,34 @@
 
 class Message extends SimpleORMap implements PrivacyObject
 {
+    protected static function configure($config = [])
+    {
+        $config['db_table'] = 'message';
+        $config['belongs_to']['author'] = [
+            'class_name' => 'User',
+            'foreign_key' => 'autor_id'
+        ];
+        $config['has_one']['originator'] = [
+            'class_name' => 'MessageUser',
+            'assoc_func' => 'findSentByMessageId',
+            'on_store' => 'store',
+            'on_delete' => 'delete'
+        ];
+        $config['has_many']['receivers'] = [
+            'class_name' => 'MessageUser',
+            'assoc_func' => 'findReceivedByMessageId',
+            'on_store' => 'store',
+            'on_delete' => 'delete'
+        ];
+        $config['has_one']['attachment_folder'] = [
+            'class_name' => 'Folder',
+            'assoc_foreign_key' => 'range_id',
+            'on_store' => 'store',
+            'on_delete' => 'delete'
+        ];
+        parent::configure($config);
+    }
+
     public static function markAllAs($user_id = null, $state_of_flag = 1)
     {
         PersonalNotifications::markAsReadByHTML('message_%', $user_id ?: $GLOBALS['user']->id);
@@ -101,34 +129,6 @@ class Message extends SimpleORMap implements PrivacyObject
             $messages[] = Message::buildExisting($data);
         }
         return $messages;
-    }
-
-    protected static function configure($config = [])
-    {
-        $config['db_table'] = 'message';
-        $config['belongs_to']['author'] = [
-            'class_name' => 'User',
-            'foreign_key' => 'autor_id'
-        ];
-        $config['has_one']['originator'] = [
-            'class_name' => 'MessageUser',
-            'assoc_func' => 'findSentByMessageId',
-            'on_store' => 'store',
-            'on_delete' => 'delete'
-        ];
-        $config['has_many']['receivers'] = [
-            'class_name' => 'MessageUser',
-            'assoc_func' => 'findReceivedByMessageId',
-            'on_store' => 'store',
-            'on_delete' => 'delete'
-        ];
-        $config['has_one']['attachment_folder'] = [
-            'class_name' => 'Folder',
-            'assoc_foreign_key' => 'range_id',
-            'on_store' => 'store',
-            'on_delete' => 'delete'
-        ];
-        parent::configure($config);
     }
 
     public function getSender()
