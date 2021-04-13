@@ -46,18 +46,18 @@ class MessagesController extends AuthenticatedController {
         $this->user = User::findCurrent()->id;
 
         if (Request::isPost()) {
-            foreach (Request::getArray('bulk') as $message_id) {
+            foreach (Request::getArray("bulk") as $message_id) {
                 $this->deleteMessage($message_id);
             }
-            PageLayout::postMessage(MessageBox::success(sprintf(_('%u Nachrichten wurden gelöscht'), count(Request::getArray('bulk')))));
+            PageLayout::postMessage(MessageBox::success(sprintf(_("%u Nachrichten wurden gelöscht"), count(Request::getArray("bulk")))));
         }
 
         $this->messages = $this->getMessages(
             true,
-            Request::int('limit', $this->number_of_displayed_messages),
-            Request::int('offset', 0),
-            Request::get('tag'),
-            Request::get('search')
+            Request::int("limit", $this->number_of_displayed_messages),
+            Request::int("offset", 0),
+            Request::get("tag"),
+            Request::get("search")
         );
         $this->received   = true;
         $this->message_id = $message_id;
@@ -72,21 +72,21 @@ class MessagesController extends AuthenticatedController {
             foreach (Request::getArray("bulk") as $message_id) {
                 $this->deleteMessage($message_id);
             }
-            PageLayout::postMessage(MessageBox::success(sprintf(_('%u Nachrichten wurden gelöscht'), count(Request::getArray('bulk')))));
+            PageLayout::postMessage(MessageBox::success(sprintf(_("%u Nachrichten wurden gelöscht"), count(Request::getArray("bulk")))));
         }
 
         $this->messages = $this->getMessages(
             false,
-            Request::int('limit', $this->number_of_displayed_messages),
-            Request::int('offset', 0),
-            Request::get('tag'),
-            Request::get('search')
+            Request::int("limit", $this->number_of_displayed_messages),
+            Request::int("offset", 0),
+            Request::get("tag"),
+            Request::get("search")
         );
         $this->received   = false;
         $this->message_id = $message_id;
         $this->settings   = UserConfig::get($GLOBALS['user']->id)->MESSAGING_SETTINGS;
 
-        $this->render_action('overview');
+        $this->render_action("overview");
 
         return $this->messages;
     }
@@ -111,12 +111,12 @@ class MessagesController extends AuthenticatedController {
         $template_factory = $this->get_template_factory();
         foreach ($messages as $message) {
             $this->output['messages'][] = $template_factory
-                                            ->open("messages/_message_row.php")
-                                            ->render(['message'    => $message,
-                                                           'controller' => $this,
-                                                           'received'   => (bool) Request::int("received"),
-                                                           'settings'   => $this->settings
-                                                    ]);
+                ->open("messages/_message_row.php")
+                ->render(['message'    => $message,
+                    'controller' => $this,
+                    'received'   => (bool) Request::int("received"),
+                    'settings'   => $this->settings
+                ]);
         }
 
         $this->render_json($this->output);
@@ -151,8 +151,8 @@ class MessagesController extends AuthenticatedController {
             // controller is not called via ajax to ensure message is loaded
             // in dialog.
             $target = $this->message->autor_id === $GLOBALS['user']->id
-                    ? $this->url_for('messages/sent/' . $message_id)
-                    : $this->url_for('messages/overview/' . $message_id);
+                ? $this->url_for('messages/sent/' . $message_id)
+                : $this->url_for('messages/overview/' . $message_id);
 
             PageLayout::addHeadElement('script', [], sprintf(
                 'jQuery(function () { %s });',
@@ -623,10 +623,10 @@ class MessagesController extends AuthenticatedController {
         if ($message && $message->permissionToRead($GLOBALS['user']->id)) {
             $this->msg = $message->toArray();
             $this->msg['from'] = $message['autor_id'] === '____%system%____'
-                                ? _('Stud.IP')
-                                : ($message->getSender()
-                                    ? $message->getSender()->getFullname()
-                                    : _('unbekannt'));
+                ? _('Stud.IP')
+                : ($message->getSender()
+                    ? $message->getSender()->getFullname()
+                    : _('unbekannt'));
             $this->msg['to'] = $GLOBALS['user']->id == $message->autor_id ?
                 join(', ', $message->getRecipients()->pluck('fullname')) :
                 $GLOBALS['user']->getFullname() . ' ' . sprintf(_('(und %d weitere)'), $message->getNumRecipients()-1);
@@ -705,11 +705,11 @@ class MessagesController extends AuthenticatedController {
                 $this->deleteMessage($returnedMessage);
             }
             if ($this->sndrec == 'rec') {
-                PageLayout::postMessage(MessageBox::success(_('Alle empfangenen Nachrichten wurden gelöscht.')));
-                $this->redirect('messages/overview');
+                PageLayout::postMessage(MessageBox::success(sprintf(_("Alle empfangenen Nachrichten wurden gelöscht.") )));
+                $this->redirect("messages/overview");
             } else if ($this->sndrec == 'snd') {
-                PageLayout::postMessage(MessageBox::success(_('Alle gesendeten Nachrichten wurden gelöscht.')));
-                $this->redirect('messages/sent');
+                PageLayout::postMessage(MessageBox::success(sprintf(_("Alle gesendeten Nachrichten wurden gelöscht.") )));
+                $this->redirect("messages/sent");
             }
         }
     }
@@ -929,33 +929,38 @@ class MessagesController extends AuthenticatedController {
             ]
         );
 
-        $test = 'xyz';
         if ($action === 'overview') {
             if (MessageUser::findBySQL("snd_rec = 'rec' AND user_id = :id AND deleted != 1 LIMIT 1", ['id' => $this->user])) {
+                $message = sprintf(
+                    _("Möchten Sie wirklich alle Nachrichten im Posteingang löschen? Es werden %u Nachrichten endgültig gelöscht."),
+                    MessageUser::countBySQL("snd_rec = 'rec' AND user_id = :id AND deleted != 1", ['id' => $this->user])
+                );
                 $actions->addLink(
                     _('Nachrichten im Posteingang löschen'),
                     $this->url_for('messages/deleteInboxOutbox/rec'),
                     Icon::create('trash'),
-                    ['onclick' => 'return STUDIP.Dialog.confirmAsPost("Möchten Sie wirklich alle Nachrichten im Posteingang löschen? Es werden '
-                        . count(MessageUser::findBySQL("snd_rec = 'rec' AND user_id = :id AND deleted != 1", ['id' => $this->user]))
-                        . ' Nachrichten endgültig gelöscht.".toLocaleString(), this.href);']
+                    ['onclick' => 'return STUDIP.Dialog.confirmAsPost("'
+                        . $message . '", this.href);']
                 );
             }
         }
 
         if ($action === 'sent') {
             if (MessageUser::findBySQL("snd_rec = 'snd' AND user_id = :id AND deleted != 1 LIMIT 1", ['id' => $this->user])) {
+                $message = sprintf(
+                    _("Möchten Sie wirklich alle Nachrichten im Postausgang löschen? Es werden %u Nachrichten endgültig gelöscht."),
+                    MessageUser::countBySQL("snd_rec = 'snd' AND user_id = :id AND deleted != 1", ['id' => $this->user])
+                );
                 $actions->addLink(
                     _('Nachrichten im Postausgang löschen'),
                     $this->url_for('messages/deleteInboxOutbox/snd'),
                     Icon::create('trash'),
-                    ['onclick' => 'return STUDIP.Dialog.confirmAsPost("Möchten Sie wirklich alle Nachrichten im Postausgang löschen? Es werden '
-                        . count(MessageUser::findBySQL("snd_rec = 'snd' AND user_id = :id AND deleted != 1", ['id' => $this->user]))
-                        . ' Nachrichten endgütlig gelöscht.".toLocaleString(), this.href);']
+                    ['onclick' => 'return STUDIP.Dialog.confirmAsPost("'
+                        . $message . '", this.href);']
                 );
+
             }
         }
-
 
         $sidebar->addWidget($actions);
 
