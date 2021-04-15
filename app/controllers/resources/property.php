@@ -79,7 +79,7 @@ class Resources_PropertyController extends AuthenticatedController
                 );
                 return;
             }
-            
+
             $property->name = $this->name;
             $property->description = $this->description;
             $property->type = $this->type;
@@ -120,7 +120,7 @@ class Resources_PropertyController extends AuthenticatedController
             );
             return;
         }
-        
+
         $this->defined_types = ResourcePropertyDefinition::getDefinedTypes();
 
         $this->show_form = true;
@@ -162,6 +162,7 @@ class Resources_PropertyController extends AuthenticatedController
 
             $this->property->description = $this->description;
             $this->property->display_name = $this->display_name;
+            $this->property->info_label = $this->info_label ? '1' : '0';
 
             if (!$this->property->system) {
                 //The following fields may only be edited
@@ -176,24 +177,16 @@ class Resources_PropertyController extends AuthenticatedController
                     : '0'
                 );
                 $this->property->write_permission_level = $this->write_permission_level;
-                $this->property->info_label = (
-                    $this->info_label
-                    ? '1'
-                    : '0'
-                );
+
             }
-            
-            if ($this->property->isDirty()) {
-                $success = $this->property->store();
-            } else {
-                $success = true;
-            }
+
+            $success = $this->property->store();
 
             if ($success) {
                 PageLayout::postSuccess(
                     _('Die Eigenschaft wurde gespeichert!')
                 );
-            } else {
+            } elseif ($success === false) {
                 PageLayout::postError(
                     _('Fehler beim Speichern der Eigenschaft!')
                 );
