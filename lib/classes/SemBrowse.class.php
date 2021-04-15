@@ -715,7 +715,8 @@ class SemBrowse {
 
         // don't show Studiengruppen if user not logged in
         if (!$GLOBALS['user'] || $GLOBALS['user']->id == 'nobody') {
-            $query .= " AND seminare.status != '99'";
+            $studygroup_types = DBManager::get()->quote(studygroup_sem_types());
+            $query .= " AND seminare.status NOT IN ({$studygroup_types})";
         }
 
         $db = new DB_Seminar($query);

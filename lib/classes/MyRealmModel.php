@@ -243,7 +243,7 @@ class MyRealmModel
         $courses = new SimpleCollection($courses);
         if ($studygroup_filter) {
             $courses = $courses->filter(function ($a) {
-                return (int)$a['status'] != 99;
+                return !$a->isStudygroup();
             });
         }
         $courses = $courses->filter(function ($a) use ($semesters) {

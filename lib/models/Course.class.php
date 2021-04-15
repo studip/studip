@@ -525,7 +525,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         $data[1] = $sem_type['name'];
         $data[2] = $this->veranstaltungsnummer;
         $data[3] = $this->start_semester->name;
-        if ($this->start_semester !== $this->end_semester && (int)$this->status != 99) {
+        if ($this->start_semester !== $this->end_semester && !$this->isStudygroup()) {
             $data[3] .= ' - ' .  ($this->end_semester ? $this->end_semester->name : _('unbegrenzt'));
         }
         return trim(vsprintf($template[$format], array_map('trim', $data)));
@@ -907,5 +907,14 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
              ORDER BY IF(semester_courses.semester_id IS NULL, 1, 0) DESC, start_time DESC, Name ASC",
             [$seminar_ids]
         );
+    }
+
+    /**
+     * Returns whether this course is a studygroup
+     * @return bool
+     */
+    public function isStudygroup()
+    {
+        return in_array($this->status, studygroup_sem_types());
     }
 }

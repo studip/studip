@@ -210,7 +210,7 @@ class Deputy extends SimpleORMap
         }
 
         return SimpleCollection::createFromArray(
-            self::findBySQL('JOIN auth_user_md5 ON (deputies.range_id = auth_user_md5.user_id) 
+            self::findBySQL('JOIN auth_user_md5 ON (deputies.range_id = auth_user_md5.user_id)
                 WHERE deputies.user_id = ?',
                 [$user_id]
             )
@@ -260,10 +260,12 @@ class Deputy extends SimpleORMap
                 ];
                 $where = " WHERE deputies.user_id = '$user->id'";
                 if (Config::get()->MY_COURSES_ENABLE_STUDYGROUPS && !$studygroups) {
-                    $where .= " AND seminare.status != 99";
+                    $studygroup_types = DBManager::get()->quote(studygroup_sem_types());
+                    $where .= " AND seminare.status NOT IN ({$studygroup_types})";
                 }
-                if($studygroups) {
-                    $where .= " AND seminare.status = 99";
+                if ($studygroups) {
+                    $studygroup_types = DBManager::get()->quote(studygroup_sem_types());
+                    $where .= " AND seminare.status IN ({$studygroup_types})";
                 }
                 break;
             // Grouping and notification settings for my courses

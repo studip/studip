@@ -331,11 +331,13 @@ class MyCoursesController extends AuthenticatedController
                   {$add_query}
                   WHERE seminar_user.user_id = ?";
         if (Config::get()->MY_COURSES_ENABLE_STUDYGROUPS && !$studygroups) {
-            $query .= " AND seminare.status != 99";
+            $studygroup_types = DBManager::get()->quote(studygroup_sem_types());
+            $query .= " AND seminare.status NOT IN ({$studygroup_types})";
         }
 
         if ($studygroups) {
-            $query .= " AND seminare.status = 99";
+            $studygroup_types = DBManager::get()->quote(studygroup_sem_types());
+            $query .= " AND seminare.status IN ({$studygroup_types})";
         }
         if (Config::get()->DEPUTIES_ENABLE) {
             $query .= " UNION "
@@ -851,10 +853,13 @@ class MyCoursesController extends AuthenticatedController
                   LEFT JOIN semester_courses ON (semester_courses.course_id = seminare.Seminar_id)
                   LEFT JOIN semester_data ON (semester_courses.semester_id = semester_data.semester_id)
                   LEFT JOIN seminar_user USING (Seminar_id)
-                  WHERE seminar_user.user_id = ? AND seminare.status <> 99
+                  WHERE seminar_user.user_id = ? AND seminare.status NOT IN (?)
                   GROUP BY semester_data.semester_id";
         $statement = DBManager::get()->prepare($query);
-        $statement->execute([$GLOBALS['user']->id]);
+        $statement->execute([
+            $GLOBALS['user']->id,
+            studygroup_sem_types(),
+        ]);
         $courses = $statement->fetchAll(PDO::FETCH_COLUMN);
 
         if (!empty($semesters)) {
