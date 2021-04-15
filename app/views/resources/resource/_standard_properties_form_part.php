@@ -21,7 +21,7 @@
                         $property_data[$property->id],
                         '',
                         true,
-                        false
+                        true
                     ) ?>
                 <? endforeach ?>
             </section>
