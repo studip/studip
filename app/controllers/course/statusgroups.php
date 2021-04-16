@@ -116,13 +116,9 @@ class Course_StatusgroupsController extends AuthenticatedController
              */
             if ($g->id == $this->sort_group || $this->open_groups) {
                 if ($this->sort_group == $g->id) {
-                    $sorted = StatusgroupsModel::sortGroupMembers(
-                        $g->members,
-                        $this->sort_by, $this->order);
+                    $sorted = $this->sortMembers($g->members, $this->sort_by, $this->order);
                 } else {
-                    $sorted = StatusgroupsModel::sortGroupMembers(
-                        $g->members
-                    );
+                    $sorted = $sorted = $this->sortMembers($g->members);
                 }
 
                 foreach ($sorted as $member) {
@@ -197,7 +193,7 @@ class Course_StatusgroupsController extends AuthenticatedController
 
             if ($this->sort_group == 'nogroup') {
                 $members = $this->allmembers->findby('user_id', $nogroupmembers);
-                $members = StatusgroupsModel::sortGroupMembers($members, $this->sort_by, $this->order);
+                $members = $this->sortMembers($members, $this->sort_by, $this->order);
                 $groupdata['load'] = true;
             } else {
                 $members = $this->allmembers->findby(
@@ -322,9 +318,7 @@ class Course_StatusgroupsController extends AuthenticatedController
             $this->invisible = 0;
             if (count($this->group->members) > 0) {
                 //Note: $members consists of StatusgruppeUser objects here.
-                $members = StatusgroupsModel::sortGroupMembers(
-                    $this->group->members
-                );
+                $members = $this->sortMembers($this->group->members);
                 foreach ($members as $member) {
                     //Get the course member object to check the visibility
                     //in the course.
@@ -366,7 +360,7 @@ class Course_StatusgroupsController extends AuthenticatedController
 
             $members = new SimpleCollection($members);
             //Note: $members consists of CourseMember objects here.
-            $members = StatusgroupsModel::sortGroupMembers($members);
+            $members = $this->sortMembers($members);
             $this->invisible = 0;
             $this->members = [];
             foreach ($members as $member) {
@@ -1413,5 +1407,15 @@ class Course_StatusgroupsController extends AuthenticatedController
         $this->config->store('COURSE_MEMBERGROUPS_HIDE', $state);
 
         $this->redirect('course/statusgroups');
+    }
+
+    private function sortMembers(SimpleCollection $members, $sort_by = null, $sort_dir = null)
+    {
+        $order = "nachname asc, vorname asc";
+        if ($sort_by && $sort_dir) {
+            $order = "{$sort_by} {$sort_dir}, {$order}";
+        }
+        return $members->orderBy($order);
+
     }
 }
