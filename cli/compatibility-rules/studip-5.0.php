@@ -32,8 +32,8 @@ return [
     '/(?<!Deputy::)isDeputy/' => '#{red:Removed} - Use #{yellow:Deputy::isDeputy()} instead',
     'setDeputyHomepageRights' => '#{red:Removed} - Use #{yellow:Deputy model} instead',
     'getValidDeputyPerms' => '#{red:Removed} - Use #{yellow:Deputy::getValidPerms()} instead',
-    'getMyDeputySeminarsQuery' => '#{red:Removed} - Use #{yellow:Deputy::isActivated()} instead',
-    'isDefaultDeputyActivated' => '#{red:Removed} - Use #{yellow:Deputy::getMySeminarsQuery()} instead',
+    'isDefaultDeputyActivated' => '#{red:Removed} - Use #{yellow:Deputy::isActivated()} instead',
+    'getMyDeputySeminarsQuery' => '#{red:Removed} - Use #{yellow:Deputy::getMySeminarsQuery()} instead',
     'isDeputyEditAboutActivated' => '#{red:Removed} - Use #{yellow:Deputy::isEditActivated()} instead',
 
     // https://develop.studip.de/trac/ticket/10870
