@@ -332,7 +332,7 @@ class StandardFile implements FileType, ArrayAccess
         if ($this->isDownloadable($GLOBALS['user']->id)) {
             $buttons[] = Studip\LinkButton::createDownload(
                 _('Herunterladen'),
-                $this->getDownloadURL()
+                $this->fileref->getDownloadURL('force_download')
             );
         }
         return $buttons;
