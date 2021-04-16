@@ -135,7 +135,7 @@ class MyRealmModel
         if ($neue || $count > 0) {
             $nav = new Navigation('vote', '#vote');
             if ($neue) {
-                $nav->setImage(Icon::create('vote+new', 'attention', [
+                $nav->setImage(Icon::create('vote+new', Icon::ROLE_ATTENTION, [
                     'title' => sprintf(
                         ngettext(
                             '%1$u Fragebogen, %2$u neuer',
@@ -148,7 +148,7 @@ class MyRealmModel
                 ]));
                 $nav->setBadgeNumber($neue);
             } else if ($count) {
-                $nav->setImage(Icon::create('vote', 'inactive', [
+                $nav->setImage(Icon::create('vote', Icon::ROLE_INACTIVE, [
                     'title' => sprintf(
                         ngettext(
                             '%u Fragebogen',
@@ -231,12 +231,9 @@ class MyRealmModel
         ]);
 
         if ($deputies_enabled) {
-            $datas = self::getDeputies($GLOBALS['user']->id);
-            if (!empty($datas)) {
-                foreach ($datas as $data) {
-                    $deputies[] = Course::import($data);
-                }
-                $courses = array_merge($courses, $deputies);
+            $deputy_courses = Deputy::findDeputyCourses($GLOBALS['user']->id)->pluck('course');
+            if (!empty($deputy_courses)) {
+                $courses = array_merge($courses, $deputy_courses);
             }
         }
         // create a new collection for more functionality
@@ -257,28 +254,6 @@ class MyRealmModel
         $courses = self::sortCourses($courses, $ordering);
 
         return $courses;
-    }
-
-
-    public static function getDeputies($user_id)
-    {
-        $query = "SELECT DISTINCT range_id AS seminar_id
-                  FROM deputies
-                  JOIN seminare ON range_id = seminar_id
-                  WHERE user_id = ?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$user_id]);
-        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $data;
-    }
-
-
-    public static function getDeputieGroup($range_id)
-    {
-        $query     = "SELECT gruppe FROM deputies WHERE range_id = ? AND user_id=?";
-        $statement = DBManager::get()->prepare($query);
-        $statement->execute([$range_id, $GLOBALS['user']->id]);
-        return $statement->fetch(PDO::FETCH_COLUMN);
     }
 
     public static function getSelectedSemesters($sem = 'all')
@@ -378,6 +353,7 @@ class MyRealmModel
             $user_status = @$member_ships[$course->id]['status'];
             if (!$user_status && Config::get()->DEPUTIES_ENABLE && Deputy::isDeputy($GLOBALS['user']->id, $course->id)) {
                 $user_status = 'dozent';
+                $deputy = Deputy::findOneBySQL('range_id = ? AND user_id = ?', [$course->id, $GLOBALS['user']->id]);
                 $is_deputy = true;
             } else {
                 $is_deputy = false;
@@ -394,7 +370,7 @@ class MyRealmModel
             $_course['last_visitdate'] = $visits[$course->id]['sem']['last_visitdate'];
             $_course['visitdate']      = $visits[$course->id]['sem']['visitdate'];
             $_course['user_status']    = $user_status;
-            $_course['gruppe']         = !$is_deputy ? @$member_ships[$course->id]['gruppe'] : self::getDeputieGroup($course->id);
+            $_course['gruppe']         = !$is_deputy ? @$member_ships[$course->id]['gruppe'] : $deputy->gruppe;
             $_course['sem_number_end'] = $course->isOpenEnded() ? $max_sem_key : Semester::getIndexById($course->end_semester->id);
             $_course['sem_number']     = Semester::getIndexById($course->start_semester->id);
             $_course['modules']        = $modules->getLocalModules($course->id, 'sem', $course->modules, $course->status);

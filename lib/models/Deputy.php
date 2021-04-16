@@ -218,6 +218,21 @@ class Deputy extends SimpleORMap
     }
 
     /**
+     * Fetch all courses of which the given person is default deputy.
+     * @param string|null $user_id
+     * @return SimpleCollection
+     */
+    public static function findDeputyCourses(string $user_id = null)
+    {
+        if(is_null($user_id)) {
+            $user_id = $GLOBALS['user']->id;
+        }
+        return SimpleCollection::createFromArray(
+            self::findBySQL('JOIN seminare ON range_id = seminar_id WHERE user_id = ?', [$user_id])
+        );
+    }
+
+    /**
      * Database query for retrieving all courses where the current user is deputy
      * in.
      *
