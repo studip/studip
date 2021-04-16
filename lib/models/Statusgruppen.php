@@ -102,6 +102,62 @@ class Statusgruppen extends SimpleORMap implements PrivacyObject
              : $groups;
     }
 
+    /**
+     * Creates or updates a statusgroup.
+     *
+     * @param string $id                ID of an existing group or empty if new group
+     * @param string $name              group name
+     * @param int    $position          position or null if automatic position after other groups
+     * @param string $range_id          ID of the object this group belongs to
+     * @param int    $size              max number of members or 0 if unlimited
+     * @param int    $selfassign        may users join this group by themselves?
+     * @param int    $selfassign_start  group joining is possible starting at ...
+     * @param int    $makefolder        create a document folder assigned to this group?
+     * @param array  $dates             dates assigned to this group
+     * @return Statusgruppen The saved statusgroup.
+     * @throws Exception
+     */
+    public static function createOrUpdate(
+        $id,
+        $name,
+        $position,
+        $range_id,
+        $size,
+        $selfassign,
+        $selfassign_start,
+        $selfassign_end,
+        $makefolder,
+        $dates = []
+    )
+    {
+        $group = new Statusgruppen($id);
+
+        $group->name = $name;
+        $group->position = $position;
+        $group->range_id = $range_id;
+        $group->size = $size;
+        $group->selfassign = $selfassign;
+        $group->selfassign_start = $selfassign ? $selfassign_start : 0;
+        $group->selfassign_end = $selfassign ? $selfassign_end : 0;
+
+        // Set assigned dates.
+        if ($dates) {
+            $group->dates = CourseDate::findMany($dates);
+        }
+
+        $group->store();
+
+        /*
+         * Create document folder if requested (ID is needed here,
+         * so we do that after store()).
+         */
+        if (!$group->hasFolder() && $makefolder) {
+            $group->updateFolder(true);
+        }
+
+        return $group;
+    }
+
     public function getChildren()
     {
         $result = Statusgruppen::findBySQL('range_id = ? ORDER BY position', [$this->id]);

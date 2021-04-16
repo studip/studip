@@ -519,13 +519,17 @@ class Course_StatusgroupsController extends AuthenticatedController
             }
         }
         $position = Statusgruppen::find($group_id)->position;
-        $group = StatusgroupsModel::updateGroup($group_id, Request::get('name'),
-            $position, $this->course_id, Request::int('size', 0),
+        $group = Statusgruppen::createOrUpdate(
+            $group_id,
+            Request::get('name'),
+            $position,
+            $this->course_id, Request::int('size', 0),
             Request::int('selfassign', 0) + Request::int('exclusive', 0),
             strtotime(Request::get('selfassign_start', 'now')),
             Request::get('selfassign_end') ? strtotime(Request::get('selfassign_end')) : 0,
             Request::int('makefolder', 0),
-            Request::getArray('dates'));
+            Request::getArray('dates')
+        );
 
         if (!$group_id) {
             PageLayout::postSuccess(sprintf(
@@ -767,7 +771,7 @@ class Course_StatusgroupsController extends AuthenticatedController
                 $numbering = Request::int('startnumber', 1);
             }
             for ($i = 0 ; $i < Request::int('number') ; $i++) {
-                $group = StatusgroupsModel::updateGroup('', Request::get('prefix').' '.
+                $group = Statusgruppen::createOrUpdate('', Request::get('prefix').' '.
                     $numbering++,
                     null, $this->course_id, Request::int('size', 0),
                     Request::int('selfassign', 0) + Request::int('exclusive', 0),
@@ -793,7 +797,7 @@ class Course_StatusgroupsController extends AuthenticatedController
                     })->orderBy('priority');
 
                     foreach ($topics as $t) {
-                        $group = StatusgroupsModel::updateGroup('', _('Thema:') . ' ' . $t->title,
+                        $group = Statusgruppen::createOrUpdate('', _('Thema:') . ' ' . $t->title,
                             null, $this->course_id, Request::int('size', 0),
                             Request::int('selfassign', 0) + Request::int('exclusive', 0),
                             strtotime(Request::get('selfassign_start', 'now')),
@@ -845,7 +849,7 @@ class Course_StatusgroupsController extends AuthenticatedController
                             }
                         }
 
-                        $group = StatusgroupsModel::updateGroup('', $name,
+                        $group = Statusgruppen::createOrUpdate('', $name,
                             null, $this->course_id, Request::int('size', 0),
                             Request::int('selfassign', 0) + Request::int('exclusive', 0),
                             strtotime(Request::get('selfassign_start', 'now')),
@@ -877,7 +881,7 @@ class Course_StatusgroupsController extends AuthenticatedController
                             $name .= ' (' . $room . ')';
                         }
 
-                        $group = StatusgroupsModel::updateGroup('', $name,
+                        $group = Statusgruppen::createOrUpdate('', $name,
                             $counter + 1, $this->course_id, Request::int('size', 0),
                             Request::int('selfassign', 0) + Request::int('exclusive', 0),
                             strtotime(Request::get('selfassign_start', 'now')),
@@ -899,7 +903,7 @@ class Course_StatusgroupsController extends AuthenticatedController
                         CourseMember::findByCourseAndStatus($this->course_id, 'dozent'))->orderBy('position');
 
                     foreach ($lecturers as $l) {
-                        StatusgroupsModel::updateGroup('', $l->getUserFullname('full'),
+                        Statusgruppen::createOrUpdate('', $l->getUserFullname('full'),
                             null, $this->course_id, Request::int('size', 0),
                             Request::int('selfassign', 0) + Request::int('exclusive', 0),
                             strtotime(Request::get('selfassign_start', 'now')),
@@ -1117,7 +1121,7 @@ class Course_StatusgroupsController extends AuthenticatedController
         $groups = Statusgruppen::findMany(Request::getArray('groups'));
 
         foreach ($groups as $g) {
-            StatusgroupsModel::updateGroup($g->id, $g->name,
+            Statusgruppen::createOrUpdate($g->id, $g->name,
                 $g->position, $this->course_id,
                 Request::int('size', 0),
                 $g->selfassign, $g->selfassign_start, $g->selfassign_end,
@@ -1151,7 +1155,7 @@ class Course_StatusgroupsController extends AuthenticatedController
         }
 
         foreach ($groups as $g) {
-            StatusgroupsModel::updateGroup($g->id, $g->name,
+            Statusgruppen::createOrUpdate($g->id, $g->name,
                 $g->position, $this->course_id, $g->size,
                 $selfassign, $selfassign_start, $selfassign_end,
                 false);
