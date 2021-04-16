@@ -27,7 +27,7 @@ return [
     'getDeputies' => '#{red:Removed} - Use #{yellow:Deputy::findDeputies()} instead',
     'getDeputyBosses' => '#{red:Removed} - Use #{yellow:Deputy::findDeputyBosses()} instead',
     '/(?<!Deputy::)addDeputy/' => '#{red:Removed} - Use #{yellow:Deputy::addDeputy()} instead',
-    'deleteDeputy' => '#{red:Removed} - Use #{yellow:Deputy model} instead',
+    '/deleteDeputy(?=\()/' => '#{red:Removed} - Use #{yellow:Deputy model} instead',
     'deleteAllDeputies' => '#{red:Removed} - Use #{yellow:Deputy::deleteByRange_id} instead',
     '/(?<!Deputy::)isDeputy/' => '#{red:Removed} - Use #{yellow:Deputy::isDeputy()} instead',
     'setDeputyHomepageRights' => '#{red:Removed} - Use #{yellow:Deputy model} instead',
