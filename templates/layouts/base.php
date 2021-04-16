@@ -19,7 +19,7 @@ if ($navigation) {
                 $nav->getTitle(),
                 URLHelper::getURL($nav->getURL()),
                 null,
-                ['id' => $nav_id]
+                array_merge($nav->getLinkAttributes(), ['id' => $nav_id])
             );
             $link->setActive($nav->isActive());
             if (!$nav->isEnabled()) {

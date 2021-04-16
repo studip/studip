@@ -17,12 +17,13 @@ $ebene3 = [];
                     <? if ($nav->isActive()) $path2 = $path; ?>
                     <? if ($nav->isEnabled()): ?>
                         <?
-                        $badge_attr = '';
+                        $attr = array_merge(['class' => ''], $nav->getLinkAttributes());
                         if ($nav->hasBadgeNumber()) {
-                            $badge_attr = ' class="badge" data-badge-number="' . intval($nav->getBadgeNumber())  . '"';
+                            $attr['class'] = trim("{$attr['class']} badge");
+                            $attr['data-badge-number'] = (int) $nav->getBadgeNumber();
                         }
                         ?>
-                        <a href="<?= URLHelper::getLink($nav->getURL()) ?>"<?= $badge_attr ?>>
+                        <a href="<?= URLHelper::getLink($nav->getURL()) ?>" <?= arrayToHtmlAttributes($attr) ?>>
                             <? if ($image = $nav->getImage()) : ?>
                                 <?= $image->asImg(['class' => "tab-icon", 'title' => $nav->getTitle() ? htmlReady($nav->getTitle()) : htmlReady($nav->getDescription())]) ?>
                             <? endif ?>

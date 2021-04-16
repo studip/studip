@@ -45,6 +45,7 @@ if (isset($_COOKIE['navigation-length'])) {
                             <? if ($nav->getDescription()): ?>
                                 title="<?= htmlReady($nav->getDescription()) ?>"
                             <? endif; ?>
+                                <?= arrayToHtmlAttributes(array_diff_key($nav->getLinkAttributes(), array_flip(['class', 'title']))) ?>
                             ><?= htmlReady($nav->getTitle()) ?></a>
                     </li>
                 <? endif; ?>

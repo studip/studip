@@ -44,6 +44,7 @@
             <? else: ?>
                 href="<?= htmlReady($url) ?>" target="_blank" rel="noopener noreferrer"
             <? endif ?>
+                <?= arrayToHtmlAttributes($nav->getLinkAttributes()) ?>
             ><?= htmlReady($nav->getTitle()) ?></a>
             </li>
         <? endif; ?>
