@@ -302,8 +302,10 @@ class CalendarScheduleModel
         // get all virtually added seminars
         $stmt = DBManager::get()->prepare("SELECT * FROM schedule_seminare as c
             LEFT JOIN seminare as s ON (s.Seminar_id = c.Seminar_id)
-            WHERE c.user_id = ? AND s.start_time = ?");
-        $stmt->execute([$user_id, $semester['beginn']]);
+            LEFT JOIN semester_courses ON (semester_courses.course_id = s.Seminar_id)
+            WHERE c.user_id = ? AND s.start_time <= ? AND
+                (semester_courses.semester_id IS NULL OR semester_courses.semester_id = ?)");
+        $stmt->execute([$user_id, $semester['beginn'], $semester['id']]);
 
         while ($entry = $stmt->fetch()) {
             $seminars[$entry['seminar_id']] = [

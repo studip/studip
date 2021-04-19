@@ -14,7 +14,7 @@
             <? if ($GLOBALS['perm']->have_studip_perm('user', $event->range_id)) : ?>
             <a href="<?= URLHelper::getLink('dispatch.php/course/details/?cid=' . $event->range_id) ?>">
             <? else : ?>
-            <a href="<?= URLHelper::getLink('seminar_main.php?auswahl=' . $event->range_id) ?>">
+            <a href="<?= URLHelper::getLink('dispatch.php/course/details/index/' . $event->range_id) ?>">
             <? endif; ?>
                 <?= htmlReady($event->course->getFullname()) ?>
             </a>
