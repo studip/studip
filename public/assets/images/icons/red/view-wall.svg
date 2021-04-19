@@ -1,1 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#cb1800"><g id="Ebene_2" data-name="Ebene 2"><g id="icons"><g id="view-wall"><path d="M6,10v5H1V10H6M7,9H0v7H7V9Z"/><path d="M6,1V6H1V1H6M7,0H0V7H7V0Z"/><path d="M15,10v5H10V10h5m1-1H9v7h7V9Z"/><path d="M15,1V6H10V1h5m1-1H9V7h7V0Z"/></g></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#cb1800"><path d="M6 10v5H1v-5h5m1-1H0v7h7V9zM6 1v5H1V1h5m1-1H0v7h7V0zm8 10v5h-5v-5h5m1-1H9v7h7V9zm-1-8v5h-5V1h5m1-1H9v7h7V0z" data-name="Ebene 2"/></svg>
