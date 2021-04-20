@@ -146,11 +146,19 @@ class DatabaseChangesTic9218 extends Migration
                   CHANGE COLUMN `mkdate` `mkdate` INT(11) UNSIGNED NULL";
         DBManager::get()->exec($query);
 
-        $query = "ALTER TABLE `blubber_threads_unfollow`
+        try {
+            $query = "ALTER TABLE `blubber_threads_unfollow`
                   CHANGE COLUMN `thread_id` `thread_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
                   CHANGE COLUMN `user_id` `user_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
                   CHANGE COLUMN `mkdate` `mkdate` INT(11) UNSIGNED NULL";
-        DBManager::get()->exec($query);
+            DBManager::get()->exec($query);
+        } catch (Exception $e) {
+            $query = "ALTER TABLE `blubber_threads_followstates`
+                  CHANGE COLUMN `thread_id` `thread_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
+                  CHANGE COLUMN `user_id` `user_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                  CHANGE COLUMN `mkdate` `mkdate` INT(11) UNSIGNED NULL";
+            DBManager::get()->exec($query);
+        }
 
         $query = "ALTER TABLE `calendar_event`
                   CHANGE COLUMN `range_id` `range_id` CHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
@@ -1690,11 +1698,19 @@ class DatabaseChangesTic9218 extends Migration
                   CHANGE COLUMN `mkdate` `mkdate` INT(11) NULL";
         DBManager::get()->exec($query);
 
-        $query = "ALTER TABLE `blubber_threads_unfollow`
+        try {
+            $query = "ALTER TABLE `blubber_threads_unfollow`
                   CHANGE COLUMN `thread_id` `thread_id` VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
                   CHANGE COLUMN `user_id` `user_id` VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
                   CHANGE COLUMN `mkdate` `mkdate` INT(11) NULL";
-        DBManager::get()->exec($query);
+            DBManager::get()->exec($query);
+        } catch (Exception $e) {
+            $query = "ALTER TABLE `blubber_threads_followstates`
+                  CHANGE COLUMN `thread_id` `thread_id` VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
+                  CHANGE COLUMN `user_id` `user_id` VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
+                  CHANGE COLUMN `mkdate` `mkdate` INT(11) NULL";
+            DBManager::get()->exec($query);
+        }
 
         $query = "ALTER TABLE `calendar_event`
                   CHANGE COLUMN `range_id` `range_id` VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL,
