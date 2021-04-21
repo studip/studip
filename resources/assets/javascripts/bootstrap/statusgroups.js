@@ -44,6 +44,9 @@ STUDIP.domReady(function() {
                 index_before = ui.item.index();
             },
             stop: function(event, ui) {
+                // Clear style attribute added by dragging
+                $(ui.item).removeAttr('style');
+
                 if (index_before === ui.item.index()) {
                     return;
                 }
@@ -53,6 +56,7 @@ STUDIP.domReady(function() {
                     id: ui.item.attr('id'),
                     index: ui.item.index() - 1
                 });
+
             }
         });
 });
