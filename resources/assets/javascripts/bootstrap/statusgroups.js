@@ -24,13 +24,11 @@ STUDIP.domReady(function() {
         }
     });
 
-    var handle = '> header';
+    var handle = '.sg-sortable-handle';
     // Check for touch device
+    handle = '.sg-sortable-handle';
     if (window.matchMedia('(hover: none)').matches) {
-        $('.course-statusgroups[data-sortable]').addClass('by-touch').find('> .draggable').each(function () {
-            $('header', this).prepend('<span class="sg-sortable-handle">');
-        });
-        handle = '.sg-sortable-handle';
+        $('.course-statusgroups[data-sortable]').addClass('by-touch');
     }
 
     var index_before = null;
