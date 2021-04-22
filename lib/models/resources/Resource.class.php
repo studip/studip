@@ -326,7 +326,7 @@ class Resource extends SimpleORMap implements StudipItem
     {
         //Delete the folder:
 
-        $folder = $this->getFolder();
+        $folder = $this->getFolder(false);
         if ($folder) {
             $folder->delete();
         }
@@ -352,7 +352,18 @@ class Resource extends SimpleORMap implements StudipItem
         return $this->getFullName();
     }
 
-    public function getFolder()
+
+    /**
+     * Retrieves the folder for this resource.
+     *
+     * @param bool $create_if_missing Whether to create a folder (true) or
+     *     not (false) in case no folder exists for this resource.
+     *     Defaults to true.
+     *
+     * @returns ResourceFolder|null Either a ResourceFolder instance or null
+     *     in case no such instance can be retrieved or created.
+     */
+    public function getFolder($create_if_missing = true)
     {
         $folder = Folder::findOneByRange_id($this->id);
 
@@ -363,7 +374,7 @@ class Resource extends SimpleORMap implements StudipItem
                 //Only return ResourceFolder instances.
                 return $folder;
             }
-        } else {
+        } elseif ($create_if_missing) {
             $folder = $this->createFolder();
             if ($folder instanceof ResourceFolder) {
                 return $folder;
