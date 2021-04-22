@@ -27,7 +27,7 @@
  */
 class ResourceLabel extends Resource
 {
-    public function getFolder()
+    public function getFolder($create_if_missing = true)
     {
         return null;
     }

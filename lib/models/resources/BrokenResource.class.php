@@ -34,7 +34,7 @@ class BrokenResource extends Resource
         return false;
     }
 
-    public function getFolder()
+    public function getFolder($create_if_missing = true)
     {
         return null;
     }
