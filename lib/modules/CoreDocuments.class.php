@@ -22,7 +22,13 @@ class CoreDocuments implements StudipModule
             "dispatch.php/{$range_type}/files"
         );
         $navigation->setImage(Icon::create('files', Icon::ROLE_INACTIVE));
-        $file_refs = FileRef::findBySQL("INNER JOIN folders ON (folders.id = file_refs.folder_id) WHERE folders.range_type = :range_type AND folders.range_id = :context_id AND file_refs.mkdate >= :last_visit AND file_refs.user_id != :me", [
+
+        $condition = "INNER JOIN folders ON (folders.id = file_refs.folder_id)
+                      WHERE folders.range_type = :range_type
+                        AND folders.range_id = :context_id
+                        AND GREATEST(file_refs.mkdate, file_refs.chdate) >= :last_visit
+                        AND file_refs.user_id != :me";
+        $file_refs = FileRef::findBySQL($condition, [
             'me'         => $user_id,
             'last_visit' => $last_visit,
             'context_id' => $course_id,
