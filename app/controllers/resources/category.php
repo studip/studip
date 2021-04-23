@@ -123,7 +123,7 @@ class Resources_CategoryController extends AuthenticatedController
                     "INNER JOIN resource_category_properties rcp
                     USING (property_id)
                     WHERE category_id = :category_id
-                    AND rcp.system = '1'",
+                    AND rcp.`system` = '1'",
                     [
                         'category_id' => $this->category->id
                     ]
@@ -287,7 +287,7 @@ class Resources_CategoryController extends AuthenticatedController
                     "INNER JOIN resource_category_properties rcp
                     USING (property_id)
                     WHERE category_id = :category_id
-                    AND rcp.system = '1'",
+                    AND rcp.`system` = '1'",
                     [
                         'category_id' => $this->category->id
                     ]

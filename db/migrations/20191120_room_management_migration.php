@@ -2144,8 +2144,8 @@ class RoomManagementMigration extends Migration
         //add new resource categories and new properties:
 
         $add_category_statement = $db->prepare(
-            "INSERT INTO resource_categories
-            (id, name, class_name, description, system, iconnr)
+            "INSERT INTO `resource_categories`
+            (`id`,`name`, `class_name`, `description`, `system`, `iconnr`)
             VALUES
             (:id, :name, :class_name, '', 1, 0);"
         );
