@@ -1940,7 +1940,7 @@ class RoomManagementMigration extends Migration
         $db->exec("RENAME TABLE resources_categories TO resource_categories;");
         $db->exec("ALTER TABLE resource_categories
             CHANGE COLUMN category_id id VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
-            CHANGE COLUMN system system TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+            CHANGE COLUMN `system` `system` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
             ADD COLUMN class_name VARCHAR(60) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT 'Resource',
             ADD COLUMN mkdate INT(11) UNSIGNED NOT NULL DEFAULT 0,
             ADD COLUMN chdate INT(11) UNSIGNED NOT NULL DEFAULT 0,
@@ -1951,7 +1951,7 @@ class RoomManagementMigration extends Migration
         $db->exec("ALTER TABLE resource_category_properties
             CHANGE COLUMN requestable requestable TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
             CHANGE COLUMN protected protected TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
-            CHANGE COLUMN system system TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+            CHANGE COLUMN `system` `system` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
             ADD COLUMN form_text text NULL,
             ADD COLUMN mkdate INT(11) UNSIGNED NOT NULL DEFAULT 0,
             ADD COLUMN chdate INT(11) UNSIGNED NOT NULL DEFAULT 0");
@@ -1964,7 +1964,7 @@ class RoomManagementMigration extends Migration
                 'position', 'fileref', 'url', 'resource_ref_list'
                 ) CHARACTER SET latin1 COLLATE latin1_bin,
             CHANGE COLUMN description description text NULL DEFAULT NULL,
-            CHANGE COLUMN system system TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+            CHANGE COLUMN `system` `system` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
             ADD COLUMN display_name VARCHAR(512) NOT NULL DEFAULT '',
             ADD COLUMN searchable TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
             ADD COLUMN range_search TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
@@ -2243,8 +2243,8 @@ class RoomManagementMigration extends Migration
         );
 
         $add_property_statement = $db->prepare(
-            "INSERT INTO resource_property_definitions
-            (property_id, name, type, options, system)
+            "INSERT INTO `resource_property_definitions`
+            (`property_id`, `name`, `type`, `options`, `system`)
             VALUES
             (:id, :name, :type, '', 1);"
         );
@@ -2265,7 +2265,7 @@ class RoomManagementMigration extends Migration
 
         $link_property_statement = $db->prepare(
             "INSERT INTO resource_category_properties
-            (category_id, property_id, system)
+            (`category_id`, `property_id`, `system`)
             VALUES
             (:category_id, :property_id, 1);"
         );
