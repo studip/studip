@@ -31,7 +31,7 @@ class Step00302Modulverwaltung extends Migration
                     navigationpos = '1'");
             $plugin_id = $db->lastInsertId();
             $db->exec("INSERT IGNORE INTO roles_plugins (roleid, pluginid)
-                    SELECT roleid, " . $db->quote($plugin_id) . " FROM roles WHERE system = 'y'");
+                    SELECT roleid, " . $db->quote($plugin_id) . " FROM roles WHERE `system` = 'y'");
         }
 
 

@@ -70,7 +70,7 @@ class LtiConsumer extends Migration
         $db->exec($sql);
 
         $sql = "INSERT INTO roles_plugins (roleid, pluginid)
-                SELECT roleid, ? FROM roles WHERE system = 'y'";
+                SELECT roleid, ? FROM roles WHERE `system` = 'y'";
         $db->execute($sql, [$db->lastInsertId()]);
 
         // install config settings

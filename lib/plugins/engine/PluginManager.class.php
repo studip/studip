@@ -484,7 +484,7 @@ class PluginManager
         $this->readPluginInfos();
 
         $db->exec("INSERT INTO roles_plugins (roleid, pluginid)
-                   SELECT roleid, $id FROM roles WHERE system = 'y' AND rolename != 'Nobody'");
+                   SELECT roleid, $id FROM roles WHERE `system` = 'y' AND rolename != 'Nobody'");
 
         return $id;
     }

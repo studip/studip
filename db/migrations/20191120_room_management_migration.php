@@ -590,7 +590,7 @@ class RoomManagementMigration extends Migration
         $update_property_stmt = $db->prepare(
             "UPDATE resource_property_definitions
             SET name = :name,
-            system = 1,
+            `system` = 1,
             searchable = :searchable,
             range_search = :range_search
             WHERE property_id = :property_id;"
@@ -2131,13 +2131,13 @@ class RoomManagementMigration extends Migration
         //rename and update resource categories:
 
         $db->exec("UPDATE resource_categories
-            SET class_name = 'Room', system = 1
+            SET class_name = 'Room', `system` = 1
             WHERE
             name LIKE '%raum%' OR name LIKE '%Raum%'
             OR name LIKE '%saal%' OR name LIKE '%Saal%';");
 
         $db->exec("UPDATE resource_categories
-            SET class_name = 'Building', system = 1
+            SET class_name = 'Building', `system` = 1
             WHERE
             name LIKE '%gebäude%' OR name LIKE '%Gebäude%';");
 
@@ -2258,7 +2258,7 @@ class RoomManagementMigration extends Migration
 
         $update_property_link_statement = $db->prepare(
             "UPDATE resource_category_properties
-            SET system = 1
+            SET `system` = 1
             WHERE
             category_id = :category_id AND property_id = :property_id;"
         );
