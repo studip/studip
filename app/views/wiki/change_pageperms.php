@@ -24,7 +24,7 @@
             <input type="radio" name="page_read_perms" id="tutor_read" value="1"
                    <? if ($config->read_restricted) echo 'checked'; ?>
                    title="<?= _('Wiki-Seite nur eingeschränkt lesbar') ?>"
-                   data-deactivates="#autor_edit" data-activates="#tutor_edit">
+                   data-deactivates="#autor_edit">
             <?= _('Lehrende und Tutor/innen') ?>
         </label>
     </fieldset>
