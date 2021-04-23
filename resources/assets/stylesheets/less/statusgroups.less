@@ -73,32 +73,16 @@ section.course-statusgroups {
     }
 
     &.ui-sortable {
-        article.draggable header {
-            cursor: move;
-            background-image: url("@{image-path}/anfasser_24.png");
-            background-position: 3px center;
-            background-repeat: no-repeat;
-            padding-left: 12px;
-        }
         article.ui-sortable-placeholder {
             border-style: dotted;
         }
 
-        article.draggable {
-            position: relative;
-
-            header {
-                cursor: default;
-            }
-        }
         .sg-sortable-handle {
             cursor: move;
-
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 15px;
+            background-image: url("@{image-path}/anfasser_24.png");
+            background-position: 3px center;
+            background-repeat: no-repeat;
+            width: 12px;
         }
     }
 }
