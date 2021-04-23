@@ -89,7 +89,7 @@ class ConsultationExtension extends Migration
         $sql = "INSERT IGNORE INTO `roles_plugins` (`roleid`, `pluginid`)
                 SELECT `roleid`, ?
                 FROM `roles`
-                WHERE system = 'y'";
+                WHERE `system` = 'y'";
         DBManager::get()->execute($sql, [$plugin_id]);
 
         $sql = "INSERT IGNORE INTO `plugins_activated`
