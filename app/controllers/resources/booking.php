@@ -1370,10 +1370,20 @@ class Resources_BookingController extends AuthenticatedController
             $room_part_errors = [];
             $bookings = [];
 
-            foreach ($time_intervals as $interval) {
+            foreach ($time_intervals as $index => $interval) {
+                $updated_booking = $this->booking;
+                if ($this->booking_style == 'block') {
+                    //Use the selected booking only for the first time interval
+                    //of the block booking and update it according to the
+                    //time interval. Create new bookings for all other
+                    //time intervals.
+                    if ($index > 0) {
+                        $updated_booking = null;
+                    }
+                }
                 foreach ($this->resources as $resource) {
                     $results = $this->assignResourceAndCollectResults(
-                        $this->booking,
+                        $updated_booking,
                         $resource,
                         $this->current_user,
                         $interval['begin'],
