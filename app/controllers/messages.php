@@ -377,7 +377,7 @@ class MessagesController extends AuthenticatedController {
                 //message is a reply message
                 if (Request::option("quote") === $old_message->getId()) {
                     $quoted_message = true;
-                    $message = _("-_-_ Ursprüngliche Nachricht _-_-");
+                    $message = _(". . . ursprüngliche Nachricht . . .");
                     $message .= "\n" . _("Betreff") . ": " . $old_message['subject'];
                     $message .= "\n" . _("Datum") . ": " . strftime('%x %X', $old_message['mkdate']);
                     $message .= "\n" . _("Von") . ": " . get_fullname($old_message['autor_id']);
@@ -431,7 +431,7 @@ class MessagesController extends AuthenticatedController {
                 $forward_message = true;
 
                 $messagesubject = 'FWD: ' . $old_message['subject'];
-                $message = _("-_-_ Weitergeleitete Nachricht _-_-");
+                $message = _(". . . weitergeleitete Nachricht . . .");
                 $message .= "\n" . _("Betreff") . ": " . $old_message['subject'];
                 $message .= "\n" . _("Datum") . ": " . strftime('%x %X', $old_message['mkdate']);
                 $message .= "\n" . _("Von") . ": " . get_fullname($old_message['autor_id']);
