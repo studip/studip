@@ -20,6 +20,7 @@
  * @property string object_class database column
  * @property string edit_perms database column
  * @property string view_perms database column
+ * @property string institut_id database column
  * @property string system database column
  * @property string priority database column
  * @property string mkdate database column
@@ -27,6 +28,8 @@
  * @property string type database column
  * @property string typeparam database column
  * @property string is_required database column
+ * @property string default_value database column
+ * @property string is_userfilter database column
  * @property string description database column
  * @property SimpleORMapCollection entries has_many DatafieldEntryModel
  */

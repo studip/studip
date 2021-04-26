@@ -1,5 +1,4 @@
 <?php
-# Lifter010: TODO
 /**
  * datafields.php - controller class for the datafields
  *
@@ -15,7 +14,6 @@
  * @package     admin
  * @since       2.1
  */
-
 class Admin_DatafieldsController extends AuthenticatedController
 {
     public $user_status = [
@@ -51,7 +49,7 @@ class Admin_DatafieldsController extends AuthenticatedController
     /**
      * Maintenance view for the datafield view
      *
-     * @param $class static types for datafields
+     * @param string $class static types for datafields
      */
     public function index_action($class = null)
     {
@@ -60,7 +58,7 @@ class Admin_DatafieldsController extends AuthenticatedController
                 $this->class_filter => DataField::getDataFields($this->class_filter),
             ];
         } else {
-            $this->datafields_list = array(
+            $this->datafields_list = [
                 'sem'                 => DataField::getDataFields('sem'),
                 'inst'                => DataField::getDataFields('inst'),
                 'user'                => DataField::getDataFields('user'),
@@ -70,7 +68,7 @@ class Admin_DatafieldsController extends AuthenticatedController
                 'moduldeskriptor'     => DataField::getDataFields('moduldeskriptor'),
                 'modulteildeskriptor' => DataField::getDataFields('modulteildeskriptor'),
                 'studycourse'         => DataField::getDataFields('studycourse'),
-            );
+            ];
         }
 
         // set variables for view
@@ -81,7 +79,7 @@ class Admin_DatafieldsController extends AuthenticatedController
     /**
      * Edit a datatyp
      *
-     * @param md5 $datafield_id
+     * @param string $datafield_id
      */
     public function edit_action($datafield_id)
     {
@@ -141,13 +139,14 @@ class Admin_DatafieldsController extends AuthenticatedController
      */
     public function new_action($type = null)
     {
+        $this->datafield = new DataField();
+
         PageLayout::setTitle(_('Neues Datenfeld anlegen'));
 
         if (Request::submitted('anlegen')) {
-
-            if (Request::get('datafield_name')) {
+            if (Request::submitted('datafield_name')) {
                 $datafield = new DataField();
-                $datafield->name          = Request::get('datafield_name');
+                $datafield->name          = Request::i18n('datafield_name');
                 $datafield->object_type   = $type;
                 if ($type === 'moduldeskriptor' || $type === 'modulteildeskriptor') {
                     $object_class = implode(',', Request::getArray('object_class'));
@@ -159,17 +158,16 @@ class Admin_DatafieldsController extends AuthenticatedController
                 }
                 $datafield->edit_perms    = Request::get('edit_perms');
                 $datafield->view_perms    = Request::get('visibility_perms');
-                $datafield->institut_id   = Request::get('institut_id') ?: null;
-                $datafield->system        = Request::int('system') ?: 0;
-                $datafield->priority      = Request::int('priority') ?: 0;
+                $datafield->institut_id   = Request::option('institut_id');
+                $datafield->system        = Request::int('system', 0) ;
+                $datafield->priority      = Request::int('priority', 0);
                 $datafield->type          = Request::get('datafield_type');
-                $datafield->is_userfilter = Request::int('is_userfilter') ?: 0;
+                $datafield->is_required   = Request::bool('is_required', false);
+                $datafield->is_userfilter = Request::bool('is_userfilter', false);
                 if ($type === 'sem') {
                     $datafield->description = Request::get('description', '');
-                    $datafield->is_required = Request::int('is_required') ?: 0;
                 } else {
                     $datafield->description = '';
-                    $datafield->is_required = Request::int('is_required') ?: 0;
                 }
                 $datafield->store();
 
@@ -212,7 +210,14 @@ class Admin_DatafieldsController extends AuthenticatedController
             PageLayout::postSuccess(_('Das Datenfeld wurde erfolgreich gelöscht!'));
         } elseif (!Request::get('back')) {
             $this->datafield_id = $datafield_id;
-            $this->flash['delete'] = compact('datafield_id', 'name');
+            PageLayout::postQuestion(
+                sprintf(
+                    _('Wollen Sie das Datenfeld "%s" wirklich löschen? Bedenken Sie bitte, dass noch Einträge dazu existieren können'),
+                    htmlReady($datafield->name)
+                ),
+                $this->deleteURL($datafield_id, ['delete' => true]),
+                $this->deleteURL($datafield_id, ['back' => true])
+            );
         }
 
         $this->redirect('admin/datafields/index/' . $type . '#' . $type);
@@ -257,10 +262,11 @@ class Admin_DatafieldsController extends AuthenticatedController
         $sidebar = Sidebar::Get();
 
         $actions = new ActionsWidget();
-        $actions->addLink(_('Neues Datenfeld anlegen'),
-                          $this->url_for('admin/datafields/new/' . $this->class_filter),
-                          Icon::create('add', 'clickable'))
-                ->asDialog();
+        $actions->addLink(
+            _('Neues Datenfeld anlegen'),
+            $this->url_for('admin/datafields/new/' . $this->class_filter),
+            Icon::create('add')
+        )->asDialog();
         $sidebar->addWidget($actions);
 
         $filter = new SelectWidget(_('Filter'), $this->url_for('admin/datafields'), 'class_filter');

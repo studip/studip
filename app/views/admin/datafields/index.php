@@ -1,14 +1,3 @@
-<? if (isset($flash['delete'])): ?>
-    <?= QuestionBox::create(
-        sprintf(
-            _('Wollen Sie das Datenfeld "%s" wirklich löschen? Bedenken Sie bitte, dass noch Einträge dazu existieren können'),
-            htmlReady($flash['delete']['name'])
-        ),
-       $controller->deleteURL($flash['delete']['datafield_id'],['delete' => 1]),
-       $controller->deleteURL($flash['delete']['datafield_id'],['back' => 1])
-    ); ?>
-<? endif; ?>
-
 <!-- Alle Datenfelder  -->
 <table class="collapsable default">
     <colgroup>

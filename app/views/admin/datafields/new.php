@@ -13,9 +13,11 @@ use Studip\Button, Studip\LinkButton;
         <label>
             <span class="required"><?= _('Name') ?></span>
 
-            <input type="text" name="datafield_name"
-                   required size="60" maxlength="254"
-                   value="<?= htmlReady($this->flash['request']['datafield_name']) ?>">
+            <?= I18N::input('datafield_name', $datafield->name, [
+                'required'  => '',
+                'size'      => 60,
+                'maxlength' => 254,
+            ]) ?>
         </label>
 
         <label>
@@ -124,8 +126,7 @@ use Studip\Button, Studip\LinkButton;
     <? if ($object_typ === 'user') :?>
         <label>
             <input type="hidden" name="system" value="0">
-            <input type="checkbox" name="system" value="1"
-                   <? if ($this->flash['request']['system']) echo 'checked'; ?>>
+            <input type="checkbox" name="system" value="1">
 
            <?= _('Systemfeld') ?>
            <?= tooltipIcon(_('Nur für die Person selbst sichtbar, wenn der '
@@ -138,14 +139,12 @@ use Studip\Button, Studip\LinkButton;
             <?= _('Position') ?>
 
             <input type="text" name="priority"
-                   maxlength="10" size="2" class="size-s"
-                   value="<?= htmlReady($this->flash['request']['priority']) ?>">
+                   maxlength="10" size="2" class="size-s">
         </label>
 
     <? if ($object_typ === 'sem'): ?>
         <label>
-            <input type="checkbox" name="is_required" value="true"
-                   <? if ($this->flash['request']['is_required']) echo 'checked'; ?>>
+            <input type="checkbox" name="is_required" value="true">
 
            <?= _('Pflichtfeld') ?>
         </label>
@@ -153,14 +152,13 @@ use Studip\Button, Studip\LinkButton;
         <label>
             <?= _('Beschreibung') ?>
 
-            <textarea name="description"><?= htmlReady($this->flash['request']['description']) ?></textarea>
+            <textarea name="description"></textarea>
         </label>
 
     <? endif; ?>
     <? if ($object_typ === 'user'): ?>
         <label>
-            <input type="checkbox" name="is_userfilter" value="1"
-                   <? if ($this->flash['request']['is_userfilter']) echo 'checked'; ?>>
+            <input type="checkbox" name="is_userfilter" value="1">
 
            <?= _('Mögliche Bedingung für Anmelderegel') ?>
         </label>
