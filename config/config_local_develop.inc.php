@@ -97,4 +97,32 @@ namespace {
         ]
     ];
     $PHPASS_USE_PORTABLE_HASH = true;
+
+    $LIBRARY_CATALOGS = [
+        [
+            'name' => 'K10Plus Zentral',
+            'class_name' => 'K10PlusZentralLibrarySearch',
+            //'base_url' => 'http://findex.gbv.de/index/dataquest/select'
+            'base_url' => 'https://server5.data-quest.de/search-k10plus'
+        ],
+        [
+            'name' => 'BASE',
+            'class_name' => 'BASELibrarySearch',
+            //'base_url' => 'https://api.base-search.net/cgi-bin/BaseHttpSearchInterface.fcgi',
+            'base_url' => 'https://server5.data-quest.de/search-base',
+            'settings' => [
+                'collection' => 'de'
+            ]
+        ],
+        [
+            'name' => 'TIB Portal',
+            'class_name' => 'SRULibrarySearch',
+            'base_url' => 'https://www.tib.eu/sru/tibkat',
+            'settings' => [
+                'sru_version' => '1.2',
+                'query_format' => 'cql'
+            ],
+            'local_catalog' => true
+        ]
+    ];
 }
