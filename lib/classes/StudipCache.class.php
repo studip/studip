@@ -15,7 +15,7 @@
 
 interface StudipCache
 {
-    const DEFAULT_EXPIRATION = 43200; // 12 * 60 * 60 = 12 hours
+    const DEFAULT_EXPIRATION = 12 * 60 * 60; // 12 hours
 
     /**
      * Expire item from the cache.
@@ -27,12 +27,12 @@ interface StudipCache
      *
      * @param string $arg a single key
      */
-    function expire($arg);
+    public function expire($arg);
 
-    /**
+    /**1
      * Expire all items from the cache.
      */
-    function flush();
+    public function flush();
 
     /**
      * Retrieve item from the server.
@@ -47,7 +47,7 @@ interface StudipCache
      * @return mixed    the previously stored data if an item with such a key
      *                  exists on the server or FALSE on failure.
      */
-    function read($arg);
+    public function read($arg);
 
     /**
      * Store data at the server.
@@ -58,5 +58,5 @@ interface StudipCache
      *
      * @return bool     returns TRUE on success or FALSE on failure.
      */
-    function write($name, $content, $expires = self::DEFAULT_EXPIRATION);
+    public function write($name, $content, $expires = self::DEFAULT_EXPIRATION);
 }

@@ -1,6 +1,4 @@
 <?php
-# Lifter007: TODO
-
 /**
  * This factory retrieves the instance of StudipCache configured for use in
  * this Stud.IP installation.
@@ -22,7 +20,7 @@ class StudipCacheFactory
      *
      * @var string
      */
-    const DEFAULT_CACHE_CLASS = 'StudipDbCache';
+    const DEFAULT_CACHE_CLASS = StudipDbCache::class;
 
     /**
      * singleton instance
@@ -94,13 +92,16 @@ class StudipCacheFactory
 
         $cfg->create('cache_class', [
             'comment' => 'Pfad der Datei, die die StudipCache-Klasse enthält',
-            'value'   => $class]);
+            'value'   => $class]
+        );
         $cfg->create('cache_class_file', [
             'comment' => 'Klassenname des zu verwendenden StudipCaches',
-            'value'   => $file]);
+            'value'   => $file]
+        );
         $cfg->create('cache_init_args', [
             'comment' => 'JSON-kodiertes Array von Argumenten für die Instanziierung der StudipCache-Klasse',
-            'value'   => $arguments]);
+            'value'   => $arguments]
+        );
 
         $cfg->store('cache_class', $class);
         $cfg->store('cache_class_file', $file);
@@ -115,12 +116,6 @@ class StudipCacheFactory
      */
     public static function unconfigure()
     {
-        $cfg = self::getConfig();
-
-        $cfg->delete('cache_class');
-        $cfg->delete('cache_class_file');
-        $cfg->delete('cache_init_args');
-
         self::$cache = NULL;
     }
 
@@ -149,6 +144,7 @@ class StudipCacheFactory
                 try {
                     $class = self::loadCacheClass();
                     $args = self::retrieveConstructorArguments();
+
                     self::$cache = self::instantiateCache($class, $args);
                 } catch (Exception $e) {
                     error_log(__METHOD__ . ': ' . $e->getMessage());
@@ -186,9 +182,9 @@ class StudipCacheFactory
      */
     public static function loadCacheClass()
     {
-        $cfg = self::getConfig();
-        $cache_class_file = $cfg->getValue('cache_class_file');
-        $cache_class      = $cfg->getValue('cache_class');
+        $cacheConfig = Config::get()->SYSTEMCACHE;
+
+        $cache_class = $cacheConfig['type'] ?: null;
 
         # default class
         if (is_null($cache_class)) {
@@ -226,8 +222,9 @@ class StudipCacheFactory
      */
     public static function retrieveConstructorArguments()
     {
-        $cfg_args = self::getConfig()->getValue('cache_init_args');
-        return isset($cfg_args) ? json_decode($cfg_args, TRUE) : [];
+        $cacheConfig = Config::get()->SYSTEMCACHE;
+
+        return $cacheConfig ?: [];
     }
 
     /**
@@ -241,8 +238,8 @@ class StudipCacheFactory
     public static function instantiateCache($class, $arguments)
     {
         $reflection_class = new ReflectionClass($class);
-        return sizeof($arguments)
-               ? $reflection_class->newInstanceArgs($arguments)
+        return (is_array($arguments['config']) && count($arguments['config']) > 0)
+               ? $reflection_class->newInstanceArgs($arguments['config'])
                : $reflection_class->newInstance();
     }
 }

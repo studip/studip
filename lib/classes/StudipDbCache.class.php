@@ -7,8 +7,17 @@
  *
  * @author    Elmar Ludwig <elmar.ludwig@uos.de>
  */
-class StudipDbCache implements StudipCache
+class StudipDbCache implements StudipSystemCache
 {
+
+    /**
+     * @return string A translateable display name for this cache class.
+     */
+    public static function getDisplayName(): string
+    {
+        return _('Datenbank');
+    }
+
     /**
      * Expire item from the cache.
      *
@@ -78,4 +87,37 @@ class StudipDbCache implements StudipCache
         $stmt = $db->prepare('REPLACE INTO cache VALUES(?, ?, ?)');
         return $stmt->execute([$name, serialize($content), time() + $expires]);
     }
+
+    /**
+     * Return statistics.
+     *
+     * @see StudipCache::getStats()
+     *
+     * @return array|array[]
+     */
+    public function getStats(): array
+    {
+        return [
+            __CLASS__ => [
+                'name' => _('Anzahl Einträge'),
+                'value' => DBManager::get()->fetchColumn("SELECT COUNT(*) FROM `cache`")
+            ]
+        ];
+    }
+
+    /**
+     * Return the Vue component name and props that handle configuration.
+     *
+     * @see StudipCache::getConfig()
+     *
+     * @return array
+     */
+    public static function getConfig(): array
+    {
+        return [
+            'component' => null,
+            'props' => []
+        ];
+    }
+
 }

@@ -84,6 +84,7 @@ import "./bootstrap/blubber.js"
 import "./bootstrap/consultations.js"
 import "./bootstrap/scroll_to_top.js"
 import "./bootstrap/admin-courses.js"
+import "./bootstrap/cache-admin.js"
 
 import "./mvv_course_wizard.js"
 import "./mvv.js"

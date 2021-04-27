@@ -176,6 +176,7 @@ class AdminNavigation extends Navigation
             }
 
             $navigation->addSubNavigation('globalsearch', new Navigation(_('Globale Suche'), 'dispatch.php/globalsearch/settings'));
+            $navigation->addSubNavigation('cache', new Navigation(_('Cache'), 'dispatch.php/admin/cache/settings'));
         }
         if ($perm->have_perm(Config::get()->AUX_RULE_ADMIN_PERM ? Config::get()->AUX_RULE_ADMIN_PERM : 'admin')) {
             $navigation->addSubNavigation('specification', new Navigation(_('Zusatzangaben'), 'dispatch.php/admin/specification'));
