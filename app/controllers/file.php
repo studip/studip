@@ -914,17 +914,13 @@ class FileController extends AuthenticatedController
             throw new AccessDeniedException(_('Die Literaturverwaltung ist ausgeschaltet!'));
         }
 
-        if (!$GLOBALS['perm']->have_perm('dozent')) {
-            throw new AccessDeniedException();
-        }
-
         $this->top_folder = new StandardFolder(new Folder($folder_id));
         if (!$this->top_folder->isReadable($GLOBALS['user']->id)) {
             throw new AccessDeniedException();
         }
 
         $course = $this->top_folder->getRangeObject();
-        if (!($course instanceof Course) || !$GLOBALS['perm']->have_studip_perm('dozent', $course->id)) {
+        if (!($course instanceof Course) || !$GLOBALS['perm']->have_studip_perm('tutor', $course->id)) {
             throw new AccessDeniedException();
         }
 
@@ -1081,14 +1077,16 @@ class FileController extends AuthenticatedController
         if (!Config::get()->LITERATURE_ENABLE) {
             throw new AccessDeniedException(_('Die Literaturverwaltung ist ausgeschaltet!'));
         }
-        if (!$GLOBALS['perm']->have_perm('dozent')) {
-            throw new AccessDeniedException();
-        }
+
         $this->top_folder = new StandardFolder(new Folder($folder_id));
         if (!$this->top_folder->isReadable($GLOBALS['user']->id)) {
             throw new AccessDeniedException();
         }
 
+        $course = $this->top_folder->getRangeObject();
+        if (!($course instanceof Course) || !$GLOBALS['perm']->have_studip_perm('tutor', $course->id)) {
+            throw new AccessDeniedException();
+        }
         $create_only = Request::submitted('create_only');
         $plugin_id = Request::get('plugin_id');
         $search_and_item_id = Request::get('search_and_item_id');

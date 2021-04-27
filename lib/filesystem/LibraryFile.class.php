@@ -203,7 +203,7 @@ class LibraryFile extends StandardFile
             ['data-dialog' => ''],
             'file-display-info'
         );
-        if (Config::get()->LITERATURE_ENABLE && $GLOBALS['perm']->have_studip_perm('dozent', Context::getId())) {
+        if (Config::get()->LITERATURE_ENABLE && $GLOBALS['perm']->have_studip_perm('tutor', Context::getId())) {
             $plugin_manager = PluginManager::getInstance();
             $library_plugins = $plugin_manager->getPlugins('LibraryPlugin');
             if (count($library_plugins)) {

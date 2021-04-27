@@ -17,7 +17,7 @@ if ($folder_id) {
 <div class="files_source_selector" data-folder_id="<?= htmlReady($folder_id) ?>" <? if ($hidden) echo ' style="display: none;"'; ?>>
     <h2 class="dialog-subtitle"><?= _('Quelle auswählen') ?></h2>
     <div class="file_select_possibilities">
-        <? if (($range instanceof Course) && $GLOBALS['perm']->have_perm('dozent') && $GLOBALS['LIBRARY_CATALOGS'] && $show_library_functions) : ?>
+        <? if (($range instanceof Course) && !$range->getSemClass()['studygroup_mode'] && $GLOBALS['perm']->have_studip_perm('tutor', $range->id) && $GLOBALS['LIBRARY_CATALOGS'] && $show_library_functions) : ?>
             <div>
                 <a class="important-item" data-dialog="size=medium-43"
                    href="<?= $controller->link_for('file/add_from_library/' . $folder_id)?>">
@@ -49,7 +49,7 @@ if ($folder_id) {
                 <?= Icon::create('seminar')->asImg(50) ?>
                 <?= _('Meine Veranstaltungen') ?>
             </a>
-            <? if (($range instanceof Course) && $GLOBALS['perm']->have_perm('dozent') && $show_library_functions) : ?>
+            <? if (($range instanceof Course) && $GLOBALS['perm']->have_studip_perm('tutor', $range->id) && $show_library_functions) : ?>
                 <a href="<?= $controller->link_for('library_file/select_type/' . htmlReady($folder_id)) ?>"
                    data-dialog="size=auto">
                     <?= Icon::create('literature')->asImg(50) ?>
