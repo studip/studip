@@ -138,7 +138,10 @@ class LibraryFile extends StandardFile
 
     public function getIcon($role)
     {
-        return Icon::create('literature', $role);
+        if ($this->library_document instanceof LibraryDocument) {
+            $icon = $this->library_document->getIcon();
+        }
+        return $icon && $icon->getShape() !== 'literature-request' ? $icon : Icon::create('literature', $role);
     }
 
 
