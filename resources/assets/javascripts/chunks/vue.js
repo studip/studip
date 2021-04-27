@@ -3,7 +3,8 @@ import Vuex from 'vuex';
 import eventBus from '../lib/event-bus.js';
 import GetTextPlugin from 'vue-gettext';
 import { getLocale, getVueConfig } from '../lib/gettext.js';
-import BaseComponents from '../../../vue/components/base-components.js';
+import BaseComponents from '../../../vue/base-components.js';
+import BaseDirectives from "../../../vue/base-directives.js";
 
 Vue.mixin({
     methods: {
@@ -21,7 +22,8 @@ eventBus.on('studip:set-locale', (locale) => {
     Vue.config.language = locale;
 })
 
-registerGlobalComponents(Vue);
+registerGlobalComponents();
+registerGlobalDirectives();
 
 Vue.use(Vuex);
 const store = new Vuex.Store({});
@@ -33,6 +35,12 @@ function createApp(options, ...args) {
 function registerGlobalComponents() {
     for (const [name, component] of Object.entries(BaseComponents)) {
         Vue.component(name, component);
+    }
+}
+
+function registerGlobalDirectives() {
+    for (const [name, directive] of Object.entries(BaseDirectives)) {
+        Vue.directive(name, directive);
     }
 }
 

@@ -42,7 +42,8 @@ class FilesystemVueDataManager
             'details_url' => URLhelper::getURL("dispatch.php/file/details/{$file->getId()}", ['file_navigation' => '1']),
             'restrictedTermsOfUse' => $terms && !$terms->isDownloadable($topFolder->range_id, $topFolder->range_type, false),
             'actions' => $actionMenu ? (is_string($actionMenu) ? $actionMenu : $actionMenu->render()) : "",
-            'new' => isset($last_visitdate) && $file->getLastChangeDate() > $last_visitdate && $file->getUserId() !== $GLOBALS['user']->id
+            'new' => isset($last_visitdate) && $file->getLastChangeDate() > $last_visitdate && $file->getUserId() !== $GLOBALS['user']->id,
+            'isEditable' => $file->isEditable(),
         ];
     }
 

@@ -45,12 +45,11 @@
         <thead>
             <tr class="sortable">
                 <th v-if="show_bulk_actions" data-sort="false">
-                    <input type="checkbox"
-                           class="studip-checkbox"
-                           data-proxyfor="table.documents tbody :checkbox"
-                           data-activates="table.documents tfoot .multibuttons .button"
-                           id="all_files_checkbox">
-                    <label for="all_files_checkbox"></label>
+                    <studip-proxy-checkbox
+                        type="studip"
+                        v-model="selectedIds"
+                        :total="allIds"
+                    ></studip-proxy-checkbox>
                 </th>
                 <th @click="sort('mime_type')" :class="sortClasses('mime_type')">
                     {{ $gettext('Typ') }}
@@ -91,12 +90,12 @@
                 :id="'row_folder_' + folder.id "
                 :data-permissions="folder.permissions">
                 <td v-if="show_bulk_actions">
-                    <input type="checkbox"
-                           name="ids[]"
-                           class="studip-checkbox"
-                           :id="'file_checkbox_' + folder.id "
-                           :value="folder.id">
-                    <label :for="'file_checkbox_' + folder.id"></label>
+                    <studip-proxied-checkbox
+                        name="ids[]"
+                        type="studip"
+                        :value="folder.id"
+                        v-model="selectedIds"
+                    ></studip-proxied-checkbox>
                 </td>
                 <td class="document-icon">
                     <a :href="folder.url">
@@ -135,16 +134,14 @@
                 :class="file.new ? 'new' : ''"
                 :id="'fileref_' + file.id"
                 role="row"
-                data-permissions="file.isEditable ? 'w' : (file.download_url ? 'dr' : '')">
+                :data-permissions="getPermissions(file)">
                 <td v-if="show_bulk_actions">
-                    <template>
-                        <input type="checkbox"
-                               class="studip-checkbox"
-                               name="ids[]"
-                               :id="'file_checkbox_' + file.id"
-                               :value="file.id">
-                        <label :for="'file_checkbox_' + file.id"></label>
-                    </template>
+                    <studip-proxied-checkbox
+                        name="ids[]"
+                        type="studip"
+                        :value="file.id"
+                        v-model="selectedIds"
+                    ></studip-proxied-checkbox>
                 </td>
                 <td class="document-icon">
                     <a v-if="file.download_url" :href="file.download_url" target="_blank" rel="noopener noreferrer">
@@ -201,7 +198,7 @@
                 <td :colspan="numberOfColumns - (tfoot_link ? 1 : 0)">
                     <div class="footer-items">
                         <span v-if="topfolder.buttons && show_bulk_actions"
-                              v-html="topfolder.buttons" class="bulk-buttons"></span>
+                              v-html="topfolder.buttons" class="bulk-buttons" ref="buttons"></span>
                         <span v-if="tfoot_link" :colspan="(topfolder.buttons && show_bulk_actions ? 1 : numberOfColumns)">
                             <a :href="tfoot_link.href">{{tfoot_link.text}}</a>
                         </span>
@@ -212,130 +209,162 @@
         </tfoot>
     </table>
 </template>
-
-
 <script>
-    export default {
-        name: 'files-table',
-        props: {
-            topfolder: Object,
-            folders: {
-                type: Array,
-                required: false,
-                default: () => [],
-            },
-            files: Array,
-            breadcrumbs: {
-                type: Array,
-                required: false,
-                default: () => [],
-            },
-            showdownloads: {
-                type: Boolean,
-                required: false,
-                default: true
-            },
-            table_title: {
-                type: String,
-                required: false,
-                default: ''
-            },
-            show_bulk_actions: {
-                type: Boolean,
-                required: false,
-                default: true
-            },
-            tfoot_link: {
-                type: Object,
-                required: false,
-                default: null
-            },
-            pagination: {
-                type: String,
-                required: false,
-                default: ''
-            },
-            initial_sort: {
-                type: Object,
-                required: false,
-                default: () => ({sortedBy: 'name', sortDirection: 'asc'})
-            }
+export default {
+    name: 'files-table',
+    props: {
+        topfolder: Object,
+        folders: {
+            type: Array,
+            required: false,
+            default: () => [],
         },
-        data () {
-            return {
-                sortedBy: this.initial_sort.sortedBy,
-                sortDirection: this.initial_sort.sortDirection
-            };
+        files: Array,
+        breadcrumbs: {
+            type: Array,
+            required: false,
+            default: () => [],
         },
-        methods: {
-            sort (column) {
-                let oldDirection = this.sortDirection;
-                if (this.sortedBy === column) {
-                    this.sortDirection = oldDirection === "asc" ? "desc" : "asc";
-                }
-                this.sortedBy = column;
-            },
-            sortClasses (column) {
-                let classes = [];
-                if (this.sortedBy === column) {
-                    classes.push(this.sortDirection === 'asc' ? 'sortasc' : 'sortdesc');
-                }
-                return classes;
-            },
-            removeFile (id) {
-                this.files = this.files.filter(file => file.id != id)
-            },
-            removeFolder (id) {
-                this.folders = this.folders.filter(folder => folder.id != id)
-            },
-            sortArray (array) {
-                if (!array.length) {
-                    return [];
-                }
-
-                // Determine whether the sorted array items have the key to sort by
-                const arrayHasKey = Object.keys(array.find(item => true)).includes(this.sortedBy);
-
-                // Define sort direction by this factor
-                const directionFactor = this.sortDirection === "asc" ? 1 : -1;
-
-                // Default sort function by string comparison of field
-                let sortFunction = (a, b) => a[this.sortedBy].localeCompare(b[this.sortedBy]);
-
-                // Sort numerically by field
-                if (["size", "downloads", "chdate"].includes(this.sortedBy) && arrayHasKey) {
-                    sortFunction = (a, b) => parseInt(a[this.sortedBy], 10) - parseInt(b[this.sortedBy], 10);
-                }
-
-                // Additional sorting
-                if (this.topfolder.additionalColumns.hasOwnProperty(this.sortedBy) && arrayHasKey) {
-                    const is_string = array.some(item => {
-                        return typeof item.additionalColumns[this.sortedBy].order === "string"
-                            && !isNaN(parseFloat(item.additionalColumns[this.sortedBy].order));
-                    });
-                    if (is_string) {
-                        sortFunction = (a, b) => a.additionalColumns[this.sortedBy].order.localeCompare(b.additionalColumns[this.sortedBy].order);
-                    } else {
-                        sortFunction = (a, b) => a.additionalColumns[this.sortedBy].order - b.additionalColumns[this.sortedBy].order;
-                    }
-                }
-
-                // Actual sort on copy of array
-                return array.concat().sort((a, b) => directionFactor * sortFunction(a, b));
-            }
+        showdownloads: {
+            type: Boolean,
+            required: false,
+            default: true
         },
-        computed: {
-            numberOfColumns () {
-                return 7
-                    + (this.showdownloads ? 1 : 0)
-                    + Object.keys(this.topfolder.additionalColumns).length;
-            },
-            sortedFiles () {
-                return this.sortArray(this.files);
-            },
-            sortedFolders () {
-                return this.sortArray(this.folders);
-            }
+        table_title: {
+            type: String,
+            required: false,
+            default: ''
+        },
+        show_bulk_actions: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        tfoot_link: {
+            type: Object,
+            required: false,
+            default: null
+        },
+        pagination: {
+            type: String,
+            required: false,
+            default: ''
+        },
+        initial_sort: {
+            type: Object,
+            required: false,
+            default: () => ({sortedBy: 'name', sortDirection: 'asc'})
         }
+    },
+    data () {
+        return {
+            selectedIds: [undefined], // Includes invalid value to trigger watch on mounted
+            sortedBy: this.initial_sort.sortedBy,
+            sortDirection: this.initial_sort.sortDirection
+        };
+    },
+    methods: {
+        sort (column) {
+            let oldDirection = this.sortDirection;
+            if (this.sortedBy === column) {
+                this.sortDirection = oldDirection === "asc" ? "desc" : "asc";
+            }
+            this.sortedBy = column;
+        },
+        sortClasses (column) {
+            let classes = [];
+            if (this.sortedBy === column) {
+                classes.push(this.sortDirection === 'asc' ? 'sortasc' : 'sortdesc');
+            }
+            return classes;
+        },
+        removeFile (id) {
+            this.files = this.files.filter(file => file.id != id)
+        },
+        removeFolder (id) {
+            this.folders = this.folders.filter(folder => folder.id != id)
+        },
+        sortArray (array) {
+            if (!array.length) {
+                return [];
+            }
+
+            // Determine whether the sorted array items have the key to sort by
+            const arrayHasKey = Object.keys(array.find(item => true)).includes(this.sortedBy);
+
+            // Define sort direction by this factor
+            const directionFactor = this.sortDirection === "asc" ? 1 : -1;
+
+            // Default sort function by string comparison of field
+            let sortFunction = (a, b) => a[this.sortedBy].localeCompare(b[this.sortedBy]);
+
+            // Sort numerically by field
+            if (["size", "downloads", "chdate"].includes(this.sortedBy) && arrayHasKey) {
+                sortFunction = (a, b) => parseInt(a[this.sortedBy], 10) - parseInt(b[this.sortedBy], 10);
+            }
+
+            // Additional sorting
+            if (this.topfolder.additionalColumns.hasOwnProperty(this.sortedBy) && arrayHasKey) {
+                const is_string = array.some(item => {
+                    return typeof item.additionalColumns[this.sortedBy].order === "string"
+                        && !isNaN(parseFloat(item.additionalColumns[this.sortedBy].order));
+                });
+                if (is_string) {
+                    sortFunction = (a, b) => a.additionalColumns[this.sortedBy].order.localeCompare(b.additionalColumns[this.sortedBy].order);
+                } else {
+                    sortFunction = (a, b) => a.additionalColumns[this.sortedBy].order - b.additionalColumns[this.sortedBy].order;
+                }
+            }
+
+            // Actual sort on copy of array
+            return array.concat().sort((a, b) => directionFactor * sortFunction(a, b));
+        },
+        getPermissions (file) {
+            let permissions = '';
+            if (file.download_url) {
+                permissions += 'dr';
+            }
+            if (file.isEditable) {
+                permissions += 'w';
+            }
+            return permissions;
+        }
+    },
+    computed: {
+        numberOfColumns () {
+            return 7
+                + (this.showdownloads ? 1 : 0)
+                + Object.keys(this.topfolder.additionalColumns).length;
+        },
+        sortedFiles () {
+            return this.sortArray(this.files);
+        },
+        sortedFolders () {
+            return this.sortArray(this.folders);
+        },
+        allIds () {
+            return [].concat(this.files.map(file => file.id)).concat(this.folders.map(folder => folder.id));
+        }
+    },
+    mounted () {
+        // Trigger watch
+        this.selectedIds = [];
+    },
+    watch: {
+        selectedIds (current) {
+            const activated = current.length > 0;
+            this.$refs.buttons.querySelectorAll('.button').forEach(element => {
+                let condition = element.dataset.activatesCondition;
+                if (!condition || !activated) {
+                    element.disabled = !activated;
+                } else {
+                    condition = condition.replace(/:has\((.*?)\)/g, ' $1');
+                    condition = condition.replace(':checkbox', 'input[type="checkbox"]');
+
+                    element.disabled = this.$el.querySelector(condition) === null;
+                }
+            });
+        },
     }
+}
 </script>
