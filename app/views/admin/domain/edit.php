@@ -27,13 +27,13 @@
         </label>
 
         <label class="undecorated" style="display: block;">
-            <input type="radio" name="unrestricted" value="0"
+            <input type="radio" name="restricted_access" value="1"
                    <? if ($domain->restricted_access) echo 'checked'; ?>>
             <?= _('Nutzer bleiben innerhalb der Domäne und können keine Nutzer ausserhalb sehen') ?>
         </label>
 
         <label class="undecorated" style="display: block;">
-            <input type="radio" name="unrestricted" value="1"
+            <input type="radio" name="restricted_access" value="0"
                    <? if (!$domain->restricted_access) echo 'checked'; ?>>
             <?= _('Nutzer der Domäne können das System uneingeschränkt nutzen') ?>
         </label>

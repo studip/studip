@@ -116,7 +116,7 @@ class Admin_DomainController extends AuthenticatedController
 
                 $domain->id                = $id;
                 $domain->name              = $name;
-                $domain->restricted_access = Request::int('restricted_access', 0);
+                $domain->restricted_access = Request::int('restricted_access', 1);
                 $domain->store();
 
                 PageLayout::postSuccess(_('Die Domäne wurde gespeichert'));
