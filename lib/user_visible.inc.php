@@ -134,7 +134,8 @@ function get_vis_query($table_alias = 'auth_user_md5', $context = '') {
     }
 
     if (!$restricted) {
-        $query .= " OR NOT EXISTS (
+        $query .= " OR (
+                    (NOT EXISTS (
                      SELECT *
                      FROM user_userdomains
                      JOIN userdomains USING (userdomain_id)
@@ -145,10 +146,11 @@ function get_vis_query($table_alias = 'auth_user_md5', $context = '') {
                       JOIN userdomains USING (userdomain_id)
                       WHERE user_id = {$table_alias}.user_id
                       AND restricted_access = 0
+                  )
                   )";
     }
     if (count($my_domain_ids) > 0) {
-        $query .= " OR EXISTS (
+        $query .= " OR (EXISTS (
                      SELECT *
                      FROM user_userdomains
                      WHERE user_id = {$table_alias}.user_id
@@ -163,7 +165,7 @@ function get_vis_query($table_alias = 'auth_user_md5', $context = '') {
         $allowed[] = 'unknown';
     }
     $quoted = DBManager::get()->quote($allowed);
-    $query .= " AND {$table_alias}.visible IN ({$quoted})";
+    $query .= " AND {$table_alias}.visible IN ({$quoted}))";
 
     return "($query) $contextQuery";
 }
