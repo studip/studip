@@ -112,6 +112,10 @@
                                 <dt><?= _('Erstellt von') ?></dt>
                                 <dd><?= htmlReady($result->getAuthorNames()) ?></dd>
                             <? endif ?>
+                            <? if (!empty($result->csl_data['URL'])) : ?>
+                                <dt><?= _('URL') ?></dt>
+                                <dd><a target="_blank" href="<?= htmlReady($result->csl_data['URL']) ?>"><?= htmlReady($result->csl_data['URL']) ?></a></dd>
+                            <? endif ?>
                             <? if ($result->catalog) : ?>
                                 <dt><?= _('Katalog') ?></dt>
                                 <? if ($result->opac_link) : ?>

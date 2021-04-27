@@ -48,6 +48,10 @@ class LibraryFile extends StandardFile
         $file->metadata = $document->toJson();
         $file->user_id = $user_id ? $user_id : $GLOBALS['user']->id;
         $file->filetype = get_called_class();
+        if ($document->csl_data['URL'] || $document->opac_link) {
+            $file->metadata['url'] = $document->opac_link ?: $document->csl_data['URL'];
+            $file->metadata['access_type'] = 'redirect';
+        }
         $file->store();
 
         $file_ref = new FileRef();
@@ -372,6 +376,11 @@ class LibraryFile extends StandardFile
 
     public function hasURL()
     {
+        if (isset($this->file->metadata['csl_data']['URL']) && !isset($this->file->metadata['url'])) {
+            $this->file->metadata['url'] = $this->file->metadata['csl_data']['URL'];
+            $this->file->metadata['access_type'] = 'redirect';
+            $this->file->store();
+        }
         return isset($this->file->metadata['url']);
     }
 

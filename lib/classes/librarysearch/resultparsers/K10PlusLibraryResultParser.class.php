@@ -75,6 +75,9 @@ class K10PlusLibraryResultParser implements LibraryResultParser
         } elseif ($doc_type == 'journal') {
             $result->type = 'article-journal';
         }
+        if (!isset($result->csl_data['URL'])) {
+            $result->csl_data['URL'] = $data['url'];
+        }
         $result->filterCslFieldsByType();
         return $result;
     }
