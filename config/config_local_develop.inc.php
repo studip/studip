@@ -122,6 +122,7 @@ namespace {
                 'sru_version' => '1.2',
                 'query_format' => 'cql'
             ],
+            'opac_link_template' => 'https://www.tib.eu/de/suchen/id/TIBKAT%3A{opac_document_id}',
             'local_catalog' => true
         ]
     ];
