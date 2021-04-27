@@ -94,6 +94,7 @@ class K10PlusZentralLibrarySearch extends LibrarySearch
         //search parameter names before being added to the query string.
         $search_parameters = $this->translateQueryFields($search_parameters);
         $query_string = '';
+
         foreach ($search_parameters as $key => $value) {
             if (!empty($query_string)) {
                 $query_string .= ' AND ';
@@ -102,12 +103,12 @@ class K10PlusZentralLibrarySearch extends LibrarySearch
                 $query_string .= sprintf(
                     '(%1$s:"%2$s" OR %3$s:"%2$s")',
                     self::$field_replacements[LibrarySearch::ISSN],
-                    $value,
+                    $this->escapeQueryChars($value),
                     self::$field_replacements[LibrarySearch::ISBN]
                 );
             } else {
                 //TODO: escape colon in data!
-                $value = '(' . $value . ')';
+                $value = '(' . $this->escapeQueryChars($value) . ')';
                 $query_string .= sprintf('%1$s:%2$s', $key, $value);
             }
         }
@@ -132,5 +133,17 @@ class K10PlusZentralLibrarySearch extends LibrarySearch
         }
         $result_objects = $this->extractResponseData($data);
         return $result_objects;
+    }
+
+    public function escapeQueryChars($str)
+    {
+        $reserved = preg_quote('+-&|!(){}[]^"~*?:\\');
+        return preg_replace_callback(
+            '/([' . $reserved . '])/',
+            function ($matches) {
+                return '\\' . $matches[0];
+            },
+            $str
+        );
     }
 }

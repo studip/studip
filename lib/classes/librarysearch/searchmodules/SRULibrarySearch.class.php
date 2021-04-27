@@ -110,7 +110,7 @@ class SRULibrarySearch extends LibrarySearch
                 );
             } else {
                 //TODO: escape colon in data!
-                $query_string .= sprintf('%1$s="%2$s"', $key,addslashes($value));
+                $query_string .= sprintf('%1$s="%2$s"', $key, addslashes($value));
             }
         }
 
