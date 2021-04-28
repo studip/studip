@@ -982,7 +982,7 @@ class MyCoursesController extends AuthenticatedController
         $is_teacher = in_array($course['user_status'], ['tutor', 'dozent']);
 
         $avatar = $course['sem_class']['studygroup_mode']
-                ? StudyGroupAvatar::getAvatar($course['seminar_id'])
+                ? StudygroupAvatar::getAvatar($course['seminar_id'])
                 : CourseAvatar::getAvatar($course['seminar_id']);
 
         $extra_navigation = false;
