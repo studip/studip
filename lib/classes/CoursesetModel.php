@@ -75,16 +75,22 @@ class CoursesetModel
             }
             $courses = $db->fetchFirst($query, $parameters);
         } elseif (mb_strlen($filter) > 1) {
+            if (Config::get()->ALLOW_ADMIN_RELATED_INST) {
+                $sem_inst = 'si';
+            } else {
+                $sem_inst = 's';
+            }
             $query = "SELECT DISTINCT s.seminar_id
                       FROM seminare s
                       INNER JOIN seminar_user su
                          ON s.seminar_id = su.seminar_id AND su.status = 'dozent'
+                      LEFT JOIN seminar_inst si ON si.seminar_id = s.Seminar_id
                       LEFT JOIN semester_courses ON (semester_courses.course_id = s.Seminar_id)
                       INNER JOIN auth_user_md5 aum USING (user_id)
                       WHERE s.status NOT IN (:exclude_types)
                         AND s.start_time <= :sembegin
                         AND (semester_courses.semester_id IS NULL OR semester_courses.semester_id = :semester_id)
-                        AND s.Institut_id IN (:institutes)
+                        AND $sem_inst.Institut_id IN (:institutes)
                         AND (
                             s.name LIKE :filter
                             OR s.Veranstaltungsnummer LIKE :filter
