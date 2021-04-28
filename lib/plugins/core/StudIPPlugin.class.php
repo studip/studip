@@ -9,6 +9,7 @@
 abstract class StudIPPlugin
 {
     use PluginAssetsTrait;
+    use TranslatablePluginTrait;
 
     /**
      * plugin meta data
@@ -22,7 +23,6 @@ abstract class StudIPPlugin
 
     /**
      * plugin constructor
-     * TODO bindtextdomain()
      */
     public function __construct()
     {

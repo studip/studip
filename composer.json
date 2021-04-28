@@ -71,6 +71,7 @@
         "ext-zip": "*",
         "ext-json": "*",
         "ext-pcre": "*",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-mbstring": "*"
     }
 }
