@@ -102,8 +102,6 @@ if (!file_exists($GLOBALS['STUDIP_BASE_PATH'] . '/config/config_local.inc.php'))
 
     URLHelper::setBaseUrl($GLOBALS['ABSOLUTE_URI_STUDIP']);
     header('Location: ' . URLHelper::getURL('install.php'));
-
-    page_close();
     die;
 }
 
