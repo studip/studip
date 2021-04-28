@@ -68,7 +68,7 @@
                     </a>
                     <?
                 else : ?>
-                    <a href="<?= URLHelper::getLink(sprintf('dispatch.php/my_courses/decline/%s', $course['seminar_id']), ['cmd' => 'suppose_to_kill']) ?>">
+                    <a href="<?= $controller->link_for('my_courses/decline', $course['seminar_id'], ['cmd' => 'suppose_to_kill']) ?>">
                         <?= Icon::create('door-leave', 'inactive', ['title' => _("aus der Veranstaltung abmelden")])->asImg(20) ?>
                     </a>
                 <? endif ?>
@@ -77,7 +77,7 @@
         </td>
         <td class="hidden-small-down">
             <? if (!$sem_class['studygroup_mode']) : ?>
-                <a data-dialog href="<?= $controller->url_for(sprintf('course/details/index/%s', $course['seminar_id']),
+                <a data-dialog href="<?= $controller->link_for('course/details/index', $course['seminar_id'],
                                                               ['from' => $controller->url_for('my_courses/index')]) ?>">
                     <? $params = tooltip2(_("Veranstaltungsdetails")); ?>
                     <? $params['style'] = 'cursor: pointer'; ?>

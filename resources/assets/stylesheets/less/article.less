@@ -10,7 +10,7 @@ article.studip {
         margin-bottom: 0;
     }
 
-    header {
+    > header {
         display: flex;
         justify-content: flex-end;
         align-items: center;
@@ -95,7 +95,7 @@ article.studip {
                 cursor: pointer;
             }
         }
-        > *:not(header) {
+        &:not(.open) > *:not(header) {
             display: none;
         }
 
@@ -107,9 +107,6 @@ article.studip {
                     }
                 }
                 margin-bottom: 10px;
-            }
-            > *:not(header) {
-                display: inherit;
             }
         }
     }

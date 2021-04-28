@@ -54,35 +54,33 @@
                 <a href="<?= URLHelper::getLink('dispatch.php/course/details/', ['sem_id' => $wait['seminar_id'], 'send_from_search_page' => 'dispatch.php/my_courses/index', 'send_from_search' => 'TRUE']) ?>">
                     <?= htmlReady($seminar_name) ?>
                 </a>
-                <?php if ($wait['status'] == 'claiming') : ?>
+                <?php if ($wait['status'] === 'claiming') : ?>
                     <br>
                     <?= sprintf(_('Priorität %1$u im Anmeldeset "%2$s"'), $wait['priority'], $wait['cname']) ?>
                 <?php endif ?>
             </td>
             <td class="hidden-small-down">
-                <a data-dialog="size=auto" href="<?= $controller->url_for(sprintf('course/details/index/%s', $wait['seminar_id'])) ?>">
+                <a data-dialog="size=auto" href="<?= $controller->link_for('course/details/index', $wait['seminar_id']) ?>">
                     <? $params = tooltip2(_("Veranstaltungsdetails anzeigen")); ?>
-                    <? $params['style'] = 'cursor: pointer'; ?>
-                    <?= Icon::create('info-circle', 'inactive')->asImg(20, $params) ?>
+                    <?= Icon::create('info-circle', Icon::ROLE_INACTIVE)->asImg(20, ['style' => 'cursor: pointer']) ?>
                 </a>
             </td>
             <td style="text-align: center">
-                <?= $wait["status"] == "claiming" ? date("d.m.", $wait["admission_endtime"]) : "-" ?>
+                <?= $wait['status'] === 'claiming' ? date('d.m.', $wait['admission_endtime']) : "-" ?>
             </td>
 
             <td class="hidden-small-down" style="text-align: center">
-                <?= $wait["status"] == "claiming" ? ($wait['admission_chance'] . "%") : $wait["position"] ?>
+                <?= $wait['status'] === 'claiming' ? ($wait['admission_chance'] . "%") : $wait['position'] ?>
             </td>
 
-            <td class="hidden-small-down" style="wtext-align: center">
-                <? if ($wait["status"] == "claiming") : ?>
-                    <?= _("Autom.") ?>
-                <? elseif ($wait["status"] == "accepted") : ?>
-                    <?= _("Vorl.") ?>
-                <?
-                else : ?>
-                    <?= _("Wartel.") ?>
-                <? endif ?>
+            <td class="hidden-small-down" style="text-align: center">
+            <? if ($wait['status'] === 'claiming') : ?>
+                <?= _("Autom.") ?>
+            <? elseif ($wait['status'] === 'accepted') : ?>
+                <?= _('Vorl.') ?>
+            <? else: ?>
+                <?= _('Wartel.') ?>
+            <? endif ?>
             </td>
 
             <td style="text-align: right">
@@ -91,8 +89,8 @@
                         <?= Icon::create('door-leave+decline', 'inactive', ['title' => _("Die Teilnahme ist bindend. Bitte wenden Sie sich an die Lehrenden.")])->asImg(20) ?>
                     </a>
                 <?  else : ?>
-                    <a href="<?= URLHelper::getLink(sprintf('dispatch.php/my_courses/decline/%s', $wait['seminar_id']), ['cmd' => 'suppose_to_kill_admission']) ?>">
-                        <?= Icon::create('door-leave', 'inactive', ['title' => _("aus der Veranstaltung abmelden")])->asImg(20) ?>
+                    <a href="<?= $controller->link_for('my_courses/decline', $wait['seminar_id'], ['cmd' => 'suppose_to_kill_admission']) ?>">
+                        <?= Icon::create('door-leave', Icon::ROLE_INACTIVE)->asImg(20, ['title' => _("aus der Veranstaltung abmelden")]) ?>
                     </a>
                 <? endif ?>
             </td>

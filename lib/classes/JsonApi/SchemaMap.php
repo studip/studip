@@ -16,6 +16,7 @@ class SchemaMap
             \BlubberThread::class => \JsonApi\Schemas\BlubberThread::class,
 
             \CalendarEvent::class => \JsonApi\Schemas\CalendarEvent::class,
+            \ConfigValue::class => \JsonApi\Schemas\ConfigValue::class,
             \CourseEvent::class => \JsonApi\Schemas\CourseEvent::class,
             \ContentTermsOfUse::class => \JsonApi\Schemas\ContentTermsOfUse::class,
             \Course::class => \JsonApi\Schemas\Course::class,

@@ -21,6 +21,8 @@ import "./bootstrap/responsive.js"
 import "./chunk-loader.js"
 import "./bootstrap/vue.js"
 
+import "./bootstrap/my-courses.js";
+
 import "./studip-ui.js"
 import "./bootstrap/fullscreen.js"
 import "./bootstrap/tfa.js"

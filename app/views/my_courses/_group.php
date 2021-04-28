@@ -10,7 +10,7 @@
     <tr class="table_header header-row">
         <th style="white-space: nowrap; text-align: left"></th>
         <th class="toggle-indicator" style="text-align: left" colspan="<?= !$config_sem_number ? '2' : '3' ?>">
-            <a href="<?= URLHelper::getLink(sprintf('dispatch.php/my_courses/set_open_group/%s', $id)) ?>">
+            <a href="<?= $controller->link_for('my_courses/set_open_group', $id) ?>">
                 <? if (strcmp($group_field, 'sem_tree_id') === 0 && strcmp($title, '') === 0) : ?>
                     <? $title = "keine Zuordnung"; ?>
                 <? endif ?>
@@ -34,4 +34,3 @@
     </tbody>
     <? $index++ ?>
 <? endforeach ?>
-

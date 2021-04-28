@@ -1,3 +1,5 @@
+$sidebar-width: 270px;
+
 #layout-sidebar {
     background: $white;
     flex: 0 1 auto;
@@ -9,10 +11,8 @@
     min-width: 270px;
 }
 .sidebar {
-    $width: 270px;
-
     padding-bottom: 7px;
-    width: $width;
+    width: $sidebar-width;
     z-index: 2;
 
     border-left: 0;
@@ -22,7 +22,7 @@
     position: relative;
 
     .sidebar-image {
-        width: $width;
+        width: $sidebar-width;
         height: 60px;
         max-height: 60px;
 

@@ -16,39 +16,30 @@
     </thead>
     <tbody>
     <? foreach ($my_bosses as $boss) : ?>
-        <? $boss_fullname = $boss->getBossFullname() ?>
+        <? $boss_fullname = $boss->getBossFullname(); ?>
         <tr>
             <td>
                 <?= Avatar::getAvatar($boss->user_id)->getImageTag(Avatar::SMALL, ['title' => $boss_fullname]) ?>
             </td>
             <td>
-                <?= htmlReady($boss_fullname) ?>
+                <?= htmlReady($boss_fullname)?>
             </td>
             <td class="actions">
-                <? if ($boss->edit_about && $deputies_edit_about_enabled) : ?>
-                    <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $boss->boss_username]) ?>">
-                        <?= Icon::create('person', Icon::ROLE_CLICKABLE, ['title' => _('Personenangaben bearbeiten')])->asImg() ?>
-                    </a>
-                <? endif ?>
+            <? if ($boss->edit_about && $deputies_edit_about_enabled) : ?>
+                <a href="<?= URLHelper::getLink('dispatch.php/profile', ['username' => $boss->boss_username]) ?>">
+                    <?= Icon::create('person')->asImg(['title' => _('Personenangaben bearbeiten')]) ?>
+                </a>
+            <? endif ?>
                 <a href="<?= URLHelper::getLink(
                     'dispatch.php/messages/write',
-                    ['filter' => 'send_sms_to_all', 'rec_uname' => $boss->boss_username]) ?>" data-dialog>
-                    <?= Icon::create(
-                        'mail',
-                        Icon::ROLE_CLICKABLE,
-                        [
-                            'title' => sprintf(_('Nachricht an %s senden'), htmlReady($boss_fullname))
-                        ]
-                    ) ?>
+                    ['filter' => 'send_sms_to_all', 'rec_uname' => $boss->boss_username])?>" data-dialog>
+                    <?= Icon::create('mail')->asImg(['title' => sprintf(_('Nachricht an %s senden'), htmlReady($boss_fullname))]) ?>
                 </a>
                 <a href="<?= $controller->link_for('my_courses/delete_boss/' . $boss->range_id) ?>"
                    data-confirm="<?= sprintf(_('Wollen Sie sich wirklich als Standardvertretung von %s austragen?'), htmlReady($boss_fullname)) ?>">
-                    <?= Icon::create('trash',
-                        Icon::ROLE_CLICKABLE,
-                        [
-                            'title' => sprintf(_('Mich als Standardvertretung von %s austragen'), htmlReady($boss_fullname))
-                        ]
-                    ) ?>
+                    <?= Icon::create('trash')->asImg([
+                        'title' => sprintf(_('Mich als Standardvertretung von %s austragen'), htmlReady($boss_fullname))
+                    ]) ?>
                 </a>
             </td>
         </tr>

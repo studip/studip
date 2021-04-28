@@ -1605,6 +1605,19 @@ function strtosnakecase($string) {
 }
 
 /**
+ * Converts a string to kebab-case.
+ *
+ * @param String $string  The string that should be converted
+ * @return String containing the converted input string
+ */
+function strtokebabcase($string) {
+    $string = preg_replace('/\W+/', '-', $string);
+    $string = preg_replace('/(?<!^)[A-Z]/', '-$0', $string);
+    $string = mb_strtolower($string);
+    return $string;
+}
+
+/**
  * fetch number of rows for a table
  * for innodb this is not exact, but much faster than count(*)
  *

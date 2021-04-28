@@ -38,7 +38,6 @@ class MyRealmModel
         'wiki',
         'vote',
         'elearning_interface',
-        'resources'
     ];
 
     /**

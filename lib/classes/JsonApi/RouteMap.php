@@ -134,6 +134,11 @@ class RouteMap
         $this->app->get('/schedule-entries/{id}', Routes\Schedule\ScheduleEntriesShow::class);
         $this->app->get('/seminar-cycle-dates/{id}', Routes\Schedule\SeminarCycleDatesShow::class);
 
+        $this->app->get('/users/{id}/config-values', Routes\ConfigValues\ByUserIndex::class);
+        $this->app->get('/config-values/{id}', Routes\ConfigValues\ConfigValuesShow::class);
+        $this->app->patch('/config-values/{id}', Routes\ConfigValues\ConfigValuesUpdate::class);
+
+
         $this->addAuthenticatedBlubberRoutes();
 //        $this->addAuthenticatedConsultationRoutes();
         $this->addAuthenticatedContactsRoutes();

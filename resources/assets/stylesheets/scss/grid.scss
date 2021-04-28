@@ -1,0 +1,30 @@
+$grid-gap: 15px; // 10px would lead to fitting 4 columns on a default 1440px wide screen
+$grid-element-width: 270px;
+
+.studip-grid {
+    // $header-padding: 2px;
+    // $padding: 5px;
+    // $header-size: 80px;
+    // $element-height: (100px + $header-size);
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill, $grid-element-width);
+    grid-template-rows: repeat(auto-fit, max-content);
+    grid-gap: $grid-gap;
+}
+
+.studip-grid-element {
+    border: 1px solid $light-gray-color;
+}
+
+// Responsive displays
+@include media-breakpoint-small-down() {
+    .studip-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+@include media-breakpoint-tiny-down() {
+    .studip-grid {
+        grid-template-columns: 100%;
+    }
+}

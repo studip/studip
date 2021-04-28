@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import eventBus from '../lib/event-bus.js';
 import GetTextPlugin from 'vue-gettext';
 import { getLocale, getVueConfig } from '../lib/gettext.js';
+import PortalVue from 'portal-vue';
 import BaseComponents from '../../../vue/base-components.js';
 import BaseDirectives from "../../../vue/base-directives.js";
 
@@ -21,6 +22,8 @@ Vue.use(GetTextPlugin, getVueConfig());
 eventBus.on('studip:set-locale', (locale) => {
     Vue.config.language = locale;
 })
+
+Vue.use(PortalVue);
 
 registerGlobalComponents();
 registerGlobalDirectives();
