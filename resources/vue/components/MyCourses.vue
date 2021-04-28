@@ -19,7 +19,7 @@
                 </ul>
             </template>
         </studip-message-box>
-        <component v-else :is="displayComponent"></component>
+        <component v-else :is="displayComponent" :icon-size="iconSize"></component>
 
         <MountingPortal mount-to="#tiled-courses-sidebar-switch .sidebar-widget-content .widget-list" name="sidebar-switch">
             <my-courses-sidebar-switch></my-courses-sidebar-switch>
@@ -56,6 +56,12 @@ export default {
         },
         displayedType () {
             return this.getConfig('display_type');
+        },
+        iconSize () {
+            // if (this.displayedType !== 'tiles' && !this.responsiveDisplay) {
+            //     return 20;
+            // }
+            return 24;
         },
         searchCoursesUrl () {
             return STUDIP.URLHelper.getURL('dispatch.php/search/courses');

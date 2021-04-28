@@ -63,11 +63,11 @@
                                 ></studip-action-menu>
                             </div>
 
-                            <my-courses-navigation :navigation="getNavigationForCourse(course)"></my-courses-navigation>
+                            <my-courses-navigation :navigation="getNavigationForCourse(course)" :icon-size="iconSize"></my-courses-navigation>
                         </div>
                     </td>
                     <td v-if="!responsiveDisplay" class="course-navigation">
-                        <my-courses-navigation :navigation="getNavigationForCourse(course, true)"></my-courses-navigation>
+                        <my-courses-navigation :navigation="getNavigationForCourse(course, true)" :icon-size="iconSize"></my-courses-navigation>
                     </td>
                     <td v-if="!responsiveDisplay" class="actions">
                         <studip-action-menu :items="getActionMenuForCourse(course, false, true)"
@@ -87,6 +87,13 @@ import MyCoursesMixin from '../mixins/MyCoursesMixin.js';
 export default {
     name: 'MyCoursesTables',
     mixins: [MyCoursesMixin],
+    props: {
+        iconSize: {
+            type: Number,
+            required: false,
+            default: 16
+        }
+    },
     data () {
         return {
             orderBy: 'group',

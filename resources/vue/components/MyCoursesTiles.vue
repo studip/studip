@@ -42,7 +42,7 @@
                                 </a>
                             </header>
                             <footer class="tiles-grid-element-footer">
-                                <my-courses-navigation :navigation="getNavigationForCourse(course)"></my-courses-navigation>
+                                <my-courses-navigation :navigation="getNavigationForCourse(course)" :icon-size="iconSize"></my-courses-navigation>
                             </footer>
 
                             <my-courses-color-picker v-if="showColorPickerForCourse(course)" :course="course" v-on:color-picked="changeColor"></my-courses-color-picker>
@@ -63,6 +63,13 @@ export default {
     name: 'my-courses-tiles',
     mixins: [MyCoursesMixin],
     components: {MyCoursesColorPicker},
+    props: {
+        iconSize: {
+            type: Number,
+            required: false,
+            default: 16
+        }
+    },
     data () {
         return {
             shownColorPicker: null,
