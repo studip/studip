@@ -147,7 +147,6 @@ class StudipRedisCache implements StudipSystemCache
      */
     public static function getConfig(): array
     {
-        $thisCache = CacheType::findOnebyClass_name(__CLASS__);
         $currentCache = Config::get()->SYSTEMCACHE;
 
         // Set default config for this cache
@@ -157,7 +156,7 @@ class StudipRedisCache implements StudipSystemCache
         ];
 
         // If this cache is set as system cache, use config from global settings.
-        if ($currentCache['type'] == $thisCache->id) {
+        if ($currentCache['type'] == __CLASS__) {
             $currentConfig = $currentCache['config'];
             $currentConfig['port'] = $currentConfig['port'] ? (int) $currentConfig['port'] : null;
         }

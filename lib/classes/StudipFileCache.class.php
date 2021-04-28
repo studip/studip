@@ -60,9 +60,11 @@ class StudipFileCache implements StudipSystemCache
      * @throws exception if the directory does not exist or could not be
      *         created
      */
-    public function __construct($path)
+    public function __construct($path = '')
     {
         $this->dir = $path
+                  ?: (Config::get()->SYSTEMCACHE['type'] == 'StudipFileCache' ?
+                        Config::get()->SYSTEMCACHE['config']['path'] : '')
                   ?: $GLOBALS['CACHING_FILECACHE_PATH']
                   ?: ($GLOBALS['TMP_PATH'] . '/' . 'studip_cache');
         $this->dir = rtrim($this->dir, '\\/') . '/';
@@ -257,7 +259,6 @@ class StudipFileCache implements StudipSystemCache
      */
     public static function getConfig(): array
     {
-        $thisCache = CacheType::findOnebyClass_name(__CLASS__);
         $currentCache = Config::get()->SYSTEMCACHE;
 
         // Set default config for this cache
@@ -266,7 +267,7 @@ class StudipFileCache implements StudipSystemCache
         ];
 
         // If this cache is set as system cache, use config from global settings.
-        if ($currentCache['type'] == $thisCache->id) {
+        if ($currentCache['type'] == __CLASS__) {
             $currentConfig = $currentCache['config'];
         }
 
