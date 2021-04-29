@@ -14,16 +14,16 @@
  */
 
 /**
- * Formates one SingleDate object or a series of SingleDate objects into a nice format. 
+ * Formates one SingleDate object or a series of SingleDate objects into a nice format.
  */
 class DateFormatter {
     /**
      * @var array holds the dates use for formatting
      */
     private $dates;
-    
+
     /**
-     * @var string holds the return-type, may be int or string 
+     * @var string holds the return-type, may be int or string
      */
     private $return_mode;
 
@@ -87,13 +87,13 @@ class DateFormatter {
 
                 $isFirstDate = ($num == 0);
                 if ($isFirstDate) {
-                    $dateWithRooms = $this->internalFormatDateAndRoom($date);                    
+                    $dateWithRooms = $this->internalFormatDateAndRoom($date);
                 } else {
                     $dateWithRooms .= ', ' . $this->formatRoom($date);
                 }
             }
         }
-        return $dateWithRooms;
+        return formatReady($dateWithRooms);
     }
 
     private function internalFormatDateAndRoom($date)

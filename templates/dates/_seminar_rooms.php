@@ -17,7 +17,7 @@ if ($assigned || $freetext) {
     if ($freetext) {
         foreach ($freetext as $name => $count) {
             if ($name) {
-                $rooms[] = '(' . ($plain ? $name : htmlReady($name)) . ')';
+                $rooms[] = '(' . ($plain ? $name : formatReady($name)) . ')';
             }
         }
     }

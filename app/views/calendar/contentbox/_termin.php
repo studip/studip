@@ -8,7 +8,7 @@
         </h1>
         <nav>
             <span>
-                <?= $termin['room'] ? _('Raum') . ': ' . htmlReady($termin['room']) : '' ?>
+                <?= $termin['room'] ? _('Raum') . ': ' . formatReady($termin['room']) : '' ?>
             </span>
             <? if($admin && $isProfile && $termin['type'] === 'CalendarEvent'): ?>
             <a href="<?= URLHelper::getLink('dispatch.php/calendar/single/edit/' . $termin['range_id'] . '/' . $termin['event_id'], ['source_page' => 'dispatch.php/profile']) ?>">
