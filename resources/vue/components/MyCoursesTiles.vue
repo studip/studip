@@ -25,10 +25,10 @@
                                 </span>
 
                                 <a v-if="!course.is_studygroup" data-dialog :href="urlFor('dispatch.php/course/details/index/' + course.id)" :title="$gettext('Veranstaltungsdetails')">
-                                    <img :src="course.avatar" class="tiles-grid-element-header-image" />
+                                    <span :style="{backgroundImage: `url(${course.avatar})`}" class="tiles-grid-element-header-image"></span>
                                 </a>
                                 <span v-else>
-                                    <img :src="course.avatar" class="tiles-grid-element-header-image" />
+                                    <span :style="{backgroundImage: `url(${course.avatar})`}" class="tiles-grid-element-header-image"></span>
                                 </span>
 
                                 <a :href="urlFor('seminar_main.php', {auswahl: course.id})" class="tiles-grid-element-header-content" :title="getCourseName(course, getConfig('sem_number'))">
@@ -210,6 +210,9 @@ export default {
 
         width: $avatar-size;
         height: $avatar-size;
+
+        background-position: center;
+        background-size: cover;
     }
 
     .tiles-grid-element-options {
