@@ -56,8 +56,7 @@
     <label for="wizard-home-institute" class="required">
         <?= _('Heimateinrichtung') ?>
     </label>
-    <select name="institute" id="wizard-home-institute"
-            data-ajax-url="<?= URLHelper::getLink('dispatch.php/course/wizard/ajax') ?>">
+    <select name="institute" id="wizard-home-institute" class="nested-select">
         <?php
         $fak_id = '';
         foreach ($institutes as $inst) :
