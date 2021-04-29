@@ -20,7 +20,7 @@ class WikiFormat extends StudipFormat
             'callback' => 'WikiFormat::markupWikiComments'
         ],
         'wiki-links' => [
-            'start'    => '\[\[(.*?)(?:\|(.*?))?\]\]',
+            'start'    => '\[\[(.*?)(?:(.*?))?\]\]',
             'callback' => 'WikiFormat::markupWikiLinks',
             'before'   => 'links'
         ],
@@ -142,7 +142,7 @@ class WikiFormat extends StudipFormat
      */
     protected static function markupWikiLinks($markup, $matches)
     {
-        $keyword = decodeHTML($matches[1]);
+        $keyword = decodeHTML($matches[2]);
         $display_page = $matches[2] ? $markup->format($matches[2]) : htmlReady($keyword);
 
         $page = WikiPage::findLatestPage(Context::getId(), $keyword);
