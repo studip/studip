@@ -353,16 +353,18 @@ export default {
     watch: {
         selectedIds (current) {
             const activated = current.length > 0;
-            this.$refs.buttons.querySelectorAll('.button').forEach(element => {
-                let condition = element.dataset.activatesCondition;
-                if (!condition || !activated) {
-                    element.disabled = !activated;
-                } else {
-                    condition = condition.replace(/:has\((.*?)\)/g, ' $1');
-                    condition = condition.replace(':checkbox', 'input[type="checkbox"]');
+            this.$nextTick(() => { // needs to be wrapped since we check the dom
+                this.$refs.buttons.querySelectorAll('.button').forEach(element => {
+                    let condition = element.dataset.activatesCondition;
+                    if (!condition || !activated) {
+                        element.disabled = !activated;
+                    } else {
+                        condition = condition.replace(/:has\((.*?)\)/g, ' $1');
+                        condition = condition.replace(':checkbox', 'input[type="checkbox"]');
 
-                    element.disabled = this.$el.querySelector(condition) === null;
-                }
+                        element.disabled = this.$el.querySelector(condition) === null;
+                    }
+                });
             });
         },
     }
