@@ -36,7 +36,7 @@ class Consultation_OverviewController extends ConsultationController
         $this->page   = max($page, 0);
         $this->blocks = ConsultationBlock::findbyRange(
             $this->range,
-            "LIMIT " . ($this->page * $this->limit) . ", {$this->limit}"
+            "ORDER BY start ASC LIMIT " . ($this->page * $this->limit) . ", {$this->limit}"
         );
 
         $action = $GLOBALS['user']->cfg->CONSULTATION_SHOW_GROUPED ? 'index' : 'ungrouped';
