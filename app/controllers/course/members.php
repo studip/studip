@@ -286,7 +286,6 @@ class Course_MembersController extends AuthenticatedController
 
         // load MultiPersonSearch object
         $mp = MultiPersonSearch::load("add_autor" . $this->course_id);
-//        $sem = Seminar::GetInstance($this->course_id);
 
         $countAdded = 0;
         foreach ($mp->getAddedUsers() as $a) {
@@ -1364,7 +1363,7 @@ class Course_MembersController extends AuthenticatedController
             if ($success > 0) {
                 PageLayout::postSuccess(_('Die Daten wurden gespeichert.'));
             } else {
-                PageLayout::postError(_('Keine Veränderungen vorgenommen.'));
+                PageLayout::postWarning(_('Keine Veränderungen vorgenommen.'));
             }
         }
     }
