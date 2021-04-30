@@ -419,7 +419,7 @@ function showDeleteDialog($keyword, $version) {
         $islatest=1;
     }
 
-    $msg= sprintf(_("Wollen Sie die untenstehende Version %s der Seite %s wirklich löschen?"), htmlReady($version), htmlReady($keyword)) . "\n";
+    $msg= sprintf(_("Wollen Sie die untenstehende Version %s der Seite %s wirklich löschen?"), $version, $keyword) . "\n";
     if (!$willvanish) {
         if ($islatest) {
             $msg .= _("Diese Version ist derzeit aktuell. Nach dem Löschen wird die nächstältere Version aktuell.");
@@ -432,11 +432,11 @@ function showDeleteDialog($keyword, $version) {
 
 
 function showDeleteAllDialog($keyword) {
-    $msg= sprintf(_("Wollen Sie die Seite %s wirklich vollständig - mit allen Versionen - löschen?"), htmlReady($keyword)) . "\n";
+    $msg= sprintf(_("Wollen Sie die Seite %s wirklich vollständig - mit allen Versionen - löschen?"), $keyword) . "\n";
     if ($keyword === "WikiWikiWeb") {
         $msg .= _("Sie sind im Begriff die Startseite zu löschen, die dann durch einen leeren Text ersetzt wird. Damit wären auch alle anderen Seiten nicht mehr direkt erreichbar.");
     } else {
-        $numbacklinks=count(getBacklinks($keyword));
+        $numbacklinks = count(getBacklinks($keyword));
         if ($numbacklinks == 0) {
             $msg .= _("Auf diese Seite verweist keine andere Seite.");
         } else if ($numbacklinks == 1) {
