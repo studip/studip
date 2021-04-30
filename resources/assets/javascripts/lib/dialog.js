@@ -429,13 +429,6 @@ Dialog.show = function(content, options = {}) {
         };
     }
 
-    // Blur background
-    $('#layout_wrapper, #scroll-to-top').css({
-        WebkitFilter: 'blur(' + Dialog.stack.length + 'px)',
-        filter: 'blur(' + Dialog.stack.length + 'px)',
-        overflowX: 'hidden'
-    });
-
     // Create/update dialog
     instance.element.dialog(dialog_options);
     instance.element.scrollTo(0, 0);
