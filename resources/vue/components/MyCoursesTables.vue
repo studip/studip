@@ -100,11 +100,6 @@ export default {
             orderDir: 'asc'
         }
     },
-    computed: {
-        numberOfNavElements () {
-            return this.$store.getters['mycourses/numberOfNavElements'];
-        }
-    },
     methods: {
         changeOrder (by) {
             if (this.orderBy === by) {
@@ -117,7 +112,7 @@ export default {
         getCourseClasses (course) {
             return {
                 'has-subcourses': this.isParent(course),
-                'subcourses': this.isChild(course),
+                subcourses: this.isChild(course),
             };
         },
         getOrderedCourses (ids) {

@@ -25,11 +25,9 @@ export default {
         groups: {},
         userid: null,
         config: {},
-        numberOfNavElements: 0,
     }),
 
     getters: {
-        numberOfNavElements: state => state.numberOfNavElements,
         isGroupOpen: (state) => (group) => {
             if (state.config.group_by === 'sem_number') {
                 return true;
@@ -44,17 +42,6 @@ export default {
     mutations: {
         setCourses (state, courses) {
             state.courses = courses;
-
-            // TODO Respect "important" setting
-            let maxNavElements = 0;
-            Object.values(courses).forEach(course => {
-                const max = Object.keys(course.navigation).length;
-                if (max > maxNavElements) {
-                    maxNavElements = max;
-                }
-            });
-
-            state.numberOfNavElements = maxNavElements;
         },
         setGroups (state, groups) {
             state.groups = groups;
