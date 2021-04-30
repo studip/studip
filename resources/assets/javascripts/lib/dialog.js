@@ -527,6 +527,15 @@ Dialog.calculateDimensions = function (instance, content, options) {
 
 
         $('<div class="ui-dialog-content">').html($.parseHTML(content)).appendTo(helper);
+        // Prevent buttons from wrapping
+        $('[data-dialog-button]', helper).css('white-space', 'nowrap');
+        // Add cancel button if missing
+        if ((!options.hasOwnProperty('buttons') || options.buttons !== false)) {
+            $('<div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix"></div>')
+                .append('<div class="ui-dialog-buttonset"><button class="ui-button ui-widget ui-corner-all cancel">Foo</button></div>')
+                .appendTo(helper)
+        }
+
         helper.css({
             position: 'absolute',
             left: '-10000px',
@@ -534,20 +543,10 @@ Dialog.calculateDimensions = function (instance, content, options) {
             width: 'auto'
         }).appendTo('body');
 
-        // Prevent buttons from wrapping
-        $('[data-dialog-button]', helper).css('white-space', 'nowrap');
-        // Add cancel button if missing
-        if ((!options.hasOwnProperty('buttons') || options.button !== false)
-            && $('[data-dialog-button] .button.cancel', helper).length === 0)
-        {
-            var cancel = $('<button class="button cancel">').text($gettext('Schließen'));
-            $('[data-dialog-button]', helper).append(cancel);
-        }
-
         // Calculate width and height
         // TODO: The value of 63 shouldn't be hardcoded (the height of buttonpane)
-        width = Math.min(helper.outerWidth(true) + dialog_margin, width);
-        height = Math.min(helper.outerHeight(true) + 63, height);
+        width = Math.min(helper.outerWidth(true) + dialog_margin, max_width);
+        height = Math.min(helper.outerHeight(true), max_height);
 
         if (options.size === 'auto') {
             width = Math.max(300, width);
