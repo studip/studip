@@ -32,7 +32,10 @@
     <? foreach ($pages as $page): ?>
         <tr>
             <td>
-                <?= str_replace('>WikiWikiWeb<', '>' . _('Wiki-Startseite') . '<', wikiReady("[[{$page->keyword}]]")) ?>
+                <?= str_replace('>WikiWikiWeb<', '>' . _('Wiki-Startseite') . '<') ?>
+                <a href="<?= URLHelper::getLink('', ['view' => 'diff', 'keyword' => $page->keyword, 'versionssince' => $lastlogindate]) ?>">
+                    <?= $page->keyword ?>
+                </a>
             </td>
             <td>
                 <?= htmlReady($page->version) ?>
