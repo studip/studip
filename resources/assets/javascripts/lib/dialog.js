@@ -464,20 +464,6 @@ Dialog.close = function(options) {
         }
 
         Dialog.removeInstance(options.id);
-
-        // Remove background blur
-        if (Dialog.stack.length > 0) {
-            $('#layout_wrapper, #scroll-to-top').css({
-                WebkitFilter: 'blur(' + Dialog.stack.length + 'px)',
-                filter: 'blur(' + Dialog.stack.length + 'px)'
-            });
-        } else {
-            $('#layout_wrapper, #scroll-to-top').css({
-                WebkitFilter: '',
-                filter: '',
-                overflowX: 'initial'
-            });
-        }
     }
 
     if (options['reload-on-close'] && !options.hasOwnProperty('is-reloading')) {
