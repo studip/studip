@@ -7,7 +7,7 @@
                 <col style="width: 25px">
                 <col style="width: 70px" v-if="getConfig('sem_number') && !responsiveDisplay">
                 <col>
-                <col v-if="!responsiveDisplay" :style="{width: (2 * 5 + numberOfNavElements * (24 + 2 * 3 + 3) - 3) + 'px'}">
+                <col v-if="!responsiveDisplay" :style="{width: (2 * 5 + numberOfNavElements * (iconSize + 2 * 3 + 3) - 3) + 'px'}">
                 <col v-if="!responsiveDisplay" style="width: 24px">
             </colgroup>
             <thead>
@@ -34,8 +34,7 @@
                     <th class="toggle-indicator" :colspan="(getConfig('sem_number') && !responsiveDisplay) ? 3 : 2">
                         <a href="#" @click.prevent.stop="toggleOpenGroup(subgroup)">{{ subgroup.label }}</a>
                     </th>
-                    <th v-if="!responsiveDisplay" class="dont-hide" colspan="2">
-                    </th>
+                    <th v-if="!responsiveDisplay" class="dont-hide" colspan="2"></th>
                 </tr>
                 <tr v-for="course in getOrderedCourses(subgroup.ids)" :data-course-id="course.id" :class="getCourseClasses(course)">
                     <td :class="`gruppe${course.group}`"></td>
