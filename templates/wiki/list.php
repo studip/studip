@@ -33,7 +33,7 @@
         <tr>
             <td>
                 <a href="<?=URLHelper::getLink('wiki.php', ['keyword' => $page->keyword])?>">
-                <?= htmlReady(str_replace('WikiWikiWeb',  _('Wiki-Startseite') , $page->keyword)) ?>
+                    <?= htmlReady($page->keyword === 'WikiWikiWeb' ? _('Wiki-Startseite') : $page->keyword) ?>
                 </a>
             </td>
             <td>
