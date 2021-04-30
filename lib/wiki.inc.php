@@ -419,28 +419,28 @@ function showDeleteDialog($keyword, $version) {
         $islatest=1;
     }
 
-    $msg= sprintf(_("Wollen Sie die untenstehende Version %s der Seite %s wirklich löschen?"), "<b>".htmlReady($version)."</b>", "<b>".htmlReady($keyword)."</b>") . "<br>\n";
+    $msg= sprintf(_("Wollen Sie die untenstehende Version %s der Seite %s wirklich löschen?"), htmlReady($version), htmlReady($keyword)) . "\n";
     if (!$willvanish) {
         if ($islatest) {
-            $msg .= _("Diese Version ist derzeit aktuell. Nach dem Löschen wird die nächstältere Version aktuell.") . "<br>";
+            $msg .= _("Diese Version ist derzeit aktuell. Nach dem Löschen wird die nächstältere Version aktuell.");
         }
     } else {
-        $msg .= _("Diese Version ist die derzeit einzige. Nach dem Löschen ist die Seite komplett gelöscht.") . "<br>";
+        $msg .= _("Diese Version ist die derzeit einzige. Nach dem Löschen ist die Seite komplett gelöscht.");
     }
     return $msg;
 }
 
 
 function showDeleteAllDialog($keyword) {
-    $msg= sprintf(_("Wollen Sie die Seite %s wirklich vollständig - mit allen Versionen - löschen?"), "<b>".htmlReady($keyword)."</b>") . "<br>\n";
-    if ($keyword=="WikiWikiWeb") {
-        $msg .= "<p>" . _("Sie sind im Begriff die Startseite zu löschen, die dann durch einen leeren Text ersetzt wird. Damit wären auch alle anderen Seiten nicht mehr direkt erreichbar.") . "</p>";
+    $msg= sprintf(_("Wollen Sie die Seite %s wirklich vollständig - mit allen Versionen - löschen?"), htmlReady($keyword)) . "\n";
+    if ($keyword === "WikiWikiWeb") {
+        $msg .= _("Sie sind im Begriff die Startseite zu löschen, die dann durch einen leeren Text ersetzt wird. Damit wären auch alle anderen Seiten nicht mehr direkt erreichbar.");
     } else {
         $numbacklinks=count(getBacklinks($keyword));
         if ($numbacklinks == 0) {
-            $msg .= _("Auf diese Seite verweist keine andere Seite.").'<br>';
+            $msg .= _("Auf diese Seite verweist keine andere Seite.");
         } else if ($numbacklinks == 1) {
-            $msg .= _("Auf diese Seite verweist 1 andere Seite.").'<br>';
+            $msg .= _("Auf diese Seite verweist 1 andere Seite.");
         } else {
             $msg .= sprintf(_("Auf diese Seite verweisen %s andere Seiten."), count(getBacklinks($keyword)));
         }

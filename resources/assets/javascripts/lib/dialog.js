@@ -606,7 +606,7 @@ Dialog.confirm = function(question, yes_callback, no_callback) {
         } else if (question === false) {
             defer.reject();
         } else {
-            Dialog.show(_.escape(question), {
+            Dialog.show(_.escape(question).replace("\n", '<br>'), {
                 id: 'confirmation-dialog',
                 title: $gettext('Bitte bestätigen Sie die Aktion'),
                 size: 'fit',
