@@ -8,9 +8,8 @@ $genders = [
 ?>
 
 <? if ($user->auth_plugin !== 'standard'): ?>
-    <?= MessageBox::info(sprintf(_('Ihre Authentifizierung (%s) benutzt nicht die Stud.IP Datenbank, '
-                                   . 'daher können Sie einige Felder nicht verändern!'),
-            $user->auth_plugin)) ?>
+    <?= MessageBox::info(sprintf(_('Einige Ihrer persönlichen Daten werden nicht in Stud.IP verwaltet '
+                                   . 'und können daher hier nicht geändert werden.'))) ?>
 <? endif; ?>
 
 <? if ($locked_info): ?>

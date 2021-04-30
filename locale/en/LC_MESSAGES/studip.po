@@ -39638,11 +39638,11 @@ msgstr[1] "There are %s additional categories which you cannot see or modify."
 #: ../app/views/settings/account/index.php:11
 #, php-format
 msgid ""
-"Ihre Authentifizierung (%s) benutzt nicht die Stud.IP Datenbank, daher "
-"können Sie einige Felder nicht verändern!"
+"Einige Ihrer persönlichen Daten werden nicht in Stud.IP verwaltet "
+"und können daher hier nicht geändert werden."
 msgstr ""
-"You authentication (%s) does not use the Stud.IP database. Some fields "
-"cannot be changed."
+"Some of your personal data are not managed in Stud.IP "
+"and can therefore not be changed here."
 
 #: ../app/views/settings/account/index.php:38
 msgid ""
