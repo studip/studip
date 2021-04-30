@@ -154,7 +154,7 @@ export default {
             return Math.max(
                 ...Object.values(this.courses).map(course => {
                     const navigation = this.getNavigationForCourse(course, true);
-                    return Object.values(navigation).filter(nav => nav !== false).length;
+                    return Object.values(navigation).length;
                 })
             );
         }
