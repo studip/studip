@@ -1,6 +1,7 @@
 <?php
 
-class OERHost extends OERIdentity {
+class OERHost extends OERIdentity
+{
 
     //These two HTTP-headers are non-conformant custom HTTP-headers for requests
     const OER_HEADER_PUBLIC_KEY_HASH = "Publickey-Hash";
@@ -20,7 +21,7 @@ class OERHost extends OERIdentity {
             }
             return $host;
         } else {
-            $host = new OERHost();
+            $host = new static();
             $host['name'] = Config::get()->UNI_NAME_CLEAN;
             $host['url'] = $GLOBALS['oer_PREFERRED_URI'] ?: $GLOBALS['ABSOLUTE_URI_STUDIP']."dispatch.php/oer/endpoints/";
             $host['last_updated'] = time();
@@ -84,7 +85,8 @@ class OERHost extends OERIdentity {
     /**
      * Ask this host for all hosts that it knows. This is a request to the other host.
      */
-    public function askKnownHosts() {
+    public function askKnownHosts()
+    {
         $endpoint_url = $this['url']."fetch_known_hosts"
             ."?from=".urlencode($GLOBALS['oer_PREFERRED_URI'] ?: $GLOBALS['ABSOLUTE_URI_STUDIP']."dispatch.php/oer/endpoints/");
         $output = @file_get_contents($endpoint_url);
@@ -104,6 +106,7 @@ class OERHost extends OERIdentity {
         } else {
             PageLayout::postWarning(_("Kann von dem Server keine Daten bekommen."));
         }
+        return $output;
     }
 
     /**
@@ -111,7 +114,8 @@ class OERHost extends OERIdentity {
      * @param string|null $text : the serach string
      * @param string|null $tag : a tag to search for
      */
-    public function fetchRemoteSearch($text = null, $tag = null) {
+    public function fetchRemoteSearch($text = null, $tag = null)
+    {
         $endpoint_url = $this['url']."search_items";
         if ($tag) {
             $endpoint_url .= "?tag=".urlencode($tag);
@@ -159,14 +163,14 @@ class OERHost extends OERIdentity {
         }
     }
 
-
     /**
      * Pushes some data to the foreign OERHost.
      * @param string $endpoint : part behind the host-url like "push_data"
      * @param array $data : the data to be pushed as an associative array
      * @return bool|CurlHandle|resource
      */
-    public function pushDataToEndpoint($endpoint, $data) {
+    public function pushDataToEndpoint($endpoint, $data)
+    {
         $payload = json_encode($data);
 
         $myHost = OERHost::thisOne();
@@ -193,7 +197,6 @@ class OERHost extends OERIdentity {
         curl_close($request);
         return $response_code < 300;
     }
-
 
     /**
      * Fetches all information of an item from that host. This is a request.

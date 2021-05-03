@@ -8,7 +8,7 @@ const OER = {
             };
         }
     },
-    'update': function (output) {
+    update: function (output) {
         if (output.comments) {
             for (var i = 0; i < output.comments.length; i++) {
                 if (jQuery("#comment_" + output.comments[i].comment_id).length === 0) {
@@ -17,7 +17,7 @@ const OER = {
             }
         }
     },
-    'requestFullscreen': function (selector) {
+    requestFullscreen: function (selector) {
         var player = jQuery(selector)[0];
         if (!player) {
             window.alert($gettext('Kein passendes Element für Vollbildmodus.'));

@@ -19,7 +19,6 @@ class Admin_LicensesController extends AuthenticatedController
     {
         $this->license = new License(Request::get("identifier"));
         PageLayout::setTitle(sprintf(_("Lizenz %s bearbeiten"), $this->license->getId()));
-
     }
 
     public function store_action()
@@ -51,7 +50,6 @@ class Admin_LicensesController extends AuthenticatedController
             }
         }
         $this->redirect("admin/licenses/index");
-        return;
     }
 
     public function delete_action()

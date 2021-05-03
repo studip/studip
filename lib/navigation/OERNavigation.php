@@ -44,6 +44,5 @@ class OERNavigation extends Navigation
             $navigation = new Navigation(_('Meine Materialien'), 'dispatch.php/oer/mymaterial');
             $this->addSubNavigation('mymaterial', $navigation);
         }
-
     }
 }

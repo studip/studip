@@ -2,8 +2,7 @@
 
 class OERReview extends BlubberThread
 {
-
-    static public function findByMaterial_id($material_id)
+    public static function findByMaterial_id($material_id)
     {
         return self::findBySQL("
             context_type = 'public'
@@ -17,11 +16,11 @@ class OERReview extends BlubberThread
     protected static function configure($config = [])
     {
         $config['belongs_to']['material'] = [
-            'class_name' => 'OERMaterial',
+            'class_name' => OERMaterial::class,
             'foreign_key' => 'context_id'
         ];
         $config['has_one']['host'] = [
-            'class_name' => 'OERHost',
+            'class_name' => OERHost::class,
             'foreign_key' => function ($review) {
                 return $review['metadata']['host_id'];
             },
@@ -196,5 +195,4 @@ class OERReview extends BlubberThread
 
         return $data;
     }
-
 }

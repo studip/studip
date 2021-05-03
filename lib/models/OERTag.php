@@ -1,6 +1,12 @@
 <?php
 
-class OERTag extends SimpleORMap {
+class OERTag extends SimpleORMap
+{
+    protected static function configure($config = [])
+    {
+        $config['db_table'] = 'oer_tags';
+        parent::configure($config);
+    }
 
     public static function findBest($number = 9, $raw = false)
     {
@@ -33,7 +39,8 @@ class OERTag extends SimpleORMap {
         }
     }
 
-    public static function findRelated($tag_hash, $but_not = [], $limit = 6, $raw = false) {
+    public static function findRelated($tag_hash, $but_not = [], $limit = 6, $raw = false)
+    {
         $statement = DBManager::get()->prepare("
             SELECT oer_tags.*
             FROM (
@@ -68,11 +75,5 @@ class OERTag extends SimpleORMap {
             }
             return $tags;
         }
-    }
-
-    protected static function configure($config = [])
-    {
-        $config['db_table'] = 'oer_tags';
-        parent::configure($config);
     }
 }

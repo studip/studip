@@ -1,6 +1,31 @@
 <?php
 
-class OERMaterial extends SimpleORMap {
+class OERMaterial extends SimpleORMap
+{
+    protected static function configure($config = [])
+    {
+        $config['db_table'] = 'oer_material';
+        $config['belongs_to']['host'] = [
+            'class_name' => OERHost::class,
+            'foreign_key' => 'host_id'
+        ];
+        $config['has_many']['reviews'] = [
+            'class_name' => OERReview::class,
+            'order_by' => 'ORDER BY mkdate DESC',
+            'on_delete' => 'delete'
+        ];
+        $config['has_many']['users'] = [
+            'class_name' => OERMaterialUser::class,
+            'order_by' => 'ORDER BY position ASC'
+        ];
+        $config['belongs_to']['license'] = [
+            'class_name' => License::class,
+            'foreign_key' => 'license_identifier'
+        ];
+        $config['serialized_fields']['structure'] = 'JSONArrayObject';
+        $config['registered_callbacks']['before_delete'][] = "cbDeleteFile";
+        parent::configure($config);
+    }
 
     public static function findAll()
     {
@@ -9,7 +34,7 @@ class OERMaterial extends SimpleORMap {
 
     public static function findMine($user_id = null)
     {
-        $user_id || $user_id = $GLOBALS['user']->id;
+        $user_id = $user_id ?: $GLOBALS['user']->id;
         return self::findBySQL("INNER JOIN `oer_material_users` USING (material_id)
             WHERE `oer_material_users`.user_id = ?
                 AND external_contact = '0'
@@ -119,7 +144,6 @@ class OERMaterial extends SimpleORMap {
         $id = $matches[1];
         $material = OERMaterial::find($id);
 
-
         $url = $material['host_id']
             ? $material->host->url."download/".$material['foreign_material_id']
             : URLHelper::getURL("dispatch.php/oer/endpoints/download/".$material->getId());
@@ -140,7 +164,6 @@ class OERMaterial extends SimpleORMap {
             return $output;
         }
 
-
         $tf = new Flexi_TemplateFactory($GLOBALS['STUDIP_BASE_PATH']."/app/views");
         if ($material['player_url'] || $material->isPDF()) {
             $template = $tf->open("oer/embed/url");
@@ -155,32 +178,6 @@ class OERMaterial extends SimpleORMap {
         $template->material = $material;
         $template->id = $id;
         return $template->render();
-
-    }
-
-    protected static function configure($config = [])
-    {
-        $config['db_table'] = 'oer_material';
-        $config['belongs_to']['host'] = [
-            'class_name' => 'OERHost',
-            'foreign_key' => 'host_id'
-        ];
-        $config['has_many']['reviews'] = [
-            'class_name' => 'OERReview',
-            'order_by' => 'ORDER BY mkdate DESC',
-            'on_delete' => 'delete'
-        ];
-        $config['has_many']['users'] = [
-            'class_name' => 'OERMaterialUser',
-            'order_by' => 'ORDER BY position ASC'
-        ];
-        $config['belongs_to']['license'] = [
-            'class_name' => 'License',
-            'foreign_key' => 'license_identifier'
-        ];
-        $config['serialized_fields']['structure'] = 'JSONArrayObject';
-        $config['registered_callbacks']['before_delete'][] = "cbDeleteFile";
-        parent::configure($config);
     }
 
     public function cbDeleteFile()
@@ -202,7 +199,8 @@ class OERMaterial extends SimpleORMap {
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function setTopics($tags) {
+    public function setTopics($tags)
+    {
         $statement = DBManager::get()->prepare("
             DELETE FROM oer_tags_material
             WHERE material_id = :material_id
@@ -279,7 +277,6 @@ class OERMaterial extends SimpleORMap {
         } else {
             return Icon::create("file", "clickable")->asImagePath();
         }
-
     }
 
     public function isFolder()
@@ -324,7 +321,8 @@ class OERMaterial extends SimpleORMap {
         return $this['content_type'] === "application/json+studipquestionnaire";
     }
 
-    public function addTag($tag_name) {
+    public function addTag($tag_name)
+    {
         $tag_hash = md5($tag_name);
         if (!OERTag::find($tag_hash)) {
             $tag = new OERTag();
@@ -394,8 +392,6 @@ class OERMaterial extends SimpleORMap {
                 if ($data['deleted']) {
                     return "deleted";
                 }
-
-
 
                 //material:
                 $material_data = $data['data'];
@@ -477,7 +473,8 @@ class OERMaterial extends SimpleORMap {
         return true;
     }
 
-    public function setUsers($data) {
+    public function setUsers($data)
+    {
         $old_user_ids = $this->users->pluck("user_id");
         $current_user_ids = [];
         foreach ((array) $data as $index => $userdata) {
@@ -529,7 +526,8 @@ class OERMaterial extends SimpleORMap {
         }
     }
 
-    public function calculateRating() {
+    public function calculateRating()
+    {
         $rating = 0;
         $factors = 0;
         foreach ($this->reviews as $review) {

@@ -27,7 +27,7 @@ class OercampusIntegration extends Migration
         DBManager::get()->exec("
             ALTER TABLE blubber_external_contact
             CHANGE COLUMN `mail_identifier` `foreign_id` varchar(256) DEFAULT NULL,
-            ADD COLUMN `host_id` varchar(32) DEFAULT NULL AFTER `foreign_id`,
+            ADD COLUMN `host_id` varchar(32) CHARACTER SET latin1 COLLATE latin1_bin DEFAULT NULL AFTER `foreign_id`,
             ADD COLUMN `avatar_url` varchar(256) DEFAULT NULL AFTER `name`
         ");
 
@@ -87,14 +87,22 @@ class OercampusIntegration extends Migration
                 WHERE `field` = :old
             ");
             $rename_config_values = DBManager::get()->prepare("
-                UPDATE `config`
+                UPDATE `config_values`
                 SET `field` = :new
                 WHERE `field` = :old
             ");
 
+            $rename_config->execute([
+                'old' => "LERNMARKTPLATZ_USER_DESCRIPTION_DATAFIELD",
+                'new' => "OER_USER_DESCRIPTION_DATAFIELD"
+            ]);
             $rename_config_values->execute([
                 'old' => "LERNMARKTPLATZ_USER_DESCRIPTION_DATAFIELD",
                 'new' => "OER_USER_DESCRIPTION_DATAFIELD"
+            ]);
+            $rename_config->execute([
+                'old' => "LERNMARKTPLATZ_PUBLIC_STATUS",
+                'new' => "OER_PUBLIC_STATUS"
             ]);
             $rename_config_values->execute([
                 'old' => "LERNMARKTPLATZ_PUBLIC_STATUS",
@@ -110,6 +118,10 @@ class OercampusIntegration extends Migration
             ]);
 
             $rename_config->execute([
+                'old' => "LERNMARKTPLATZ_TITLE",
+                'new' => "OER_TITLE"
+            ]);
+            $rename_config_values->execute([
                 'old' => "LERNMARKTPLATZ_TITLE",
                 'new' => "OER_TITLE"
             ]);
@@ -135,24 +147,28 @@ class OercampusIntegration extends Migration
             ]);
 
             //Alte Dateien des Lernmarktplatzes umziehen:
-            foreach (scandir($GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz") as $file) {
-                if ($file[0] !== ".") {
-                    @rename(
-                        $GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz/".$file,
-                        $GLOBALS['OER_PATH']."/".$file
-                    );
+            if (is_dir($GLOBALS['STUDIP_BASE_PATH'].'/data/lehrmarktplatz')) {
+                foreach (scandir($GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz") as $file) {
+                    if ($file[0] !== ".") {
+                        @rename(
+                            $GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz/".$file,
+                            $GLOBALS['OER_PATH']."/".$file
+                        );
+                    }
                 }
+                @unlink($GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz");
             }
-            @unlink($GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz");
-            foreach (scandir($GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz_images") as $file) {
-                if ($file[0] !== ".") {
-                    @rename(
-                        $GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz_images/".$file,
-                        $GLOBALS['OER_LOGOS_PATH']."/".$file
-                    );
+            if (is_dir($GLOBALS['STUDIP_BASE_PATH'].'/data/lehrmarktplatz_images')) {
+                foreach (scandir($GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz_images") as $file) {
+                    if ($file[0] !== ".") {
+                        @rename(
+                            $GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz_images/".$file,
+                            $GLOBALS['OER_LOGOS_PATH']."/".$file
+                        );
+                    }
                 }
+                @unlink($GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz_images");
             }
-            @unlink($GLOBALS['STUDIP_BASE_PATH']."/data/lehrmarktplatz_images");
 
         } else {
             DBManager::get()->exec("

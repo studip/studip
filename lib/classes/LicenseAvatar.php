@@ -23,9 +23,9 @@ class LicenseAvatar extends Avatar
      *
      * @return mixed   the course's avatar.
      */
-    static function getAvatar($id)
+    public static function getAvatar($id)
     {
-        return new LicenseAvatar($id);
+        return new static($id);
     }
 
     /**
@@ -33,9 +33,9 @@ class LicenseAvatar extends Avatar
      *
      * @return mixed   the course's avatar.
      */
-    static function getNobody()
+    public static function getNobody()
     {
-        return new LicenseAvatar('nobody');
+        return new static('nobody');
     }
 
     /**
@@ -43,7 +43,7 @@ class LicenseAvatar extends Avatar
      *
      * @return string     the URL to the avatars
      */
-    function getAvatarDirectoryUrl()
+    public function getAvatarDirectoryUrl()
     {
         return $GLOBALS['DYNAMIC_CONTENT_URL'] . "/licenses";
     }
@@ -54,7 +54,7 @@ class LicenseAvatar extends Avatar
      *
      * @return string      the file system path to the avatars
      */
-    function getAvatarDirectoryPath()
+    public function getAvatarDirectoryPath()
     {
         return $GLOBALS['DYNAMIC_CONTENT_PATH'] . "/licenses";
     }
@@ -84,7 +84,7 @@ class LicenseAvatar extends Avatar
      * Return the default title of the avatar.
      * @return string the default title
      */
-    function getDefaultTitle()
+    public function getDefaultTitle()
     {
         return License::find($this->user_id)->name;
     }

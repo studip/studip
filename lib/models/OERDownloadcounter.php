@@ -1,9 +1,7 @@
 <?php
-
 class OERDownloadcounter extends SimpleORMap
 {
-
-    protected static function configure($config = array())
+    protected static function configure($config = [])
     {
         $config['db_table'] = 'oer_downloadcounter';
         parent::configure($config);
@@ -11,7 +9,7 @@ class OERDownloadcounter extends SimpleORMap
 
     public static function addCounter($material_id)
     {
-        $counter = new OERDownloadcounter();
+        $counter = new static();
         $counter['material_id'] = $material_id;
         if (Config::get()->oer_GEOLOCATOR_API) {
             list($url, $lon, $lat) = explode(" ", Config::get()->oer_GEOLOCATOR_API);

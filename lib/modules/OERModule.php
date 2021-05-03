@@ -7,7 +7,7 @@ interface OERModule
      * @param OERMaterial $material
      * @return false|Icon
      */
-    static public function oerModuleWantsToUseMaterial(OERMaterial $material);
+    public static function oerModuleWantsToUseMaterial(OERMaterial $material);
 
     /**
      * This function is triggered i a user chose to use this module as the target of the oermaterial.
@@ -16,7 +16,7 @@ interface OERModule
      * @param Course $course
      * @return void
      */
-    static public function oerModuleIntegrateMaterialToCourse(OERMaterial $material, Course $course);
+    public static function oerModuleIntegrateMaterialToCourse(OERMaterial $material, Course $course);
 
     /**
      * Returns an Icon class object with the given role.

@@ -40,30 +40,24 @@ class Oer_EndpointsController extends StudipController
      */
     public function update_server_info_action()
     {
-        if (Request::isPost()) {
-            $public_key_hash = $_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_PUBLIC_KEY_HASH))];
-            $signature = base64_decode($_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_SIGNATURE))]);
-            $host = OERHost::findOneBySQL("MD5(public_key) = ?", [$public_key_hash]);
-            if ($host && !$host->isMe()) {
-                $body = file_get_contents('php://input');
-                if ($host->verifySignature($body, $signature)) {
-                    $data = json_decode($body, true);
-
-                    $host['name'] = $data['data']['name'];
-                    $host['index_server'] = $data['data']['index_server'];
-                    $host['public_key'] = $data['data']['public_key'];
-                    $host['url'] = $data['data']['url'];
-                    $host['last_updated'] = time();
-                    $host->store();
-
-                    echo "stored ";
-                } else {
-                    throw new Exception("Wrong signature, sorry.");
-                }
-            }
-            $this->render_text("");
-        } else {
+        if (!Request::isPost()) {
             throw new Exception("USE POST TO PUSH.");
+        }
+
+        $host = $this->getHostFromRequest();
+        if ($host && !$host->isMe()) {
+            $data = $this->extractDataForHost($host);
+
+            $host['name'] = $data['data']['name'];
+            $host['index_server'] = $data['data']['index_server'];
+            $host['public_key'] = $data['data']['public_key'];
+            $host['url'] = $data['data']['url'];
+            $host['last_updated'] = time();
+            $host->store();
+
+            $this->render_text('stored');
+        } else {
+            $this->render_text('');
         }
     }
 
@@ -326,7 +320,7 @@ class Oer_EndpointsController extends StudipController
         if (isset($_SERVER['HTTP_RANGE'])) {
             $c_start = $start;
             $c_end   = $end;
-            list(, $range) = explode('=', $_SERVER['HTTP_RANGE'], 2);
+            [, $range] = explode('=', $_SERVER['HTTP_RANGE'], 2);
             if (mb_strpos($range, ',') !== false) {
                 header('HTTP/1.1 416 Requested Range Not Satisfiable');
                 header("Content-Range: bytes $start-$end/$filesize");
@@ -365,7 +359,7 @@ class Oer_EndpointsController extends StudipController
         }
         header("Cache-Control: post-check=0, pre-check=0", false);
         header("Content-Type: ".$this->material['content_type']);
-        header("Content-Disposition: " . ($disposition ?: "inline") . "; " . $this->encode_header_parameter('filename', $this->material['filename']));
+        header("Content-Disposition: " . ($disposition ?: "inline") . "; " . encode_header_parameter('filename', $this->material['filename']));
 
         readfile_chunked($this->material->getFilePath(), $start, $end);
 
@@ -397,69 +391,68 @@ class Oer_EndpointsController extends StudipController
      */
     public function add_review_action($material_id)
     {
-        if (Request::isPost()) {
-            $public_key_hash = $_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_PUBLIC_KEY_HASH))];
-            $signature = base64_decode($_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_SIGNATURE))]);
-            $host = OERHost::findOneBySQL("MD5(public_key) = ?", [$public_key_hash]);
-            if ($host && !$host->isMe()) {
-                $body = file_get_contents('php://input');
-                if ($host->verifySignature($body, $signature)) {
-                    $data = json_decode($body, true);
-                    $material = new OERMaterial($material_id);
-                    if ($material->isNew() || $material['host_id']) {
-                        throw new Exception("Unknown material.");
-                    }
-
-                    $user = ExternalUser::findOneBySQL("host_id = ? AND foreign_id = ?", [
-                        $host->getId(),
-                        $data['user']['user_id']
-                    ]);
-                    if (!$user) {
-                        $user = new ExternalUser();
-                        $user['host_id'] = $host->getId();
-                        $user['foreign_id'] = $data['user']['user_id'];
-                    }
-                    $user['contact_type'] = 'oercampus';
-                    $user['name'] = $data['user']['name'];
-                    $user['avatar_url'] = $data['user']['avatar'];
-                    $user['data']['description'] = $data['user']['description'] ?: "";
-                    $user->store();
-
-                    $review = OERReview::findOneBySQL("display_class = 'OERReview'
-                            AND external_contact = '1'
-                            AND context_id = :material_id
-                            AND user_id = :user_id
-                            AND metadata LIKE :host_id", [
-                        'material_id' => $material_id,
-                        'user_id' => $user->getId(),
-                        'host_id' => "%".$host->getId()."%"
-                    ]);
-
-                    if (!$review) {
-                        $review = new OERReview();
-                        $review['user_id'] = $user->getId();
-                        $review['display_class'] = "OERReview";
-                        $review['context_id'] = $material_id;
-                    }
-                    $review['content'] = $data['data']['review'];
-                    $review['metadata'] = [
-                        'host_id' => $host->getId(),
-                        'foreign_review_id' => $data['data']['foreign_review_id'],
-                        'rating' => $data['data']['rating']
-                    ];
-                    $review['mkdate'] = $data['data']['mkdate'];
-                    $review['chdate'] = $data['data']['chdate'];
-                    $review->store();
-
-                    echo "stored ";
-                } else {
-                    throw new Exception("Wrong signature, sorry.");
-                }
-            }
-            $this->render_text("");
-        } else {
+        if (!Request::isPost()) {
             throw new Exception("USE POST TO PUSH.");
         }
+        $public_key_hash = $_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_PUBLIC_KEY_HASH))];
+        $signature = base64_decode($_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_SIGNATURE))]);
+        $host = OERHost::findOneBySQL("MD5(public_key) = ?", [$public_key_hash]);
+        if ($host && !$host->isMe()) {
+            $body = file_get_contents('php://input');
+            if ($host->verifySignature($body, $signature)) {
+                $data = json_decode($body, true);
+                $material = new OERMaterial($material_id);
+                if ($material->isNew() || $material['host_id']) {
+                    throw new Exception("Unknown material.");
+                }
+
+                $user = ExternalUser::findOneBySQL("host_id = ? AND foreign_id = ?", [
+                    $host->getId(),
+                    $data['user']['user_id']
+                ]);
+                if (!$user) {
+                    $user = new ExternalUser();
+                    $user['host_id'] = $host->getId();
+                    $user['foreign_id'] = $data['user']['user_id'];
+                }
+                $user['contact_type'] = 'oercampus';
+                $user['name'] = $data['user']['name'];
+                $user['avatar_url'] = $data['user']['avatar'];
+                $user['data']['description'] = $data['user']['description'] ?: "";
+                $user->store();
+
+                $review = OERReview::findOneBySQL("display_class = 'OERReview'
+                        AND external_contact = '1'
+                        AND context_id = :material_id
+                        AND user_id = :user_id
+                        AND metadata LIKE :host_id", [
+                    'material_id' => $material_id,
+                    'user_id' => $user->getId(),
+                    'host_id' => "%".$host->getId()."%"
+                ]);
+
+                if (!$review) {
+                    $review = new OERReview();
+                    $review['user_id'] = $user->getId();
+                    $review['display_class'] = "OERReview";
+                    $review['context_id'] = $material_id;
+                }
+                $review['content'] = $data['data']['review'];
+                $review['metadata'] = [
+                    'host_id' => $host->getId(),
+                    'foreign_review_id' => $data['data']['foreign_review_id'],
+                    'rating' => $data['data']['rating']
+                ];
+                $review['mkdate'] = $data['data']['mkdate'];
+                $review['chdate'] = $data['data']['chdate'];
+                $review->store();
+
+                echo "stored ";
+            } else {
+                throw new Exception("Wrong signature, sorry.");
+            }
+        }
+        $this->render_text("");
     }
 
     /**
@@ -471,75 +464,89 @@ class Oer_EndpointsController extends StudipController
      */
     public function add_comment_action($review_id, $host_hash = null)
     {
-        if (Request::isPost()) {
-            $public_key_hash = $_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_PUBLIC_KEY_HASH))]; //MD5_HASH_OF_RSA_PUBLIC_KEY
-            $signature = base64_decode($_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_SIGNATURE))]); //BASE64_RSA_SIGNATURE
-            $host = OERHost::findOneBySQL("MD5(public_key) = ?", [$public_key_hash]);
-            if ($host && !$host->isMe()) {
-                $body = file_get_contents('php://input');
-                if ($host->verifySignature($body, $signature)) {
-                    if ($host_hash) {
-                        $review = OERReview::findOneBySQL("
-                            display_class = 'OERREview'
-                            AND context_type = 'public'
-                            AND metadata LIKE :foreign_review_id
-                            AND metadata LIKE :host_id
-                        ", [
-                            'foreign_review_id' => "%".$review_id."%",
-                            'host_id' => "%".$host->getId()."%"
-                        ]);
-                    } else {
-                        $review = OERReview::find($review_id);
-                    }
-                    if (!$review) {
-                        throw new Exception("Unknown material.");
-                    }
-
-                    $data = json_decode($body, true);
-                    $user = ExternalUser::findOneBySQL("host_id = ? AND foreign_id = ?", [
-                        $host->getId(),
-                        $data['user']['user_id']
-                    ]);
-                    if (!$user) {
-                        $user = new ExternalUser();
-                        $user['host_id'] = $host->getId();
-                        $user['foreign_id'] = $data['user']['user_id'];
-                    }
-                    $user['contact_type'] = 'oercampus';
-                    $user['name'] = $data['user']['name'];
-                    $user['avatar_url'] = $data['user']['avatar'];
-                    $user['data']['description'] = $data['user']['description'] ?: "";
-                    $user->store();
-
-                    $comment = new BlubberComment();
-                    $comment['user_id'] = $user->getId();
-                    $comment['external_contact'] = "1";
-                    $comment['thread_id'] = $review->getId();
-                    $comment['content'] = $data['data']['comment'];
-                    $comment['mkdate'] = $data['data']['mkdate'];
-                    $comment['chdate'] = $data['data']['chdate'];
-                    $comment->store();
-
-                    echo "stored ";
-                } else {
-                    throw new Exception("Wrong signature, sorry.");
-                }
-            }
-            $this->render_text("");
-        } else {
+        if (!Request::isPost()) {
             throw new Exception("USE POST TO PUSH.");
         }
+
+        $public_key_hash = $_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_PUBLIC_KEY_HASH))]; //MD5_HASH_OF_RSA_PUBLIC_KEY
+        $signature = base64_decode($_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_SIGNATURE))]); //BASE64_RSA_SIGNATURE
+        $host = OERHost::findOneBySQL("MD5(public_key) = ?", [$public_key_hash]);
+        if ($host && !$host->isMe()) {
+            $body = file_get_contents('php://input');
+            if ($host->verifySignature($body, $signature)) {
+                if ($host_hash) {
+                    $review = OERReview::findOneBySQL("
+                        display_class = 'OERREview'
+                        AND context_type = 'public'
+                        AND metadata LIKE :foreign_review_id
+                        AND metadata LIKE :host_id
+                    ", [
+                        'foreign_review_id' => "%".$review_id."%",
+                        'host_id' => "%".$host->getId()."%"
+                    ]);
+                } else {
+                    $review = OERReview::find($review_id);
+                }
+                if (!$review) {
+                    throw new Exception("Unknown material.");
+                }
+
+                $data = json_decode($body, true);
+                $user = ExternalUser::findOneBySQL("host_id = ? AND foreign_id = ?", [
+                    $host->getId(),
+                    $data['user']['user_id']
+                ]);
+                if (!$user) {
+                    $user = new ExternalUser();
+                    $user['host_id'] = $host->getId();
+                    $user['foreign_id'] = $data['user']['user_id'];
+                }
+                $user['contact_type'] = 'oercampus';
+                $user['name'] = $data['user']['name'];
+                $user['avatar_url'] = $data['user']['avatar'];
+                $user['data']['description'] = $data['user']['description'] ?: "";
+                $user->store();
+
+                $comment = new BlubberComment();
+                $comment['user_id'] = $user->getId();
+                $comment['external_contact'] = "1";
+                $comment['thread_id'] = $review->getId();
+                $comment['content'] = $data['data']['comment'];
+                $comment['mkdate'] = $data['data']['mkdate'];
+                $comment['chdate'] = $data['data']['chdate'];
+                $comment->store();
+
+                echo "stored ";
+            } else {
+                throw new Exception("Wrong signature, sorry.");
+            }
+        }
+        $this->render_text("");
     }
 
-    private function encode_header_parameter($name, $value)
+    private function getHostFromRequest()
     {
-        if (preg_match('/[\200-\377]/', $value)) {
-            // use RFC 5987 encoding (ext-parameter)
-            return $name . "*=UTF-8''" . rawurlencode($value);
-        } else {
-            // use RFC 2616 encoding (quoted-string)
-            return $name . '="' . addslashes($value) . '"';
+        $public_key_hash = $this->getHttpHeader(OERHost::OER_HEADER_PUBLIC_KEY_HASH); //MD5_HASH_OF_RSA_PUBLIC_KEY
+        return OERHost::findOneBySQL("MD5(public_key) = ?", [$public_key_hash]);
+    }
+
+    private function extractDataForHost(OERHost $host)
+    {
+        $encoded_signature = $this->getHttpHeader(OERHost::OER_HEADER_SIGNATURE); //BASE64_RSA_SIGNATURE
+        $signature = base64_decode($encoded_signature);
+
+        $body = file_get_contents('php://input');
+        if (!$host->verifySignature($body, $signature)) {
+            throw new Exception('Wrong signature, sorry.');
         }
+
+        return json_decode($body, true);
+    }
+
+    private function getHttpHeader($name)
+    {
+        $header_name = 'HTTP_' . str_replace('-', '_', mb_strtoupper($name));
+        return $_SERVER[$header_name];
     }
 
 }

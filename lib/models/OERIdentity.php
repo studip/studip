@@ -1,8 +1,7 @@
 <?php
 
-class OERIdentity extends SimpleORMap
+abstract class OERIdentity extends SimpleORMap
 {
-
     /**
      * configures this class
      * @param array $config
@@ -40,5 +39,4 @@ class OERIdentity extends SimpleORMap
         $this['private_key'] = preg_replace("/\r/", "", $keypair['privatekey']);
         $this['public_key'] = preg_replace("/\r/", "", $keypair['publickey']);
     }
-
 }
