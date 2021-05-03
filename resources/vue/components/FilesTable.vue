@@ -115,7 +115,7 @@
                 <td v-else class="responsive-hidden">
                     {{folder.author_name}}
                 </td>
-                <td class="responsive-hidden">
+                <td class="responsive-hidden" style="white-space: nowrap;">
                     <studip-date-time :timestamp="folder.chdate" :relative="true"></studip-date-time>
                 </td>
                 <template v-if="topfolder.additionalColumns"
@@ -179,7 +179,7 @@
                 <td v-else class="responsive-hidden">
                         {{file.author_name}}
                 </td>
-                <td data-sort-value="file.chdate" class="responsive-hidden">
+                <td data-sort-value="file.chdate" class="responsive-hidden" style="white-space: nowrap;">
                     <studip-date-time :timestamp="file.chdate" :relative="true"></studip-date-time>
                 </td>
                 <template v-if="topfolder.additionalColumns"
