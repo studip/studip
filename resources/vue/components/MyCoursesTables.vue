@@ -39,8 +39,8 @@
                 <tr v-for="course in getOrderedCourses(subgroup.ids)" :data-course-id="course.id" :class="getCourseClasses(course)">
                     <td :class="`gruppe${course.group}`"></td>
                     <td :class="{'subcourse-indented': isChild(course)}">
-                        <img :src="course.avatar" class="my-courses-avatar course-avatar-small" :title="course.name" alt="">
-                    </tdx>
+                        <span :style="{backgroundImage: `url(${course.avatar}`}" class="my-courses-avatar course-avatar-small" :title="course.name" alt=""></span>
+                    </td>
                     <td v-if="getConfig('sem_number') && !responsiveDisplay"  :class="{'subcourse-indented': isChild(course)}">
                         {{ course.number }}
                     </td>
@@ -175,5 +175,13 @@ table.mycourses {
             padding-left: 20px;
         }
     }
+}
+.my-courses-avatar.course-avatar-small {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: inline-block;
+    height: 25px;
+    width: 25px;
 }
 </style>

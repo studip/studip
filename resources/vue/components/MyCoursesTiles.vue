@@ -222,7 +222,7 @@ export default {
     .tiles-grid-element-footer {
         flex: 0 0 auto;
         &:not(:empty) {
-            padding-top: 27px;
+            padding-top: 10px;
         }
     }
 
