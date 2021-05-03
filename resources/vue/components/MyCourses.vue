@@ -58,9 +58,9 @@ export default {
             return this.getConfig('display_type');
         },
         iconSize () {
-            // if (this.displayedType !== 'tiles' && !this.responsiveDisplay) {
-            //     return 20;
-            // }
+            if (this.displayedType !== 'tiles' && !this.responsiveDisplay) {
+                return 20;
+            }
             return 24;
         },
         searchCoursesUrl () {
