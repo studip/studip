@@ -1,9 +1,6 @@
 <?php
 
 
-use Seboettg\CiteProc\StyleSheet;
-
-
 /**
  * This is a helper class for the library search functionality.
  */
@@ -173,44 +170,5 @@ class LibrarySearchManager
 
         //At this point, the search results are sorted.
         return $merged_results;
-    }
-
-
-    /**
-     * Retrieves the CSL stylesheet that shall be used to render
-     * library document data.
-     * Since the preferred stylesheet can be configured globally,
-     * for each course and for each user, the following order to
-     * load stylesheets is used:
-     * If a course stylesheet is set, it is used. Otherwise, the
-     * user stylesheet is loaded. If the user hasn't specified a
-     * stylesheet, the global stylesheet is used.
-     *
-     * @returns Seboettg\CiteProc\StyleSheet A stylesheet object.
-     */
-    public static function getStylesheet()
-    {
-        $stylesheet = null;
-        if (Context::isCourse()) {
-            //Get the preferred stylesheet for the course.
-            $c = CourseConfig::get(Context::getId());
-            $stylesheet_id = $c->COURSE_LIBRARY_CITATION_STYLE;
-            if ($stylesheet_id) {
-                $stylesheet = StyleSheet::loadStyleSheet($stylesheet_id);
-            }
-        }
-        if (!$stylesheet) {
-            //Get the preferred stylesheet of the user.
-            $c = UserConfig::get($GLOBALS['user']->id);
-            $stylesheet_id = $c->USER_LIBRARY_CITATION_STYLE;
-            if ($stylesheet_id) {
-                $stylesheet = StyleSheet::loadStyleSheet($stylesheet_id);
-            }
-        }
-        if (!$stylesheet) {
-            //Get the stylesheet from the system configuration:
-            $stylesheet = StyleSheet::loadStyleSheet($GLOBALS['LIBRARY_STYLESHEET_ID']);
-        }
-        return $stylesheet;
     }
 }

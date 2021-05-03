@@ -15,10 +15,6 @@
  */
 
 
-use Seboettg\CiteProc\StyleSheet;
-use Seboettg\CiteProc\CiteProc;
-
-
 /**
  * This class represents a document from a library.
  */
@@ -303,38 +299,6 @@ class LibraryDocument
             ];
         }
         return $enriched_data;
-    }
-
-
-    /**
-     * Converts this LibraryDocument to a HTML representation using an
-     * appropriate citation style for the document type.
-     *
-     * @param string $stylesheet_id The CSL stylesheet ID to be used
-     *     to render the document as HTML.
-     *
-     * @returns string A string containing the HTML representation of this
-     *     LibraryDocument instance.
-     */
-    public function toHtml($stylesheet_id = ''): string
-    {
-        if (!$this->csl_data) {
-            return '';
-        }
-        $stylesheet = null;
-        if ($stylesheet_id) {
-            $stylesheet = Stylesheet::loadStyleSheet($stylesheet_id);
-        } else {
-            $stylesheet = LibrarySearchManager::getStylesheet();
-        }
-        if (!$stylesheet) {
-            return '';
-        }
-        $citeproc = new CiteProc($stylesheet);
-        //To convert the csl_data associative array to the correct format,
-        //it is encoded to JSON and then decoded again. This way, the
-        //associative array is converted to an object.
-        return $citeproc->render(json_decode(json_encode([$this->fillEmptyCslFields()])), 'bibliography');
     }
 
 

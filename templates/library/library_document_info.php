@@ -16,7 +16,6 @@ $is_search = !$document->csl_data;
         <? endforeach ?>
     </ul>
 <? else : ?>
-    <?= $document->toHtml() ?>
     <? if ($format === 'full') : ?>
         <dl>
             <dt><?= _('Titel') ?></dt>

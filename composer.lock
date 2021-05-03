@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eee24e0916f20982568788a7b1a7c851",
+    "content-hash": "b66fb6c18281ad9665f87daa0942fef2",
     "packages": [
         {
             "name": "algo26-matthias/idna-convert",
@@ -180,26 +180,6 @@
                 "source": "https://github.com/caxy/php-htmldiff/tree/v0.1.9"
             },
             "time": "2019-02-20T18:52:14+00:00"
-        },
-        {
-            "name": "citation-style-language/locales",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/citation-style-language/locales.git",
-                "reference": "master"
-            },
-            "type": "library"
-        },
-        {
-            "name": "citation-style-language/styles-distribution",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/citation-style-language/styles-distribution.git",
-                "reference": "master"
-            },
-            "type": "library"
         },
         {
             "name": "davefx/phplot",
@@ -615,55 +595,6 @@
                 "source": "https://github.com/mishal/iless/tree/master"
             },
             "time": "2016-04-25T07:03:37+00:00"
-        },
-        {
-            "name": "myclabs/php-enum",
-            "version": "1.6.6",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/myclabs/php-enum.git",
-                "reference": "32c4202886c51fbe5cc3a7c34ec5c9a4a790345e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/php-enum/zipball/32c4202886c51fbe5cc3a7c34ec5c9a4a790345e",
-                "reference": "32c4202886c51fbe5cc3a7c34ec5c9a4a790345e",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8.35|^5.7|^6.0",
-                "squizlabs/php_codesniffer": "1.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "MyCLabs\\Enum\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP Enum contributors",
-                    "homepage": "https://github.com/myclabs/php-enum/graphs/contributors"
-                }
-            ],
-            "description": "PHP Enum implementation",
-            "homepage": "http://github.com/myclabs/php-enum",
-            "keywords": [
-                "enum"
-            ],
-            "support": {
-                "issues": "https://github.com/myclabs/php-enum/issues",
-                "source": "https://github.com/myclabs/php-enum/tree/master"
-            },
-            "time": "2019-02-04T21:18:49+00:00"
         },
         {
             "name": "neomerx/cors-psr7",
@@ -1436,100 +1367,6 @@
                 "source": "https://github.com/scssphp/scssphp/tree/v1.4.0"
             },
             "time": "2020-11-07T20:53:41+00:00"
-        },
-        {
-            "name": "seboettg/citeproc-php",
-            "version": "v2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/seboettg/citeproc-php.git",
-                "reference": "b1d45aa086a91e2e294f4b9977d8bfc9741605be"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/seboettg/citeproc-php/zipball/b1d45aa086a91e2e294f4b9977d8bfc9741605be",
-                "reference": "b1d45aa086a91e2e294f4b9977d8bfc9741605be",
-                "shasum": ""
-            },
-            "require": {
-                "ext-intl": "*",
-                "ext-json": "*",
-                "ext-simplexml": "*",
-                "myclabs/php-enum": "^1.5",
-                "seboettg/collection": "^1.2",
-                "symfony/polyfill-mbstring": "v1.10.*"
-            },
-            "require-dev": {
-                "phpmd/phpmd": "^2.8",
-                "phpunit/phpunit": "^7.5",
-                "satooshi/php-coveralls": "^1",
-                "squizlabs/php_codesniffer": "^3.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Seboettg\\CiteProc\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Böttger",
-                    "email": "seboettg@gmail.com",
-                    "homepage": "http://sebastianboettger.net",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Full-featured CSL processor (https://citationstyles.org)",
-            "support": {
-                "issues": "https://github.com/seboettg/citeproc-php/issues",
-                "source": "https://github.com/seboettg/citeproc-php/tree/v2.2.0"
-            },
-            "time": "2020-04-04T16:44:33+00:00"
-        },
-        {
-            "name": "seboettg/collection",
-            "version": "v1.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/seboettg/Collection.git",
-                "reference": "7f0bbf93dba9b261f6d8c725a4f1583f4402162a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/seboettg/Collection/zipball/7f0bbf93dba9b261f6d8c725a4f1583f4402162a",
-                "reference": "7f0bbf93dba9b261f6d8c725a4f1583f4402162a",
-                "shasum": ""
-            },
-            "require-dev": {
-                "phpunit/phpunit": "6.5.*",
-                "satooshi/php-coveralls": "^v2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Seboettg\\Collection\\": "src/Seboettg/Collection"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Böttger",
-                    "email": "seboettg@gmail.com"
-                }
-            ],
-            "description": "Simple PHP ArrayList collection",
-            "support": {
-                "issues": "https://github.com/seboettg/Collection/issues",
-                "source": "https://github.com/seboettg/Collection/tree/v1.3.1"
-            },
-            "time": "2019-02-13T07:13:15+00:00"
         },
         {
             "name": "slim/slim",
@@ -5533,10 +5370,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "citation-style-language/locales": 20,
-        "citation-style-language/styles-distribution": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

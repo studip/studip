@@ -96,18 +96,6 @@ class CoreAdmin implements StudipModule
                 }
             }
 
-            if (Config::get()->LITERATURE_ENABLE && $GLOBALS['perm']->have_studip_perm('tutor', $course_id)) {
-                $item = new Navigation(
-                    _('Zitationsstil'),
-                    URLHelper::getURL(
-                        'dispatch.php/settings/library/citation',
-                        ['course_id' => $course_id]
-                    )
-                );
-                $item->setDescription(_('Setzen des Zitationsstils für Bibliotheksdokumente'));
-                $navigation->addSubNavigation('citation', $item);
-            }
-
             /*
              * Is the current SemClass available for grouping other courses?
              * -> show child management
