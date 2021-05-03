@@ -77,7 +77,7 @@
                         href="<?= URLHelper::getLink('datenschutz.php') ?>" class="link-intern"
                         target="_blank">explanation of data protection</a> - is nevertheless accessible for
                 administrators and partly for lecturers of my courses.</p>
-            <?= \Studip\LinkButton::create('Become visible', URLHelper::getURL('?vis_state=no&vis_cmd=apply')) ?>
+            <?= \Studip\LinkButton::create('Become invisible', URLHelper::getURL('?vis_state=no&vis_cmd=apply')) ?>
         </td>
     </tr>
     <tr>
