@@ -394,13 +394,13 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
         }
 
         if ($this['context_type'] === 'private') {
-            $query = "SELECT IFNULL(blubber_external_contact.name, CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname)) AS name
+            $query = "SELECT IFNULL(external_users.name, CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname)) AS name
                       FROM blubber_mentions
                       LEFT JOIN auth_user_md5
                         ON blubber_mentions.user_id = auth_user_md5.user_id
                            AND blubber_mentions.external_contact = 0
-                      LEFT JOIN blubber_external_contact
-                        ON blubber_external_contact.external_contact_id = blubber_mentions.user_id
+                      LEFT JOIN external_users
+                        ON external_users.external_contact_id = blubber_mentions.user_id
                            AND blubber_mentions.external_contact = 1
                       WHERE blubber_mentions.thread_id = :thread_id
                         AND blubber_mentions.user_id != :me
@@ -508,11 +508,11 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                       LEFT JOIN auth_user_md5
                         ON blubber_mentions.user_id = auth_user_md5.user_id
                            AND blubber_mentions.external_contact = 0
-                      LEFT JOIN blubber_external_contact
-                        ON blubber_mentions.user_id = blubber_external_contact.external_contact_id
+                      LEFT JOIN external_users
+                        ON blubber_mentions.user_id = external_users.external_contact_id
                            AND blubber_mentions.external_contact = 1
                       WHERE thread_id = ?
-                      ORDER BY IFNULL(blubber_external_contact.name, CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname))";
+                      ORDER BY IFNULL(external_users.name, CONCAT(auth_user_md5.Vorname, ' ', auth_user_md5.Nachname))";
             $mentions = DBManager::get()->prepare($query);
             $mentions->execute([$this->getId()]);
 
