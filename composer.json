@@ -34,6 +34,7 @@
         "phpxmlrpc/extras": "^0.6.2",
         "algo26-matthias/idna-convert": "^3.0",
         "caxy/php-htmldiff": "^0.1.9",
+        "phpseclib/phpseclib": "^2.0",
         "ext-gd": "*",
         "ext-gettext": "*",
         "ext-pdo_mysql": "*",

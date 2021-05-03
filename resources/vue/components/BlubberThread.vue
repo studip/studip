@@ -20,8 +20,8 @@
                 <div class="thread_posting" v-if="thread_data.thread_posting.content.trim()">
                     <div class="contextinfo">
                         <studip-date-time :timestamp="thread_data.thread_posting.mkdate" :relative="true"></studip-date-time>
-                        <a :href="getUserProfileURL(thread_data.thread_posting.user_username)">{{ thread_data.thread_posting.user_name }}</a>
-                        <a :href="getUserProfileURL(thread_data.thread_posting.user_username)" class="avatar" :style="{ backgroundImage: 'url(' + thread_data.thread_posting.avatar + ')' }"></a>
+                        <a :href="getUserProfileURL(thread_data.thread_posting.user_id, thread_data.thread_posting.user_username)">{{ thread_data.thread_posting.user_name }}</a>
+                        <a :href="getUserProfileURL(thread_data.thread_posting.user_id, thread_data.thread_posting.user_username)" class="avatar" :style="{ backgroundImage: 'url(' + thread_data.thread_posting.avatar + ')' }"></a>
                     </div>
                     <div class="content" v-html="thread_data.thread_posting.html"></div>
                     <div class="link_to_comments"></div>
@@ -41,9 +41,9 @@
                         v-for="comment in sortedComments"
                         :data-comment_id="comment.comment_id"
                         :key="comment.comment_id">
-                        <a :href="getUserProfileURL(comment.user_username)" class="avatar" :title="comment.user_name" :style="{ backgroundImage: 'url(' + comment.avatar + ')' }"></a>
+                        <a :href="getUserProfileURL(comment.user_id, comment.user_username)" class="avatar" :title="comment.user_name" :style="{ backgroundImage: 'url(' + comment.avatar + ')' }"></a>
                         <div class="content">
-                            <a :href="getUserProfileURL(comment.user_username)" class="name">{{ comment.user_name }}</a>
+                            <a :href="getUserProfileURL(comment.user_id, comment.user_username)" class="name">{{ comment.user_name }}</a>
                             <div v-html="comment.html" class="html"></div>
                             <textarea class="edit"
                                       v-html="comment.content"
@@ -250,10 +250,14 @@
             dragleave () {
                 $(this.$el).removeClass('dragover');
             },
-            getUserProfileURL (username) {
-                return STUDIP.URLHelper.getURL('dispatch.php/profile', {
-                    username: username
-                });
+            getUserProfileURL (user_id, username) {
+                if (username) {
+                    return STUDIP.URLHelper.getURL('dispatch.php/profile', {
+                        username: username
+                    });
+                } else {
+                    return STUDIP.URLHelper.getURL('dispatch.php/profile/extern/' + user_id);
+                }
             },
             editComment (event) {
                 let li;

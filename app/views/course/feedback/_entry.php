@@ -16,7 +16,7 @@
             <? endif; ?>
             <? if ($entry->isDeletable()) : ?>
             <a href="<?= $controller->link_for('course/feedback/entry_delete/' . $entry->id) ?>"
-                title="<?= _('Löschen') ?>" data-dialog="size=auto" 
+                title="<?= _('Löschen') ?>" data-dialog="size=auto"
                 data-confirm="<?= _('Feedback löschen?') ?>"
                 class="feedback-entry-delete"
                 onclick="return STUDIP.Dialog.confirmAsPost($(this).attr('data-confirm'), this.href);">
@@ -29,7 +29,7 @@
         <div class="rating">
             <span title="<?= $entry->rating ?>">
                 <? for ($i=0; $i < $entry->feedback->getMaxRating(); $i++) : ?>
-                    <?= ($i >= $entry->rating) ? Icon::create('star', ['class'=>'inactive']) : Icon::create('star') ?>
+                    <?= ($i >= $entry->rating) ? Icon::create('star-empty', 'info') : Icon::create('star', 'info') ?>
                 <? endfor; ?>
             </span>
         </div>

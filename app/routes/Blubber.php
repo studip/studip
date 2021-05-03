@@ -96,7 +96,7 @@ class Blubber extends \RESTAPI\RouteMap
             return false;
         }
 
-        $thread = new \BlubberThread($thread_id);
+        $thread = \BlubberThread::find($thread_id);
         if (!$thread->isCommentable()) {
             $this->error(401);
             return;

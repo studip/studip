@@ -1,0 +1,1 @@
+<?= $this->render_partial("oer/mymaterial/_material_list.php") ?>

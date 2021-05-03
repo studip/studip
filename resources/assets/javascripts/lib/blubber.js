@@ -16,7 +16,7 @@ const Blubber = {
     App: null, //This app is not always available. The app is blubber with a widget and the threads next to it.
     threads: [],
     init () {
-        if ($('#blubber-index, #messenger-course').length) {
+        if ($('#blubber-index, #messenger-course, .blubber_panel.vueinstance').length) {
             STUDIP.JSUpdater.register('blubber', Blubber.updateState, Blubber.getParamsForPolling);
 
             let panel_data = $('.blubber_panel').data();

@@ -495,4 +495,10 @@ class ProfileController extends AuthenticatedController
 
         return $institutes;
     }
+
+    public function extern_action(ExternalUser $external_user)
+    {
+        PageLayout::setTitle(sprintf(_('Profil von %s'), $external_user['name']));
+        $this->user = $external_user;
+    }
 }

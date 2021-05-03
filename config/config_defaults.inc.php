@@ -50,6 +50,10 @@ $UPLOAD_PATH = $STUDIP_BASE_PATH . "/data/upload_doc";
 // path to Stud.IP archive (wwwrun needs write-perm there)
 $ARCHIV_PATH = $STUDIP_BASE_PATH . "/data/archiv";
 
+// path to OERs in Stud.IP (wwwrun needs write-perm there)
+$OER_PATH = $STUDIP_BASE_PATH . "/data/oer";
+$OER_LOGOS_PATH = $STUDIP_BASE_PATH . "/data/oer_logos";
+
 // path and url for dynamically generated static content like smilies..
 $DYNAMIC_CONTENT_PATH = $STUDIP_BASE_PATH . "/public/pictures";
 $DYNAMIC_CONTENT_URL  = $ABSOLUTE_URI_STUDIP  . "pictures";

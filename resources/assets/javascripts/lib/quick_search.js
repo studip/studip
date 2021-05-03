@@ -7,31 +7,6 @@ import { $gettext } from './gettext.js';
 
 const QuickSearch = {
     /**
-     * a helper-function to generate a JS-object filled with the variables of a form
-     * like "{ input1_name : input1_value, input2_name: input2_value }"
-     * @param selector string: ID of an input in a form-tag
-     * @return: JSON-object (not as a string)
-     */
-    formToJSON: function(selector) {
-        selector = jQuery(selector).parents('form');
-        var form = {}; //the basic JSON-object that will be returned later
-        jQuery(selector)
-            .find(':input[name]')
-            .each(function() {
-                var name = jQuery(this).attr('name'); //name of the input
-                var active = jQuery(this).attr('type') !== 'checkbox' || jQuery(this).is(':checked');
-                if (active) {
-                    if (form[name]) {
-                        //for double-variables (not arrays):
-                        form[name] = form[name] + ',' + jQuery(this).val();
-                    } else {
-                        form[name] = jQuery(this).val();
-                    }
-                }
-            });
-        return form;
-    },
-    /**
      * the function to be called from the QuickSearch class template
      * @param name string: ID of input
      * @param url string: URL of AJAX-response

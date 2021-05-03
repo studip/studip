@@ -403,7 +403,7 @@ class Avatar {
      */
     private function resize($size, $filename, $retina = false)
     {
-        list($thumb_width, $thumb_height) = self::getDimension($size);
+        list($thumb_width, $thumb_height) = static::getDimension($size);
         $thumb_width = $retina ? $thumb_width * 2 : $thumb_width;
         $thumb_height = $retina ? $thumb_height * 2 : $thumb_height;
 

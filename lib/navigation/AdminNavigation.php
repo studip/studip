@@ -122,9 +122,25 @@ class AdminNavigation extends Navigation
                     'dispatch.php/admin/content_terms_of_use/index'
                 )
             );
+            $navigation->addSubNavigation(
+                'licenses',
+                new Navigation(
+                    _('Lizenzen'),
+                    'dispatch.php/admin/licenses/index'
+                )
+            );
 
             if (Config::get()->BANNER_ADS_ENABLE) {
                 $navigation->addSubNavigation('banner', new Navigation(_('Werbebanner'), 'dispatch.php/admin/banner'));
+            }
+            if (Config::get()->OERCAMPUS_ENABLED) {
+                $navigation->addSubNavigation(
+                    'oer',
+                    new Navigation(
+                        Config::get()->OER_TITLE,
+                        URLHelper::getURL("dispatch.php/oer/admin/hosts")
+                    )
+                );
             }
         }
         $this->addSubNavigation('locations', $navigation);

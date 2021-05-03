@@ -120,6 +120,10 @@ class StudipNavigation extends Navigation
             }
         }
 
+        if (Config::get()->OERCAMPUS_ENABLED && $perm && $perm->have_perm(Config::get()->OER_PUBLIC_STATUS)) {
+            $this->addSubNavigation('oer', new OERNavigation());
+        }
+
         // admin page
         if (is_object($user) && $perm->have_perm('admin')) {
             $this->addSubNavigation('admin', new AdminNavigation());

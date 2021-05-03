@@ -66,6 +66,12 @@
                 <?= I18N::textarea('publi', $user->publi, ['class' => 'add_toolbar wysiwyg'] + (!$controller->shallChange('user_info.publi') ? ['disabled' => true] : [])) ?>
             </label>
         <? endif; ?>
+        <? if (Config::get()->OERCAMPUS_ENABLED) : ?>
+            <label>
+                <?= _('Beschreibung auf dem OER Campus') ?>
+                <textarea name="oercampus_description"><?= htmlReady($user->oercampus_description) ?></textarea>
+            </label>
+        <? endif ?>
     </fieldset>
 
     <? if (count($user_entries) > 0): ?>

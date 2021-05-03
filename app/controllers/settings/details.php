@@ -76,40 +76,43 @@ class Settings_DetailsController extends Settings_SettingsController
         }
 
         $mapping = [
-            'telefon'    => 'privatnr',
-            'cell'       => 'privatcell',
-            'anschrift'  => 'privadr',
-            'home'       => 'Home',
-            'motto'      => 'motto',
-            'hobby'      => 'hobby',
-            'lebenslauf' => 'lebenslauf',
-            'schwerp'    => 'schwerp',
-            'publi'      => 'publi',
+            'telefon'               => 'privatnr',
+            'cell'                  => 'privatcell',
+            'anschrift'             => 'privadr',
+            'home'                  => 'Home',
+            'motto'                 => 'motto',
+            'hobby'                 => 'hobby',
+            'lebenslauf'            => 'lebenslauf',
+            'schwerp'               => 'schwerp',
+            'publi'                 => 'publi',
+            'oercampus_description' => 'oercampus_description',
         ];
 
         // Visibilitymapping Remove in Stud.IP 3.0 with a migration
         $vis_mapping = [
-            'telefon'    => 'private_phone',
-            'cell'       => 'private_cell',
-            'anschrift'  => 'privadr',
-            'home'       => 'homepage',
-            'motto'      => 'motto',
-            'hobby'      => 'hobby',
-            'lebenslauf' => 'lebenslauf',
-            'schwerp'    => 'schwerp',
-            'publi'      => 'publi',
+            'telefon'               => 'private_phone',
+            'cell'                  => 'private_cell',
+            'anschrift'             => 'privadr',
+            'home'                  => 'homepage',
+            'motto'                 => 'motto',
+            'hobby'                 => 'hobby',
+            'lebenslauf'            => 'lebenslauf',
+            'schwerp'               => 'schwerp',
+            'publi'                 => 'publi',
+            'oercampus_description' => 'oercampus_description',
         ];
 
         $settingsname = [
-            'telefon'    => _('Private Telefonnummer'),
-            'cell'       => _('Private Handynummer'),
-            'anschrift'  => _('Private Adresse'),
-            'home'       => _('Homepage-Adresse'),
-            'motto'      => _('Motto'),
-            'hobby'      => _('Hobbys'),
-            'lebenslauf' => _('Lebenslauf'),
-            'schwerp'    => _('Arbeitsschwerpunkte'),
-            'publi'      => _('Publikationen'),
+            'telefon'               => _('Private Telefonnummer'),
+            'cell'                  => _('Private Handynummer'),
+            'anschrift'             => _('Private Adresse'),
+            'home'                  => _('Homepage-Adresse'),
+            'motto'                 => _('Motto'),
+            'hobby'                 => _('Hobbys'),
+            'lebenslauf'            => _('Lebenslauf'),
+            'schwerp'               => _('Arbeitsschwerpunkte'),
+            'publi'                 => _('Publikationen'),
+            'oercampus_description' => _('Beschreibung auf dem OER Campus')
         ];
 
         foreach ($mapping as $key => $column) {

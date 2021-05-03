@@ -1908,4 +1908,51 @@ class FileManager
         }
         return $range_ids;
     }
+
+    public function getFileIcon($filename, $role = Icon::ROLE_CLICKABLE) {
+        $filename = mb_strtolower($filename);
+        $extension = (mb_strrpos($filename, ".") === false)
+            ? $filename
+            : substr($filename, mb_strrpos($filename, ".") + 1);
+        $extension = strtolower($extension);
+        //Icon auswaehlen
+        switch ($extension){
+            case 'rtf':
+            case 'doc':
+            case 'docx':
+            case 'odt':
+                $icon = 'file-text';
+                break;
+            case 'xls':
+            case 'xlsx':
+            case 'ods':
+            case 'csv':
+            case 'ppt':
+            case 'pptx':
+            case 'odp':
+                $icon = 'file-office';
+                break;
+            case 'zip':
+            case 'tgz':
+            case 'gz':
+            case 'bz2':
+                $icon = 'file-archive';
+                break;
+            case 'pdf':
+                $icon = 'file-pdf';
+                break;
+            case 'gif':
+            case 'jpg':
+            case 'jpe':
+            case 'jpeg':
+            case 'png':
+            case 'bmp':
+                $icon = 'file-pic';
+                break;
+            default:
+                $icon = 'file-generic';
+                break;
+        }
+        return Icon::create($icon, $role);
+    }
 }

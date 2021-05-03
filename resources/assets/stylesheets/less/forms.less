@@ -69,6 +69,10 @@ form.default {
         }
     }
 
+    .quicksearch_container {
+        max-width: @max-width-m;
+    }
+
     input[type=date], input[type=number], input[type=time], input[type=tel]:not(.size-m)  {
         max-width: @max-width-s;
     }
@@ -529,6 +533,12 @@ table.hide_datafield_title {
     }
 }
 
+form.inline {
+    display: inline;
+    input.icon-role-clickable {
+        cursor: pointer;
+    }
+}
 
 @media (min-width: 800px) {
     form.default .form-columns {

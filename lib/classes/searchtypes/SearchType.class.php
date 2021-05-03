@@ -17,9 +17,9 @@
  * A class-structure for alle search-objects in Stud.IP.
  * It is (mainly?) used in QuickSearch to display searchresults and the
  * layout of them.
- * 
+ *
  * @author Rasmus Fuhse
- * 
+ *
  */
 abstract class SearchType
 {
@@ -29,11 +29,11 @@ abstract class SearchType
      *
      * @return string
      */
-    public function getTitle() 
+    public function getTitle()
     {
         return "";
     }
-    
+
     /**
      * Returns an URL to a picture of that type. Return "" for nothing found.
      * For example: "return CourseAvatar::getAvatar($id)->getURL(Avatar::SMALL)".
@@ -42,11 +42,11 @@ abstract class SearchType
      *
      * @return: string URL to a picture
      */
-    public function getAvatar($id) 
+    public function getAvatar($id)
     {
         return "";
     }
-    
+
     /**
      * Returns an HTML-Tag of a picture of that type. Return "" for nothing found.
      * For example: "return CourseAvatar::getAvatar($id)->getImageTag(Avatar::SMALL)".
@@ -55,11 +55,11 @@ abstract class SearchType
      *
      * @return string HTML of a picture
      */
-    public function getAvatarImageTag($id) 
+    public function getAvatarImageTag($id)
     {
         return "";
     }
-    
+
     /**
      * Returns the results to a given keyword. To get the results is the
      * job of this routine and it does not even need to come from a database.
@@ -79,16 +79,25 @@ abstract class SearchType
      *
      * @return array
      */
-    public function getResults($keyword, $contextual_data = [], $limit = PHP_INT_MAX, $offset = 0) 
+    public function getResults($keyword, $contextual_data = [], $limit = PHP_INT_MAX, $offset = 0)
     {
         return [["", _("Die Suchklasse, die Sie verwenden, enthält keine Methode getResults.")]];
     }
-    
+
+    public function __toString()
+    {
+        $query_id = md5(serialize($this));
+        $_SESSION['QuickSearches'][$query_id]['object'] = serialize($this);
+        $_SESSION['QuickSearches'][$query_id]['includePath'] = $this->includePath();
+        $_SESSION['QuickSearches'][$query_id]['time'] = time();
+        return $query_id;
+    }
+
     /**
-     * Returns the path to this file, so that this class can be autoloaded and is 
+     * Returns the path to this file, so that this class can be autoloaded and is
      * always available when necessary.
      * Should be: "return __file__;"
-     * 
+     *
      * @return string path to this file
      */
     abstract public function includePath();

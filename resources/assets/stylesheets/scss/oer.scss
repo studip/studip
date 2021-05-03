@@ -1,0 +1,480 @@
+.oer_material_overview {
+    list-style-type: none;
+    text-align: center;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    align-items: stretch;
+
+    padding-left: 0px;
+    margin-top: 20px;
+}
+
+.lernmarktplatz.structure {
+    list-style-type: none;
+    padding-left: 0px;
+    padding-right: 5px;
+    li {
+        padding: 5px;
+        border-top: thin solid $table-header-color;
+        padding-right: 0px;
+    }
+    li.folder {
+        padding-bottom: 0px;
+    }
+    ol {
+        margin-top: 6px;
+        padding-left: 40px;
+        list-style-type: none;
+    }
+    > li:last-child {
+        border-bottom: thin solid $table-header-color;
+    }
+}
+
+
+.author_information {
+    > li {
+        display: flex;
+    }
+    .avatar {
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        width: 100px;
+        min-width: 100px;
+        height: 100px;
+        margin-right: 10px;
+    }
+    .author_name {
+        font-weight: bold;
+        display: inline;
+    }
+    .author_host {
+        font-size: 0.8em;
+        display: inline;
+        color: $dark-gray-color-80;
+    }
+    .description {
+        margin-top: 5px;
+    }
+}
+
+a.button.download_link {
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: inline-flex;
+    width: auto;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    > .filename {
+        margin-left: 10px;
+        margin-top: 2px;
+    }
+    > img.whitebutton {
+        display: none;
+    }
+    &:hover {
+        > img.whitebutton {
+            display: inline-block;
+        }
+        > img.blue {
+            display: none;
+        }
+    }
+}
+
+ul.reviews, ol.reviews {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+    > li.review {
+        margin-bottom: 10px;
+        border: thin solid $base-color-60;
+        padding: 10px;
+        display: flex;
+        > .avatar {
+            width: 50px;
+            height: 50px;
+        }
+        > .content {
+            margin-left: 10px;
+            width: 100%;
+            .review_text {
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+            .origin {
+                color: $dark-gray-color-80;
+                font-size: 0.8em;
+            }
+            .timestamp {
+                float: right;
+                color: $dark-gray-color-80;
+                font-size: 0.8em;
+            }
+        }
+    }
+}
+
+.oer_mymaterial {
+    .inlineform {
+        display: inline;
+    }
+}
+
+.maininfo {
+    border: thin solid $brand-color-light;
+    padding: 10px;
+}
+
+.lernmarktplatz_player {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    max-width: 1000px;
+    height: calc((100vw - 270px) * 2 / 3);
+    max-height: 666px;
+    border: 1px solid $content-color-40;
+    background: black;
+    &.image {
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+        border: none;
+        background-color: transparent;
+    }
+}
+
+#audioplayer {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.oercampus_editmaterial {
+    .drag-and-drop {
+        width: 260px;
+        margin-left: 0px;
+        height: 60px;
+        background-position: center 40px;
+        padding-top: 100px;
+    }
+
+    .autoren {
+        &.multiple label {
+            cursor: pointer;
+        }
+        input[type=checkbox] {
+            display: none;
+        }
+        input[type=checkbox]:checked + div {
+            text-decoration: line-through;
+        }
+        .avatar {
+            display: inline-block;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            width: 20px;
+            min-width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            position: relative;
+            top: 5px;
+        }
+    }
+    .oer_tags_container {
+        margin-top: 10px;
+    }
+
+}
+
+.oercampus_editmaterial, .oer_material_overview {
+    article.contentbox {
+        display: inline-block;
+        margin-right: 15px;
+        margin-bottom: 15px;
+        margin-top: 0px;
+        margin-left: 0px;
+
+        width: 270px;
+        max-width: 270px;
+        box-sizing: border-box;
+        border: solid 1px $base-color-60;
+        transition: all 300ms ease 0s;
+        position: relative;
+
+        header {
+            display: flex;
+            align-items: center;
+            padding-left: 5px;
+
+            width: 100%;
+            background-color: $content-color-20;
+            color: $brand-color-dark;
+            font-size: 12pt;
+            font-weight: bold;
+            text-align: left;
+            line-height: 2em;
+            height: 40px;
+            max-height: 40px;
+            overflow: hidden;
+        }
+
+        h1 {
+            padding: 5px;
+            margin: 0px;
+            color: $base-color;
+            border-bottom: medium none;
+            font-size: medium;
+        }
+
+        overflow: hidden;
+
+        .image {
+            display: block;
+            margin: 0px;
+            height: 180px;
+            background-position: center center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-color: white;
+        }
+    }
+}
+
+.oer_add_to_course {
+    margin-bottom: 20px;
+}
+
+.oer_search {
+    .searchform {
+        max-width: 840px;
+        box-sizing: border-box;
+    }
+
+    .oneliner {
+        display: flex;
+
+        .frame {
+            border: thin solid $content-color-40;
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            width: 100%;
+            height: 35px;
+
+            .activefilter {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border: solid thin black;
+                background-color: $content-color-20;
+                margin: 3px;
+                padding: 5px;
+            }
+            .niveau {
+                min-width: 115px;
+            }
+
+            .erasefilter {
+                margin-left: 5px;
+            }
+
+            button {
+                border-right: none;
+                border-bottom: none;
+                border-top: none;
+                height: 35px;
+                &.active {
+                    background-color: $base-color;
+                }
+                &.erase {
+                    background-color: white;
+                    border-left: none;
+                }
+            }
+
+            input {
+                padding-left: 10px;
+                border: none;
+                width: 100%;
+            }
+        }
+
+        button {
+            border: thin solid $content-color-40;
+            background-color: $content-color-20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 35px;
+        }
+
+        > button {
+            margin-left: 10px;
+        }
+    }
+
+    .filterpanel {
+        position: absolute;
+        z-index: 1;
+        background-color: white;
+        padding: 10px;
+        width: 819px;
+        animation: oer-filter-panel-appears 200ms ease-out;
+        border: thin solid $content-color-40;
+        margin: 0px;
+        margin-top: 10px;
+        height: 183px;
+        display: flex;
+        justify-content: space-around;
+        align-items: top;
+        font-size: 1.2em;
+
+        @include arrow-top-border(9px, white, 1px, $content-color-40, 10px);
+
+        &::before, &::after {
+            right: 50px;
+        }
+        h3 {
+            margin-top: 10px;
+        }
+
+        .level_filter {
+            width: 350px;
+            .level_labels {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.8em;
+                color: grey;
+                margin-top: 20px;
+            }
+            .level_numbers {
+                display: flex;
+                justify-content: space-between;
+            }
+            #difficulty_slider {
+                margin-top: 5px;
+                width: 93%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    }
+
+
+
+    [v-if], [v-for] {
+        display: none !important;
+    }
+
+    article.contentbox {
+        animation: oer-material-appears 200ms ease-out;
+    }
+
+    .browser {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: $content-color-20;
+        width: 840px;
+        max-width: 840px;
+        box-sizing: border-box;
+        height: 200px;
+        .intro {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            > :first-child {
+                width: 25%;
+                padding-left: 20px;
+            }
+            > * {
+                margin: 25px;
+            }
+        }
+        h3 {
+            margin-top: 10px;
+        }
+        .back-button {
+            float: left;
+            position: relative;
+            top: 20px;
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            max-width: 100%;
+            > li {
+                margin-right: 30px;
+                animation: oer-tag-appears 400ms ease-out;
+                text-transform: capitalize;
+                a.button {
+                    max-width: 200px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+    }
+}
+
+.oer_columns {
+    display: flex;
+    > aside {
+        min-width: 270px;
+        max-width: 270px;
+    }
+    > div {
+        padding-left: 20px;
+    }
+}
+
+@keyframes oer-filter-panel-appears {
+    from {
+        max-height: 0px;
+        border-bottom-width: 0px;
+        overflow: hidden;
+    }
+    99% {
+        max-height: 183px;
+        overflow: hidden;
+        border-bottom-width: 10px;
+    }
+    to {
+        max-height: 183px;
+        overflow: hidden;
+        border-bottom-width: 10px;
+    }
+}
+
+@keyframes oer-material-appears {
+    from {
+        opacity: 0;
+        max-width: 0px;
+        overflow: hidden;
+    }
+    to {
+        overflow: hidden;
+        max-width: 270px;
+        opacity: 1;
+    }
+}
+
+@keyframes oer-tag-appears {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+        filter: blur(4px);
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+        filter: blur(0px);
+    }
+}

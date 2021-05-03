@@ -36,6 +36,11 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
             'foreign_key'       => 'user_id',
             'assoc_foreign_key' => 'user_id',
         ];
+        $config['belongs_to']['external_user'] = [
+            'class_name'        => ExternalUser::class,
+            'foreign_key'       => 'user_id',
+            'assoc_foreign_key' => 'external_contact_id',
+        ];
 
         $config['registered_callbacks']['before_create'][] = 'transformMentions';
         $config['registered_callbacks']['before_create'][] = 'cbAddFollowing';
@@ -68,9 +73,22 @@ class BlubberComment extends SimpleORMap implements PrivacyObject
     public function getJSONdata()
     {
         $output = $this->toRawArray();
-        $output['avatar']        = Avatar::getAvatar($this['user_id'])->getURL(Avatar::MEDIUM);
-        $output['user_name']     = $this->user ? $this->user->getFullName() : _('unbekannt');
-        $output['user_username'] = $this->user ? $this->user['username'] : '';
+
+        if ($this['external_contact']) {
+            $output['user_id']       = $this->user_id;
+            $output['avatar']        = $this->external_user
+                ? $this->external_user['avatar_url']
+                : "";
+            $output['user_name']     = $this->external_user
+                ? $this->external_user['name']
+                : _('unbekannt');
+            $output['user_username'] = '';
+        } else {
+            $output['user_id']       = $this->user_id;
+            $output['avatar']        = Avatar::getAvatar($this['user_id'])->getURL(Avatar::MEDIUM);
+            $output['user_name']     = $this->user ? $this->user->getFullName() : _('unbekannt');
+            $output['user_username'] = $this->user ? $this->user['username'] : '';
+        }
         $output['class']         = $this['user_id'] === $GLOBALS['user']->id ? 'mine' : 'theirs';
         $output['html']          = blubberReady($this['content']) . $this->getOpenGraphURLs()->render();
         $output['writable']      = $this->isWritable();

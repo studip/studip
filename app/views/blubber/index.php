@@ -18,5 +18,4 @@
         </div>
         <div v-if="thread_data.context_info" class="context_info" v-html="thread_data.context_info"></div>
     </div>
-
 </div>

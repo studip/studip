@@ -39,7 +39,7 @@ class Visibility
         self::getUser($userid);
 
         // root sees everything
-        if ($GLOBALS['perm']->have_perm('root') || $ownerid === $userid) {
+        if ($GLOBALS['perm'] && $GLOBALS['perm']->have_perm('root') || $ownerid === $userid) {
             return true;
         }
 

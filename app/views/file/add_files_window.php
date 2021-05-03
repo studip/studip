@@ -56,6 +56,13 @@ if ($folder_id) {
                     <?= _('Literatur') ?>
                 </a>
             <? endif ?>
+            <? if (Config::get()->OERCAMPUS_ENABLED && $GLOBALS['perm']->have_perm(Config::get()->OERCAMPUS_PUBLIC_STATUS)) : ?>
+                <a href="<?= $controller->link_for('oer/addfile/choose_file', array_merge($options, ['from_plugin' => ""])) ?>"
+                   data-dialog="height=800">
+                    <?= Icon::create('service', Icon::ROLE_CLICKABLE)->asImg(50) ?>
+                    <?= htmlReady(Config::get()->OER_TITLE) ?>
+                </a>
+            <? endif ?>
             <? foreach (PluginManager::getInstance()->getPlugins('FilesystemPlugin') as $plugin) : ?>
                 <? if ($plugin->isSource()) : ?>
                     <? $nav = $plugin->getFileSelectNavigation() ?>

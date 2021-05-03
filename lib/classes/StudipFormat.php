@@ -17,7 +17,13 @@ class StudipFormat extends TextFormat
     /**
      * list of global Stud.IP markup rules
      */
-    private static $studip_rules = [];
+    private static $studip_rules = [
+        'oerembedder' => [
+            'start'    => '\[oermaterial\]([a-f0-9]{32})',
+            'end'      => null,
+            'callback' => 'OERMaterial::embedOERMaterial'
+        ]
+    ];
 
     /**
      * Returns the list of global Stud.IP markup rules as an array.
