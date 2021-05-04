@@ -979,8 +979,10 @@ class UserManagement
 
         if ($delete_personal_documents) {
             $user_folder = Folder::findTopFolder($this->user->id);
-            $this->msg .= 'info§' . _('Persönlicher Dateibereich gelöscht.') . '§';
-            $user_folder->delete();
+            if ($user_folder) {
+                $this->msg .= 'info§' . _('Persönlicher Dateibereich gelöscht.') . '§';
+                $user_folder->delete();
+            }
             NotificationCenter::postNotification('UserDataDidRemove', $this->user_data['auth_user_md5.user_id'], 'personal_documents');
         }
 
