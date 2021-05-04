@@ -376,4 +376,30 @@ jQuery(document).on('click', 'a[data-behaviour~="ajax-toggle"]', function (event
     $(document).on('click', 'form[name=course-details] fieldset legend', function () {
         $('#open_variable').attr('value', $(this).parent('fieldset').data('open'));
     });
-}(jQuery))
+}(jQuery));
+
+// Detect high contrast mode
+// https://gist.github.com/ffoodd/78f99204b5806e183574
+$(window).on('load', () => {
+    function prefersContrast () {
+        if (window.matchMedia('prefers-contrast: more').matches || window.matchMedia('prefers-contrast: high').matches) {
+            return true;
+        }
+
+        const testColor = 'rgb(31,41,59)';
+        const testElement = document.createElement('a');
+        let strColor;
+
+        testElement.style.color = testColor;
+        document.documentElement.appendChild(testElement);
+        strColor = document.defaultView ? document.defaultView.getComputedStyle(testElement, null).color : testElement.currentStyle.color;
+        strColor = strColor.replace(/ /g, '');
+        document.documentElement.removeChild(testElement);
+        return strColor !== testColor;
+    }
+
+    document.querySelector('html').classList.toggle(
+        'high-contrast-mode-activated',
+        prefersContrast()
+    );
+});

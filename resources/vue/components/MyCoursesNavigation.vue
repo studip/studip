@@ -65,5 +65,16 @@ export default {
 }
 .my-courses-navigation-important {
     background-color: mixins.$red;
+
+    html.high-contrast-mode-activated &  {
+        a {
+            border: 1px dashed mixins.$black;
+        }
+
+        img,
+        svg {
+            filter: grayscale(100%) invert(1);
+        }
+    }
 }
 </style>
