@@ -544,7 +544,6 @@ Dialog.calculateDimensions = function (instance, content, options) {
         }).appendTo('body');
 
         // Calculate width and height
-        // TODO: The value of 63 shouldn't be hardcoded (the height of buttonpane)
         width = Math.min(helper.outerWidth(true) + dialog_margin, max_width);
         height = Math.min(helper.outerHeight(true), max_height);
 
