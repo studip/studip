@@ -1013,7 +1013,7 @@ class MyCoursesController extends AuthenticatedController
             'is_deputy'     => (bool) $course['is_deputy'],
             'is_group'      => (bool) $course['is_group'],
 
-            'avatar' => $avatar->getURL(Avatar::NORMAL),
+            'avatar' => $avatar->getURL(Avatar::MEDIUM),
 
             'navigation'       => $this->reduceNavigation($course['navigation']),
             'extra_navigation' => $extra_navigation,
