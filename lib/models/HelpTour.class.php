@@ -241,9 +241,10 @@ class HelpTour extends SimpleORMap
             return false;
         }
 
-        $language = mb_substr($GLOBALS['user']->preferred_language, 0, 2);
-        if (!$language) {
-            $language = 'de';
+        if (!$GLOBALS['user']->preferred_language) {
+            $language = mb_substr(Config::get()->DEFAULT_LANGUAGE, 0, 2);
+        } else {
+            $language = mb_substr($GLOBALS['user']->preferred_language, 0, 2);
         }
         if ($language !== $this->language) {
             return false;
