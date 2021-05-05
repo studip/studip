@@ -8,9 +8,9 @@ class Tic11044AdminCourseNotices extends Migration
 
     public function up()
     {
-        $query = "SELECT 1 + MAX(priority)
-                  FROM datafields
-                  WHERE object_type = 'sem'";
+        $query = "SELECT 1 + MAX(`priority`)
+                  FROM `datafields`
+                  WHERE `object_type` = 'sem'";
         $priority = DBManager::get()->fetchColumn($query) ?: 0;
 
         $query = "INSERT IGNORE INTO `datafields` (
@@ -40,10 +40,10 @@ class Tic11044AdminCourseNotices extends Migration
 
     public function down()
     {
-        $query = "DELETE FROM datafields, datafields_entries
-                  FROM datafields
-                  JOIN datafields_entries USING (datafield_id)
-                  WHERE datafields.name = 'Notiz zu einer Veranstaltung'";
+        $query = "DELETE `datafields`, `datafields_entries`
+                  FROM `datafields`
+                  LEFT JOIN `datafields_entries` USING (`datafield_id`)
+                  WHERE `datafields`.`name` = 'Notiz zu einer Veranstaltung'";
         DBManager::get()->execute($query);
     }
 }

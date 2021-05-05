@@ -1,11 +1,5 @@
 <?php
-    $notice = false;
-    $course->datafields->each(function ($datafield) use (&$notice) {
-        if ($datafield->name === 'Notiz zu einer Veranstaltung') {
-            $notice = $datafield->content;
-        }
-    });
-
+    $notice = $course->config->COURSE_ADMIN_NOTICE;
     $method = $notice ? 'createHasNotice' : 'createHasNoNotice';
 ?>
 

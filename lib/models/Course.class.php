@@ -68,6 +68,7 @@
  * @property SimpleORMapCollection institutes has_and_belongs_to_many Institute
  * @property Course parent belongs_to Course
  * @property SimpleORMapCollection children has_many Course
+ * @property CourseConfig config additional field
  */
 
 class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, FeedbackRange
@@ -229,8 +230,8 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         ];
 
         $config['additional_fields']['config'] = [
-            'get' => function ($course) {
-                return CourseConfig::get($course->id);
+            'get' => function (Course $course) {
+                return $course->getConfiguration();
             }
         ];
 

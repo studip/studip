@@ -902,22 +902,13 @@ class Admin_CoursesController extends AuthenticatedController
      */
     public function notice_action(Course $course)
     {
-        $notice_datafield = $course->datafields->filter(function ($datafield) {
-            return $datafield->name === 'Notiz zu einer Veranstaltung';
-        })->first() ?? DataFieldEntry::createDataFieldEntry(
-            DataField::findOneByName('Notiz zu einer Veranstaltung'),
-            $course->id,
-            ''
-        );
-
         if (Request::isPost()) {
-            $notice_datafield->content = trim(Request::get('notice'));
-            $notice_datafield->store();
+            $course->config->store('COURSE_ADMIN_NOTICE', trim(Request::get('notice')));
 
             if (Request::isXhr()) {
                 $this->response->add_header('X-Dialog-Notice', json_encode([
                     'id'     => $course->id,
-                    'notice' => $notice_datafield->content,
+                    'notice' => $course->config->COURSE_ADMIN_NOTICE,
                 ]));
                 $this->render_nothing();
             } else {
@@ -927,7 +918,7 @@ class Admin_CoursesController extends AuthenticatedController
         }
 
         $this->course = $course;
-        $this->notice = $notice_datafield->content;
+        $this->notice = $course->config->COURSE_ADMIN_NOTICE;
     }
 
     public function get_subcourses_action($course_id)
