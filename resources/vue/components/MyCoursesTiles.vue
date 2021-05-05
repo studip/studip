@@ -20,7 +20,7 @@
                                     <studip-action-menu :items="getActionMenuForCourse(course, true)"
                                                         :collapseAt="0"
                                                         class="tiles-action-menu"
-                                                        v-on:show-color-picker="shownColorPicker = course.id"
+                                                        @show-color-picker="shownColorPicker = course.id"
                                     ></studip-action-menu>
                                 </span>
 

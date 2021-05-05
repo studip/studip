@@ -69,9 +69,8 @@
                         <my-courses-navigation :navigation="getNavigationForCourse(course, true)" :icon-size="iconSize"></my-courses-navigation>
                     </td>
                     <td v-if="!responsiveDisplay" class="actions">
-                        <studip-action-menu :items="getActionMenuForCourse(course, false, true)"
+                        <studip-action-menu :items="getActionMenuForCourse(course)"
                                             :collapseAt="2"
-                                            v-on:show-color-picker="shownColorPicker = course.id"
                         ></studip-action-menu>
                     </td>
                 </tr>

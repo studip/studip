@@ -52,8 +52,19 @@ export default {
             return infotext;
         },
 
-        getActionMenuForCourse(course, withColorPicker = false, withDetails = false) {
+        getActionMenuForCourse(course, withColorPicker = false) {
             let menu = [];
+
+            if (!course.is_studygroup) {
+                menu.push({
+                    url: this.urlFor(`dispatch.php/course/details/index/${course.id}`, {from: this.urlFor('dispatch.php/my_courses/index')}),
+                    label: this.$gettext('Veranstaltungsdetails'),
+                    icon: 'info-circle',
+                    attributes: {
+                        'data-dialog': ''
+                    },
+                });
+            }
 
             if (withColorPicker) {
                 // Color grouping
@@ -62,17 +73,6 @@ export default {
                     emitArguments: [course],
                     label: this.$gettext('Farbgruppierung ändern'),
                     icon: 'group4'
-                });
-            }
-
-            if (withDetails && !course.is_studygroup) {
-                menu.push({
-                    url: this.urlFor(`dispatch.php/course/details/index/${course.id}`, {from: this.urlFor('dispatch.php/my_courses/index')}),
-                    label: this.$gettext('Veranstaltungsdetails'),
-                    icon: 'info-circle',
-                    attributes: {
-                        'data-dialog': ''
-                    },
                 });
             }
 
