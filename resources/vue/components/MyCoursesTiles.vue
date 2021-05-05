@@ -24,20 +24,16 @@
                                     ></studip-action-menu>
                                 </span>
 
-                                <a v-if="!course.is_studygroup" data-dialog :href="urlFor('dispatch.php/course/details/index/' + course.id)" :title="$gettext('Veranstaltungsdetails')">
-                                    <span :style="{backgroundImage: `url(${course.avatar})`}" class="tiles-grid-element-header-image"></span>
-                                </a>
-                                <span v-else>
-                                    <span :style="{backgroundImage: `url(${course.avatar})`}" class="tiles-grid-element-header-image"></span>
-                                </span>
-
                                 <a :href="urlFor('seminar_main.php', {auswahl: course.id})" class="tiles-grid-element-header-content" :title="getCourseName(course, getConfig('sem_number'))">
-                                    {{ getCourseName(course, getConfig('sem_number')) }}
-                                    <span v-if="course.is_deputy">{{ $gettext('[Vertretung]') }}</span>
+                                    <span :style="{backgroundImage: `url(${course.avatar})`}" class="tiles-grid-element-header-image"></span>
+                                    <span class="tiled-grid-element-header-title">
+                                        {{ getCourseName(course, getConfig('sem_number')) }}
+                                        <span v-if="course.is_deputy">{{ $gettext('[Vertretung]') }}</span>
 
-                                    <span v-if="course.is_hidden">
-                                        {{ $gettext('[versteckt]') }}
-                                        <studip-tooltip-icon :text="getHiddenTooltip(course)"></studip-tooltip-icon>
+                                        <span v-if="course.is_hidden">
+                                            {{ $gettext('[versteckt]') }}
+                                            <studip-tooltip-icon :text="getHiddenTooltip(course)"></studip-tooltip-icon>
+                                        </span>
                                     </span>
                                 </a>
                             </header>
@@ -194,7 +190,7 @@ export default {
         flex: 0 $header-size;
     }
 
-    .tiles-grid-element-header-content {
+    .tiled-grid-element-header-title {
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
