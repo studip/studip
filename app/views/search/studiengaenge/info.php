@@ -61,18 +61,21 @@
                 <td>
 
                 </td>
-            </tr>
-            <? foreach ($studiengang->datafields->getTypedDatafield() as $entry) : ?>
-                <? if (mb_strpos($entry->datafield->object_class, 'settings') !== false
-                        && $entry->isVisible() && $entry->getValue()) : ?>
+	    </tr>
+            <? foreach ($studiengang->datafields as $df) : ?>
+                <? if (mb_strpos($df->datafield->object_class, 'settings') !== false
+                        && !$df->isNew()) : ?>
+                    <? $tdf = $df->getTypedDatafield() ?>
+                    <? if ($tdf->isVisible() && $tdf->getValue()) : ?>
                     <tr>
                         <td>
-                            <strong><?= htmlReady($entry->getName()) ?></strong>
+                            <strong><?= htmlReady($tdf->getName()) ?></strong>
                         </td>
                         <td>
-                            <?= $entry->getDisplayValue() ?>
+                            <?= $tdf->getDisplayValue() ?>
                         </td>
                     </tr>
+                    <? endif; ?>
                 <? endif; ?>
             <? endforeach; ?>
         </tbody>
@@ -87,7 +90,8 @@
     </section>
 </article>
 <? foreach ($studiengang->datafields as $df) : ?>
-    <? if (mb_strpos($df->datafield->object_class, 'settings') !== false) : ?>
+    <? if (mb_strpos($df->datafield->object_class, 'settings') !== false
+                        && !$df->isNew()) : ?>
         <? $tdf = $df->getTypedDatafield(); ?>
         <? if ($tdf->isVisible() && $tdf->getValue()) : ?>
             <article class="studip">
@@ -102,7 +106,8 @@
     <? endif; ?>
 <? endforeach; ?>
 <? foreach ($studiengang->datafields as $df) : ?>
-    <? if (mb_strpos($df->datafield->object_class, 'info') !== false) : ?>
+    <? if (mb_strpos($df->datafield->object_class, 'info') !== false
+                        && !$df->isNew()) : ?>
         <? $tdf = $df->getTypedDatafield(); ?>
         <? if ($tdf->isVisible() && $tdf->getValue()) : ?>
             <article class="studip">
