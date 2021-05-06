@@ -106,7 +106,7 @@ class Admin_DatafieldsController extends AuthenticatedController
                 }
                 $datafield->edit_perms     = Request::get('edit_perms');
                 $datafield->view_perms     = Request::get('visibility_perms');
-                $datafield->institut_id    = Request::get('institut_id') ?: null;
+                $datafield->institut_id    = Request::option('institut_id') ?: null;
                 $datafield->system         = Request::int('system') ?: 0;
                 $datafield->priority       = Request::int('priority') ?: 0;
                 $datafield->type           = Request::get('datafield_type');
@@ -158,7 +158,7 @@ class Admin_DatafieldsController extends AuthenticatedController
                 }
                 $datafield->edit_perms    = Request::get('edit_perms');
                 $datafield->view_perms    = Request::get('visibility_perms');
-                $datafield->institut_id   = Request::option('institut_id');
+                $datafield->institut_id   = Request::option('institut_id') ?: null;
                 $datafield->system        = Request::int('system', 0) ;
                 $datafield->priority      = Request::int('priority', 0);
                 $datafield->type          = Request::get('datafield_type');
