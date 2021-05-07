@@ -32,7 +32,7 @@
         <? endforeach ?>
     </tbody>
 
-    <tfoot>
+    <tfoot data-dialog-button>
         <tr>
             <td colspan="2">
                 <?= Studip\Button::createAccept(_('Eintragen'))?>

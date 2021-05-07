@@ -1,6 +1,6 @@
 <? use Studip\Button, Studip\LinkButton;?>
 
-<form action="<?= $controller->url_for('course/members/set_autor_csv')?>" method="post" name="user" class="default">
+<form action="<?= $controller->url_for('course/members/set_autor_csv')?>" method="post" name="user" data-dialog class="default">
 <?= CSRFProtection::tokenTag() ?>
     <h1>
         <?=sprintf(_('%s hinzufügen'), htmlReady(get_title_for_status('autor', 1)))?>
@@ -38,7 +38,7 @@
         </label>
     </fieldset>
 
-    <footer>
+    <footer data-dialog-button>
         <?= Button::createAccept(_('Eintragen'), 'add_member_list',
             ['title' => sprintf(_("als %s eintragen"), htmlReady(get_title_for_status('autor', 1)))]) ?>
         <?= LinkButton::createCancel(_('Abbrechen'), $controller->url_for('course/members/index')) ?>

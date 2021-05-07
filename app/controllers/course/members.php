@@ -738,7 +738,7 @@ class Course_MembersController extends AuthenticatedController
                 $csv_count_contingent_full));
         }
 
-        $this->redirect('course/members/index');
+        $this->relocate('course/members/index');
     }
 
     /**
@@ -1657,7 +1657,8 @@ class Course_MembersController extends AuthenticatedController
                 $widget->addLink(
                     _('Teilnehmendenliste importieren'),
                     $this->url_for('course/members/import_autorlist'),
-                    Icon::create('community+add')
+                    Icon::create('community+add'),
+                    ['data-dialog' => 1]
                 );
             }
 
