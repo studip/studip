@@ -109,6 +109,7 @@ class QuestionnaireController extends AuthenticatedController
             return;
         }
         if (Request::isPost()) {
+            $neworder = array_flip(Request::getArray("neworder"));
             $order = array_flip(json_decode(Request::get("order"), true));
             $questionnaire_data = Request::getArray("questionnaire");
             $questionnaire_data['startdate'] = $questionnaire_data['startdate']
@@ -135,7 +136,7 @@ class QuestionnaireController extends AuthenticatedController
                     $question = new $question_type($question_id);
                     $this->questionnaire->questions[] = $question;
                 }
-                $question['position'] = $order[$question_id] + 1;
+                $question['position'] = $neworder[$question_id] + 1;
                 $question->createDataFromRequest();
             }
             foreach ($this->questionnaire->questions as $q) {

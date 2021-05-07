@@ -11,7 +11,8 @@
                onClick="STUDIP.Questionnaire.moveQuestionDown.call(this); return false;">
                 <?= Icon::create("arr_1down", "clickable")->asImg("20px", ['class' => "text-bottom"]) ?>
             </a>
-            <a href="#" onClick="var that = this; STUDIP.Dialog.confirm('<?= _("Wirklich löschen?") ?>', function () { jQuery(that).closest('fieldset').remove(); }); return false;" title="<?= sprintf(_("%s löschen"), htmlReady($class::getName())) ?>">
+            <a href="#" onClick="var that = this; STUDIP.Dialog.confirm('<?= _("Wirklich löschen?") ?>', function () { jQuery(that).closest('fieldset').remove(); }); return false;"
+               title="<?= sprintf(_("%s löschen"), htmlReady($class::getName())) ?>">
                 <?= Icon::create("trash", "clickable")->asImg("20px", ['class' => "text-bottom"]) ?>
             </a>
         </div>
@@ -21,6 +22,7 @@
         </div>
 
     </legend>
+    <input type="hidden" name="neworder[]" value="<?= htmlReady($question->getId()) ?>">
     <input type="hidden" name="question_types[<?= htmlReady($question->getId()) ?>]" value="<?= htmlReady(get_class($question)) ?>">
     <?= $question->getEditingTemplate()->render() ?>
 </fieldset>
