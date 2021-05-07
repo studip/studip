@@ -105,7 +105,9 @@ const GlobalSearch = {
                         single.addClass('globalsearch-extended-result');
                     }
 
-                    var dataDialog = (name === 'GlobalSearchFiles' ? dataDialog = 'data-dialog' : dataDialog = '');
+                    // Which result types should be opened via dialog?
+                    const openInDialog = ['GlobalSearchFiles', 'GlobalSearchMessages'];
+                    var dataDialog = (openInDialog.indexOf(name) >= 0 ? dataDialog = 'data-dialog' : dataDialog = '');
                     var link = $(`<a href="${result.url}" ${dataDialog}>`).appendTo(single);
 
                     // Optional image...
