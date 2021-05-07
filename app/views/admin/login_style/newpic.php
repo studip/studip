@@ -1,4 +1,4 @@
-<form class="default" action="<?= $controller->url_for('admin/loginstyle/add') ?>" method="post" enctype="multipart/form-data">
+<form class="default" action="<?= $controller->link_for('admin/loginstyle/add') ?>" method="post" enctype="multipart/form-data">
     <fieldset>
         <legend>
             <?= _('Bild(er) hinzufügen') ?>
@@ -8,8 +8,10 @@
             <input type="file"
                    name="pictures[]"
                    style="display: none;"
+                   accept="image/gif,image/jpeg,image/png"
+                   required
                    multiple>
-            <?= Icon::create('upload', 'clickable')->asImg(['class' => "text-bottom upload"]) ?>
+            <?= Icon::create('upload')->asImg(['class' => 'text-bottom upload']) ?>
         </label>
 
         <label>

@@ -54,27 +54,31 @@ class Admin_LoginStyleController extends AuthenticatedController
     {
         CSRFProtection::verifyRequest();
         $success = 0;
-        $fail = 0;
         foreach ($_FILES['pictures']['name'] as $index => $filename) {
-            if ($_FILES['pictures']['error'][$index] === UPLOAD_ERR_OK) {
-                $entry = new LoginBackground();
-                $entry->filename = $filename;
-                $entry->desktop = Request::int('desktop', 0);
-                $entry->mobile = Request::int('mobile', 0);
-                if ($entry->store()) {
-                    $destination = LoginBackground::getPictureDirectory() . DIRECTORY_SEPARATOR
-                                 . $entry->id . '.' . pathinfo($filename, PATHINFO_EXTENSION);
-                    if (move_uploaded_file($_FILES['pictures']['tmp_name'][$index], $destination)) {
-                        $success++;
-                    } else {
-                        $entry->delete();
-                        $fail++;
-                    }
+            if ($_FILES['pictures']['error'][$index] !== UPLOAD_ERR_OK) {
+                continue;
+            }
+
+            $extension = pathinfo($filename, PATHINFO_EXTENSION);
+            if (!in_array($extension, ['gif', 'jpeg', 'jpg', 'png'])) {
+                continue;
+            }
+
+            $entry = new LoginBackground();
+            $entry->filename = $filename;
+            $entry->desktop = Request::int('desktop', 0);
+            $entry->mobile = Request::int('mobile', 0);
+            if ($entry->store()) {
+                $destination = LoginBackground::getPictureDirectory() . DIRECTORY_SEPARATOR
+                             . $entry->id . '.' . $extension;
+                if (move_uploaded_file($_FILES['pictures']['tmp_name'][$index], $destination)) {
+                    $success++;
                 } else {
-                    $fail++;
+                    $entry->delete();
                 }
             }
         }
+
         if ($success > 0) {
             PageLayout::postSuccess(sprintf(ngettext(
                 'Ein Bild wurde hochgeladen.',
@@ -82,6 +86,8 @@ class Admin_LoginStyleController extends AuthenticatedController
                 $success
             ), $success));
         }
+
+        $fail = count($_FILES['pictures']['name']) - $success;
         if ($fail > 0) {
             PageLayout::postError(sprintf(ngettext(
                 'Ein Bild konnte nicht hochgeladen werden.',
