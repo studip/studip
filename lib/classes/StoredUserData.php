@@ -71,14 +71,16 @@ class StoredUserData
      */
     public function addFileRef(FileRef $fileref, SimpleORMap $context = null)
     {
-        if ($fileref->file->getURL()) {
+        $filetype = $fileref->getFileType();
+
+        if ($filetype instanceof URLFile) {
             $this->addFileWithContents(
-                $fileref->name . '.url',
-                "[InternetShortcut]\nURL={$fileref->file->getURL()}\n",
+                $filetype->getFilename() . '.url',
+                "[InternetShortcut]\nURL={$filetype->getDownloadURL()}\n",
                 $context
             );
-        } else if ($fileref->file->getPath()) {
-            $this->addFileAtPath($fileref->name, $fileref->file->getPath(), $context);
+        } else if ($filetype->getPath()) {
+            $this->addFileAtPath($filetype->getFilename(), $filetype->getPath(), $context);
         }
     }
 

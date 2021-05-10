@@ -46,10 +46,12 @@ class MvvFileFileref extends ModuleManagementModel
      */
     public function getFilename()
     {
-        if ($this->file_ref->isLink()) {
-            return $this->file_ref->file->getURL();
-        } else {
-            return $this->file_ref->name;
+        if ($this->file_ref) {
+            $filetype = $this->file_ref->getFileType();
+            if ($filetype instanceof URLFile) {
+                return $filetype->getDownloadURL();
+            }
+            return $filetype->getFilename();
         }
     }
 
@@ -71,11 +73,11 @@ class MvvFileFileref extends ModuleManagementModel
         if (!$this->file_ref) {
             return '';
         }
-
-        if ($this->file_ref->isLink()) {
+        $filetype = $this->file_ref->getFileType();
+        if ($filetype instanceof URLFile) {
             return _('Link');
         } else {
-            $mime_type = $this->file_ref->file->mime_type;
+            $mime_type = $filetype->getMimeType();
             if (!$mime_type) {
                 return _('sonstiges');
             } else {
