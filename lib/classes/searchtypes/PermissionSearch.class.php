@@ -156,7 +156,7 @@ class PermissionSearch extends SQLSearch {
                           AND {$visibility_condition}
                         ORDER BY auth_user_md5.Nachname, auth_user_md5.Vorname, auth_user_md5.username";
            case 'user_inst_not_already_in_sem':
-                $sql = "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
+                return "SELECT DISTINCT $first_column, CONCAT(Nachname, ', ', Vorname, ' (', username, ')')
                         FROM auth_user_md5
                         LEFT JOIN user_inst ON user_inst.user_id = auth_user_md5.user_id
                         LEFT JOIN seminar_user su ON su.user_id = auth_user_md5.user_id AND seminar_id=:seminar_id AND status IN (:sem_perm)
