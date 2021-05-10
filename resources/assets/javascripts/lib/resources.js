@@ -720,7 +720,7 @@ class Resources
                         var start = activeRange.start;
                         var end = activeRange.end;
                         Object.values(data.collection).forEach(item => {
-                            if (end.getTime()/1000 >= item.seminars_begin && start.getTime()/1000 < item.seminars_end) {
+                            if (start.getTime()/1000 >= item.seminars_begin && start.getTime()/1000 < item.seminars_end) {
                                 semester = item;
                             }
                         });
@@ -730,7 +730,7 @@ class Resources
                                 .data('semester-end', semester.seminars_end);
                             $("#booking-plan-header-semrow").show();
                             $("#booking-plan-header-semname").text(semester.title);
-                            var sem_week = Math.floor((end.getTime()/1000 - semester.seminars_begin) / 604800)+1;
+                            var sem_week = Math.floor((end.getTime()/1000 - 10800 - semester.seminars_begin) / 604800)+1;
                             $("#booking-plan-header-semweek").text(sem_week);
                         } else {
                             if (data.pagination && data.pagination.links && data.pagination.links.next != api_url) {
