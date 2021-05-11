@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1024 1024" style="enable-background:new 0 0 1024 1024;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#28497C;}
+	.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#D60000;}
+	.st2{opacity:0.2;fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st3{opacity:0.1;}
+	.st4{clip-path:url(#SVGID_2_);fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st5{opacity:0.2;}
+	.st6{clip-path:url(#SVGID_6_);}
+	.st7{fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st8{fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;}
+	.st9{clip-path:url(#SVGID_8_);fill-rule:evenodd;clip-rule:evenodd;fill:#ECECED;}
+	.st10{clip-path:url(#SVGID_10_);fill-rule:evenodd;clip-rule:evenodd;fill:#ECECED;}
+	.st11{opacity:0.1;fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st12{clip-path:url(#SVGID_12_);fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st13{clip-path:url(#SVGID_14_);fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st14{fill-rule:evenodd;clip-rule:evenodd;fill:#ECECED;}
+	.st15{clip-path:url(#SVGID_18_);fill-rule:evenodd;clip-rule:evenodd;fill:#D8D9DA;}
+	.st16{clip-path:url(#SVGID_20_);}
+	.st17{fill-rule:evenodd;clip-rule:evenodd;fill:#B0B2B3;}
+	.st18{clip-path:url(#SVGID_22_);fill-rule:evenodd;clip-rule:evenodd;fill:#D8D9DA;}
+	.st19{clip-path:url(#SVGID_24_);fill-rule:evenodd;clip-rule:evenodd;fill:#D8D9DA;}
+	.st20{clip-path:url(#SVGID_26_);fill-rule:evenodd;clip-rule:evenodd;fill:#1A171B;}
+	.st21{clip-path:url(#SVGID_28_);fill-rule:evenodd;clip-rule:evenodd;fill:#1A171B;}
+	.st22{fill:#24437C;}
+	.st23{fill:#FFFFFF;}
+	.st24{fill:#28497C;}
+	.st25{fill:#D60000;}
+	.st26{opacity:0.2;fill:#1D1D1B;}
+	.st27{fill:#1D1D1B;}
+	.st28{opacity:0.2;fill:#FFFFFF;}
+	.st29{fill:#3C444E;}
+</style>
+<g>
+	
+		<rect id="rect909_6_" x="481.9" y="151.1" transform="matrix(0.9539 -0.3001 0.3001 0.9539 -38.2845 157.9394)" class="st24" width="26.3" height="105.1"/>
+	<path class="st24" d="M747,290.3H617.6c-4.5-26.9-49.7-48.1-104.7-48.1c-55,0-100.2,21.1-104.7,48.1H278.8
+		C205,290.4,145.2,350.2,145.2,424v261c0.1,73.8,59.9,133.5,133.7,133.7h10.4c-5.1,21.3-17.2,44.7-43.8,68.9L162.6,962l110.2-16.9
+		c124.8-19.8,202-95,229.7-126.5H747c73.8-0.1,133.6-59.9,133.7-133.7V424C880.6,350.2,820.8,290.4,747,290.3z M696.8,610
+		C696.8,610,696.8,610,696.8,610H329.1c0,0,0,0,0,0C271,610,224,563,224,504.9S271,399.9,329,399.9v0h367.8v0
+		c58,0,105.1,47,105.1,105.1S754.8,610,696.8,610z"/>
+	
+		<ellipse id="path911_6_" transform="matrix(0.9539 -0.3001 0.3001 0.9539 -16.1491 147.6249)" class="st24" cx="472.6" cy="126.4" rx="68.3" ry="52.5"/>
+	<circle id="path860_9_" class="st24" cx="524.4" cy="504.9" r="52.5"/>
+	<circle id="path860-6_9_" class="st24" cx="670.5" cy="504.9" r="52.5"/>
+	<ellipse id="path877-7_6_" class="st24" cx="145.2" cy="541.7" rx="52.5" ry="105.1"/>
+	<ellipse id="path877-7-5_6_" class="st24" cx="880.7" cy="541.7" rx="52.5" ry="105.1"/>
+	<polygon class="st23" points="602.8,710.5 556,757.3 580.3,781.6 651.4,710.5 580.3,639.4 556,663.7 	"/>
+</g>
+</svg>
