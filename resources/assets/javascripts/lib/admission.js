@@ -273,7 +273,22 @@ const Admission = {
 
     toggleNotSavedAlert: function() {
         $('.hidden-alert').show();
+    },
+
+    autosaveCourseset: function(event) {
+        $.post({
+            url: $('#courseset-form').attr('action'),
+            data: $('#courseset-form').serialize() + '&submit=1',
+            dataType: 'html',
+            success: function(data, textStatus, jqXHR) {
+                $('.hidden-alert').hide();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert('Status: ' + textStatus + '\nError: ' + errorThrown);
+            }
+        });
     }
+
 };
 
 export default Admission;
