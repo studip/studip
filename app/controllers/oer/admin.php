@@ -96,7 +96,7 @@ class Oer_AdminController extends AuthenticatedController
         if ($data['hosts']) {
             foreach ($data['hosts'] as $host_data) {
 
-                $host = OERHost::findByUrl($host_data['url']);
+                $host = OERHost::findOneByUrl($host_data['url']);
                 if (!$host) {
                     $host = new OERHost();
                     $host['url'] = $host_data['url'];
