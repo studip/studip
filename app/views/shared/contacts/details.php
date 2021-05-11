@@ -2,8 +2,11 @@
     <? if (!sizeof($relations)) : ?>
         <?= _('Diese Person wurde noch nicht referenziert.') ?>
     <? else : ?>
-        <? foreach ($relations as $object_type => $relations) : ?>
-            <? if (!$object_type) : continue; endif; ?>
+        <? $object_types = ['Studiengang', 'StudiengangTeil', 'Modul'] ?>
+        <? foreach ($object_types as $object_type) : ?>
+            <? $object_relations = $relations[$object_type] ?>
+            <? if (count($object_relations) === 0) : continue; endif; ?>
+            <? uasort($object_relation, function ($a, $b) { return strcmp($a->getDisplayTitle(), $b->getDisplayTitle()); }) ?>
             <table class="default sortable-table" style="margin-top: 10px;" data-sortlist="[[0, 0]]">
                 <colgroup>
                     <? if($object_type === 'Studiengang'): ?>
@@ -31,7 +34,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <? foreach ($relations as $range_entries) : ?>
+                    <? foreach ($object_relations as $range_entries) : ?>
                         <? foreach ($range_entries as $rel) : ?>
                             <? $object_name = htmlReady($object_type::find($rel['range_id'])->getDisplayName()); ?>
                                 <tr>
@@ -52,7 +55,7 @@
                                     <?
                                         $actions = ActionMenu::get();
                                         $actions->addLink(
-                                            $controller->url_for('shared/contacts/add_ansprechpartner',$origin, $rel['range_type'], $rel['range_id'], $rel['contact_id'], $rel['category']),
+                                            $controller->url_for('shared/contacts/add_ansprechpartner', $origin, $rel['range_type'], $rel['range_id'], $rel['contact_id'], $rel['category']),
                                             _('Ansprechpartner bearbeiten'),
                                             Icon::create('edit'),
                                             ['data-dialog' => 'size=auto']

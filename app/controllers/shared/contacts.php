@@ -86,6 +86,14 @@ class Shared_ContactsController extends MVVController
         );
 
         $this->contact_id = Request::option('contact_id');
+        if ($this->contact_id) {
+            $contact_range = MvvContactRange::findOneBySQL('contact_id=?', [$this->contact_id]);
+            if (!$contact_range) {
+                throw new Trails_Exception(404);
+            }
+            $this->relations = $contact_range->getRelations($this->filter);
+            $this->origin = 'index';
+        }
         $this->count = MvvContact::getCount($this->filter);
         $this->show_sidebar_search = true;
         $this->setSidebar();
@@ -101,7 +109,7 @@ class Shared_ContactsController extends MVVController
             $this->range_id = Request::option('range_id');
             $this->range_type = MvvContactRange::getRangeTypeByRangeId($this->range_id);
         }
-        $this->contacts = MvvContactRange::findBySQL('range_id = ? ORDER BY position ASC', [ $this->range_id]);
+        $this->contacts = MvvContactRange::findBySQL('range_id = ? ORDER BY position ASC', [$this->range_id]);
         if (!isset($this->contact_id)) {
             $this->contact_id = null;
         }
@@ -109,7 +117,7 @@ class Shared_ContactsController extends MVVController
 
     public function details_action($origin, $contact_id)
     {
-        $contact_range = MvvContactRange::findOneBySQL('contact_id=?',[$contact_id]);
+        $contact_range = MvvContactRange::findOneBySQL('contact_id=?', [$contact_id]);
         if (!$contact_range) {
             throw new Trails_Exception(404);
         }
@@ -468,7 +476,7 @@ class Shared_ContactsController extends MVVController
                     $this->render_nothing();
                 } else {
                     $this->response->add_header('X-Dialog-Close', 1);
-                    $this->response->add_header('X-Location', $this->url_for('/index'));
+                    $this->response->add_header('X-Location', $this->url_for('/index', ['contact_id' => $mvv_contact->id]));
                 }
                 return;
             }
@@ -603,26 +611,18 @@ class Shared_ContactsController extends MVVController
 
             //add new selected ranges
             foreach ($selected as $add_range) {
-                if (!in_array($add_range, $this->pre_selected )) {
-                    $mvv_contact->addRange($add_range, $range_type, Request::get('ansp_typ', ''), $category);
-                    $changes++;
-                }
+                    if ($mvv_contact->addRange($add_range, $range_type, Request::get('ansp_typ', ''), $category)) {
+                        $changes++;
+                    }
             }
 
             if ($changes > 0) {
-                if ($changes > 1) {
-                    PageLayout::postSuccess(sprintf(
-                        _('%d Änderungen an der Zuweisung des Ansprechpartners wurden gespeichert.'),
-                        $changes
-                    ));
-                } else {
-                    PageLayout::postSuccess(_('Die Änderung der Zuweisung des Ansprechpartners wurde gespeichert.'));
-                }
+                PageLayout::postSuccess(
+                        ngettext('Die Änderung der Zuweisung des Ansprechpartners wurde gespeichert.',
+                        sprintf('%d Änderungen an der Zuweisung des Ansprechpartners wurden gespeichert.', $changes),
+                        $changes));
             }
-
-            $this->response->add_header('X-Dialog-Execute', 'STUDIP.MVV.Contact.reload_contacttable()');
-            $this->response->add_header('X-Dialog-Close', 1);
-            $this->render_nothing();
+            $this->relocate('shared/contacts/index', ['contact_id' => $mvv_contact->id]);
             return;
         }
     }
@@ -770,20 +770,12 @@ class Shared_ContactsController extends MVVController
                 ORDER BY name ASC LIMIT 10",
                 [':term' => $term]
         );
-
-        $assigned_ids = SimpleCollection::createFromArray(
-                MvvContactRange::findBySQL("`contact_id` = ? AND `range_type` = 'Modul'",
-                    [Request::get('contact_id')]))
-                ->pluck('range_id');
-
         $res = [];
         foreach ($modules as $module) {
-            if (!in_array($module->id, $assigned_ids)) {
                 $res['results'][] = [
                     'id' => $module->id,
                     'text' => $module->getDisplayName()
                 ];
-            }
         }
 
         $this->render_json($res);

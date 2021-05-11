@@ -25,7 +25,7 @@
         <tr class="header-row">
             <td class="toggle-indicator">
                 <a class="mvv-load-in-new-row"
-                    href="<?= $controller->url_for('shared/contacts/details/index/', $mvv_contact->contact_id) ?>"><?= htmlReady($mvv_contact->getContactName()) ?></a>
+                    href="<?= $controller->url_for('shared/contacts/details/index', $mvv_contact->contact_id) ?>"><?= htmlReady($mvv_contact->getContactName()) ?></a>
             </td>
             <td class="dont-hide"><?= htmlReady($mvv_contact->alt_mail); ?></td>
             <td class="dont-hide"><?= htmlReady($GLOBALS['MVV_CONTACTS']['STATUS']['values'][$mvv_contact->contact_status]['name']); ?></td>
