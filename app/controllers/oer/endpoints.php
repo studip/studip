@@ -260,39 +260,34 @@ class Oer_EndpointsController extends StudipController
      */
     public function push_data_action()
     {
-        if (Request::isPost()) {
-            $public_key_hash = $_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_PUBLIC_KEY_HASH))];
-            $signature = base64_decode($_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_SIGNATURE))]);
-            $host = OERHost::findOneBySQL("MD5(public_key) = ?", [$public_key_hash]);
-            if ($host && !$host->isMe()) {
-                $body = file_get_contents('php://input');
-                if ($host->verifySignature($body, $signature)) {
-                    $data = json_decode($body, true);
-                    $material = OERMaterial::findOneBySQL("host_id = ? AND foreign_material_id = ?", [
-                        $host->getId(),
-                        $data['data']['foreign_material_id']
-                    ]);
-                    if (!$material) {
-                        $material = new OERMaterial();
-                    }
-                    if ($data['delete_material']) {
-                        $material->delete();
-                        echo "deleted ";
-                    } else {
-                        $material->setData($data['data']);
-                        $material['host_id'] = $host->getId();
-                        $material->store();
-                        $material->setTopics($data['topics']);
-                        $material->setUsers($data['users']);
-                        echo "stored ";
-                    }
-                } else {
-                    throw new Exception("Wrong signature, sorry.");
-                }
-            }
-            $this->render_text("");
-        } else {
+        if (!Request::isPost()) {
             throw new Exception("USE POST TO PUSH.");
+        }
+
+        $host = $this->getHostFromRequest();
+        if ($host && !$host->isMe()) {
+            $data = $this->extractDataForHost($host);
+
+            $material = OERMaterial::findOneBySQL("host_id = ? AND foreign_material_id = ?", [
+                $host->getId(),
+                $data['data']['foreign_material_id']
+            ]);
+            if (!$material) {
+                $material = new OERMaterial();
+            }
+            if ($data['delete_material']) {
+                $material->delete();
+                $this->render_text("deleted ");
+            } else {
+                $material->setData($data['data']);
+                $material['host_id'] = $host->getId();
+                $material->store();
+                $material->setTopics($data['topics']);
+                $material->setUsers($data['users']);
+                $this->render_text("stored ");
+            }
+        } else {
+            $this->render_text('');
         }
     }
 
@@ -394,65 +389,61 @@ class Oer_EndpointsController extends StudipController
         if (!Request::isPost()) {
             throw new Exception("USE POST TO PUSH.");
         }
-        $public_key_hash = $_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_PUBLIC_KEY_HASH))];
-        $signature = base64_decode($_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_SIGNATURE))]);
-        $host = OERHost::findOneBySQL("MD5(public_key) = ?", [$public_key_hash]);
+
+        $host = $this->getHostFromRequest();
         if ($host && !$host->isMe()) {
-            $body = file_get_contents('php://input');
-            if ($host->verifySignature($body, $signature)) {
-                $data = json_decode($body, true);
-                $material = new OERMaterial($material_id);
-                if ($material->isNew() || $material['host_id']) {
-                    throw new Exception("Unknown material.");
-                }
+            $data = $this->extractDataForHost($host);
 
-                $user = ExternalUser::findOneBySQL("host_id = ? AND foreign_id = ?", [
-                    $host->getId(),
-                    $data['user']['user_id']
-                ]);
-                if (!$user) {
-                    $user = new ExternalUser();
-                    $user['host_id'] = $host->getId();
-                    $user['foreign_id'] = $data['user']['user_id'];
-                }
-                $user['contact_type'] = 'oercampus';
-                $user['name'] = $data['user']['name'];
-                $user['avatar_url'] = $data['user']['avatar'];
-                $user['data']['description'] = $data['user']['description'] ?: "";
-                $user->store();
-
-                $review = OERReview::findOneBySQL("display_class = 'OERReview'
-                        AND external_contact = '1'
-                        AND context_id = :material_id
-                        AND user_id = :user_id
-                        AND metadata LIKE :host_id", [
-                    'material_id' => $material_id,
-                    'user_id' => $user->getId(),
-                    'host_id' => "%".$host->getId()."%"
-                ]);
-
-                if (!$review) {
-                    $review = new OERReview();
-                    $review['user_id'] = $user->getId();
-                    $review['display_class'] = "OERReview";
-                    $review['context_id'] = $material_id;
-                }
-                $review['content'] = $data['data']['review'];
-                $review['metadata'] = [
-                    'host_id' => $host->getId(),
-                    'foreign_review_id' => $data['data']['foreign_review_id'],
-                    'rating' => $data['data']['rating']
-                ];
-                $review['mkdate'] = $data['data']['mkdate'];
-                $review['chdate'] = $data['data']['chdate'];
-                $review->store();
-
-                echo "stored ";
-            } else {
-                throw new Exception("Wrong signature, sorry.");
+            $material = new OERMaterial($material_id);
+            if ($material->isNew() || $material['host_id']) {
+                throw new Exception("Unknown material.");
             }
+
+            $user = ExternalUser::findOneBySQL("host_id = ? AND foreign_id = ?", [
+                $host->getId(),
+                $data['user']['user_id']
+            ]);
+            if (!$user) {
+                $user = new ExternalUser();
+                $user['host_id'] = $host->getId();
+                $user['foreign_id'] = $data['user']['user_id'];
+            }
+            $user['contact_type'] = 'oercampus';
+            $user['name'] = $data['user']['name'];
+            $user['avatar_url'] = $data['user']['avatar'];
+            $user['data']['description'] = $data['user']['description'] ?: "";
+            $user->store();
+
+            $review = OERReview::findOneBySQL("display_class = 'OERReview'
+                    AND external_contact = '1'
+                    AND context_id = :material_id
+                    AND user_id = :user_id
+                    AND metadata LIKE :host_id", [
+                'material_id' => $material_id,
+                'user_id' => $user->getId(),
+                'host_id' => "%".$host->getId()."%"
+            ]);
+
+            if (!$review) {
+                $review = new OERReview();
+                $review['user_id'] = $user->getId();
+                $review['display_class'] = "OERReview";
+                $review['context_id'] = $material_id;
+            }
+            $review['content'] = $data['data']['review'];
+            $review['metadata'] = [
+                'host_id' => $host->getId(),
+                'foreign_review_id' => $data['data']['foreign_review_id'],
+                'rating' => $data['data']['rating']
+            ];
+            $review['mkdate'] = $data['data']['mkdate'];
+            $review['chdate'] = $data['data']['chdate'];
+            $review->store();
+
+            $this->render_text("stored ");
+        } else {
+            $this->render_text('');
         }
-        $this->render_text("");
     }
 
     /**
@@ -468,60 +459,55 @@ class Oer_EndpointsController extends StudipController
             throw new Exception("USE POST TO PUSH.");
         }
 
-        $public_key_hash = $_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_PUBLIC_KEY_HASH))]; //MD5_HASH_OF_RSA_PUBLIC_KEY
-        $signature = base64_decode($_SERVER['HTTP_'.str_replace("-", "_", strtoupper(OERHost::OER_HEADER_SIGNATURE))]); //BASE64_RSA_SIGNATURE
-        $host = OERHost::findOneBySQL("MD5(public_key) = ?", [$public_key_hash]);
+        $host = $this->getHostFromRequest();
         if ($host && !$host->isMe()) {
-            $body = file_get_contents('php://input');
-            if ($host->verifySignature($body, $signature)) {
-                if ($host_hash) {
-                    $review = OERReview::findOneBySQL("
+            if ($host_hash) {
+                $review = OERReview::findOneBySQL("
                         display_class = 'OERREview'
                         AND context_type = 'public'
                         AND metadata LIKE :foreign_review_id
                         AND metadata LIKE :host_id
                     ", [
-                        'foreign_review_id' => "%".$review_id."%",
-                        'host_id' => "%".$host->getId()."%"
-                    ]);
-                } else {
-                    $review = OERReview::find($review_id);
-                }
-                if (!$review) {
-                    throw new Exception("Unknown material.");
-                }
-
-                $data = json_decode($body, true);
-                $user = ExternalUser::findOneBySQL("host_id = ? AND foreign_id = ?", [
-                    $host->getId(),
-                    $data['user']['user_id']
+                    'foreign_review_id' => "%".$review_id."%",
+                    'host_id' => "%".$host->getId()."%"
                 ]);
-                if (!$user) {
-                    $user = new ExternalUser();
-                    $user['host_id'] = $host->getId();
-                    $user['foreign_id'] = $data['user']['user_id'];
-                }
-                $user['contact_type'] = 'oercampus';
-                $user['name'] = $data['user']['name'];
-                $user['avatar_url'] = $data['user']['avatar'];
-                $user['data']['description'] = $data['user']['description'] ?: "";
-                $user->store();
-
-                $comment = new BlubberComment();
-                $comment['user_id'] = $user->getId();
-                $comment['external_contact'] = "1";
-                $comment['thread_id'] = $review->getId();
-                $comment['content'] = $data['data']['comment'];
-                $comment['mkdate'] = $data['data']['mkdate'];
-                $comment['chdate'] = $data['data']['chdate'];
-                $comment->store();
-
-                echo "stored ";
             } else {
-                throw new Exception("Wrong signature, sorry.");
+                $review = OERReview::find($review_id);
             }
+            if (!$review) {
+                throw new Exception("Unknown material.");
+            }
+
+            $data = $this->extractDataForHost($host);
+
+            $user = ExternalUser::findOneBySQL("host_id = ? AND foreign_id = ?", [
+                $host->getId(),
+                $data['user']['user_id']
+            ]);
+            if (!$user) {
+                $user = new ExternalUser();
+                $user['host_id'] = $host->getId();
+                $user['foreign_id'] = $data['user']['user_id'];
+            }
+            $user['contact_type'] = 'oercampus';
+            $user['name'] = $data['user']['name'];
+            $user['avatar_url'] = $data['user']['avatar'];
+            $user['data']['description'] = $data['user']['description'] ?: "";
+            $user->store();
+
+            $comment = new BlubberComment();
+            $comment['user_id'] = $user->getId();
+            $comment['external_contact'] = "1";
+            $comment['thread_id'] = $review->getId();
+            $comment['content'] = $data['data']['comment'];
+            $comment['mkdate'] = $data['data']['mkdate'];
+            $comment['chdate'] = $data['data']['chdate'];
+            $comment->store();
+
+            $this->render_text("stored ");
+        } else {
+            $this->render_text('');
         }
-        $this->render_text("");
     }
 
     private function getHostFromRequest()
