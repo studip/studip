@@ -76,6 +76,9 @@ abstract class Migration
 
         $result = $this->$direction();
 
+        // Reset SORM cache
+        SimpleORMap::expireTableScheme();
+
         return $result;
     }
 

@@ -262,9 +262,6 @@ class Migrator
         $this->announce("{$action} in %ss", round(microtime(true) - $time_start, 3));
         $this->log('');
 
-        // Reset SORM cache
-        SimpleORMap::expireTableScheme();
-
         // Update schema version
         if ($this->isDown($direction)) {
             $this->schema_version->remove($version);
