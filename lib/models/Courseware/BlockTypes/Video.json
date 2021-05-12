@@ -1,0 +1,31 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Video",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "source": {
+            "type": "string"
+        },
+        "file_id": {
+            "type": "string"
+        },
+        "web_url": {
+            "type": "string"
+        },
+        "aspect": {
+            "type": "string"
+        },
+        "autoplay": {
+            "type": "string"
+        },
+        "context_menu": {
+            "type": "string"
+        }
+    },
+    "required": [
+        
+    ],
+    "additionalProperties": false
+}

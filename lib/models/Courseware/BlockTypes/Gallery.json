@@ -1,0 +1,28 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Gallery",
+    "type": "object",
+    "properties": {
+        "folder_id": {
+            "type": "string"
+        },
+        "autoplay": {
+            "type": "string"
+        },
+        "autoplay_timer": {
+            "type": "string"
+        },
+        "nav": {
+            "type": "string"
+        },
+        "height": {
+            "type": "string"
+        },
+        "show_filenames": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "folder_id"
+    ],
+    "additionalProperties": false
+}

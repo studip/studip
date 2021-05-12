@@ -1,0 +1,22 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Typewriter",
+    "type": "object",
+    "properties": {
+        "text": {
+            "type": "string"
+        },
+        "font": {
+            "type": "string"
+        },
+        "size": {
+            "type": "string"
+        },
+        "speed": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "text", "size", "speed", "font"
+    ],
+    "additionalProperties": false
+}

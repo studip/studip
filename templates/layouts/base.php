@@ -77,6 +77,7 @@ $getInstalledLanguages = function () {
                 base_url: "<?= $GLOBALS['ABSOLUTE_URI_STUDIP'] ?>",
                 parameters: <?= json_encode(URLHelper::getLinkParams(), JSON_FORCE_OBJECT) ?>
             },
+            USER_ID: <?= json_encode($GLOBALS['user']->id) ?>,
             jsupdate_enable: <?= json_encode(
                              is_object($GLOBALS['perm']) &&
                              $GLOBALS['perm']->have_perm('autor') &&

@@ -138,6 +138,11 @@ class StudipNavigation extends Navigation
             $this->addSubNavigation('files', new FilesNavigation());
         }
 
+        // contents pages
+        if (is_object($user) && $user->id != 'nobody') {
+            $this->addSubNavigation('contents', new ContentsNavigation());
+        }
+
         // quick links
         $links = new Navigation('Links');
 

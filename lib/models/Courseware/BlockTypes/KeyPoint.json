@@ -1,0 +1,19 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\KeyPoint",
+    "type": "object",
+    "properties": {
+        "text": {
+            "type": "string"
+        },
+        "icon": {
+            "type": "string"
+        },
+        "color": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "text", "icon", "color"
+    ],
+    "additionalProperties": false
+}

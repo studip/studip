@@ -1,0 +1,25 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Embed",
+    "type": "object",
+    "properties": {
+        "url": {
+            "type": "string"
+        },
+        "source": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        },
+        "starttime": {
+            "type": "string"
+        },
+        "endtime": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "url", "source"
+    ],
+    "additionalProperties": false
+}

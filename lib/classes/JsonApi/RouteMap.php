@@ -53,6 +53,8 @@ use JsonApi\Providers\StudipServices;
  * @see \JsonApi\Middlewares\Authentication
  * @see \JsonApi\Contracts\JsonApiPlugin
  * @see http://www.slimframework.com/docs/objects/router.html#how-to-create-routes
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class RouteMap
 {
@@ -143,6 +145,7 @@ class RouteMap
 //        $this->addAuthenticatedConsultationRoutes();
         $this->addAuthenticatedContactsRoutes();
         $this->addAuthenticatedCoursesRoutes();
+        $this->addAuthenticatedCoursewareRoutes();
         $this->addAuthenticatedEventsRoutes();
         $this->addAuthenticatedFeedbackRoutes();
         $this->addAuthenticatedFilesRoutes();
@@ -275,7 +278,6 @@ class RouteMap
         $this->addRelationship('/news/{id}/relationships/ranges', Routes\News\Rel\Ranges::class);
     }
 
-
     private function addAuthenticatedStudyAreasRoutes()
     {
         $this->app->get('/study-areas', Routes\StudyAreas\StudyAreasIndex::class);
@@ -314,6 +316,108 @@ class RouteMap
         $this->app->get('/sem-classes/{id}/sem-types', Routes\Courses\SemTypesBySemClassIndex::class);
         $this->app->get('/sem-types', Routes\Courses\SemTypesIndex::class);
         $this->app->get('/sem-types/{id}', Routes\Courses\SemTypesShow::class);
+    }
+
+    private function addAuthenticatedCoursewareRoutes()
+    {
+        $this->app->get('/{type:courses|users}/{id}/courseware', Routes\Courseware\CoursewareInstancesShow::class);
+        $this->app->patch('/courseware-instances/{id}', Routes\Courseware\CoursewareInstancesUpdate::class);
+        $this->addRelationship(
+            '/courseware-instances/{id}/relationships/bookmarks',
+            Routes\Courseware\Rel\BookmarkedStructuralElements::class
+        );
+        $this->app->get(
+            '/courseware-instances/{id}/bookmarks',
+            Routes\Courseware\BookmarkedStructuralElementsIndex::class
+        );
+
+        $this->app->get('/courseware-blocks/{id}', Routes\Courseware\BlocksShow::class);
+        $this->app->post('/courseware-blocks', Routes\Courseware\BlocksCreate::class);
+        $this->app->patch('/courseware-blocks/{id}', Routes\Courseware\BlocksUpdate::class);
+        $this->app->delete('/courseware-blocks/{id}', Routes\Courseware\BlocksDelete::class);
+
+        $this->addRelationship(
+            '/courseware-blocks/{id}/relationships/edit-blocker',
+            Routes\Courseware\Rel\BlocksEditBlocker::class
+        );
+
+        $this->addRelationship(
+            '/courseware-blocks/{id}/relationships/file-refs',
+            Routes\Courseware\Rel\BlocksFilerefs::class
+        );
+        $this->app->get('/courseware-blocks/{id}/file-refs', Routes\Courseware\BlocksListFiles::class);
+
+        // not a JSON route
+        $this->app->post('/courseware-blocks/{id}/copy', Routes\Courseware\BlocksCopy::class);
+
+        $this->app->get('/courseware-containers/{id}', Routes\Courseware\ContainersShow::class);
+        $this->app->post('/courseware-containers', Routes\Courseware\ContainersCreate::class);
+        $this->app->patch('/courseware-containers/{id}', Routes\Courseware\ContainersUpdate::class);
+        $this->app->delete('/courseware-containers/{id}', Routes\Courseware\ContainersDelete::class);
+        $this->app->get('/courseware-containers/{id}/blocks', Routes\Courseware\BlocksIndex::class);
+        $this->addRelationship(
+            '/courseware-containers/{id}/relationships/blocks',
+            Routes\Courseware\Rel\ContainersBlocks::class
+        );
+        $this->addRelationship(
+            '/courseware-containers/{id}/relationships/edit-blocker',
+            Routes\Courseware\Rel\ContainersEditBlocker::class
+        );
+
+        // not a JSON route
+        $this->app->post('/courseware-containers/{id}/copy', Routes\Courseware\ContainersCopy::class);
+
+        $this->app->get('/courseware-structural-elements/{id}', Routes\Courseware\StructuralElementsShow::class);
+        $this->app->get('/courseware-structural-elements', Routes\Courseware\StructuralElementsIndex::class);
+        $this->app->post('/courseware-structural-elements', Routes\Courseware\StructuralElementsCreate::class);
+        $this->app->patch('/courseware-structural-elements/{id}', Routes\Courseware\StructuralElementsUpdate::class);
+        $this->app->delete('/courseware-structural-elements/{id}', Routes\Courseware\StructuralElementsDelete::class);
+
+        $this->app->get(
+            '/courseware-structural-elements/{id}/children',
+            Routes\Courseware\ChildrenOfStructuralElementsIndex::class
+        );
+        $this->app->get('/courseware-structural-elements/{id}/containers', Routes\Courseware\ContainersIndex::class);
+        $this->addRelationship(
+            '/courseware-structural-elements/{id}/relationships/containers',
+            Routes\Courseware\Rel\StructuralElementsContainers::class
+        );
+        $this->addRelationship(
+            '/courseware-structural-elements/{id}/relationships/children',
+            Routes\Courseware\Rel\StructuralElementsChildren::class
+        );
+        $this->app->get(
+            '/courseware-structural-elements/{id}/descendants',
+            Routes\Courseware\DescendantsOfStructuralElementsIndex::class
+        );
+        $this->addRelationship(
+            '/courseware-structural-elements/{id}/relationships/edit-blocker',
+            Routes\Courseware\Rel\StructuralElementsEditBlocker::class
+        );
+
+        $this->app->post('/courseware-structural-elements/{id}/image', Routes\Courseware\StructuralElementsImageUpload::class);
+        $this->app->delete('/courseware-structural-elements/{id}/image', Routes\Courseware\StructuralElementsImageDelete::class);
+
+        // not a JSON route
+        $this->app->post('/courseware-structural-elements/{id}/copy', Routes\Courseware\StructuralElementsCopy::class);
+
+        $this->app->get('/courseware-blocks/{id}/user-data-field', Routes\Courseware\UserDataFieldOfBlocksShow::class);
+        $this->app->get('/courseware-user-data-fields/{id}', Routes\Courseware\UserDataFieldsShow::class);
+        $this->app->patch('/courseware-user-data-fields/{id}', Routes\Courseware\UserDataFieldsUpdate::class);
+
+        $this->app->get('/courseware-blocks/{id}/user-progress', Routes\Courseware\UserProgressOfBlocksShow::class);
+        $this->app->get('/courseware-user-progresses/{id}', Routes\Courseware\UserProgressesShow::class);
+        $this->app->patch('/courseware-user-progresses/{id}', Routes\Courseware\UserProgressesUpdate::class);
+
+        $this->app->get('/courseware-blocks/{id}/comments', Routes\Courseware\BlockCommentsOfBlocksIndex::class);
+        $this->app->post('/courseware-block-comments', Routes\Courseware\BlockCommentsCreate::class);
+        $this->app->get('/courseware-block-comments/{id}', Routes\Courseware\BlockCommentsShow::class);
+        $this->app->patch('/courseware-block-comments/{id}', Routes\Courseware\BlockCommentsUpdate::class);
+        $this->app->delete('/courseware-block-comments/{id}', Routes\Courseware\BlockCommentsDelete::class);
+
+        $this->app->get('/courseware-blocks/{id}/feedback', Routes\Courseware\BlockFeedbacksOfBlocksIndex::class);
+        $this->app->post('/courseware-block-feedback', Routes\Courseware\BlockFeedbacksCreate::class);
+        $this->app->get('/courseware-block-feedback/{id}', Routes\Courseware\BlockFeedbacksShow::class);
     }
 
     private function addAuthenticatedFilesRoutes()

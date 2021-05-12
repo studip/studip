@@ -1,0 +1,19 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Folder",
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string"
+        },
+        "folder_id": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "type", "folder_id"
+    ],
+    "additionalProperties": false
+}

@@ -1,0 +1,25 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Download",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "info": {
+            "type": "string"
+        },
+        "success": {
+            "type": "string"
+        },
+        "grade": {
+            "type": "string"
+        },
+        "file_id": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "file_id"
+    ],
+    "additionalProperties": false
+}

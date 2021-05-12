@@ -1,0 +1,35 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Headline",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "subtitle": {
+            "type": "string"
+        },
+        "style": {
+            "type": "string"
+        },
+        "height": {
+            "type": "string"
+        },
+        "background_color": {
+            "type": "string"
+        },
+        "background_image_id": {
+            "type": "string"
+        },
+        "background_type": {
+            "type": "string"
+        },
+        "text_color": {
+            "type": "string"
+        },
+        "icon": {
+            "type": "string"
+        }
+    },
+    "required": [],
+    "additionalProperties": false
+}

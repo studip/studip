@@ -1,0 +1,25 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Audio",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "source": {
+            "type": "string"
+        },
+        "file_id": {
+            "type": "string"
+        },
+        "folder_id": {
+            "type": "string"
+        },
+        "web_url": {
+            "type": "string"
+        }
+    },
+    "required": [
+        
+    ],
+    "additionalProperties": false
+}

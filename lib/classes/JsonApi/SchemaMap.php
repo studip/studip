@@ -2,8 +2,14 @@
 
 namespace JsonApi;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class SchemaMap
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     public function __invoke(\Slim\Container $container)
     {
         return [
@@ -45,6 +51,14 @@ class SchemaMap
             \FileRef::class => \JsonApi\Schemas\FileRef::class,
             \FolderType::class => \JsonApi\Schemas\Folder::class,
 
+            \Courseware\Block::class => \JsonApi\Schemas\Courseware\Block::class,
+            \Courseware\BlockComment::class => \JsonApi\Schemas\Courseware\BlockComment::class,
+            \Courseware\BlockFeedback::class => \JsonApi\Schemas\Courseware\BlockFeedback::class,
+            \Courseware\Container::class => \JsonApi\Schemas\Courseware\Container::class,
+            \Courseware\Instance::class => \JsonApi\Schemas\Courseware\Instance::class,
+            \Courseware\StructuralElement::class => \JsonApi\Schemas\Courseware\StructuralElement::class,
+            \Courseware\UserDataField::class => \JsonApi\Schemas\Courseware\UserDataField::class,
+            \Courseware\UserProgress::class => \JsonApi\Schemas\Courseware\UserProgress::class,
         ];
     }
 }

@@ -1,0 +1,15 @@
+{
+    "title": "Payload schema of Courseware\\ContainerType\\AccordionContainer",
+    "type": "object",
+    "properties": {
+        "colspan": {
+            "type": "string"
+        },
+        "sections": {
+            "type": "array"
+        }
+    },
+    "required": [
+    ],
+    "additionalProperties": true
+}

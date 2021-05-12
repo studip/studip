@@ -1,0 +1,26 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Canvas",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "image": {
+            "type": "string"
+        },
+        "file_id": {
+            "type": "string"
+        },
+        "upload_folder_id": {
+            "type": "string"
+        },
+        "show_usersdata": {
+            "type": "string"
+        }
+
+    },
+    "required": [
+        "image"
+    ],
+    "additionalProperties": false
+}

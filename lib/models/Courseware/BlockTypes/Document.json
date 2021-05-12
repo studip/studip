@@ -1,0 +1,22 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Document",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "downloadable": {
+            "type": "string"
+        },
+        "file_id": {
+            "type": "string"
+        },
+        "doc_type": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "file_id"
+    ],
+    "additionalProperties": false
+}

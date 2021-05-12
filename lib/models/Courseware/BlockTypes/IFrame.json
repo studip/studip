@@ -1,0 +1,39 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\IFrame",
+    "type": "object",
+    "properties": {
+        "url": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        },
+        "height": {
+            "type": "string"
+        },
+        "submit_user_id": {
+            "type": "string"
+        },
+        "submit_param": {
+            "type": "string"
+        },
+        "salt": {
+            "type": "string"
+        },
+        "cc_info": {
+            "type": "string"
+        },
+        "cc_work": {
+            "type": "string"
+        },
+        "cc_author": {
+            "type": "string"
+        },
+        "cc_base": {
+            "type": "string"
+        }
+    },
+    "required": [
+    ],
+    "additionalProperties": true
+}

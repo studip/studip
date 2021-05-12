@@ -17,7 +17,7 @@ class Admin_SemClassesController extends AuthenticatedController
             throw new AccessDeniedException();
         }
         PageLayout::setHelpKeyword("Admins.SemClasses");
-        PageLayout::setTitle("Veranstaltungskategorien");
+        PageLayout::setTitle(_('Veranstaltungskategorien'));
     }
 
     public function overview_action()

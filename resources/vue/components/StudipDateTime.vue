@@ -1,5 +1,5 @@
 <template>
-    <time :datetime="datetime" v-if="timestamp != 0" :title="title">
+    <time :datetime="datetime" v-if="timestamp !== 0" :title="title">
         {{ formatted_date() }}
     </time>
 </template>

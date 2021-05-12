@@ -1,0 +1,22 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Link",
+    "type": "object",
+    "properties": {
+        "type": {
+            "type": "string"
+        },
+        "target": {
+            "type": "string"
+        },
+        "url": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        }
+    },
+    "required": [
+        
+    ],
+    "additionalProperties": false
+}

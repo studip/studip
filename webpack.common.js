@@ -136,7 +136,12 @@ module.exports = {
             'jquery-ui/widgets/mouse': 'jquery-ui/ui/widgets/mouse',
             'jquery-ui/widgets/draggable': 'jquery-ui/ui/widgets/draggable',
             'jquery-ui/widgets/droppable': 'jquery-ui/ui/widgets/droppable',
-            'jquery-ui/widgets/resizable': 'jquery-ui/ui/widgets/resizable'
+            'jquery-ui/widgets/resizable': 'jquery-ui/ui/widgets/resizable',
+            '@': path.resolve(__dirname, 'resources')
+        },
+        fallback: {
+            'stream': require.resolve("stream-browserify"),
+            'buffer': require.resolve("buffer/")
         }
     }
 };

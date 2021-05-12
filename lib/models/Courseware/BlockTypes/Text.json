@@ -1,0 +1,13 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Text",
+    "type": "object",
+    "properties": {
+        "text": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "text"
+    ],
+    "additionalProperties": false
+}

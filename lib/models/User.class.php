@@ -173,6 +173,11 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             'order_by'          => 'ORDER BY name',
         ];
 
+        $config['has_one']['courseware'] = [
+            'class_name' => \Courseware\StructuralElement::class,
+            'assoc_func' => 'getCoursewareUser'
+        ];
+
         $config['additional_fields']['config']['get'] = function ($user) {
             return UserConfig::get($user->id);
         };

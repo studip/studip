@@ -1,0 +1,16 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\TableOfContents",
+    "type": "object",
+    "properties": {
+        "style": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        }
+    },
+    "required": [
+        
+    ],
+    "additionalProperties": false
+}

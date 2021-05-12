@@ -44,6 +44,7 @@
         "ext-json": "*",
         "ext-pcre": "*",
         "ext-pdo": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "opis/json-schema": "^1.0"
     }
 }

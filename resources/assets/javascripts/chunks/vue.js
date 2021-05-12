@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import Router from "vue-router";
 import eventBus from '../lib/event-bus.js';
 import GetTextPlugin from 'vue-gettext';
 import { getLocale, getVueConfig } from '../lib/gettext.js';
@@ -23,13 +24,15 @@ eventBus.on('studip:set-locale', (locale) => {
     Vue.config.language = locale;
 })
 
-Vue.use(PortalVue);
-
 registerGlobalComponents();
 registerGlobalDirectives();
 
 Vue.use(Vuex);
 const store = new Vuex.Store({});
+
+Vue.use(Router);
+
+Vue.use(PortalVue);
 
 function createApp(options, ...args) {
     return new Vue({ store, ...options }, ...args);

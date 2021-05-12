@@ -213,6 +213,11 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
             'order_by'          => 'GROUP BY seminar_id ORDER BY VeranstaltungsNummer, Name'
         ];
 
+        $config['has_one']['courseware'] = [
+            'class_name' => \Courseware\StructuralElement::class,
+            'assoc_func' => 'getCoursewareCourse',
+        ];
+
         $config['default_values']['lesezugriff'] = 1;
         $config['default_values']['schreibzugriff'] = 1;
         $config['default_values']['duration_time'] = 0;
@@ -247,6 +252,10 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         $config['i18n_fields']['lernorga'] = true;
         $config['i18n_fields']['leistungsnachweis'] = true;
         $config['i18n_fields']['ort'] = true;
+
+        $config['additional_fields']['config']['get'] = function ($course) {
+            return CourseConfig::get($course->id);
+        };
 
         $config['registered_callbacks']['before_update'][] = 'logStore';
         $config['registered_callbacks']['after_delete'][] = function ($course) {

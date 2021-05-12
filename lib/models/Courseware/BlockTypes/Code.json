@@ -1,0 +1,16 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Code",
+    "type": "object",
+    "properties": {
+        "content": {
+            "type": "string"
+        },
+        "lang": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "content", "lang"
+    ],
+    "additionalProperties": false
+}

@@ -418,10 +418,12 @@ class FilesController extends AuthenticatedController
             $uploaded_unlic_file_refs = FileRef::findUploadedFiles($GLOBALS['user']->id, $this->begin, $this->end, '', true, 5, 0);
             $this->uploaded_unlic_files = [];
             foreach ($uploaded_unlic_file_refs as $file_ref) {
-                $this->uploaded_unlic_files[] = FilesystemVueDataManager::getFileVueData(
-                    $file_ref->getFileType(),
-                    $this->topFolder
-                );
+                if ($file_ref->getFileType()->isVisible($GLOBALS['user']->id)) {
+                    $this->uploaded_unlic_files[] = FilesystemVueDataManager::getFileVueData(
+                        $file_ref->getFileType(),
+                        $this->topFolder
+                    );
+                }
             }
             if (!$this->all_files_c) {
                 $this->no_files = true;

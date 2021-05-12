@@ -197,7 +197,7 @@ trait RoutesHelperTrait
             'content_terms_of_use_id' => 0,
         ];
 
-        $file = StandardFile::create($data);
+        $file = \StandardFile::create($data);
 
         if ($error = $folder->validateUpload($file,$user->id)) {
             throw new BadRequestException($error);

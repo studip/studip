@@ -67,8 +67,11 @@
         $color: 'yellow';
     }
 
-    @if unitless($size) {
-        $size: $size * 1px;
+    @if $size {
+        @if unitless($size) {
+            $size: $size * 1px;
+        }
+        background-size: $size;
     }
 
     $svg: "#{$icon-path}/#{$color}/#{$icon}.svg";

@@ -1,0 +1,19 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Chart",
+    "type": "object",
+    "properties": {
+        "content": {
+            "type": "array"
+        },
+        "label": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string"
+        }
+    },
+    "required": [
+        
+    ],
+    "additionalProperties": false
+}

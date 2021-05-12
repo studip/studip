@@ -46,7 +46,8 @@ class FileRef extends SchemaProvider
 
             'downloads' => (int) $resource['downloads'],
 
-            'filesize' => (int) $resource->file->size
+            'filesize' => (int) $resource->file->size,
+            'mime-type' => $resource->file->mime_type
         ];
 
         $user = $this->getDiContainer()->get('studip-current-user');

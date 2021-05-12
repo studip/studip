@@ -1,0 +1,29 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\BeforeAfter",
+    "type": "object",
+    "properties": {
+        "before_source": {
+            "type": "string"
+        },
+        "before_file_id": {
+            "type": "string"
+        },
+        "before_web_url": {
+            "type": "string"
+        },
+        "after_source": {
+            "type": "string"
+        },
+        "after_file_id": {
+            "type": "string"
+        },
+        "after_web_url": {
+            "type": "string"
+        }
+
+    },
+    "required": [
+        
+    ],
+    "additionalProperties": false
+}

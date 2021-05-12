@@ -1,0 +1,13 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\DialogCards",
+    "type": "object",
+    "properties": {
+        "cards": {
+            "type": "array"
+        }
+    },
+    "required": [
+        "cards"
+    ],
+    "additionalProperties": false
+}

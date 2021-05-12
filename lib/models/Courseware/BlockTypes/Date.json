@@ -1,0 +1,16 @@
+{
+    "title": "Payload schema of Courseware\\BlockType\\Date",
+    "type": "object",
+    "properties": {
+        "timestamp": {
+            "type": "integer"
+        },
+        "style": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "timestamp", "style"
+    ],
+    "additionalProperties": false
+}
