@@ -1243,6 +1243,14 @@ class Resources_RoomRequestController extends AuthenticatedController
         $this->room_underload = [];
         $this->requested_room_fully_available = true;
         $this->room_availability_share = [];
+        $this->selected_rooms = [];
+
+        //Load all previously selected rooms where at least one date has been
+        //assigned to to the list of alternative rooms and place them
+        //at the top of the list.
+        if (Request::isPost()) {
+            $this->selected_rooms = Request::getArray('selected_rooms');
+        }
 
         $selected_room = $this->request_resource;
         $this->visible_dates = 0;
@@ -1267,13 +1275,24 @@ class Resources_RoomRequestController extends AuthenticatedController
                             break;
                         }
                     }
+                    if ($metadate_available && !$this->selected_rooms) {
+                        $this->selected_rooms['SeminarCycleDate_' . $metadate_id] = $selected_room->id;
+                    }
                     $this->room_availability[$selected_room->id][$metadate_id] = [$metadate_available];
                 } else {
                     $this->visible_dates += count($data['intervals']);
-                    $metadate_availability = $this->getRoomAvailability(
-                        $selected_room,
-                        $data['intervals']
-                    );
+                    $metadate_availability = [];
+                    foreach ($data['intervals'] as $interval) {
+                        $interval_available = $this->getRoomAvailability(
+                            $selected_room,
+                            [$interval]
+                        );
+                        if ($interval_available[0]) {
+                            $range_index = $interval['range'] . '_' . $interval['range_id'];
+                            $this->selected_rooms[$range_index] = $selected_room->id;
+                        }
+                        $metadate_availability[] = $interval_available[0];
+                    }
                     $this->room_availability[$selected_room->id][$metadate_id] = $metadate_availability;
                 }
             }
@@ -1334,13 +1353,6 @@ class Resources_RoomRequestController extends AuthenticatedController
         $room_search_type->setAdditionalDisplayProperties(['seats']);
         $this->room_search = new QuickSearch('searched_room_id', $room_search_type);
         $this->alternative_rooms = [];
-
-        //Load all previously selected rooms where at least one date has been
-        //assigned to to the list of alternative rooms and place them
-        //at the top of the list.
-        if (Request::isPost()) {
-            $this->selected_rooms = Request::getArray('selected_rooms');
-        }
 
         $previously_selected_room_ids = [];
         if ($this->selected_rooms) {
