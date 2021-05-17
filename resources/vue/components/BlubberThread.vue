@@ -17,7 +17,7 @@
         </div>
         <div class="scrollable_area" v-scroll>
             <div class="all_content">
-                <div class="thread_posting" v-if="thread_data.thread_posting.content.trim()">
+                <div class="thread_posting" v-if="hasContent(thread_data.thread_posting.content)">
                     <div class="contextinfo">
                         <studip-date-time :timestamp="thread_data.thread_posting.mkdate" :relative="true"></studip-date-time>
                         <a :href="getUserProfileURL(thread_data.thread_posting.user_id, thread_data.thread_posting.user_username)">{{ thread_data.thread_posting.user_name }}</a>
@@ -27,7 +27,7 @@
                     <div class="link_to_comments"></div>
                 </div>
 
-                <div v-if="!thread_data.thread_posting.content.trim() && !thread_data.comments.length" class="empty_blubber_background">
+                <div v-if="!hasContent(thread_data.thread_posting.content) && !thread_data.comments.length" class="empty_blubber_background">
                     <div v-translate>Starte die Konversation jetzt!</div>
                 </div>
 
@@ -319,7 +319,7 @@
                         content: content
                     },
                 }).done((output) => {
-                    if (output.content.trim()) {
+                    if (this.hasContent(output.content)) {
                         thread.thread_data.comments.forEach((comment) => {
                             if (comment.comment_id === comment_id) {
                                 comment.html = output.html;
@@ -356,6 +356,9 @@
                 ).done(state => {
                     this.thread_data.followed = state;
                 });
+            },
+            hasContent (input) {
+                return input && input.trim().length > 0;
             }
         },
         directives: {
@@ -460,7 +463,7 @@
                 return this.thread_data.comments.sort((a, b) => a.mkdate - b.mkdate);
             },
             writerTextareaPlaceholder() {
-                return this.thread_data.thread_posting.content.trim()
+                return this.hasContent(this.thread_data.thread_posting.content)
                     ? this.$gettext('Kommentar schreiben. Enter zum Abschicken.')
                     : this.$gettext('Nachricht schreiben. Enter zum Abschicken.');
             }
