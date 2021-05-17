@@ -4,7 +4,7 @@
 # Lifter003: TODO
 # Lifter010: TODO
 
-DEFINE (OPERATION_COPY, "copy");
+DEFINE ("OPERATION_COPY", "copy");
 
 /**
  * class to handle ILIAS 4 access controls

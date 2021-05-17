@@ -537,7 +537,7 @@ class Admin_CoursesController extends AuthenticatedController
                 }
 
                 if (in_array('last_activity', $filter_config)) {
-                    $row['last_activity'] = $course['lastActivity'];
+                    $row['last_activity'] = strftime('%x', $course['last_activity']);
                 }
 
                 if (in_array('semester', $filter_config)) {
