@@ -342,10 +342,9 @@
         .visible-sidebar {
             right: 0 !important;
             transition: right 300ms;
-
-            #layout-sidebar& #sidebar-shadow-toggle {
-                display: initial;
-            }
+        }
+        #layout-sidebar.visible-sidebar #sidebar-shadow-toggle {
+            display: initial;
         }
 
         #layout-sidebar {
