@@ -1262,6 +1262,8 @@ class SimpleORMap implements ArrayAccess, Countable, IteratorAggregate
         foreach ($fields as $field) {
             if ($this->content[$field] instanceof I18NString) {
                 $ret[$field] = $this->content[$field]->original();
+            } elseif ($this->content[$field] === null) {
+                $ret[$field] = null;
             } else {
                 $ret[$field] = (string)$this->content[$field];
             }
