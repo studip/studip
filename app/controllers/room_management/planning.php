@@ -1195,7 +1195,7 @@ class RoomManagement_PlanningController extends AuthenticatedController
         $booking_intervals = ResourceBookingInterval::findBySql(
             "INNER JOIN resource_bookings rb
             ON resource_booking_intervals.booking_id = rb.id
-            WHERE (rb.internal_comment <> '' OR rb.internal_comment IS NOT NULL)
+            WHERE rb.internal_comment <> ''
             AND rb.resource_id IN ( :room_ids )
             AND (
                 resource_booking_intervals.begin BETWEEN :begin AND :end
