@@ -354,7 +354,7 @@ export default {
         selectedIds (current) {
             const activated = current.length > 0;
             this.$nextTick(() => { // needs to be wrapped since we check the dom
-                this.$refs.buttons.querySelectorAll('.button').forEach(element => {
+                this.$refs.buttons.querySelectorAll('.multibuttons .button').forEach(element => {
                     let condition = element.dataset.activatesCondition;
                     if (!condition || !activated) {
                         element.disabled = !activated;
