@@ -9,13 +9,22 @@ const Sidebar = {
     disableSticky() {
         this.stickyEnabled = false;
         this.setSticky(false);
-    }
-};
+    },
+    open () {
+        this.toggle(true);
+    },
+    close () {
+        this.toggle(false);
+    },
+    toggle (visible = null) {
+        visible = visible ?? !$('#layout-sidebar').hasClass('visible-sidebar');
 
-Sidebar.open = function() {
-    $('#responsive-toggle').prop('checked', false);
-    $('#responsive-navigation').removeClass('visible');
-    $('#layout-sidebar').toggleClass('visible-sidebar');
+        // Hide navigation
+        $('#responsive-toggle').prop('checked', false);
+        $('#responsive-navigation').removeClass('visible');
+
+        $('#layout-sidebar').toggleClass('visible-sidebar', visible);
+    }
 };
 
 // This function inits the sticky sidebar by using the StickyKit lib

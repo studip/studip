@@ -72,11 +72,11 @@ const Responsive = {
 
         if ($('#layout-sidebar > section').length > 0) {
             $('<li id="sidebar-menu">')
-                .on('click', Sidebar.open)
+                .on('click', () => Sidebar.open())
                 .appendTo('#barBottomright > ul');
 
             $('<label id="sidebar-shadow-toggle">')
-                .on('click', Sidebar.open)
+                .on('click', () => Sidebar.open())
                 .prependTo('#layout-sidebar');
 
             $('#responsive-toggle').on('change', function() {

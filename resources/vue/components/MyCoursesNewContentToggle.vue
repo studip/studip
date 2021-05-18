@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import Sidebar from "../../assets/javascripts/lib/sidebar.js";
 import MyCoursesMixin from '../mixins/MyCoursesMixin.js';
 
 export default {
@@ -24,6 +25,8 @@ export default {
             this.updateConfigValue({
                 key: 'navigation_show_only_new',
                 value: !this.getConfig('navigation_show_only_new'),
+            }).then(() => {
+                Sidebar.close();
             });
         },
     },

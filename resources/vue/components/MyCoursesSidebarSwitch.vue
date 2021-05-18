@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import Sidebar from "../../assets/javascripts/lib/sidebar.js";
 import MyCoursesMixin from '../mixins/MyCoursesMixin.js';
 
 export default {
@@ -29,11 +30,19 @@ export default {
     },
     methods: {
         setTableView () {
-            this.updateConfigValue({ key: 'display_type', value: 'tables' });
+            this.setView('tables');
         },
         setTilesView () {
-            this.updateConfigValue({ key: 'display_type', value: 'tiles' });
+            this.setView('tiles');
         },
+        setView (view) {
+            this.updateConfigValue({
+                key: 'display_type',
+                value: view
+            }).then(() => {
+                Sidebar.close();
+            });
+        }
     },
 };
 </script>
