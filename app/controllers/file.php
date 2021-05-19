@@ -333,9 +333,9 @@ class FileController extends AuthenticatedController
             //Calculate the files and the folder size:
             $this->folder_size = 0;
             $this->folder_file_amount = 0;
-            foreach ($this->folder->getFiles() as $file_ref) {
+            foreach ($this->folder->getFiles() as $file) {
                 $this->folder_file_amount++;
-                $this->folder_size += $file_ref['size'];
+                $this->folder_size += $file->getSize();
             }
             PageLayout::setTitle($this->folder->name);
             $this->render_action('folder_details');
