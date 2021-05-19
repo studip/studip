@@ -95,6 +95,7 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
         $config['additional_fields']['room_name'] = ['resource', 'name'];
 
         $config['registered_callbacks']['after_store'][] = 'updateIntervals';
+        $config['registered_callbacks']['after_delete'][] = 'sendDeleteNotification';
 
         //In regard to TIC 6460:
         //As long as TIC 6460 is not implemented, we must add the validate
@@ -1788,4 +1789,54 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
     }
 
+
+    /**
+     * Sends a notification that the booking has been deleted
+     * to the user that created the booking.
+     */
+    public function sendDeleteNotification()
+    {
+        if ($this->booking_type != '0') {
+            //We only handle real bookings in this method.
+            return;
+        }
+
+        if ($this->end < time()) {
+            //Bookings that lie in the past can be deleted without
+            //sending notifications.
+            return;
+        }
+
+        $booking_resource = Resource::find($this->resource_id);
+        $booking_user = User::find($this->booking_user_id);
+        if (!$booking_resource || !$booking_user) {
+            //Nothing we can do here.
+            return;
+        }
+
+        $template_factory = new Flexi_TemplateFactory(
+            $GLOBALS['STUDIP_BASE_PATH'] . '/locale/'
+        );
+        setTempLanguage($booking_user->id);
+        $lang_path = getUserLanguagePath($booking_user->id);
+
+        $template = $template_factory->open(
+            $lang_path . '/LC_MAILS/delete_booking_notification.php'
+        );
+        $template->set_attribute('resource', $booking_resource->getDerivedClassInstance());
+        $template->set_attribute('begin', $this->begin);
+        $template->set_attribute('end', $this->end);
+        $template->set_attribute('deleting_user', User::findCurrent());
+
+        $mail_text = $template->render();
+
+        Message::send(
+            '____%system%____',
+            [$booking_user->username],
+            _('Ihre Buchung wurde gelöscht'),
+            $mail_text
+        );
+
+        restoreLanguage();
+    }
 }
