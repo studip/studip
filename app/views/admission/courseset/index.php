@@ -63,7 +63,7 @@ if ($coursesets) {
                     <a href="<?= $controller->link_for('admission/courseset/configure/'.$courseset->getId()); ?>">
                             <?= Icon::create('edit')->asImg(['title' => _('Anmeldeset bearbeiten')]) ?>
                         </a>
-                        <a href="<?= $controller->link_for('admission/courseset/delete/'. $courseset->getId()), ['really' => 1] ?>"
+                        <a href="<?= $controller->link_for('admission/courseset/delete/'. $courseset->getId(), ['really' => 1]) ?>"
                            data-confirm="<?= sprintf(_('Soll das Anmeldeset %s wirklich gelöscht werden?'), htmlReady($courseset->getName())) ?>">
                             <?= Icon::create('trash')->asImg(['title' => _('Anmeldeset löschen')]) ?>
                         </a>
