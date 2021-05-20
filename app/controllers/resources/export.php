@@ -284,7 +284,7 @@ class Resources_ExportController extends AuthenticatedController
             $resources          = array_merge($resources, $clipboard_rooms);
         }
 
-        $resources = array_merge($resources, $this->selected_rooms);
+        $resources = array_merge($resources, $this->selected_rooms, $this->selected_resources);
 
         //Collect all bookings in the selected time range and export them.
 
