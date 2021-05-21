@@ -110,7 +110,7 @@
                 <?= sprintf(_("%s in der Kategorie %s"), $course->getSemType()->offsetGet('name'), $course->getSemClass()->offsetGet('name')) ?>
             </td>
         </tr>
-    <? if ($course->parent_course) : ?>
+    <? if ($course->parent) : ?>
         <tr>
             <td><strong><?= _('Hauptveranstaltung') ?></strong></td>
             <td>
@@ -120,7 +120,7 @@
                    title="<?= htmlReady($course->parent->getFullname()) ?>">
                     <?= htmlReady($course->parent->getFullname()) ?>
                 </a>
-            <? if ($siblings) : ?>
+            <? if (count($siblings) > 0) : ?>
                 <br><br>
                 <section>
                     <?= _('Ebenfalls zu dieser Hauptveranstaltung gehören:') ?>

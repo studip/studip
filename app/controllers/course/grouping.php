@@ -99,13 +99,13 @@ class Course_GroupingController extends AuthenticatedController
         // Prepare context for MyCoursesSearch...
         if ($GLOBALS['perm']->have_perm('root')) {
             $parameters = [
-                'semtypes'  => array_merge(studygroup_sem_types(), SemType::getNonGroupingSemTypes()),
+                'semtypes'  => array_merge(studygroup_sem_types(), SemType::getGroupingSemTypes()),
                 'exclude'   => $excluded_course_ids,
                 'semesters' => [$this->course->start_semester->id],
             ];
         } else if ($GLOBALS['perm']->have_perm('admin')) {
             $parameters = [
-                'semtypes'   => array_merge(studygroup_sem_types(), SemType::getNonGroupingSemTypes()),
+                'semtypes'   => array_merge(studygroup_sem_types(), SemType::getGroupingSemTypes()),
                 'institutes' => array_map(function ($i) {
                     return $i['Institut_id'];
                 }, Institute::getMyInstitutes()),
@@ -116,7 +116,7 @@ class Course_GroupingController extends AuthenticatedController
         } else {
             $parameters = [
                 'userid'    => $GLOBALS['user']->id,
-                'semtypes'  => array_merge(studygroup_sem_types(), SemType::getNonGroupingSemTypes()),
+                'semtypes'  => array_merge(studygroup_sem_types(), SemType::getGroupingSemTypes()),
                 'exclude'   => $excluded_course_ids,
                 'semesters' => [$this->course->start_semester->id]
             ];

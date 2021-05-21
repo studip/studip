@@ -261,6 +261,11 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         $config['registered_callbacks']['after_delete'][] = function ($course) {
             CourseAvatar::getAvatar($course->id)->reset();
             FeedbackElement::deleteBySQL('course_id = ?', [$course->id]);
+            // Remove subcourse relations, leaving subcourses intact.
+            DBManager::get()->execute(
+                "UPDATE `seminare` SET `parent_course` = NULL WHERE `parent_course` = :course",
+                ['course' => $course->id]
+            );
         };
 
         parent::configure($config);
