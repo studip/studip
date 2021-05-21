@@ -166,7 +166,7 @@ class MyCoursesSearch extends StandardSearch
             // non-admins search all their administrable courses.
             default:
                 $query = "SELECT DISTINCT s.`Seminar_id`, CONCAT_WS(' ', s.`VeranstaltungsNummer`, s.`Name`, " . $semester_text . "),
-                        s.`VeranstaltungsNummer` AS num, s.`Name`
+                        s.`VeranstaltungsNummer` AS num, s.`Name`, MAX(semester_data.beginn) as beginn
                     FROM `seminare` s
                         JOIN `seminar_user` su ON (s.`Seminar_id`=su.`Seminar_id`)
                         LEFT JOIN semester_courses ON (s.Seminar_id = semester_courses.course_id)
@@ -181,7 +181,7 @@ class MyCoursesSearch extends StandardSearch
                 if (Config::get()->DEPUTIES_ENABLE) {
                     $query .= " UNION
                         SELECT DISTINCT s.`Seminar_id`, CONCAT_WS(' ', s.`VeranstaltungsNummer`, ' ', s.`Name`, " . $semester_text . "),
-                            s.`VeranstaltungsNummer` AS num, s.`Name`
+                            s.`VeranstaltungsNummer` AS num, s.`Name`, MAX(semester_data.beginn) AS beginn
                         FROM `seminare` s
                             JOIN `deputies` d ON (s.`Seminar_id` = d.`range_id`)
                             LEFT JOIN semester_courses ON (s.Seminar_id = semester_courses.course_id)
@@ -195,12 +195,13 @@ class MyCoursesSearch extends StandardSearch
                 if ($this->additional_sql_conditions) {
                     $query .= ' AND ' . $this->additional_sql_conditions . ' ';
                 }
-                $query .= " GROUP BY s.Seminar_id ";
+                $query .= " GROUP BY s.Seminar_id";
                 if ($semnumber) {
-                    $query .= " ORDER BY MAX(semester_data.beginn) DESC, num, `Name`";
+                    $query .= " ORDER BY beginn DESC, num, `Name`";
                 } else {
-                    $query .= " ORDER BY MAX(semester_data.beginn) DESC, `Name`";
+                    $query .= " ORDER BY beginn DESC, `Name`";
                 }
+
                 return $query;
         }
     }
