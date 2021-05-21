@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-20 15:01+0200\n"
+"POT-Creation-Date: 2021-05-21 09:46+0200\n"
 "PO-Revision-Date: 2021-01-26 11:15+0000\n"
 "Last-Translator: Jan-Hendrik Willms <tleilax@gmail.com>, 2021\n"
 "Language-Team: English (https://www.transifex.com/studip/teams/36183/en/)\n"
@@ -41292,8 +41292,8 @@ msgstr ""
 
 #: ../app/views/oer/embed/_link.php:3
 #, fuzzy, php-format
-msgid "Zum %s"
-msgstr "Room %s"
+msgid "Zum %s wechseln"
+msgstr "Promote to %s"
 
 #: ../app/views/shared/fachbereich_filter.php:1
 #: ../app/views/shared/filter.php:111
@@ -54858,6 +54858,10 @@ msgid ""
 msgstr ""
 "Do you really want to delete the assignment of the partial of course of "
 "study \"%s\" to the course of study \"%s\"?"
+
+#, fuzzy
+#~ msgid "Zum %s"
+#~ msgstr "Room %s"
 
 #~ msgid ""
 #~ "%d Änderungen an der Zuweisung des Ansprechpartners wurden gespeichert."
