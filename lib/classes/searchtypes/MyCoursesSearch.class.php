@@ -112,7 +112,7 @@ class MyCoursesSearch extends StandardSearch
         $semester_text = "CONCAT(
             '(',
             IF(semester_data.semester_id IS NULL, '" . _('unbegrenzt') . "',
-            IF(semester_data.semester_id IS NOT NULL, GROUP_CONCAT(', ', semester_data.`name`),
+                GROUP_CONCAT(semester_data.`name` SEPARATOR ', ')),
             ')'
         )";
 
