@@ -624,7 +624,23 @@ class Course_TimesroomsController extends AuthenticatedController
         $this->teachers = $this->course->getMembers('dozent');
         $this->gruppen  = Statusgruppen::findBySeminar_id($this->course->id);
         $checked_course_dates = CourseDate::findMany($_SESSION['_checked_dates']);
-        $this->setAvailableRooms($checked_course_dates);
+        $this->only_bookable_rooms = Request::submitted('only_bookable_rooms');
+
+        $date_booking_ids = [];
+        if ($this->only_bookable_rooms) {
+            $date_ids = [];
+            foreach ($checked_course_dates as $date) {
+                $date_ids[] = $date->termin_id;
+            }
+            $db = DBManager::get();
+            $stmt = $db->prepare(
+                "SELECT DISTINCT `id` FROM `resource_bookings`
+                WHERE `range_id` IN ( :date_ids )"
+            );
+            $stmt->execute(['date_ids' => $date_ids]);
+            $date_booking_ids = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        }
+        $this->setAvailableRooms($checked_course_dates, $date_booking_ids, $this->only_bookable_rooms);
 
         /*
          * Extract a single date for start and end time
@@ -720,6 +736,11 @@ class Course_TimesroomsController extends AuthenticatedController
     public function saveStack_action($cycle_id = '')
     {
         CSRFProtection::verifyUnsafeRequest();
+        if (Request::submitted('only_bookable_rooms')) {
+            //Redirect to the editStack method and do not save anything.
+            $this->editStack($cycle_id);
+            return;
+        }
         switch (Request::get('method')) {
             case 'edit':
                 $this->saveEditedStack();
@@ -1518,7 +1539,9 @@ class Course_TimesroomsController extends AuthenticatedController
                         foreach ($rooms as $room) {
                             foreach ($all_time_intervals as $interval) {
                                 $available = $room->isAvailable($interval['begin'], $interval['end'], $date_booking_ids);
-                                if (!$available) {
+                                $booking_rights = $room->userHasBookingRights($current_user, $interval['begin'], $interval['end']);
+
+                                if (!$available || !$booking_rights) {
                                     continue 2;
                                 }
                             }

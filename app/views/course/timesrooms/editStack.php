@@ -25,6 +25,21 @@
                             <? endforeach ?>
                         </select>
                     <? endif ?>
+                    <? if (!$only_bookable_rooms) : ?>
+                        <?
+                        $input_attr = [
+                            'class' => 'text-bottom',
+                            'style' => 'margin-left: 0.2em; margin-top: 0.6em;',
+                            'name' => 'only_bookable_rooms',
+                            'value' => '1',
+                            'title' => _('Nur buchbare Räume anzeigen')
+                        ];
+                        if (Request::isDialog()) {
+                            $input_attr['data-dialog'] = 'size=big';
+                        }
+                        ?>
+                        <?= Icon::create('room-request')->asInput(20, $input_attr) ?>
+                    <? endif ?>
                     <div>
                         <?= _('Rüstzeit (in Minuten)') ?>
                         <input type="number" name="preparation_time"
