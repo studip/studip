@@ -1457,12 +1457,19 @@ class Course_TimesroomsController extends AuthenticatedController
                 $current_user,
                 'admin'
             );
-            if (empty($dates)) {
-                $begin = $end = null;
-            } else {
+            $all_time_intervals = [];
+            if (!empty($dates)) {
                 $dates = SimpleCollection::createFromArray($dates);
-                $begin = min($dates->pluck('date'));
-                $end = max($dates->pluck('end_time'));
+                foreach ($dates as $date) {
+                    $begin = new DateTime();
+                    $begin->setTimestamp($date->date);
+                    $end = new DateTime();
+                    $end->setTimestamp($date->end_time);
+                    $all_time_intervals[] = [
+                        'begin' => $begin,
+                        'end' => $end
+                    ];
+                }
             }
             $this->selectable_rooms = [];
             $rooms_with_booking_permissions = 0;
@@ -1474,9 +1481,15 @@ class Course_TimesroomsController extends AuthenticatedController
                     if ($room->userHasBookingRights($current_user, $begin, $end)) {
                         $rooms_with_booking_permissions++;
                         if ($only_bookable_rooms) {
-                            if ($room->isAvailable($begin, $end, $date_booking_ids)) {
-                                $this->selectable_rooms[] = $room;
+                            foreach ($all_time_intervals as $interval) {
+                                $available = $room->isAvailable($interval['begin'], $interval['end'], $date_booking_ids);
+                                if (!$available) {
+                                    continue 2;
+                                }
                             }
+                            //At this point, the room is available on all
+                            //time intervals.
+                            $this->selectable_rooms[] = $room;
                         } else {
                             $this->selectable_rooms[] = $room;
                         }
@@ -1501,15 +1514,15 @@ class Course_TimesroomsController extends AuthenticatedController
             } else {
                 if (ResourceManager::userHasGlobalPermission($current_user, 'admin')) {
                     if ($only_bookable_rooms) {
-                        $begin_dt = new DateTime();
-                        $begin_dt->setTimestamp($begin);
-                        $end_dt = new DateTime();
-                        $end_dt->setTimestamp($end);
                         $rooms = Room::findAll();
                         foreach ($rooms as $room) {
-                            if ($room->isAvailable($begin_dt, $end_dt, $date_booking_ids)) {
-                                $this->selectable_rooms[] = $room;
+                            foreach ($all_time_intervals as $interval) {
+                                $available = $room->isAvailable($interval['begin'], $interval['end'], $date_booking_ids);
+                                if (!$available) {
+                                    continue 2;
+                                }
                             }
+                            $this->selectable_rooms[] = $room;
                         }
                     } else {
                         $this->selectable_rooms = Room::findAll();
