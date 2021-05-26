@@ -101,6 +101,11 @@ a.wiki-restricted {
     max-width: 60%;
 }
 
+.wiki-index {
+    padding-left: 12px;
+    overflow: auto;
+}
+
 $authors: (
      0: $dark-gray-color-20,
      1: $red-20,

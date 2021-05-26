@@ -1,5 +1,5 @@
 <h1>
-    <?= htmlReady($keyword) ?>
+    <?= $keyword === 'WikiWikiWeb' ? _("Wiki-Startseite") : htmlReady($keyword) ?>
 </h1>
 
 <aside class="wiki-info-aside">
@@ -9,11 +9,6 @@
         </caption>
 
         <tbody>
-            <? $last_page = WikiPage::findLatestPage($this->range_id, $this->keyword);
-               $last_user = User::find($last_page['user_id']);
-               $first_page = getWikiPage($this->keyword, 1);
-               $first_user = User::find($first_page['user_id']);
-            ?>
             <tr>
                 <td><?= _('Version') ?></td>
                 <td><?= $last_page['version'] ?></td>
@@ -50,7 +45,32 @@
                     <td>
                         <a href="<?= URLHelper::getLink('wiki.php', ['keyword' => $backlink]) ?>">
                             <?= Icon::create('link-extern') ?>
-                            <?= htmlReady($backlink) ?>
+                            <?= $backlink === 'WikiWikiWeb' ? _('Wiki-Startseite') : htmlReady($backlink) ?>
+                        </a>
+                    </td>
+                </tr>
+            <? endforeach ?>
+        <? else: ?>
+            <tr>
+                <td><?= _('keine') ?></td>
+            </tr>
+        <? endif ?>
+    </tbody>
+</table>
+
+<table class="default nohover wiki-backlinks">
+    <caption>
+        <?=_('Untergeordnete Seiten') ?>
+    </caption>
+
+    <tbody>
+        <? if ($descendants): ?>
+            <? foreach ($descendants as $descendant) : ?>
+                <tr>
+                    <td>
+                    <a href="<?= URLHelper::getLink('wiki.php', ['keyword' => $descendant->keyword]) ?>">
+                            <?= Icon::create('wiki') ?>
+                            <?= htmlReady($descendant->keyword) ?>
                         </a>
                     </td>
                 </tr>

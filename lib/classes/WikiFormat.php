@@ -152,6 +152,7 @@ class WikiFormat extends StudipFormat
             return sprintf('<a href="%s">%s(?)</a>',
                 URLHelper::getLink('wiki.php', [
                     'keyword' => $keyword,
+                    'origin' => Request::get('keyword') ?: 'WikiWikiWeb',
                     'view' => 'editnew'
                 ]),
                 $display_page

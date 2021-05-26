@@ -37,7 +37,6 @@ function getWikiPage($keyword, $version)
     return $page;
 }
 
-
 /**
 * Write a new/edited wiki page to database
 *
@@ -48,7 +47,7 @@ function getWikiPage($keyword, $version)
 * @param    string  range_id    Internal id of seminar/einrichtung
 *
 **/
-function submitWikiPage($keyword, $version, $body, $user_id, $range_id) {
+function submitWikiPage($keyword, $version, $body, $user_id, $range_id, $ancestor) {
 
     global $perm;
     releasePageLocks($keyword, $user_id); // kill lock that was set when starting to edit
@@ -72,6 +71,11 @@ function submitWikiPage($keyword, $version, $body, $user_id, $range_id) {
             if ($wp->isEditableBy($GLOBALS['user'])) {
                 // apply replace-before-save transformations
                 $wp->body = transformBeforeSave($body);
+                if ($wp->isValidAncestor($ancestor)) {
+                    $wp->setAncestorForAllVersions($ancestor);
+                } else {
+                    PageLayout::postInfo(_('Die Vorgängerseite konnte nicht gespeichert werden.'));
+                }
                 $wp->store();
             } else {
                 PageLayout::postInfo(_('Keine Änderung vorgenommen, da zwischenzeitlich die Editier-Berechtigung entzogen wurde.'));
@@ -86,7 +90,7 @@ function submitWikiPage($keyword, $version, $body, $user_id, $range_id) {
 
         // apply replace-before-save transformations
         $body = transformBeforeSave($body);
-        WikiPage::create(compact('range_id', 'user_id', 'keyword', 'body', 'version'));
+        WikiPage::create(compact('range_id', 'user_id', 'keyword', 'body', 'ancestor', 'version'));
     }
     StudipTransformFormat::removeStudipMarkup('wiki-comments');
     refreshBacklinks($keyword, $body);
@@ -373,6 +377,19 @@ function refreshBacklinks($keyword, $str)
 }
 
 /**
+ * When a page gets deleted, set the ancestor to NULL for
+ * every descendant page.
+ *
+ * @param   string  keyword WikiPage name that was deleted.
+ *
+ */
+function deleteAncestorRelation($keyword) {
+    $query = "UPDATE wiki SET ancestor = null WHERE ancestor = ?";
+    $statement = DBManager::get()->prepare($query);
+    $statement->execute([$keyword]);
+}
+
+/**
 * Generate Meta-Information on Wiki-Page to display in top line
 *
 * @param    db-query result     all information about a wikiPage
@@ -387,13 +404,38 @@ function getZusatz($wikiData)
 
     $user = User::find($wikiData['user_id']);
 
-    $s =  '<a href="' . URLHelper::getLink('?keyword=' . urlencode($wikiData['keyword']) . '&version=' . $wikiData['version']). '">' . _('Version ') . $wikiData['version'] . '</a>';
+    $s =  '<a href="' . URLHelper::getLink('?keyword=' . urlencode($wikiData['keyword'])
+            . '&version='
+            . $wikiData['version']). '">'
+            . _('Version ')
+            . $wikiData['version'] . '</a>';
     $s .= sprintf(_(', geändert von %s am %s'),
                   $user
                       ? '<a href="' . URLHelper::getLink('dispatch.php/profile?username=' . $user->username) .'">' . htmlReady($user->getFullName()) . '</a>'
                       : _('unbekannt'),
                   date('d.m.Y, H:i', $wikiData['chdate']));
+
     return $s;
+}
+
+function getWikiIndex($descendants, $i = 0)
+{
+    $i++;
+    $hidden = '';
+    $items = '<ul class="wiki-index">';
+    if($i >= 4) {
+        $hidden = ' class="hidden"';
+        $items .= '<li><a href="#" class="wiki-index-more">[…]</a></li>';
+    }
+    foreach ($descendants as $descendant) {
+        $children = $descendant->children;
+        $items .= '<li'. $hidden .'><a href="' . URLHelper::getLink('wiki.php', ['keyword' => $descendant->keyword]) . '">'.htmlReady($descendant->keyword) .'</a>';
+        if($children) {
+            $items .= getWikiIndex($children, $i);
+        }
+   }
+   $items .= '</ul>';
+    return $items;
 }
 
 /**
@@ -478,6 +520,7 @@ function deleteWikiPage($keyword, $version, $range_id) {
     if (!keywordExists($keyword)) { // all versions have gone
         $addmsg = '<br>' . sprintf(_("Damit ist die Seite %s mit allen Versionen gelöscht."),'<b>'.htmlReady($keyword).'</b>');
         $newkeyword = "WikiWikiWeb";
+        deleteAncestorRelation($keyword);
     } else {
         $newkeyword = $keyword;
         $addmsg = "";
@@ -513,6 +556,7 @@ function deleteAllWikiPage($keyword, $range_id) {
     $message = MessageBox::info(sprintf(_('Die Seite %s wurde mit allen Versionen gelöscht.'), '<b>'.htmlReady($keyword).'</b>'));
     PageLayout::postMessage($message);
     refreshBacklinks($keyword, "");
+    deleteAncestorRelation($keyword);
     return "WikiWikiWeb";
 }
 
@@ -906,12 +950,13 @@ function searchWiki($searchfor, $searchcurrentversions, $keyword, $localsearch)
 * @param    string  backpage    Page to display if editing is aborted
 *
 **/
-function wikiEdit($keyword, $wikiData, $user_id, $backpage=NULL)
+function wikiEdit($keyword, $wikiData, $user_id, $backpage=NULL, $ancestor=NULL)
 {
     if (!$wikiData || $wikiData->isNew()) {
         $body     = '';
         $version  = 0;
         $lastpage = $backpage;
+        $parent   = $ancestor;
     } else {
         $body     = $wikiData->body;
         $version  = $wikiData->version;
@@ -932,11 +977,24 @@ function wikiEdit($keyword, $wikiData, $user_id, $backpage=NULL)
         }
     }
 
+    $tocObject = new TableOfContents();
+    //$tocObject->setEntryPage();
+    $tocObject->setLeadingNumbers(false);
+    $childPages = $tocObject->getWikiPages();
+    $entries = $tocObject->renderTocElements($tocObject->page_counter, $childPages);
+
+    $breadcrumbNavigation = $tocObject->getPagesForBC();
+    $breadcrumbDetails = $tocObject->getInfosForBC();
+    $breadcrumb = $tocObject->createBreadcrumb($breadcrumbNavigation, $breadcrumbDetails, $entries, $wikiData);
+
     $template = $GLOBALS['template_factory']->open('wiki/edit.php');
     $template->keyword  = $keyword;
     $template->version  = $version;
     $template->lastpage = $lastpage;
     $template->body     = $body;
+    $template->ancestor = $parent;
+    $template->breadcrumb = $breadcrumb;
+
     echo $template->render();
 
     // help texts
@@ -1222,6 +1280,21 @@ function getShowPageInfobox($keyword, $latest_version)
     $element->icon = Icon::create('link-intern');
     $widget->addElement($element);
 
+    // Index:
+
+    $wikistartpage = WikiPage::getStartPage(Context::getId());
+    /*
+    if ($wikistartpage->children) {
+        $widget = $sidebar->addWidget(new SidebarWidget());
+        $widget->setTitle(_('Inhalt'));
+        $header = new WidgetElement('<a href="' . URLHelper::getLink('wiki.php') . '">'._('Wiki-Startseite').'</a>');
+        $widget->addElement($header);
+        $element = new WidgetElement(getWikiIndex($wikistartpage->children));
+        $widget->addElement($element);
+
+    }
+    */
+
     // Actions:
     $widget = $sidebar->addWidget(new ActionsWidget());
     if ($GLOBALS['perm']->have_studip_perm($edit_perms, Context::getId())) {
@@ -1407,6 +1480,16 @@ function showWikiPage($keyword, $version, $special="", $show_comments="icon", $h
     $wikiData = getWikiPage($keyword, $version);
     $content = wikiReady($wikiData["body"], TRUE, FALSE, $show_comments);
 
+    $tocObject = new TableOfContents();
+    //$tocObject->setEntryPage();
+    $tocObject->setLeadingNumbers(false);
+    $childPages = $tocObject->getWikiPages();
+    $entries = $tocObject->renderTocElements($tocObject->page_counter, $childPages);
+
+    $breadcrumbNavigation = $tocObject->getPagesForBC();
+    $breadcrumbDetails = $tocObject->getInfosForBC();
+    $breadcrumb = $tocObject->createBreadcrumb($breadcrumbNavigation, $breadcrumbDetails, $entries, $wikiData);
+
     if ($hilight) {
         // Highlighting must only take place outside HTML tags, so
         // 1. save all html tags in array $founds[0]
@@ -1425,6 +1508,7 @@ function showWikiPage($keyword, $version, $special="", $show_comments="icon", $h
     $template = $GLOBALS['template_factory']->open('wiki/show.php');
     $template->wikipage = $wikiData;
     $template->content  = $content;
+    $template->breadcrumb = $breadcrumb;
 
     echo $template->render();
 

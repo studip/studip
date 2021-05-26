@@ -10,6 +10,9 @@ class WikiPage extends SchemaProvider
 
     const TYPE = 'wiki-pages';
     const REL_AUTHOR = 'author';
+    const REL_CHILDREN = 'children';
+    const REL_DESCENDANTS = 'descendants';
+    const REL_PARENT = 'parent';
     const REL_RANGE = 'range';
 
     protected $resourceType = self::TYPE;
@@ -93,8 +96,57 @@ class WikiPage extends SchemaProvider
 
         if ($isPrimary) {
             $relationships = $this->addAuthorRelationship($relationships, $wiki, $includeList);
+            $relationships = $this->addChildrenRelationship($relationships, $wiki, $includeList);
+            $relationships = $this->addDescendantsRelationship($relationships, $wiki, $includeList);
+            $relationships = $this->addParentRelationship($relationships, $wiki, $includeList);
             $relationships = $this->addRangeRelationship($relationships, $wiki, $includeList);
         }
+
+        return $relationships;
+    }
+
+    private function addParentRelationship($relationships, $wiki, $includeList)
+    {
+        $related = $wiki->parent;
+        if ($related) {
+            $relationships[self::REL_PARENT] = [
+                self::SHOW_SELF => true,
+                self::LINKS => [
+                    Link::RELATED => $this->getSchemaContainer()
+                                          ->getSchema($related)
+                                          ->getSelfSubLink($related)
+                ],
+                self::DATA => $related
+            ];
+
+        }
+        return $relationships;
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    private function addChildrenRelationship($relationships, $wiki, $includeList)
+    {
+        $relationships[self::REL_CHILDREN] = [
+            self::LINKS => [
+                Link::RELATED => $this->getRelationshipRelatedLink($wiki, self::REL_CHILDREN),
+            ],
+        ];
+
+        return $relationships;
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    private function addDescendantsRelationship($relationships, $wiki, $includeList)
+    {
+        $relationships[self::REL_DESCENDANTS] = [
+            self::LINKS => [
+                Link::RELATED => $this->getRelationshipRelatedLink($wiki, self::REL_DESCENDANTS),
+            ],
+        ];
 
         return $relationships;
     }

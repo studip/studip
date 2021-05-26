@@ -291,6 +291,10 @@ class RouteMap
 
     private function addAuthenticatedWikiRoutes()
     {
+        $this->addRelationship('/wiki-pages/{id:.+}/relationships/parent', Routes\Wiki\Rel\ParentPage::class);
+        $this->app->get('/wiki-pages/{id:.+}/children', Routes\Wiki\ChildrenIndex::class);
+        $this->app->get('/wiki-pages/{id:.+}/descendants', Routes\Wiki\DescendantsIndex::class);
+
         $this->app->get('/courses/{id}/wiki-pages', Routes\Wiki\WikiIndex::class);
         $this->app->get('/wiki-pages/{id:.+}', Routes\Wiki\WikiShow::class)->setName('get-wiki-page');
 

@@ -27,6 +27,13 @@ class WikiController extends AuthenticatedController
      */
     public function create_action()
     {
+        $wiki_pages = WikiPage::findLatestPages(Context::getId());
+        $wiki_pages->filter(function ($wikipage) use (&$wiki_page_names) {
+                $wikipage->keyword === 'WikiWikiWeb' ?: $this->wiki_page_names[] = $wikipage->keyword;
+            });
+        natcasesort($this->wiki_page_names);
+        array_unshift($this->wiki_page_names, 'WikiWikiWeb');
+
         getShowPageInfobox($this->keyword, true);
     }
 
@@ -78,7 +85,7 @@ class WikiController extends AuthenticatedController
     /**
     * change page permission of a single wiki page
     */
-    public function change_pageperms_action()
+    public function change_page_config_action()
     {
         if (!$GLOBALS['perm']->have_studip_perm('tutor', $this->range_id)) {
             throw new AccessDeniedException(_('Sie haben keine Berechtigung, Berechtigungen Wiki-Seiten zu ändern!'));
@@ -90,6 +97,20 @@ class WikiController extends AuthenticatedController
         }
 
         $page = WikiPage::findLatestPage($this->range_id, $this->keyword);
+        $this->page = $page;
+ 
+        $this->validKeywords = array_filter(
+            WikiPage::findLatestPages($this->range_id)->pluck("keyword"),
+            function ($keyword) use ($page) {
+                if ($keyword === 'WikiWikiWeb') { 
+                    return false;
+                } else {
+                    return $page->isValidAncestor($keyword);
+                }
+            }
+        );
+        natcasesort($this->validKeywords);
+        array_unshift($this->validKeywords, 'WikiWikiWeb');
 
         PageLayout::setTitle(_('Seiten-Einstellungen ändern'));
 
@@ -99,9 +120,9 @@ class WikiController extends AuthenticatedController
     }
 
     /**
-     * store page permissions of a wiki page
+     * store page config of a wiki page
      */
-    public function store_pageperms_action()
+    public function store_page_config_action()
     {
         CSRFProtection::verifyUnsafeRequest();
 
@@ -114,6 +135,21 @@ class WikiController extends AuthenticatedController
             throw new InvalidArgumentException(_('Es wurde keine Seite übergeben!'));
         }
 
+        $this->store_pageperms();
+        $this->store_page_ancestor();
+
+        PageLayout::postSuccess(sprintf(
+            _('Die Einstellungen für Wiki-Seite "%s" wurden geändert!'),
+            htmlReady($this->keyword)
+        ));
+        $this->redirect(URLHelper::getURL('wiki.php', ['keyword' => $this->keyword]));
+    }
+
+    /**
+     * store page permissions of a wiki page
+     */
+    public function store_pageperms()
+    {
         $wiki_page_config = new WikiPageConfig([$this->range_id, $this->keyword]);
         $wiki_page_config->read_restricted = Request::int('page_read_perms');
         $wiki_page_config->edit_restricted = Request::int('page_edit_perms');
@@ -123,19 +159,36 @@ class WikiController extends AuthenticatedController
         } else {
             $wiki_page_config->store();
         }
+    }
 
-        PageLayout::postSuccess(sprintf(
-            _('Die Berechtigungen für Wiki-Seite "%s" wurden geändert!'),
-            htmlReady($this->keyword)
-        ));
-        $this->redirect(URLHelper::getURL('wiki.php', ['keyword' => $this->keyword]));
+    /**
+     * store page ancestor of a wiki page
+     */
+    public function store_page_ancestor()
+    {
+        $wikipage = WikiPage::findLatestPage(Context::getId(), $this->keyword);
+        if ($wikipage) {
+            if ($wikipage->isEditableBy($GLOBALS['user'])) {
+                $ancestor = Request::get('ancestor_select') ?: null;
+                if ($wikipage->isValidAncestor($ancestor)) {
+                    $wikipage->setAncestorForAllVersions($ancestor);
+                } else {
+                    PageLayout::postInfo(_('Die Vorgängerseite konnte nicht gespeichert werden.'));
+                }
+                $wikipage->store();
+            } else {
+                PageLayout::postInfo(_('Keine Änderung vorgenommen, da zwischenzeitlich die Editier-Berechtigung entzogen wurde.'));
+            }
+        }
     }
 
     public function store_action($version)
     {
         $body = Studip\Markup::purifyHtml(Request::get('body'));
 
-        submitWikiPage($this->keyword, $version, $body, $GLOBALS['user']->id, $this->range_id);
+        $ancestor = WikiPage::findLatestPage(Context::getId(), $this->keyword)->ancestor;
+
+        submitWikiPage($this->keyword, $version, $body, $GLOBALS['user']->id, $this->range_id, $ancestor);
 
         $latest_version = getLatestVersion($this->keyword, $this->range_id);
 
@@ -178,7 +231,13 @@ class WikiController extends AuthenticatedController
             throw new InvalidArgumentException(_('Es wurde keine Seite übergeben!'));
         }
 
+        $this->last_page = WikiPage::findLatestPage($this->range_id, $this->keyword);
+        $this->last_user = User::find($this->last_page['user_id']);
+        $this->first_page = getWikiPage($this->keyword, 1);
+        $this->first_user = User::find($this->first_page['user_id']);
         $this->backlinks = getBacklinks($this->keyword);
+        $page = WikiPage::findLatestPage($this->range_id, $this->keyword);
+        $this->descendants = $page->children;
 
         PageLayout::setTitle(_('Informationen zur Wikiseite'));
 

@@ -164,6 +164,10 @@ if ($view === 'listall') {
     //
 
     $range_id = Context::getId();
+    $ancestor = Request::get('origin') ? : Request::get('ancestor_select');
+    if (!$ancestor) {
+        $ancestor = null;
+    }
     $edit_perms = CourseConfig::get($range_id)->WIKI_COURSE_EDIT_RESTRICTED ? 'tutor' : 'autor';
     if (!$perm->have_studip_perm($edit_perms, $range_id)) {
         throw new AccessDeniedException(_('Sie haben keine Berechtigung, in dieser Veranstaltung Seiten zu editieren!'));
@@ -188,7 +192,7 @@ if ($view === 'listall') {
     setWikiLock(null, $user->id, Context::getId(), $keyword);
 
     //show form
-    wikiEdit($keyword, $wikiData, $user->id, Request::get('lastpage'));
+    wikiEdit($keyword, $wikiData, $user->id, Request::get('lastpage'), $ancestor);
 
 } else {
     // Default action: Display WikiPage (+ logic for submission)
@@ -203,7 +207,12 @@ if ($view === 'listall') {
         //
         // Page was edited and submitted
         //
-        submitWikiPage($keyword, $version, Studip\Markup::purifyHtml(Request::get('body')), $user->id, Context::getId());
+        if (Request::get('ancestor')) { 
+            $ancestor = Request::get('ancestor');
+        } else { 
+            $ancestor = WikiPage::findLatestPage(Context::getId(), $keyword)->ancestor ?: null;
+        }
+        submitWikiPage($keyword, $version, Studip\Markup::purifyHtml(Request::get('body')), $user->id, Context::getId(), $ancestor);
         $version = ''; // $version="" means: get latest
 
     } else if ($cmd === 'abortedit') { // Editieren abgebrochen

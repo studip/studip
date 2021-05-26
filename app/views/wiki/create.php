@@ -12,6 +12,18 @@
                placeholder="<?= _('Name der Wiki-Seite') ?>">
     </label>
 
+    <label>
+        <span class="required"><?= _('Vorgängerseite') ?></span>
+        <select name="ancestor_select" id="ancestor_select">
+            <option value=""> <?= _('keine Vorgängerseite') ?> </option>
+            <?php foreach ($wiki_page_names as $keyword): ?>
+                <option value="<?= htmlReady($keyword) ?>" <?= $this->keyword == $keyword ? 'selected="selected"' : '' ?> >
+                    <?= $keyword === 'WikiWikiWeb' ? _('Wiki-Startseite') : htmlReady($keyword) ?>
+                </option>
+            <?php endforeach ?>
+        </select>
+    </label>
+
     <footer data-dialog-button>
         <?= Studip\Button::createAccept(_('Anlegen'), 'submit') ?>
         <?= Studip\LinkButton::createCancel(_('Abbrechen'), URLHelper::getURL('wiki.php', compact('keyword'))) ?>

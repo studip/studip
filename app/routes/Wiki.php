@@ -86,7 +86,7 @@ class Wiki extends \RESTAPI\RouteMap
         if (!\Context::get()) {
             \Context::set($course_id);
         }
-        submitWikiPage($keyword, $last_version->version, $this->data['content'], $user_id, $course_id);
+        submitWikiPage($keyword, $last_version->version, $this->data['content'], $user_id, $course_id, $last_version->ancestor);
 
         $new_version = \WikiPage::findLatestPage($course_id, $keyword);
 

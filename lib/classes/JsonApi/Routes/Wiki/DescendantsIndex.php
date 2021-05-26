@@ -5,14 +5,15 @@ namespace JsonApi\Routes\Wiki;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use JsonApi\Errors\AuthorizationFailedException;
-use JsonApi\Errors\RecordNotFoundException;
 use JsonApi\JsonApiController;
 
 /*
- * Get a course-wiki-page
+ * Get paginated list of all descendants of a page
  */
-class WikiIndex extends JsonApiController
+class DescendantsIndex extends JsonApiController
 {
+    use HelperTrait;
+
     protected $allowedPagingParameters = ['offset', 'limit'];
     protected $allowedIncludePaths = ['author', 'children', 'descendants', 'parent', 'range'];
 
@@ -21,23 +22,20 @@ class WikiIndex extends JsonApiController
      */
     public function __invoke(Request $request, Response $response, $args)
     {
-        if (!$course = \Course::find($args['id'])) {
-            throw new RecordNotFoundException();
-        }
+        $wikiPage = self::findWikiPage($args['id']);
 
-        if (!Authority::canIndexWiki($this->getUser($request), $course)) {
+        if (!Authority::canShowWiki($this->getUser($request), $wikiPage)) {
             throw new AuthorizationFailedException();
         }
 
-        if (!$wiki = \WikiPage::findLatestPages($course->id)) {
-            throw new RecordNotFoundException();
-        }
+        $descendants = $wikiPage->getDescendants();
+        $total = count($descendants);
 
         list($offset, $limit) = $this->getOffsetAndLimit();
 
         return $this->getPaginatedContentResponse(
-            $wiki->limit($offset, $limit),
-            count($wiki)
+            array_slice($descendants, $offset, $limit),
+            $total
         );
     }
 }

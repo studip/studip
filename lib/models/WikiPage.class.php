@@ -15,6 +15,7 @@
  * @property string user_id database column
  * @property string keyword database column
  * @property string body database column
+ * @property string ancestor database column
  * @property string chdate database column
  * @property string version database column
  * @property string id computed column read/write
@@ -37,6 +38,29 @@ class WikiPage extends SimpleORMap implements PrivacyObject
         $config['belongs_to']['course'] = [
             'class_name'  => Course::class,
             'foreign_key' => 'range_id',
+        ];
+
+        $config['additional_fields']['parent'] = [
+            'get' => function ($page) {
+                return \WikiPage::findLatestPage($page->range_id, $page->ancestor);
+            }
+        ];
+
+        $config['additional_fields']['children'] = [
+            'get' => function ($page) {
+                $query = "SELECT range_id, keyword, MAX(version) as version FROM wiki
+                          WHERE range_id = ? AND ancestor = ? GROUP BY keyword ORDER BY keyword ASC";
+
+                $stmt = \DBManager::get()->prepare($query);
+                $stmt->execute([$page->range_id, $page->keyword]);
+                $pageIds = $stmt->fetchAll(\PDO::FETCH_NUM);
+                return array_map(
+                    function ($pageId) {
+                        return self::find($pageId);
+                    },
+                    $pageIds
+                );
+            }
         ];
 
         $config['additional_fields']['config']['get'] = function ($page) {
@@ -205,5 +229,63 @@ class WikiPage extends SimpleORMap implements PrivacyObject
                 $storage->addTabularData(_('Wiki Einträge'), 'wiki', $field_data);
             }
         }
+    }
+
+    /**
+     * Sets the parent page for all versions of a Wikipage.
+     *
+     * @param string ancestor Wikipage name to be set as the parent
+     */
+    public function setAncestorForAllVersions($ancestor) {
+        $query = "UPDATE
+                    wiki
+                  SET
+                    ancestor = ?
+                  WHERE
+                    range_id = ? AND
+                    keyword = ?";
+
+        $st = DBManager::get()->prepare($query);
+        $st->execute([$ancestor, $this->range_id, $this->keyword]);
+    }
+
+    /**
+     * Tests if a given Wikipage name (keyword) is a valid ancestor for this page.
+     *
+     * @param   string   ancestor Wikipage name to be tested to be an ancestor
+     * @return  boolean  true if ok, false if not
+     *
+     */
+    public function isValidAncestor($ancestor)
+    {
+        if ($this->keyword === 'WikiWikiWeb' || $this->keyword === $ancestor) {
+            return false;
+        }
+
+        $keywords = array_map(
+            function ($descendant) {
+                return $descendant['keyword'];
+            },
+            $this->getDescendants()
+        );
+
+        return !in_array($ancestor, $keywords);
+    }
+
+    /**
+     * Retrieve an array of all descending WikiPages (recursive).
+     *
+     * @return   array   Array of all descendant WikiPages
+     *
+     */
+    public function getDescendants()
+    {
+        $descendants = [];
+
+        foreach ($this->children as $child) {
+            array_push($descendants, $child, ...$child->getDescendants());
+        }
+
+        return $descendants;
     }
 }

@@ -1,10 +1,13 @@
+<?= $breadcrumb ?>
 <form method="post" action="<?= URLHelper::getLink('?cmd=edit', compact('keyword')) ?>" data-secure class="default">
     <?= CSRFProtection::tokenTag() ?>
     <fieldset>
         <legend><?= htmlReady(($keyword == 'WikiWikiWeb') ? _('Wiki-Startseite') : $keyword) ?></legend>
 
         <input type="hidden" name="wiki" value="<?= htmlReady($keyword) ?>">
+        <input type="hidden" name="lastpage" value="<?= htmlReady($lastpage) ?>">
         <input type="hidden" name="version" value="<?= htmlReady($version) ?>">
+        <input type="hidden" name="ancestor" value="<?= htmlReady($ancestor) ?>">
         <input type="hidden" name="submit" value="true">
         <input type="hidden" name="cmd" value="show">
 

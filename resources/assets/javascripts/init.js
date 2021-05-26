@@ -73,6 +73,7 @@ import startpage from './lib/startpage.js';
 import Statusgroups from './lib/statusgroups.js';
 import study_area_selection from './lib/study_area_selection.js';
 import Table from './lib/table.js';
+import TableOfContents from './lib/table-of-contents.js';
 import Toolbar from './lib/toolbar.js';
 import Tooltip from './lib/tooltip.js';
 import Tour from './lib/tour.js';
@@ -157,6 +158,7 @@ window.STUDIP = _.assign(window.STUDIP || {}, {
     Statusgroups,
     study_area_selection,
     Table,
+    TableOfContents,
     Toolbar,
     Tooltip,
     Tour,

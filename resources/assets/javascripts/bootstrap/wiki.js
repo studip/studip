@@ -138,3 +138,9 @@ $(document).on('change', '#wiki-config .global-permissions :checkbox', function 
 }).on('change', '#wiki-config .read-permissions :radio', function () {
     $('#wiki-config .edit-permissions:has(:radio[disabled]:checked) :radio:not([disabled]):first').prop('checked', true);
 });
+
+$(document).on('click', '.wiki-index-more', function (ev) {
+    ev.preventDefault();
+    $(this).parent().toggle();
+    $(this).parent().nextAll('li').toggle();
+});
