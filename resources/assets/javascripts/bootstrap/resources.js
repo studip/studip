@@ -397,8 +397,18 @@ STUDIP.ready(function () {
             if ($(this).attr('id') == 'BookingStartDateInput') {
                 $("#begin_date-weekdays span").addClass('invisible');
                 $("#begin_date-weekdays #" + day_numer).removeClass('invisible');
+                var start_date_parts = jQuery(this).val().split('.');
+                var repetition_end_date_parts = jQuery("#RepetitionEndInput").val().split('.');
+                var start_date = new Date(
+                    start_date_parts[2] + '-' + start_date_parts[1] + '-' + start_date_parts[0]
+                        + 'T00:00:00'
+                );
+                var repetition_end_date = new Date(
+                    repetition_end_date_parts[2] + '-' + repetition_end_date_parts[1] + '-'
+                        + repetition_end_date_parts[0] + 'T00:00:00'
+                );
 
-                if ($(this).val() > $("#RepetitionEndInput").val()
+                if (start_date > repetition_end_date
                     && $("input[name='selected_end']:checked").val() != 'semester_course_end') {
                     $("#RepetitionEndInput").prop('defaultValue', $(this).val());
                     $("#RepetitionEndInput").val($(this).val()).trigger('change');
