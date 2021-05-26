@@ -387,7 +387,7 @@ class RandomAlgorithm extends AdmissionAlgorithm
                 }
             } else {
                 if ($seminar->addMember($chosen_one, 'autor')) {
-                    $message_body = sprintf (_("Sie haben bei der Platzvergabe der Veranstaltung **%s** einen Platz erhalten. Ab sofort finden Sie die Veranstaltung in der Übersicht Ihrer Veranstaltungen. Damit sind Sie auch für die Präsenzveranstaltung zugelassen."),
+                    $message_body = sprintf (_("Sie haben bei der Platzvergabe der Veranstaltung **%s** einen Platz erhalten. Damit sind Sie für die Teilnahme an der Veranstaltung zugelassen. Ab sofort finden Sie die Veranstaltung in der Übersicht Ihrer Veranstaltungen."),
                             $seminar->getName());
                 }
             }
