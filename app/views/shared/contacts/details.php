@@ -1,12 +1,12 @@
 <td colspan="10">
-    <? if (!sizeof($relations)) : ?>
+    <? if (count($relations) === 0) : ?>
         <?= _('Diese Person wurde noch nicht referenziert.') ?>
     <? else : ?>
         <? $object_types = ['Studiengang', 'StudiengangTeil', 'Modul'] ?>
         <? foreach ($object_types as $object_type) : ?>
             <? $object_relations = $relations[$object_type] ?>
-            <? if (count($object_relations) === 0) : continue; endif; ?>
-            <? uasort($object_relation, function ($a, $b) { return strcmp($a->getDisplayTitle(), $b->getDisplayTitle()); }) ?>
+            <? if (!$object_relations) : continue; endif; ?>
+            <? uasort($object_relations, function ($a, $b) { return strcmp($a->getDisplayTitle(), $b->getDisplayTitle()); }) ?>
             <table class="default sortable-table" style="margin-top: 10px;" data-sortlist="[[0, 0]]">
                 <colgroup>
                     <? if($object_type === 'Studiengang'): ?>
