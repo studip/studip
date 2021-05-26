@@ -27,6 +27,7 @@ class WikiController extends AuthenticatedController
      */
     public function create_action()
     {
+        $this->wiki_page_names = Array();
         $wiki_pages = WikiPage::findLatestPages(Context::getId());
         $wiki_pages->filter(function ($wikipage) use (&$wiki_page_names) {
                 $wikipage->keyword === 'WikiWikiWeb' ?: $this->wiki_page_names[] = $wikipage->keyword;

@@ -1282,7 +1282,7 @@ function getShowPageInfobox($keyword, $latest_version)
 
     // Index:
 
-    $wikistartpage = WikiPage::getStartPage(Context::getId());
+    $wikistartpage = WikiPage::findLatestPage(Context::getId(), 'WikiWikiWeb');
     /*
     if ($wikistartpage->children) {
         $widget = $sidebar->addWidget(new SidebarWidget());
@@ -1297,7 +1297,7 @@ function getShowPageInfobox($keyword, $latest_version)
 
     // Actions:
     $widget = $sidebar->addWidget(new ActionsWidget());
-    if ($GLOBALS['perm']->have_studip_perm($edit_perms, Context::getId())) {
+    if ($GLOBALS['perm']->have_studip_perm($edit_perms, Context::getId()) && $wikistartpage) {
         $widget->addLink(
             _('Neue Wiki-Seite anlegen'),
             URLHelper::getURL('dispatch.php/wiki/create', compact('keyword')),
