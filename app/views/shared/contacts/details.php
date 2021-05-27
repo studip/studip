@@ -6,7 +6,6 @@
         <? foreach ($object_types as $object_type) : ?>
             <? $object_relations = $relations[$object_type] ?>
             <? if (!$object_relations) : continue; endif; ?>
-            <? uasort($object_relations, function ($a, $b) { return strcmp($a->getDisplayTitle(), $b->getDisplayTitle()); }) ?>
             <table class="default sortable-table" style="margin-top: 10px;" data-sortlist="[[0, 0]]">
                 <colgroup>
                     <? if($object_type === 'Studiengang'): ?>
