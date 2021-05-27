@@ -4,6 +4,11 @@ const configMapping = {
             MY_COURSES_TILED_DISPLAY: value === 'tiles',
         }
     },
+    responsive_type: value => {
+        return {
+            MY_COURSES_TILED_DISPLAY_RESPONSIVE: value === 'tiles',
+        }
+    },
     navigation_show_only_new: value => {
         return {
             MY_COURSES_SHOW_NEW_ICONS_ONLY: value,

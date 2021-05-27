@@ -55,7 +55,7 @@ export default {
                  : MyCoursesTables;
         },
         displayedType () {
-            return this.getConfig('display_type');
+            return this.getConfig(this.viewConfig);
         },
         iconSize () {
             if (this.displayedType !== 'tiles' && !this.responsiveDisplay) {

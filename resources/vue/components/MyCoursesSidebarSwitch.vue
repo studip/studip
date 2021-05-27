@@ -22,10 +22,10 @@ export default {
     mixins: [MyCoursesMixin],
     computed: {
         tableView () {
-            return this.getConfig('display_type') === 'tables';
+            return this.getConfig(this.viewConfig) === 'tables';
         },
         tilesView () {
-            return this.getConfig('display_type') === 'tiles';
+            return this.getConfig(this.viewConfig) === 'tiles';
         },
     },
     methods: {
@@ -37,7 +37,7 @@ export default {
         },
         setView (view) {
             this.updateConfigValue({
-                key: 'display_type',
+                key: this.viewConfig,
                 value: view
             }).then(() => {
                 Sidebar.close();

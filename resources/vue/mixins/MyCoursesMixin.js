@@ -150,6 +150,9 @@ export default {
             'getConfig',
         ]),
 
+        viewConfig () {
+            return this.responsiveDisplay ? 'responsive_type' : 'display_type';
+        },
         numberOfNavElements () {
             return Math.max(
                 ...Object.values(this.courses).map(course => {
