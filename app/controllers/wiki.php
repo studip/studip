@@ -33,7 +33,10 @@ class WikiController extends AuthenticatedController
                 $wikipage->keyword === 'WikiWikiWeb' ?: $this->wiki_page_names[] = $wikipage->keyword;
             });
         natcasesort($this->wiki_page_names);
-        array_unshift($this->wiki_page_names, 'WikiWikiWeb');
+        $wikistartpage = WikiPage::findLatestPage(Context::getId(), 'WikiWikiWeb');
+        if ($wikistartpage) {
+            array_unshift($this->wiki_page_names, 'WikiWikiWeb');
+        }
 
         getShowPageInfobox($this->keyword, true);
     }
@@ -99,11 +102,11 @@ class WikiController extends AuthenticatedController
 
         $page = WikiPage::findLatestPage($this->range_id, $this->keyword);
         $this->page = $page;
- 
+
         $this->validKeywords = array_filter(
             WikiPage::findLatestPages($this->range_id)->pluck("keyword"),
             function ($keyword) use ($page) {
-                if ($keyword === 'WikiWikiWeb') { 
+                if ($keyword === 'WikiWikiWeb') {
                     return false;
                 } else {
                     return $page->isValidAncestor($keyword);
@@ -111,7 +114,10 @@ class WikiController extends AuthenticatedController
             }
         );
         natcasesort($this->validKeywords);
-        array_unshift($this->validKeywords, 'WikiWikiWeb');
+        $wikistartpage = WikiPage::findLatestPage(Context::getId(), 'WikiWikiWeb');
+        if ($wikistartpage) {
+            array_unshift($this->wiki_page_names, 'WikiWikiWeb');
+        }
 
         PageLayout::setTitle(_('Seiten-Einstellungen ändern'));
 

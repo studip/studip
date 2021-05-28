@@ -476,7 +476,7 @@ function showDeleteDialog($keyword, $version) {
 function showDeleteAllDialog($keyword) {
     $msg= sprintf(_("Wollen Sie die Seite %s wirklich vollständig - mit allen Versionen - löschen?"), $keyword) . "\n";
     if ($keyword === "WikiWikiWeb") {
-        $msg .= _("Sie sind im Begriff die Startseite zu löschen, die dann durch einen leeren Text ersetzt wird. Damit wären auch alle anderen Seiten nicht mehr direkt erreichbar.");
+        $msg .= _("Sie sind im Begriff die Startseite zu löschen, die dann durch einen leeren Text ersetzt wird. Damit wären auch alle anderen Seiten nicht mehr direkt erreichbar und auch das Inhaltsverzeichnis wäre leer.");
     } else {
         $numbacklinks = count(getBacklinks($keyword));
         if ($numbacklinks == 0) {
@@ -1297,7 +1297,7 @@ function getShowPageInfobox($keyword, $latest_version)
 
     // Actions:
     $widget = $sidebar->addWidget(new ActionsWidget());
-    if ($GLOBALS['perm']->have_studip_perm($edit_perms, Context::getId()) && $wikistartpage) {
+    if ($GLOBALS['perm']->have_studip_perm($edit_perms, Context::getId())) {
         $widget->addLink(
             _('Neue Wiki-Seite anlegen'),
             URLHelper::getURL('dispatch.php/wiki/create', compact('keyword')),
