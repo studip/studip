@@ -1328,42 +1328,40 @@ class Resources_BookingController extends AuthenticatedController
                 ];
             }
 
-            if (!$this->overwrite_reservations) {
-                //At this point, we have collected all time intervals
-                //that are relevant to create/edit new bookings.
-                $reservations_to_overwrite = [];
+            $reservations_to_overwrite = [];
+            //At this point, we have collected all time intervals
+            //that are relevant to create/edit new bookings.
 
-                //Check if there are reservations:
-                foreach ($this->resources as $resource) {
-                    $reservations = ResourceBooking::findByResourceAndTimeRanges(
-                        $resource,
-                        $time_intervals,
-                        [1, 3],
-                        ($this->booking->id ? [$this->booking->id] : [])
-                    );
-                    $reservations_to_overwrite = array_merge(
-                        $reservations_to_overwrite,
-                        $reservations
-                    );
+            //Check if there are reservations:
+            foreach ($this->resources as $resource) {
+                $reservations = ResourceBooking::findByResourceAndTimeRanges(
+                    $resource,
+                    $time_intervals,
+                    [1, 3],
+                    ($this->booking->id ? [$this->booking->id] : [])
+                );
+                $reservations_to_overwrite = array_merge(
+                    $reservations_to_overwrite,
+                    $reservations
+                );
+            }
+            if ($reservations_to_overwrite && !$this->overwrite_reservations) {
+                $this->show_reservation_overwrite_button = true;
+                $reservation_list = [];
+
+                foreach ($reservations_to_overwrite as $reservation) {
+                    $reservation_list[] = implode(', ', $reservation->getTimeIntervalStrings());
                 }
-                if ($reservations_to_overwrite) {
-                    $this->show_reservation_overwrite_button = true;
-                    $reservation_list = [];
 
-                    foreach ($reservations_to_overwrite as $reservation) {
-                        $reservation_list[] = implode(', ', $reservation->getTimeIntervalStrings());
-                    }
-
-                    PageLayout::postWarning(
-                        ngettext(
-                            'Die folgende Reservierung wird beim Buchen überschrieben. Wollen Sie die Reservierung wirklich überschreiben?',
-                            'Die folgenden Reservierungen werden beim Buchen überschrieben. Wollen Sie die Reservierungen wirklich überschreiben?',
-                            count($reservation_list)
-                        ),
-                        $reservation_list
-                    );
-                    return;
-                }
+                PageLayout::postWarning(
+                    ngettext(
+                        'Die folgende Reservierung wird beim Buchen überschrieben. Wollen Sie die Reservierung wirklich überschreiben?',
+                        'Die folgenden Reservierungen werden beim Buchen überschrieben. Wollen Sie die Reservierungen wirklich überschreiben?',
+                        count($reservation_list)
+                    ),
+                    $reservation_list
+                );
+                return;
             }
 
             $errors = [];
@@ -1412,6 +1410,12 @@ class Resources_BookingController extends AuthenticatedController
                         $bookings,
                         $results['bookings']
                     );
+                }
+            }
+
+            if ($this->overwrite_reservations) {
+                foreach ($reservations_to_overwrite as $reservation) {
+                    $reservation->delete();
                 }
             }
 

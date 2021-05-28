@@ -564,6 +564,7 @@ class SingleDate
                 $preparation_time * 60
             );
             if ($booking instanceof ResourceBooking) {
+                $booking->deleteOverlappingReservations();
                 $room_link_string = sprintf(
                     '<a href="%1$s" data-dialog="1">%2$s</a>',
                     $room->getActionLink(),
