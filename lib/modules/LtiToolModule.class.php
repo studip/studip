@@ -11,7 +11,7 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  */
 
-class LtiToolModule extends StudIPPlugin implements StandardPlugin, SystemPlugin, PrivacyPlugin
+class LtiToolModule extends CorePlugin implements StudipModule, SystemPlugin, PrivacyPlugin
 {
     /**
      * Initialize the LtiToolModule.
@@ -107,7 +107,7 @@ class LtiToolModule extends StudIPPlugin implements StandardPlugin, SystemPlugin
             'keywords' => _('Einbindung von LTI-Tools (Version 1.x)'),
             'icon' => Icon::create('link-extern', Icon::ROLE_INFO),
             'screenshots' => [
-                'path' => '../../assets/images/plus/screenshots/Lti',
+                'path' => 'assets/images/plus/screenshots/Lti',
                 'pictures' => [
                     ['source' => 'Lti_tool_demo.jpg', 'title' => 'Beispiel für Wordpress-Einbindung']
                 ]

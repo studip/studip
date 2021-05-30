@@ -14,10 +14,10 @@
         <thead>
             <tr>
                 <th colspan="2"><?= _('Veranstaltung') ?></th>
-                <? foreach ($modules as $name => $data): ?>
+                <? foreach ($modules as $id => $module): ?>
+                    <?php $icon = $module['icon']->copyWithRole(Icon::ROLE_INFO); ?>
                     <th>
-                        <?= Icon::create($controller->module_icon($name), 'info', ['title' => $data['name']])
-                                ->asImg(['class' => 'middle']) ?>
+                        <?=$icon->asImg(['class' => 'middle', 'title' => $module['name']]) ?>
                     </th>
                 <? endforeach; ?>
                 <th><?= _('Alle') ?></th>
@@ -72,12 +72,12 @@
                                 <? if (!$seminars[$member['seminar_id']]['visible']): ?>
                                     <?= _('(versteckt)') ?>
                                 <? endif; ?>
-                                <input type="hidden" name="m_checked[<?= $member['seminar_id'] ?>][33]" value="0">
+                                <input type="hidden" name="m_checked[<?= $member['seminar_id'] ?>][empty]" value="0">
                             </td>
-                            <? foreach (array_values($modules) as $index => $data): ?>
+                            <? foreach ($modules as $index => $data): ?>
                                 <td>
                                     <input type="checkbox" name="m_checked[<?= $member['seminar_id'] ?>][<?= $index ?>]"
-                                           value="<?= pow(2, $data['id']) ?>"
+                                           value="1"
                                             <? if ($checked[$member['seminar_id']][$index]) echo 'checked'; ?>>
                                 </td>
                             <? endforeach; ?>

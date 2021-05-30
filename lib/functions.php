@@ -130,36 +130,28 @@ function checkObject()
 
 
 /**
- * This function checks, if given old style module "wiki","scm" (not "CoreWiki") etc.
- * is allowed in this stud.ip-object.
+ * This function checks, if given module
+ * is allowed for this stud.ip-object.
  *
+ * @throws CheckObjectException
  * @param string $module the module to check for
- *
- * @return void
+ * @param bool $is_plugin_name is the module name old style ( "wiki","scm") or new style (the name of the plugin)
+ * @return StudipModule
  */
-function checkObjectModule($module)
+function checkObjectModule($module, $is_plugin_name = false)
 {
     if ($context = Context::get()) {
-        $modules = new Modules();
-        $local_modules = $modules->getLocalModules($context['id'], Context::getClass());
-        $checkslot = $module;
-        if (Context::isCourse() && $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][Context::getArtNum()]['class']]) {
-            $sem_class = $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][Context::getArtNum()]['class']];
-            $new_module_name = "Core".ucfirst($module);
-            $mandatory = false;
-            foreach (SemClass::getSlots() as $slot) {
-                if ($sem_class->getSlotModule($slot) === $new_module_name) {
-                    $checkslot = $slot;
-                    if ($sem_class->isModuleMandatory($new_module_name)) {
-                        $mandatory = true;
-                    }
-                }
-            }
+        if (!$is_plugin_name) {
+            $module_name = "Core" . ucfirst($module);
+        } else {
+            $module_name = $module;
         }
 
-        if (!$local_modules[$checkslot] && !$mandatory) {
+        $studip_module = PluginManager::getInstance()->getPlugin($module_name);
+        if (!$studip_module || !$studip_module->isActivated($context->getId())) {
             throw new CheckObjectException(sprintf(_('Das Inhaltselement "%s" ist für dieses Objekt leider nicht verfügbar.'), ucfirst($module)));
         }
+        return $studip_module;
     }
 }
 
@@ -1042,7 +1034,7 @@ function format_help_url($keyword)
     // all help urls need short language tag (de, en)
     $lang = 'de';
     if ($_SESSION['_language']) {
-        list($lang) = explode('_', $_SESSION['_language']);
+        [$lang] = explode('_', $_SESSION['_language']);
     }
 
     // determine Stud.IP version as of MAJOR.MINOR

@@ -60,8 +60,10 @@ class Course_MembersController extends AuthenticatedController
 
         SkipLinks::addIndex(Navigation::getItem('/course/members')->getTitle(), 'main_content', 100);
 
-        object_set_visit_module('participants');
-        $this->last_visitdate = object_get_visit($this->course_id, 'participants');
+
+        $this->studip_module = checkObjectModule('participants');
+        object_set_visit_module( $this->studip_module->getPluginId());
+        $this->last_visitdate = object_get_visit($this->course_id, $this->studip_module->getPluginId());
 
         // Check perms and set the last visit date
         if (!$this->is_tutor) {

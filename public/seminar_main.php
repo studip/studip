@@ -57,7 +57,7 @@ if (!$course_id) {
 
 //set visitdate for course, when coming from my_courses
 if (Request::get('auswahl')) {
-    object_set_visit($course_id, "sem");
+   object_set_visit($course_id, 0);
 }
 
 
@@ -76,24 +76,12 @@ if (Request::get('redirect_to')) {
     die;
 }
 
-$sem_class = Seminar::getInstance($course_id)->getSemClass();
-
-if ($sem_class->getSlotModule("overview")) {
-    foreach ($sem_class->getNavigationForSlot("overview") as $nav) {
-        header('Location: '.URLHelper::getURL($nav->getURL()));
+// der Nutzer zum ersten
+//Reiter der Veranstaltung weiter geleitet.
+if (Navigation::hasItem("/course")) {
+    foreach (Navigation::getItem("/course")->getSubNavigation() as $navigation) {
+        header('Location: ' . URLHelper::getURL($navigation->getURL()));
         die;
     }
-} else {
-    $Modules = new Modules();
-    $course_modules = $Modules->getLocalModules($course_id);
-    if (!$course_modules['overview'] && !$sem_class->isSlotMandatory("overview")) {
-        //Keine Übersichtsseite. Anstatt eines Fehler wird der Nutzer zum ersten
-        //Reiter der Veranstaltung weiter geleitet.
-        if (Navigation::hasItem("/course")) {
-            foreach (Navigation::getItem("/course")->getSubNavigation() as $navigation) {
-                header('Location: '.URLHelper::getURL($navigation->getURL()));
-                die;
-            }
-        }
-    }
 }
+

@@ -212,6 +212,16 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
             'assoc_foreign_key' => 'parent_course',
             'order_by'          => 'GROUP BY seminar_id ORDER BY VeranstaltungsNummer, Name'
         ];
+        $config['has_many']['tools'] = [
+            'class_name'        => 'ToolActivation',
+            'assoc_foreign_key' => 'range_id',
+            'order_by'          => 'ORDER BY position',
+            'on_delete'         => 'delete',
+        ];
+        $config['has_many']['member_notifications'] = [
+            'class_name'        => CourseMemberNotification::class,
+            'on_delete'         => 'delete',
+        ];
 
         $config['has_one']['courseware'] = [
             'class_name' => \Courseware\StructuralElement::class,
@@ -258,6 +268,7 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
         };
 
         $config['registered_callbacks']['before_update'][] = 'logStore';
+        $config['registered_callbacks']['after_create'][] = 'setDefaultTools';
         $config['registered_callbacks']['after_delete'][] = function ($course) {
             CourseAvatar::getAvatar($course->id)->reset();
             FeedbackElement::deleteBySQL('course_id = ?', [$course->id]);
@@ -931,5 +942,33 @@ class Course extends SimpleORMap implements Range, PrivacyObject, StudipItem, Fe
     public function isStudygroup()
     {
         return in_array($this->status, studygroup_sem_types());
+    }
+
+    /**
+     *
+     */
+    public function setDefaultTools()
+    {
+        $this->tools = [];
+        foreach (array_values($this->getSemClass()->getActivatedModuleObjects()) as  $pos => $module) {
+            $this->tools[] = ToolActivation::create(
+                [
+                    'plugin_id' => $module->getPluginId(),
+                    'range_type'  => 'course',
+                    'range_id' => $this->id,
+                    'position' => $pos
+                ]
+            );
+        }
+    }
+
+    /**
+     * @param $name string name of tool / plugin
+     * @return bool
+     */
+    public function isToolActive($name)
+    {
+        $plugin = PluginEngine::getPlugin($name);
+        return $plugin && $this->tools->findOneby('plugin_id', $plugin->getPluginId());
     }
 }

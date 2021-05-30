@@ -169,4 +169,16 @@ class DBSchemaVersion implements SchemaVersion
             $version
         );
     }
+
+    /**
+     * @param $domain
+     * @param $version
+     * @return string
+     */
+    static public function exists($domain, $version)
+    {
+        return (bool)DBManager::get()->fetchColumn(
+            "SELECT 1 FROM schema_versions WHERE `domain` = ? AND `version` = ?",
+            [$domain, $version]);
+    }
 }

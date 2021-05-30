@@ -206,46 +206,13 @@
         <legend>
             <?= _("Inhaltselemente") ?>
         </legend>
-        <? $container = [
-            'overview' => ['name' => _("Übersicht")],
-            'admin' => ['name' => _("Verwaltung")],
-            'forum' => ['name' => _("Forum")],
-            'participants' => ['name' => _("Teilnehmendenseite")],
-            'documents' => ['name' => _("Dateibereich")],
-            'schedule' => ['name' => _("Terminseite")],
-            'scm' => ['name' => _("Freie Informationen")],
-            'wiki' => ['name' => _("Wiki")],
-            'calendar' => ['name' => _("Kalender")],
-            'elearning_interface' => ['name' => _("Lernmodule")]
-        ];
-        ?>
-        <? foreach ($container as $container_id => $container_attributes) : ?>
 
-        <div container="<?= $container_id ?>" class="core_module_slot">
-            <h2><?= htmlReady($container_attributes['name']) ?></h2>
-            <div class="droparea limited<?= $sem_class->getSlotModule($container_id) !== null ? " full" : "" ?>">
-                <? if ($sem_class->getSlotModule($container_id) !== null) : ?>
-                    <?= $this->render_partial("admin/sem_classes/content_plugin.php",
-                        [
-                            'plugin' => $modules[$sem_class->getSlotModule($container_id)],
-                            'sem_class' => $sem_class,
-                            'plugin_id' => $sem_class->getSlotModule($container_id),
-                            'activated' => $sem_class['modules'][$sem_class->getSlotModule($container_id)]['activated'],
-                            'sticky' => $sem_class['modules'][$sem_class->getSlotModule($container_id)]['sticky']
-                        ]
-                    )?>
-                <? unset($modules[$sem_class->getSlotModule($container_id)]) ?>
-                <? endif ?>
-            </div>
-        </div>
-        <? endforeach ?>
-        <br>
-        <div container="plugins" id="plugins">
-            <h2 title="<?= _("Diese Plugins sind standardmäßig bei den Veranstaltungen dieser Klasse aktiviert.") ?>"><?= _("Plugins") ?></h2>
+
+        <div container="plugins" id="plugins" class="core_module_slot">
+            <h2 title="<?= _("Diese Inhaltselemente sind standardmäßig bei den Veranstaltungen dieser Klasse aktiviert.") ?>"><?= _("Aktivierte Inhaltselemente") ?></h2>
             <div class="droparea">
                 <? foreach ($modules as $module_name => $module_info) : ?>
-                <? $module_attribute = $sem_class->getModuleMetadata($module_name); ?>
-                <? if (is_numeric($module_info['id'])) : ?>
+                <? if ($module_info['activated']) : ?>
                     <?= $this->render_partial("admin/sem_classes/content_plugin.php",
                         [
                             'plugin' => $module_info,
@@ -264,13 +231,12 @@
             <h2 title="<?= _("Diese Module sind standardmäßig nicht aktiviert.") ?>"><?= _("Nichtaktivierte Inhaltselemente") ?></h2>
             <div class="droparea">
                 <? foreach ($modules as $module_name => $module_info) {
-                    $module_id = $module_info['id'];
-                    if (!is_numeric($module_id) && !$sem_class['modules'][$module_id]['activated']) {
+                    if (!$module_info['activated']) {
                         echo $this->render_partial("admin/sem_classes/content_plugin.php",
                             [
                                 'plugin' => $module_info,
                                 'sem_class' => $sem_class,
-                                'plugin_id' => $module_id,
+                                'plugin_id' => $module_name,
                                 'activated' => $sem_class['modules'][$module_id]['activated'],
                                 'sticky' => $sem_class['modules'][$module_id]['sticky']
                             ]

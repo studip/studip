@@ -9,8 +9,9 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreStudygroupAdmin implements StudipModule
+class CoreStudygroupAdmin extends CorePlugin implements StudipModule
 {
+
     /**
      * {@inheritdoc}
      */
@@ -55,5 +56,16 @@ class CoreStudygroupAdmin implements StudipModule
     public function getMetadata()
     {
          return [];
+    }
+
+    public function isActivatableForContext(Range $context)
+    {
+        return false;
+    }
+
+    public function getInfoTemplate($course_id)
+    {
+        // TODO: Implement getInfoTemplate() method.
+        return null;
     }
 }

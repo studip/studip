@@ -186,49 +186,28 @@ class PluginManager
      * Get the activation status of a plugin in the given context.
      * This also checks the plugin default activations and sem_class-settings.
      *
-     * @param $id        id of the plugin
-     * @param $context   context range id
+     * @param $id        int of the plugin
+     * @param $context   string range id
+     * @returns bool
      */
     public function isPluginActivated ($id, $context)
     {
-        if (!$context) {
-            return;
+        if (!DBSchemaVersion::exists('studip', '20210201')) {
+            return null;
         }
 
-        $plugin_class = $this->plugins[$id]['class'];
+        if (!$context) {
+            return null;
+        }
         if (!isset($this->plugins_activated_cache[$context])) {
-            $query = "SELECT pluginid, state
-                      FROM plugins_activated
-                      WHERE range_type IN ('sem', 'inst')
-                        AND range_id = ?";
+            $query = "SELECT plugin_id, 1 as state
+                      FROM tools_activated
+                      WHERE range_id = ?";
             $statement = DBManager::get()->prepare($query);
             $statement->execute([$context]);
             $this->plugins_activated_cache[$context] = $statement->fetchGrouped(PDO::FETCH_COLUMN);
         }
-        $state = $this->plugins_activated_cache[$context][$id];
-        if (get_object_type($context, ['sem']) === 'sem') {
-            if ($state === null) {
-                if (!isset($this->plugins_default_activations_cache[$context])) {
-                    $query = "SELECT pluginid, 1 AS state
-                              FROM plugins_default_activations
-                              JOIN seminar_inst ON (institutid = institut_id)
-                              WHERE seminar_id = ?";
-                    $statement = DBManager::get()->prepare($query);
-                    $statement->execute([$context]);
-                    $this->plugins_default_activations_cache[$context] = $statement->fetchGrouped(PDO::FETCH_COLUMN);
-                }
-                $inst_default = $this->plugins_default_activations_cache[$context][$id];
-            }
-            $sem_class = $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][Seminar::GetInstance($context)->status]['class']];
-            if ($sem_class) {
-                $modules = $sem_class->getModules();
-                $sem_class_default = $modules[$plugin_class]['activated'];
-                $mandatory = $modules[$plugin_class]['sticky'] && $sem_class_default;
-                $forbidden = $modules[$plugin_class]['sticky'] && !$sem_class_default;
-            }
-        }
-        return ((($inst_default || $sem_class_default) && $state !== '0' || $state === '1') && !$forbidden)
-            || $mandatory;
+        return isset($this->plugins_activated_cache[$context][$id]);
     }
 
     /**
@@ -268,17 +247,26 @@ class PluginManager
      * @param $id        id of the plugin
      * @param $rangeId   context range id
      * @param $active    plugin status (true or false)
-     * @param $context   context of plugin activation
      */
-    public function setPluginActivated ($id, $rangeId, $active, $context = 'sem')
+    public function setPluginActivated ($id, $rangeId, $active)
     {
-        $db = DBManager::get();
-        $state = $active ? 1 : 0;
         unset($this->plugins_activated_cache[$rangeId]);
-
-        $stmt = $db->prepare('REPLACE INTO plugins_activated (pluginid, range_type, range_id, state)
-                              VALUES (?, ?, ?, ?)');
-        return $stmt->execute([$id, $context, $rangeId, $state]);
+        $activation = ToolActivation::find([$rangeId, $id]);
+        if (!$activation) {
+            $range = get_object_by_range_id($rangeId);
+            $activation = new ToolActivation();
+            $activation->range_id = $rangeId;
+            $activation->plugin_id = $id;
+            $activation->range_type = $range->getRangeType();
+        }
+        $plugin = $this->getPluginById($id);
+        if ($active) {
+            call_user_func([get_class($plugin), 'onActivation'], $id, $rangeId);
+            return $activation->store();
+        } else {
+            call_user_func([get_class($plugin), 'onDeactivation'], $id, $rangeId);
+            return $activation->delete();
+        }
     }
 
     /**

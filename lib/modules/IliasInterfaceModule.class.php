@@ -8,7 +8,7 @@
  * @since     4.3
  */
 
-class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, SystemPlugin
+class IliasInterfaceModule extends CorePlugin implements StudipModule, SystemPlugin
 {
     public function __construct()
     {
@@ -28,11 +28,12 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
 
     public function isActivatableForContext(Range $context)
     {
-        return Config::get()->ILIAS_INTERFACE_ENABLE;
+        return Config::get()->ILIAS_INTERFACE_ENABLE && $context->getRangeType() === 'course';
     }
 
     public function getInfoTemplate($course_id)
     {
+        return null;
     }
 
     public function getIconNavigation($course_id, $last_visit, $user_id)
@@ -48,7 +49,7 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
                 LEFT JOIN object_user_visits AS b
                   ON b.object_id = a.object_id
                      AND b.user_id = :user_id
-                     AND b.type = 'ilias_interface'
+                     AND b.plugin_id = :plugin_id
                 WHERE a.object_id = :course_id
                 GROUP BY a.object_id";
 
@@ -56,6 +57,7 @@ class IliasInterfaceModule extends StudIPPlugin implements StandardPlugin, Syste
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $course_id);
         $statement->bindValue(':threshold', $last_visit);
+        $statement->bindValue(':plugin_id', $this->getPluginId());
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 

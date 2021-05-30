@@ -39,7 +39,7 @@ class Institute_OverviewController extends AuthenticatedController
 
         //set visitdate for institute, when coming from meine_seminare
         if (Request::option('auswahl')) {
-            object_set_visit($this->institute_id, "inst");
+            object_set_visit($this->institute_id, 0);
         }
 
         //gibt es eine Anweisung zur Umleitung?

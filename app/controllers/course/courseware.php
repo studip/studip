@@ -20,8 +20,13 @@ class Course_CoursewareController extends AuthenticatedController
         PageLayout::setTitle(_('Courseware'));
         PageLayout::setHelpKeyword('Basis.Courseware');
 
-        object_set_visit_module('courseware');
-        $this->last_visitdate = object_get_visit(Context::getId(), 'courseware');
+        checkObject();
+        if (!Context::isCourse()) {
+            throw new CheckObjectException(_('Es wurde keine passende Veranstaltung gefunden.'));
+        }
+        $this->studip_module = checkObjectModule('CoursewareModule', true);
+        object_set_visit_module($this->studip_module->getPluginId());
+        $this->last_visitdate = object_get_visit(Context::getId(), $this->studip_module->getPluginId());
     }
 
     public function index_action()

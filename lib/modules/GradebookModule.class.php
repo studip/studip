@@ -14,7 +14,7 @@ use Grading\Instance;
  * @author      <mlunzena@uos.de>
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  */
-class GradebookModule extends StudIPPlugin implements SystemPlugin, StandardPlugin
+class GradebookModule extends CorePlugin implements SystemPlugin, StudipModule
 {
     public function __construct()
     {
@@ -148,7 +148,7 @@ class GradebookModule extends StudIPPlugin implements SystemPlugin, StandardPlug
             'keywords' => _('automatische und manuelle Erfassung von gewichteten Leistungen;Export von Leistungen;persönliche Fortschrittskontrolle'),
             'icon' => Icon::create('assessment', Icon::ROLE_INFO),
             'screenshots' => [
-                'path' => '../../assets/images/plus/screenshots/Gradebook',
+                'path' => 'assets/images/plus/screenshots/Gradebook',
                 'pictures' => [
                     [
                         'source' => 'Lehrendensicht.png',
@@ -161,5 +161,10 @@ class GradebookModule extends StudIPPlugin implements SystemPlugin, StandardPlug
                 ],
             ],
         ];
+    }
+
+    public function isActivatableForContext(Range $context)
+    {
+        return $context->getRangeType() === 'course';
     }
 }

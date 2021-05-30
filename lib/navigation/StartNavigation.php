@@ -34,14 +34,13 @@ class StartNavigation extends Navigation
             if (WidgetHelper::hasWidget($GLOBALS['user']->id, 'News')) {
                 $news = StudipNews::CountUnread();
             }
-
             if (Config::get()->VOTE_ENABLE && WidgetHelper::hasWidget($GLOBALS['user']->id, 'Evaluations')) {
                 $threshold = object_get_visit_threshold();
                 $statement = DBManager::get()->prepare("
                     SELECT COUNT(*)
                     FROM questionnaire_assignments
                         INNER JOIN questionnaires ON (questionnaires.questionnaire_id = questionnaire_assignments.questionnaire_id)
-                    LEFT JOIN object_user_visits b ON (b.object_id = questionnaires.questionnaire_id AND b.user_id = :user_id AND b.type = 'vote')
+                    LEFT JOIN object_user_visits b ON (b.object_id = questionnaires.questionnaire_id AND b.user_id = :user_id AND b.plugin_id = :plugin_id)
 
                     WHERE questionnaire_assignments.range_id = 'start'
                         AND questionnaires.chdate > IFNULL(b.visitdate, :threshold)
@@ -51,18 +50,19 @@ class StartNavigation extends Navigation
                     questionnaires.stopdate IS NULL OR questionnaires.stopdate > UNIX_TIMESTAMP() )
                 ");
                 $statement->execute(['threshold' => $threshold,
-                    ':user_id' => $GLOBALS['user']->id]);
+                    ':user_id' => $GLOBALS['user']->id, ':plugin_id' => -1]);
                 $vote = (int) $statement->fetchColumn();
                 $query = "SELECT COUNT(IF(chdate > IFNULL(b.visitdate, :threshold) AND d.author_id != :user_id, a.eval_id, NULL))
                           FROM eval_range a
                           INNER JOIN eval d ON (a.eval_id = d.eval_id AND d.startdate < UNIX_TIMESTAMP() AND
                                             (d.stopdate > UNIX_TIMESTAMP() OR d.startdate + d.timespan > UNIX_TIMESTAMP() OR (d.stopdate IS NULL AND d.timespan IS NULL)))
-                          LEFT JOIN object_user_visits b ON (b.object_id = d.eval_id AND b.user_id = :user_id AND b.type = 'eval')
+                          LEFT JOIN object_user_visits b ON (b.object_id = d.eval_id AND b.user_id = :user_id AND b.plugin_id = :plugin_id)
                           WHERE a.range_id = 'studip'
                           GROUP BY a.range_id";
                 $statement = DBManager::get()->prepare($query);
                 $statement->bindValue(':user_id', $GLOBALS['user']->id);
                 $statement->bindValue(':threshold', $threshold);
+                $statement->bindValue(':plugin_id', -2);
                 $statement->execute();
                 $vote += (int)$statement->fetchColumn();
             }

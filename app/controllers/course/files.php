@@ -21,14 +21,12 @@ class Course_FilesController extends AuthenticatedController
         parent::before_filter($action, $args);
 
         checkObject();
-        checkObjectModule('documents');
-        object_set_visit_module('documents');
-
+        $this->studip_module = checkObjectModule('documents');
         if (!Context::isCourse()) {
             throw new CheckObjectException(_('Es wurde keine passende Veranstaltung gefunden.'));
         }
         $this->course = Context::get();
-        $this->last_visitdate = object_get_visit($this->course->id, 'documents');
+        $this->last_visitdate = object_get_visit($this->course->id, $this->studip_module->getPluginId());
 
         PageLayout::setHelpKeyword('Basis.Dateien');
         PageLayout::setTitle(Context::get()->getFullname() . ' - ' . _('Dateien'));

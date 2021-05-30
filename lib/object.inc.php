@@ -38,10 +38,12 @@
 // +---------------------------------------------------------------------------+
 
 
-function object_set_visit_module($type){
-    if (object_get_visit(Context::getId(), $type, false, false)
-            < object_get_visit(Context::getId(), Context::getClass(), false, false)){
-        object_set_visit(Context::getId(), $type);
+function object_set_visit_module($plugin_id)
+{
+    $plugin_id = object_type_to_id($plugin_id);
+    if (object_get_visit(Context::getId(), $plugin_id, false, false)
+            < object_get_visit(Context::getId(), 0, false, false)){
+        object_set_visit(Context::getId(), $plugin_id);
     }
 }
 
@@ -53,25 +55,26 @@ function object_set_visit_module($type){
 * @param    string  the user who visited the object - if not given, the actual user is used
 *
 */
-function object_set_visit($object_id, $type, $user_id = '')
+function object_set_visit($object_id, $plugin_id, $user_id = '')
 {
     global $user;
+    $plugin_id = object_type_to_id($plugin_id);
     if (!$user_id) {
         $user_id = $user->id;
     }
 
-    $last_visit = object_get_visit($object_id, $type, FALSE, false , $user_id);
+    $last_visit = object_get_visit($object_id, $plugin_id, FALSE, false , $user_id);
 
     if ($last_visit === false) {
         $last_visit = object_get_visit_threshold();
     }
 
-    $query = "INSERT INTO object_user_visits (object_id, user_id, type, visitdate, last_visitdate)
+    $query = "INSERT INTO object_user_visits (object_id, user_id, plugin_id, visitdate, last_visitdate)
               VALUES (?, ?, ?, UNIX_TIMESTAMP(), ?) ON DUPLICATE KEY UPDATE visitdate=UNIX_TIMESTAMP(), last_visitdate=?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute([$object_id, $user_id, $type, $last_visit, $last_visit]);
+    $statement->execute([$object_id, $user_id, $plugin_id, $last_visit, $last_visit]);
 
-    return object_get_visit($object_id, $type, FALSE, false, $user_id, true);
+    return object_get_visit($object_id, $plugin_id, FALSE, false, $user_id, true);
 }
 
 /**
@@ -85,11 +88,12 @@ function object_set_visit($object_id, $type, $user_id = '')
 * @return   int the timestamp of the last visit or FALSE
 *
 */
-function object_get_visit($object_id, $type, $mode = "last", $open_object_id = '', $user_id = '', $refresh_cache = false)
+function object_get_visit($object_id, $plugin_id, $mode = "last", $open_object_id = '', $user_id = '', $refresh_cache = false)
 {
     global $user;
     static $cache;
 
+    $plugin_id = object_type_to_id($plugin_id);
     if (!$user_id) {
         $user_id = $user->id;
     }
@@ -97,24 +101,24 @@ function object_get_visit($object_id, $type, $mode = "last", $open_object_id = '
         $open_object_id = $object_id;
     }
     if ($refresh_cache) {
-        $cache[$object_id][$type][$user_id] = null;
+        $cache[$object_id][$plugin_id][$user_id] = null;
     }
 
-    if ($cache[$object_id][$type][$user_id]) {
+    if ($cache[$object_id][$plugin_id][$user_id]) {
         return $mode == 'last'
-             ? $cache[$object_id][$type][$user_id]['last_visitdate']
-             : $cache[$object_id][$type][$user_id]['visitdate'];
+             ? $cache[$object_id][$plugin_id][$user_id]['last_visitdate']
+             : $cache[$object_id][$plugin_id][$user_id]['visitdate'];
     }
 
     $query = "SELECT visitdate, last_visitdate
               FROM object_user_visits
-              WHERE object_id = ? AND user_id = ? AND type = ?";
+              WHERE object_id = ? AND user_id = ? AND plugin_id = ?";
     $statement = DBManager::get()->prepare($query);
-    $statement->execute([$object_id, $user_id, $type]);
+    $statement->execute([$object_id, $user_id, $plugin_id]);
     $temp = $statement->fetch(PDO::FETCH_ASSOC);
 
     if ($temp) {
-        $cache[$object_id][$type][$user_id] = $temp;
+        $cache[$object_id][$plugin_id][$user_id] = $temp;
 
         return $mode == 'last'
              ? $temp['last_visitdate']
@@ -123,7 +127,7 @@ function object_get_visit($object_id, $type, $mode = "last", $open_object_id = '
     } elseif ($open_object_id) {
         $query = "SELECT visitdate, last_visitdate
                   FROM object_user_visits
-                  WHERE object_id = ? AND user_id = ? AND type IN ('sem', 'inst')";
+                  WHERE object_id = ? AND user_id = ? AND plugin_id = 0";
         $statement = DBManager::get()->prepare($query);
         $statement->execute([$open_object_id, $user_id]);
         $temp = $statement->fetch(PDO::FETCH_ASSOC);
@@ -156,16 +160,17 @@ function object_get_visit($object_id, $type, $mode = "last", $open_object_id = '
  *
  * @note This function will respect the visit threshold defined in NEW_INDICATOR_THRESHOLD config.
  */
-function get_objects_visits(array $object_ids, $type, $mode = 'last', $user_id = null, $additional_types = [])
+function get_objects_visits(array $object_ids, $plugin_id, $mode = 'last', $user_id = null, $additional_plugins = [])
 {
+    $plugin_id = object_type_to_id($plugin_id);
     // Combine types
-    $types = array_merge([$type], $additional_types);
+    $plugin_ids = array_merge([$plugin_id], $additional_plugins);
 
     // Create result array with predefined values / defined threshold
     $threshold  = object_get_visit_threshold();
-    $thresholds = array_combine($types, array_fill(
+    $thresholds = array_combine($plugin_ids, array_fill(
         0,
-        count($types),
+        count($plugin_ids),
         $mode === null ? ['last_visitdate' => $threshold, 'visitdate' => $threshold] : $threshold
     ));
     $result = array_combine(
@@ -174,14 +179,14 @@ function get_objects_visits(array $object_ids, $type, $mode = 'last', $user_id =
     );
 
     // Read data from database
-    $query = "SELECT `object_id`, `type`, `visitdate`, `last_visitdate`
+    $query = "SELECT `object_id`, `plugin_id`, `visitdate`, `last_visitdate`
               FROM `object_user_visits`
               WHERE `object_id` IN (:ids)
-                AND `type` IN (:type)
+                AND `plugin_id` IN (:plugin_ids)
                 AND `user_id` = :user_id";
     $statement = DBManager::get()->prepare($query);
     $statement->bindValue(':ids', $object_ids);
-    $statement->bindValue(':type', $types);
+    $statement->bindValue(':plugin_ids', $plugin_ids);
     $statement->bindValue(':user_id', $user_id ?? $GLOBALS['user']->id);
     $statement->execute();
     $statement->setFetchMode(PDO::FETCH_ASSOC);
@@ -204,8 +209,8 @@ function get_objects_visits(array $object_ids, $type, $mode = 'last', $user_id =
     // Reduce array if not additional types were passed
     if (func_num_args() < 5) {
         // Unfortunately array_column() will dispose the array key
-        $result = array_map(function ($row) use ($type) {
-            return $row[$type];
+        $result = array_map(function ($row) use ($plugin_id) {
+            return $row[$plugin_id];
         }, $result);
     }
 
@@ -293,4 +298,42 @@ function object_return_views ($object_id)
     $statement = DBManager::get()->prepare($query);
     $statement->execute([$object_id]);
     return $statement->fetchColumn() ?: 0;
+}
+
+/**
+ * converts a ouv type to an id
+ * @param $type string former used type of visited objects or module (i.e. news, documents, wiki)
+ * @return int
+ */
+function object_type_to_id($type)
+{
+    if (is_numeric($type)) {
+        return $type;
+    }
+    $ouv_mapping = [
+        'sem' => 0,
+        'inst'=> 0,
+        'basicdata' => 0,
+        'vote' => -1,
+        'eval' => -2,
+        'news' => 'CoreOverview',
+        'documents' => 'CoreDocuments',
+        'schedule' => 'CoreSchedule',
+        'scm' =>  'CoreScm',
+        'wiki' => 'CoreWiki',
+        'elearning_interface' => 'CoreElearningInterface',
+        'ilias_interface' => 'IliasInterfaceModule',
+        'participants' => 'CoreParticipants'
+    ];
+    if (isset($ouv_mapping[$type])) {
+        $id = $ouv_mapping[$type];
+        if (is_numeric($id)) {
+            return $id;
+        }
+        $plugin = PluginEngine::getPlugin($id);
+        if ($plugin) {
+            return $plugin->getPluginId();
+        }
+    }
+
 }

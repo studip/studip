@@ -127,7 +127,7 @@ if (!$values['parent_course'] || !in_array($values['parent_course'], array_keys(
             <td style="text-align: left; white-space: nowrap;">
                 <? if (!empty($values['navigation'])) : ?>
                     <? foreach (MyRealmModel::array_rtrim($values['navigation']) as $key => $nav)  : ?>
-                        <? if (isset($nav) && $nav->isVisible(true)) : ?>
+                        <? if ($nav instanceof Navigation && $nav->isVisible(true)) : ?>
                             <a href="<?=
                             UrlHelper::getLink('seminar_main.php',
                                 ['auswahl'     => $semid,

@@ -28,17 +28,6 @@ require_once 'lib/object.inc.php';
 
 class MyRealmModel
 {
-    const AVAILABLE_MODULES = [
-        'forum',
-        'participants',
-        'documents',
-        'overview',
-        'scm',
-        'schedule',
-        'wiki',
-        'vote',
-        'elearning_interface',
-    ];
 
     /**
      * Check the voting system
@@ -65,7 +54,7 @@ class MyRealmModel
                 MAX(IF((questionnaires.chdate > IFNULL(object_user_visits.visitdate, :threshold) AND questionnaires.user_id !=:user_id), questionnaires.chdate, 0)) AS last_modified
             FROM questionnaire_assignments
                 INNER JOIN questionnaires ON (questionnaires.questionnaire_id = questionnaire_assignments.questionnaire_id)
-                LEFT JOIN object_user_visits ON(object_user_visits.object_id = questionnaires.questionnaire_id AND object_user_visits.user_id = :user_id AND object_user_visits.type = 'vote')
+                LEFT JOIN object_user_visits ON(object_user_visits.object_id = questionnaires.questionnaire_id AND object_user_visits.user_id = :user_id AND object_user_visits.plugin_id = -1)
             WHERE (
                     (
                         questionnaire_assignments.range_id = :course_id
@@ -84,9 +73,10 @@ class MyRealmModel
             GROUP BY questionnaire_assignments.range_id
         ");
         $statement->execute([
-            'threshold'       => $threshold,
-            'user_id'         => $user_id,
-            'course_id'       => $object_id,
+            'threshold'        => $threshold,
+            'user_id'          => $user_id,
+            'course_id'        => $object_id,
+            'plugin_id'        => -1,
             'statusgruppe_ids' => array_map(function ($g) { return $g->getId(); }, $statusgruppen)
         ]);
 
@@ -110,7 +100,7 @@ class MyRealmModel
                 INNER JOIN eval d
                   ON (a.eval_id = d.eval_id AND d.startdate < UNIX_TIMESTAMP() AND (d.stopdate > UNIX_TIMESTAMP() OR d.startdate + d.timespan > UNIX_TIMESTAMP() OR (d.stopdate IS NULL AND d.timespan IS NULL)))
                 LEFT JOIN object_user_visits b
-                  ON (b.object_id = a.eval_id AND b.user_id = :user_id AND b . type = 'eval')
+                  ON (b.object_id = a.eval_id AND b.user_id = :user_id AND b.plugin_id = :plugin_id)
                 WHERE a.range_id = :course_id
                 GROUP BY a.range_id";
 
@@ -118,6 +108,7 @@ class MyRealmModel
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $object_id);
         $statement->bindValue(':threshold', object_get_visit_threshold());
+        $statement->bindValue(':plugin_id', -2);
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         if (!empty($result)) {
@@ -164,28 +155,6 @@ class MyRealmModel
         return null;
     }
 
-
-    /**
-     * Get the plugin icon navigation for a course
-     * @param $seminar_id
-     * @param $visitdate
-     * @return mixed
-     */
-    public static function getPluginNavigationForSeminar($seminar_id, $sem_class, $user_id, $visitdate)
-    {
-        $plugin_navigation = [];
-        $plugins = PluginEngine::getPlugins('StandardPlugin', $seminar_id);
-
-        foreach ($plugins as $plugin) {
-            if (!$sem_class->isSlotModule(get_class($plugin))) {
-                $nav = $plugin->getIconNavigation($seminar_id, $visitdate, $user_id);
-                if ($nav instanceof Navigation) {
-                    $plugin_navigation[get_class($plugin)] = $nav;
-                }
-            }
-        }
-        return $plugin_navigation;
-    }
 
 
     /**
@@ -332,11 +301,11 @@ class MyRealmModel
         }
 
         // filtering courses
-        $modules = new Modules();
         $member_ships = User::findCurrent()->course_memberships->toGroupedArray('seminar_id', 'status gruppe');
-        $visits = get_objects_visits($courses->pluck('id'), 'sem', null, null, self::AVAILABLE_MODULES);
+        $visits = get_objects_visits($courses->pluck('id'), 0, null, null, array_keys(self::getDefaultModules()));
         $children = [];
         $semester_assign = [];
+
         foreach ($courses as $index => $course) {
             // export object to array for simple handling
             $_course = $course->toArray($param_array);
@@ -366,13 +335,13 @@ class MyRealmModel
                 });
             }
 
-            $_course['last_visitdate'] = $visits[$course->id]['sem']['last_visitdate'];
-            $_course['visitdate']      = $visits[$course->id]['sem']['visitdate'];
+            $_course['last_visitdate'] = $visits[$course->id][0]['last_visitdate'];
+            $_course['visitdate']      = $visits[$course->id][0]['visitdate'];
             $_course['user_status']    = $user_status;
             $_course['gruppe']         = !$is_deputy ? @$member_ships[$course->id]['gruppe'] : $deputy->gruppe;
             $_course['sem_number_end'] = $course->isOpenEnded() ? $max_sem_key : Semester::getIndexById($course->end_semester->id);
             $_course['sem_number']     = Semester::getIndexById($course->start_semester->id);
-            $_course['modules']        = $modules->getLocalModules($course->id, 'sem', $course->modules, $course->status);
+            $_course['tools']        = $course->tools;
             $_course['name']           = $course->name;
             $_course['temp_name']      = $course->name;
             $_course['number']         = $course->veranstaltungsnummer;
@@ -480,81 +449,59 @@ class MyRealmModel
      */
     public static function getAdditionalNavigations($object_id, &$my_obj_values, $sem_class, $user_id, $visit_data = [])
     {
-        $plugin_navigation = self::getPluginNavigationForSeminar($object_id, $sem_class, $user_id, $my_obj_values['visitdate']);
-
-        foreach (self::AVAILABLE_MODULES as $key) {
+        foreach (self::getDefaultModules() as $plugin_id => $plugin) {
 
             // Go to next module if current module is not available and not voting-module
-            if (!$my_obj_values['modules'][$key] && $key !== 'vote') {
-                $navigation[$key] = null;
+            if ($plugin !== 'vote' && !$my_obj_values['tools']->findOneBy('plugin_id', $plugin_id)) {
+                $navigation[$plugin_id] = null;
                 continue;
             }
 
-            if (!Config::get()->VOTE_ENABLE && $key === 'vote') {
+            if (!Config::get()->VOTE_ENABLE && $plugin_id === 'vote') {
                 continue;
             }
 
-            $nav = false;
-
-            if ($sem_class) {
-                $module = $sem_class->getModule($key);
-                if ($module instanceof StudipModule) {
-                    $nav = $module->getIconNavigation($object_id, $visit_data[$key]['visitdate'], $user_id) ?: false;
-                }
-            }
-
-            if ($nav === false) {
-                $function = 'check' . ucfirst($key);
-
-                if (method_exists(__CLASS__, $function)) {
-                    $params = [
-                        &$my_obj_values,
-                        $user_id,
-                        $object_id,
-                    ];
-                    if ($key === 'participants') {
-                        $params[] = false;
-                    }
-                    $nav = call_user_func_array(['self', $function], $params);
-
-                }
+            if ($plugin === 'vote') {
+                $nav = self::checkVote($my_obj_values, $user_id, $object_id);
+            } else if ($tool = $my_obj_values['tools']->findOneBy('plugin_id', $plugin_id)) {
+                $nav = $plugin->getIconNavigation($object_id, $visit_data[$plugin_id]['visitdate'], $user_id) ?: false;
             }
 
             // add the main navigation item to resultset
-            $navigation[$key] = $nav ?: null;
+            $navigation[$plugin_id] = $nav ?: null;
             unset($nav);
         }
-
-        $navigation = array_merge($navigation, $plugin_navigation);
-        unset($plugin_navigation);
+        foreach ($my_obj_values['tools'] as $tool) {
+            if (array_key_exists($tool->plugin_id, $navigation)) continue;
+            $module = $tool->getStudipModule();
+            if (!$module) continue;
+            if (get_class($module)  === 'CoreAdmin') continue;
+            if (get_class($module)  === 'CoreStudygroupAdmin') continue;
+            $navigation[$tool->plugin_id] = $module->getIconNavigation($object_id, $visit_data[$tool->plugin_id]['visitdate'], $user_id);
+        }
         return $navigation;
     }
 
     /**
      * This function reset all visits on every available modules
      * @param $object
-     * @param $object_id
      * @param $user_id
      * @return bool
      */
-    public static function setObjectVisits(&$object, $object_id, $user_id, $timestamp = null)
+    public static function setObjectVisits($object, $user_id, $timestamp = null)
     {
         // load plugins, so they have a chance to register themselves as observers
         PluginEngine::getPlugins('StandardPlugin');
 
         // Update news, votes and evaluations
         $query = "INSERT INTO object_user_visits
-                    (object_id, user_id, type, visitdate, last_visitdate)
+                    (object_id, user_id, plugin_id, visitdate, last_visitdate)
                   (
-                    SELECT news_id, :user_id, 'news', :timestamp, 0
-                    FROM news_range
-                    WHERE range_id = :id
-                  ) UNION (
-                    SELECT questionnaire_id, :user_id, 'vote', :timestamp, 0
+                    SELECT questionnaire_id, :user_id, '-1', :timestamp, 0
                     FROM questionnaire_assignments
                     WHERE range_id = :id
                   ) UNION (
-                    SELECT eval_id, :user_id, 'eval', :timestamp, 0
+                    SELECT eval_id, :user_id, '-2', :timestamp, 0
                     FROM eval_range
                     WHERE range_id = :id
                   )
@@ -562,23 +509,23 @@ class MyRealmModel
         $statement = DBManager::get()->prepare($query);
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':timestamp', $timestamp ?: time());
-        $statement->bindValue('id', $object_id);
+        $statement->bindValue('id', $object->id);
         $statement->execute();
 
         // Update all activated modules
-        foreach (self::AVAILABLE_MODULES as $module) {
+        foreach (self::getDefaultModules() as $id => $module) {
             // Skip modules that were already handled above
-            if (in_array($module, ['overview', 'vote', 'eval'])) {
+            if ($module === 'vote') {
                 continue;
             }
 
-            if ($object['modules'][$module]) {
-                object_set_visit($object_id, $module);
+            if ($object->tools->findBy('plugin_id', $id)) {
+                object_set_visit($object->id, $id);
             }
         }
 
         // Update object itself
-        object_set_visit($object_id, $object['obj_type']);
+        object_set_visit($object->id, 0);
 
         return true;
     }
@@ -651,10 +598,11 @@ class MyRealmModel
 
         $insts = new SimpleCollection($memberShips);
         $ids = $insts->pluck('institut_id');
-        $visits = get_objects_visits($ids, 'inst', null, null, self::AVAILABLE_MODULES);
+        $visits = get_objects_visits($ids, 0, null, null, array_keys(self::getDefaultModules('institute')));
 
         $institutes = $insts->map(function ($a) use ($visits) {
             $inst                   = $a->institute->toArray();
+            $inst['tools']          = $a->institute->tools;
             $inst['perms']          = $a->inst_perms;
             $inst['visitdate']      = $visits[$a->institut_id]['inst']['visitdate'];
             $inst['last_visitdate'] = $visits[$a->institut_id]['inst']['last_visitdate'];
@@ -664,9 +612,7 @@ class MyRealmModel
 
 
         if ($institutes) {
-            $Modules = new Modules();
             foreach ($institutes as $index => $inst) {
-                $institutes[$index]['modules']    = $Modules->getLocalModules($inst['institut_id'], 'inst', $inst['modules'], $inst['type'] ? : 1);
                 $institutes[$index]['obj_type']   = 'inst';
                 $institutes[$index]['navigation'] = self::getAdditionalNavigations(
                     $inst['institut_id'],
@@ -853,11 +799,10 @@ class MyRealmModel
             )
         );
 
-        $visit_data = get_objects_visits(array_keys($studygroups), 'sem', null, null, self::AVAILABLE_MODULES);
+        $visit_data = get_objects_visits(array_keys($studygroups), 'sem', null, null, array_keys(self::getDefaultModules()));
 
         $data_fields = 'name seminar_id visible veranstaltungsnummer start_time duration_time status visible '
-                     . 'chdate admission_binding modules admission_prelim';
-        $modules = new Modules();
+                     . 'chdate admission_binding admission_prelim';
         $studygroup_data = [];
         foreach ($studygroup_memberships as $membership) {
             $studygroup = $studygroups[$membership->seminar_id];
@@ -868,14 +813,8 @@ class MyRealmModel
             $data['obj_type'] = 'sem';
             $data['user_status'] = $membership->status;
             $data['gruppe'] = $membership->gruppe;
-            $data['modules'] = $modules->getLocalModules(
-                $studygroup->id,
-                'sem',
-                $studygroup->modules,
-                $studygroup->status
-            );
-            $data['visitdate'] = $visit_data[$studygroup->id]['sem']['visitdate'];
-            $data['last_visitdate'] = $visit_data[$studygroup->id]['sem']['last_visitdate'];
+            $data['visitdate'] = $visit_data[$studygroup->id][0]['visitdate'];
+            $data['last_visitdate'] = $visit_data[$studygroup->id][0]['last_visitdate'];
             $data['navigation'] = self::getAdditionalNavigations(
                 $studygroup->id,
                 $data,
@@ -993,5 +932,22 @@ class MyRealmModel
         }
 
         return $sorted;
+    }
+
+    public static function getDefaultModules($range_type = 'course')
+    {
+        $default_modules = [];
+        if ($range_type === 'course') {
+            $sem_class = SemClass::getClasses()[1];
+        } else {
+            $sem_class = SemClass::getDefaultInstituteClass(1);
+        }
+        foreach ($sem_class->getActivatedModuleObjects() as $id => $plugin) {
+            if (get_class($plugin) === 'CoreAdmin') continue;
+            if (get_class($plugin) === 'CoreStudygroupAdmin') continue;
+            $default_modules[$id] = $plugin;
+        }
+        $default_modules[-1] = 'vote';
+        return $default_modules;
     }
 }

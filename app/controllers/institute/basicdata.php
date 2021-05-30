@@ -228,9 +228,6 @@ class Institute_BasicdataController extends AuthenticatedController
                 return $this->redirect('institute/basicdata/index/new');
             }
 
-            // Initialize modules
-            $modules = new Modules;
-            $institute->modules = $modules->getDefaultBinValue('', 'inst', $institute->type);
 
             // Declare faculty status if neccessary
             if (!$institute->fakultaets_id) {
@@ -283,17 +280,12 @@ class Institute_BasicdataController extends AuthenticatedController
             // Log creation of institute
             StudipLog::log('INST_CREATE', $institute->id, null, null, ''); // logging
 
-            // Further initialize modules (the modules class setup is in
-            // no way expensive, so it can be constructed twice, don't worry)
-            $modules = new Modules;
-            $module_list = $modules->getLocalModules($institute->id, 'inst', $institute->modules, $institute->type);
-
             PageLayout::postSuccess(sprintf(
                 _('Die Einrichtung "%s" wurde erfolgreich angelegt.'),
                 htmlReady($institute->name))
             );
 
-            object_set_visit($institute->id, "inst");
+            object_set_visit($institute->id, 0);
         } else {
             PageLayout::postSuccess(sprintf(
                 _('Die Änderung der Einrichtung "%s" wurde erfolgreich gespeichert.'),

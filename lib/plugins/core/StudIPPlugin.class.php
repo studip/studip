@@ -38,6 +38,11 @@ abstract class StudIPPlugin
         return $this->plugin_info['id'];
     }
 
+    public function isEnabled()
+    {
+        return $this->plugin_info['enabled'];
+    }
+
     /**
      * Return the name of this plugin.
      */
@@ -188,6 +193,26 @@ abstract class StudIPPlugin
      * @param $plugin_id string The ID of the plugin just disabled.
      */
     public static function onDisable($plugin_id)
+    {
+    }
+
+    /**
+     * Callback function called after enabling a plugin.
+     * The plugin's ID is transmitted for convenience.
+     *
+     * @param $plugin_id string The ID of the plugin just enabled.
+     */
+    public static function onActivation($plugin_id, $range_id)
+    {
+    }
+
+    /**
+     * Callback function called after disabling a plugin.
+     * The plugin's ID is transmitted for convenience.
+     *
+     * @param $plugin_id string The ID of the plugin just disabled.
+     */
+    public static function onDeactivation($plugin_id, $range_id)
     {
     }
 }

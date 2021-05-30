@@ -144,14 +144,13 @@ $buttonLabels = [
 <? endif; ?>
 
 <?php
-$mods = new Modules();
 switch ($top_folder->range_type) {
     case 'user':
         $check = true;
         break;
     case 'course':
     case 'institute':
-        $check = $mods->getStatus('documents', $top_folder->range_id) > 0;
+        $check = CoreDocuments::checkActivation($top_folder->range_id);
         break;
     default:
         $check = is_numeric($top_folder->range_type);

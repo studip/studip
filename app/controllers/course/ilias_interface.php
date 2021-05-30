@@ -38,7 +38,8 @@ class Course_IliasInterfaceController extends AuthenticatedController
         PageLayout::setTitle(Context::getHeaderLine(). " - " . _("ILIAS"));
 
         checkObject(); // do we have an open object?
-        object_set_visit_module('ilias_interface');
+        $this->studip_module = checkObjectModule('IliasInterfaceModule', true);
+        object_set_visit_module($this->studip_module->getPluginId());
 
         $this->ilias_interface_config = Config::get()->getValue('ILIAS_INTERFACE_BASIC_SETTINGS');
 

@@ -11,7 +11,7 @@
  * @author      Nils Gehrke <nils.gehrke@uni-goettingen.de>
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GPL version 2
  */
-class FeedbackModule extends StudIPPlugin implements StandardPlugin, SystemPlugin
+class FeedbackModule extends CorePlugin implements StudipModule, SystemPlugin
 {
     /**
      * {@inheritdoc}
@@ -52,12 +52,17 @@ class FeedbackModule extends StudIPPlugin implements StandardPlugin, SystemPlugi
             'keywords'      => _('Anlegen von Feedback-Elementen an verschiedenen Stellen; Auswahl verschiedener Feedback-Modi, wie Sternbewertung; Übersicht über alle Feedback-Elemente einer Veranstaltung'),
             'icon'          => Icon::create('star', Icon::ROLE_INFO),
             'screenshots'   => [
-                'path'      => '../../assets/images/plus/screenshots/Feedback',
+                'path'      => 'assets/images/plus/screenshots/Feedback',
                 'pictures'      => [
                     ['source' => 'FeedbackIndex.png', 'title' => 'Übersichtsseite des Feedbacktools'],
                     ['source' => 'FeedbackAnDatei.png', 'title' => 'Inhaltselement an einer Datei']
                 ]
             ]
         ];
+    }
+
+    public function isActivatableForContext(Range $context)
+    {
+        return $context->getRangeType() === 'course';
     }
 }

@@ -453,35 +453,23 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
     {
         if ($this['context_type'] === 'course') {
             $course = Course::find($this['context_id']);
-            $sem_class = $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][$course->status]['class']];
             $icons = [];
-            $admin = null;
-            $modulemanager = new Modules();
-            foreach (SemClass::getSlots() as $slot) {
-                if ($sem_class->isModuleAllowed($sem_class->getSlotModule($slot))
-                        && $modulemanager->checkLocal($slot, $this['context_id'], 'sem')) {
-                    $last_visit = object_get_visit($this['context_id'], $slot);
-                    $module = $sem_class->getModule($slot, $this['context_id']);
-                    if ($module) {
-                        $nav = $module->getIconNavigation($this['context_id'], $last_visit, $GLOBALS['user']->id);
-                        if ($nav) {
-                            $icons[] = $nav;
-                        }
-                    }
-                }
-            }
-            foreach (PluginManager::getInstance()->getPlugins('StandardPlugin', $this['context_id']) as $plugin) {
-                if (!$sem_class->isSlotModule(get_class($plugin))) {
-                    $last_visit = object_get_visit($this['context_id'], get_class($plugin));
-                    $nav = $plugin->getIconNavigation($this['context_id'], $last_visit, $GLOBALS['user']->id);
+            $schedule_active = false;
+            foreach ($course->tools as $tool) {
+                if ($module = $tool->getStudipModule()) {
+                    $last_visit = object_get_visit($this['context_id'], $module->getPluginId());
+                    $nav = $module->getIconNavigation($this['context_id'], $last_visit, $GLOBALS['user']->id);
                     if ($nav) {
                         $icons[] = $nav;
+                    }
+                    if ($module instanceof CoreSchedule) {
+                        $schedule_active = true;
                     }
                 }
             }
 
             $nextdate = false;
-            if ($modulemanager->checkLocal('schedule', $course->Id, 'sem') && $sem_class->getModule('schedule', $course->id)) {
+            if ($schedule_active) {
                 $nextdate = CourseDate::findOneBySQL("range_id = ? AND `date` >= UNIX_TIMESTAMP() ORDER BY `date` ASC", [$this['context_id']]);
             }
 

@@ -9,7 +9,7 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreStudygroupParticipants implements StudipModule
+class CoreStudygroupParticipants extends CorePlugin implements StudipModule
 {
     /**
      * {@inheritdoc}
@@ -40,6 +40,22 @@ class CoreStudygroupParticipants implements StudipModule
      */
     public function getMetadata()
     {
-        return [];
+        return [
+            'summary' => _('Liste aller Teilnehmenden einschließlich Nachrichtenfunktionen'),
+            'category' => _('Lehr- und Lernorganisation'),
+            'icon' => Icon::create('persons', Icon::ROLE_INFO),
+            'displayname' => _('Teilnehmende'),
+        ];
+    }
+
+    public function getInfoTemplate($course_id)
+    {
+        // TODO: Implement getInfoTemplate() method.
+        return null;
+    }
+
+    public function isActivatableForContext(Range $context)
+    {
+        return false;
     }
 }

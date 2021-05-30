@@ -12,10 +12,6 @@ use Studip\Button, Studip\LinkButton;
 
 ?>
 
-<? if ($_SESSION['admin_modules_data']["orig_bin"] != $_SESSION['admin_modules_data']["changed_bin"]): ?>
-    <?= MessageBox::info(_("Diese Daten sind noch nicht gespeichert.")) ?>
-<? endif; ?>
-
 <form action="<?= URLHelper::getLink($save_url) ?>" method="post" class="default">
 <?= CSRFProtection::tokenTag() ?>
 <input name="uebernehmen" value="1" type="hidden">
@@ -52,40 +48,10 @@ foreach ($available_modules as $category => $pluginlist) {
             $cb_disabled = '';
             $cb_checked = $plugin_activated ? "checked" : "";
 
-            $pluginname = isset($info['displayname']) ? $info['displayname'] : $plugin->getPluginname();
-            $URL = $plugin->getPluginURL();
-
-        } elseif ($val['type'] == 'modul') {
-
-            $modul = $val['object'];
-
-            $pre_check = null;
-            if (isset($modul['preconditions'])) {
-                $method = 'module' . $val['modulkey'] . 'Preconditions';
-                if (method_exists($modules, $method)) {
-                    $pre_check = $modules->$method($_SESSION['admin_modules_data']["range_id"], $modul['preconditions']);
-                }
-            }
-
-            $anchor = 'm_' . $modul['id'];
-            $cb_name = $val['modulkey'] . '_value';
-            $cb_disabled = $pre_check ? 'disabled' : '';
-            $cb_checked = $modules->isBit($_SESSION['admin_modules_data']["changed_bin"], $modul["id"]) ? "checked" : "";
-
-
-
-            $URL = $GLOBALS['ASSETS_URL'].'images';
-
-            if ($sem_class) {
-                $studip_module = $sem_class->getModule($sem_class->getSlotModule($val['modulkey']));
-            }
-
-            $info = ($studip_module instanceOf StudipModule) ? $studip_module->getMetadata() : ($modul['metadata'] ? $modul['metadata'] : []);
-            $pluginname = isset($info['displayname']) ? $info['displayname'] : $modul['name'];
-            $getModuleXxExistingItems = "getModule" . $val['modulkey'] . "ExistingItems";
-
+            $pluginname = $val['displayname'];
+            $URL = $plugin->isCorePlugin() ? $GLOBALS['ABSOLUTE_URI_STUDIP'] : $plugin->getPluginURL();
+            $pluginvisibility = $val['visibility'];
         }
-        //if(isset($info['complexity']) && isset($_SESSION['plus']) && !$_SESSION['plus']['Komplex'][$info['complexity']])continue;
         ?>
 
         <tr id="<?= htmlReady($anchor);?>" class="<?= $visibility; ?> <?= $pre_check != null ? ' quiet' : '' ?>">
@@ -107,6 +73,13 @@ foreach ($available_modules as $category => $pluginlist) {
                         <!-- Name -->
                         <label for="<?= $pluginname ?>">
                             <strong><?= htmlReady($pluginname) ?></strong>
+                            <? if ($cb_checked) : ?>
+                                <?=Icon::create(
+                                    $pluginvisibility === 'autor' ? 'visibility-visible' : 'visibility-invisible',
+                                    Icon::ROLE_INFO,
+                                    ['title' => sprintf(_('%s für Studierende'), $pluginvisibility === 'autor' ? _('Sichtbar') : _('Unsichtbar'))]
+                                )?>
+                            <? endif ?>
                         </label>
 
                     </div>
@@ -140,13 +113,31 @@ foreach ($available_modules as $category => $pluginlist) {
                                 <? endif ?>
                             <? endif ?>
                         </strong>
-
                     </div>
 
-                    <!-- inhaltlöschenbutton -->
-                    <? if ($val['type'] == 'plugin' && method_exists($plugin, 'deleteContent')) echo LinkButton::create(_('Inhalte löschen'), URLHelper::getURL("?deleteContent=true&name=" . $key), ['style' => 'float:right; z-index: 1;']); ?>
-                    <? if ($val['type'] == 'modul' && $studip_module instanceOf StudipModule && method_exists($studip_module, 'deleteContent')) echo LinkButton::create(_('Inhalte löschen'), URLHelper::getURL("?deleteContent=true&name=" . $key), ['style' => 'float:right; z-index: 1;']); ?>
 
+                    <? if ($plugin_activated) : ?>
+                        <?php
+                            $actionMenu = ActionMenu::get();
+
+                            $actionMenu->addLink(
+                                $controller->url_for('/edittool/' . $key),
+                                _('Optionen bearbeiten'),
+                                Icon::create('edit', Icon::ROLE_CLICKABLE, ['size' => 20]),
+                                ['data-dialog' => 'size=auto']
+                            );
+                        if (method_exists($plugin, 'deleteContent')) {
+                            $actionMenu->addLink(
+                                $controller->url_for('/index', ['deleteContent' => 1, 'name' => $key]),
+                                _('Inhalte löschen'),
+                                Icon::create('trash', Icon::ROLE_CLICKABLE, ['size' => 20])
+                            );
+                        }
+                        ?>
+                        <div style="float: right">
+                        <?= $actionMenu->render() ?>
+                        </div>
+                    <? endif ?>
                 </div>
 
                 <? if ($_SESSION['plus']['View'] == 'openall' || !isset($_SESSION['plus'])) { ?>
@@ -216,10 +207,6 @@ foreach ($available_modules as $category => $pluginlist) {
 
                         <div class="descriptionbox">
 
-                            <!-- inhaltlöschenbutton -->
-                            <?// if ($val['type'] == 'plugin' && method_exists($plugin, 'deleteContent')) echo LinkButton::create(_('Inhalte löschen'), URLHelper::getURL("?deleteContent=true&name=" . $key), array('style' => 'float:right; z-index: 1;')); ?>
-                            <?// if ($val['type'] == 'modul' && $studip_module instanceOf StudipModule && method_exists($studip_module, 'deleteContent')) echo LinkButton::create(_('Inhalte löschen'), URLHelper::getURL("?deleteContent=true&name=" . $key), array('style' => 'float:right; z-index: 1;')); ?>
-
                             <!-- tags -->
                             <? if (isset($info['keywords'])) : ?>
                                 <ul class="keywords">
@@ -247,19 +234,6 @@ foreach ($available_modules as $category => $pluginlist) {
                                     <? endif ?>
                                 </p>
                             <? endif ?>
-
-                            <? if ($val['type'] == 'modul') {
-                                $getModuleXxExistingItems = "getModule" . $val['modulkey'] . "ExistingItems";
-
-                                if (method_exists($modules, $getModuleXxExistingItems)) {
-                                    if ($modules->$getModuleXxExistingItems($_SESSION['admin_modules_data']["range_id"]) &&
-                                        $_SESSION['admin_modules_data']["modules_list"][$val['modulkey']] && $registered_modules[$val['modulkey']]["msg_pre_warning"]
-                                    )
-                                        printf('<p><strong>' . _('Hinweis') . ':</strong> ' . $registered_modules[$val['modulkey']]["msg_pre_warning"] . '</p>',
-                                            $modules->$getModuleXxExistingItems($_SESSION['admin_modules_data']["range_id"]));
-                                }
-                            }
-                            ?>
 
                             <? if (isset($info['homepage'])) : ?>
                                 <p>

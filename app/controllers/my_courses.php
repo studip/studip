@@ -447,13 +447,8 @@ class MyCoursesController extends AuthenticatedController
         $min_sem_key = min($semesters);
         $max_sem_key = max($semesters);
         $courses     = MyRealmModel::getCourses($min_sem_key, $max_sem_key, compact('deputies_enabled'));
-        $courses     = $courses->toArray('seminar_id modules status');
-
-        $modules = new Modules();
         foreach ($courses as $index => $course) {
-            $courses[$index]['modules']  = $modules->getLocalModules($course['seminar_id'], 'sem', $course['modules'], $course['status']);
-            $courses[$index]['obj_type'] = 'sem';
-            MyRealmModel::setObjectVisits($courses[$index], $course['seminar_id'], $GLOBALS['user']->id, $timestamp);
+            MyRealmModel::setObjectVisits($course, $GLOBALS['user']->id, $timestamp);
         }
 
         NotificationCenter::postNotification('OverviewDidClear', $GLOBALS['user']->id);
@@ -1075,7 +1070,7 @@ class MyCoursesController extends AuthenticatedController
         }));
 
         // Set positions by predefined positions without the always empty slots
-        $positions = array_diff(MyRealmModel::AVAILABLE_MODULES, $remove);
+        $positions = array_diff(array_keys(MyRealmModel::getDefaultModules()), $remove);
 
         // Get other positions based on count
         arsort($counters);

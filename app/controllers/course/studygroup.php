@@ -509,10 +509,11 @@ class Course_StudygroupController extends AuthenticatedController
 
         Request::set('choose_member_parameter', $this->flash['choose_member_parameter']);
 
-        object_set_visit_module('participants');
+        $this->studip_module = checkObjectModule('participants');
+        object_set_visit_module($this->studip_module->getPluginId());
 
 
-        $this->last_visitdate   = object_get_visit($id, 'participants');
+        $this->last_visitdate   = object_get_visit($id,  $this->studip_module->getPluginId());
         $this->anzahl           = StudygroupModel::countMembers($id);
         $this->groupname        = $sem->getFullname();
         $this->sem_id           = $id;

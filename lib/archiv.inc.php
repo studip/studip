@@ -92,8 +92,6 @@ function dump_sem($sem_id, $print_view = false)
 {
     global $TERMIN_TYP, $SEM_TYPE, $SEM_CLASS, $_fullname_sql, $AUTO_INSERT_SEM;
 
-    $Modules = new Modules;
-    $Modules = $Modules->getLocalModules($sem_id);
 
     $query = "SELECT status, Name, Untertitel, art, VeranstaltungsNummer,
                      ects, Beschreibung, teilnehmer, vorrausetzungen,

@@ -14,40 +14,31 @@ use Studip\Button, Studip\LinkButton;
 class Course_PlusController extends AuthenticatedController
 {
 
-    public function index_action($range_id = null)
+    public function before_filter(&$action, &$args)
     {
-        PageLayout::setTitle(_("Mehr Funktionen"));
-
-        $id = Context::getId();
-        $object_type = Context::getClass();
-
-        Navigation::activateItem('/course/modules');
-
-        if (!$id || !$GLOBALS['perm']->have_studip_perm($object_type === 'sem' ? 'tutor' : 'admin', $id)) {
+        parent::before_filter($action, $args);
+        $id = Context::get()->getId();
+        $object_type = Context::getType();
+        if (!$id || !$GLOBALS['perm']->have_studip_perm($object_type === 'course' ? 'tutor' : 'admin', $id)) {
             throw new AccessDeniedException();
         }
+        Navigation::activateItem('/course/modules');
 
-        if ($object_type === "sem") {
-            $this->sem = Course::find($id);
-            $this->sem_class = $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][$this->sem->status]['class']];
+        if ($object_type === 'course') {
+            $this->sem = Context::get();
+            $this->sem_class = $this->sem->getSemClass();
         } else {
-            $this->sem = Institute::find($id);
+            $this->sem = Context::get();
             $this->sem_class = SemClass::getDefaultInstituteClass($this->sem['type']);
         }
+        PageLayout::setTitle(_("Mehr Funktionen"));
+    }
+
+    public function index_action()
+    {
 
         PageLayout::setTitle($this->sem->getFullname() . " - " . PageLayout::getTitle());
-
-        $this->modules = new AdminModules();
-        $this->registered_modules = $this->modules->registered_modules;
-
-        if (!Request::submitted('uebernehmen')) {
-            $_SESSION['admin_modules_data']["modules_list"] = $this->modules->getLocalModules($id);
-            $_SESSION['admin_modules_data']["orig_bin"] = $this->modules->getBin($id);
-            $_SESSION['admin_modules_data']["changed_bin"] = $this->modules->getBin($id);
-            $_SESSION['admin_modules_data']["range_id"] = $id;
-            $_SESSION['admin_modules_data']["conflicts"] = [];
-            $_SESSION['plugin_toggle'] = [];
-        }
+        PageLayout::addSqueezePackage('statusgroups'); //sortier css
 
         $this->setupSidebar();
         $this->available_modules = $this->getSortedList($this->sem);
@@ -59,56 +50,43 @@ class Course_PlusController extends AuthenticatedController
 
     public function trigger_action()
     {
-        $id = Context::getId();
-        $object_type = Context::getClass();
+        $context = Context::get();
 
-        Navigation::activateItem('/course/modules');
-
-        if (!$id || !$GLOBALS['perm']->have_studip_perm($object_type === 'sem' ? 'tutor' : 'admin', $id)) {
+        if (!$GLOBALS['perm']->have_studip_perm($context->getRangeType() === 'course' ? 'tutor' : 'admin', $context->getId())) {
             throw new AccessDeniedException();
         }
-
         if (Request::isPost()) {
-            if ($object_type === "sem") {
-                $this->sem = Course::find($id);
-                $this->sem_class = $GLOBALS['SEM_CLASS'][$GLOBALS['SEM_TYPE'][$this->sem->status]['class']];
+            if ($context->getRangeType() === 'course') {
+                $sem_class = $context->getSemClass();
             } else {
-                $this->sem = Institute::find($id);
-                $this->sem_class = SemClass::getDefaultInstituteClass($this->sem['type']);
+                $sem_class = SemClass::getDefaultInstituteClass($context->type);
             }
-            $this->setupSidebar();
-            $module = Request::get("moduleclass");
+            $moduleclass = Request::get("moduleclass");
             $active = Request::int("active", 0);
-
-            if ($this->sem_class->isSlotModule($module)) {
-                $modules = new AdminModules();
-                $bitmask = $modules->getBin($id, $object_type);
-
-                foreach ($modules->registered_modules as $key => $val) {
-                    $studip_module = $this->sem_class->getModule($key);
-                    if ($studip_module) {
-                        $info = $studip_module->getMetadata();
-                        $info["category"] = $info["category"] ?: 'Sonstiges';
-
-                        if ($key === Request::get("key")) {
-                            if ($active) {
-                                $modules->setBit($bitmask, $modules->registered_modules[$key]["id"]);
-                            } else {
-                                $modules->clearBit($bitmask, $modules->registered_modules[$key]["id"]);
-                            }
-                            break;
-                        }
+            $module = new $moduleclass;
+            if ($module->isActivatableForContext($context)) {
+                PluginManager::getInstance()->setPluginActivated($module->getPluginId(), $context->getId(), $active);
+                if (Context::isCourse()) {
+                    if ($active) {
+                        StudipLog::log('PLUGIN_ENABLE', Context::getId(), $module->getPluginId(), $GLOBALS['user']->id);
+                        NotificationCenter::postNotification('PluginDidActivate', Context::getId(), $module->getPluginId());
+                    } else {
+                        StudipLog::log('PLUGIN_DISABLE', Context::getId(), $module->getPluginId(), $GLOBALS['user']->id);
+                        NotificationCenter::postNotification('PluginDidDeactivate', Context::getId(), $module->getPluginId());
                     }
-
                 }
-
-                $modules->writeBin($id, $bitmask, $object_type);
             }
-            if (is_a($module, 'StandardPlugin', true)) {
-                $plugin = PluginEngine::getPlugin($module);
-                $this->setPluginActivated($plugin, $active);
+            if ($active) {
+                $default_position = array_search(get_class($module), $sem_class->getActivatedModules());
+                if ($default_position !== false) {
+                    $active_tool = ToolActivation::find([$context->getId(), $module->getPluginId()]);
+                    if ($active_tool) {
+                        $active_tool->position = $default_position;
+                        $active_tool->store();
+                    }
+                }
             }
-            $this->redirect("course/plus/trigger", ['cid' => $id]);
+            $this->redirect("course/plus/trigger", ['cid' => $context->getId()]);
         } else {
             $template = $GLOBALS['template_factory']->open("tabs.php");
             $template->navigation = Navigation::getItem("/course");
@@ -117,6 +95,57 @@ class Course_PlusController extends AuthenticatedController
             ]);
         }
     }
+
+    public function sorttools_action()
+    {
+        PageLayout::setTitle(_('Reihenfolge der Werkzeuge ändern'));
+        if (Request::submitted('order')) {
+            CSRFProtection::verifyUnsafeRequest();
+            $plugin_id = Request::get('id');
+            $newpos = Request::get('index') + 1;
+            if ($this->sem->tools->findOneBy('plugin_id', $plugin_id)) {
+                $this->sem->tools->findBy('position', $newpos, '>=')->each(function ($p) {$p->position++;});
+                $this->sem->tools->findOneBy('plugin_id', $plugin_id)->position = $newpos;
+                $this->sem->tools->orderBy('position asc')->each(function ($p) {static $pos = 0; $p->position = $pos++;});
+                $this->sem->tools->store();
+                $this->render_nothing();
+                return;
+            }
+        }
+
+    }
+
+    public function edittool_action($plugin)
+    {
+        PageLayout::setTitle(_('Optionen des Werkzeugs ändern'));
+        $id = explode('_', $plugin)[1];
+        $this->tool = ToolActivation::find([$this->sem->id, $id]);
+        if (!$this->tool) {
+            return $this->render_nothing();
+        }
+        if (Request::submitted('save')) {
+            CSRFProtection::verifyUnsafeRequest();
+            $displayname = trim(Request::get('displayname'));
+            if ($displayname !== $this->tool->getDisplayname()) {
+                if (strlen($displayname)) {
+                    $this->tool->metadata['displayname'] = $displayname;
+                } else {
+                    unset($this->tool->metadata['displayname']);
+                }
+
+            }
+            if (Request::get('permission') === 'tutor') {
+                $this->tool->metadata['visibility'] = 'tutor';
+            } else {
+                unset($this->tool->metadata['visibility']);
+            }
+            if ($this->tool->store()) {
+                PageLayout::postSuccess(_('Die Einstellungen wurden gespeichert.'));
+            }
+            $this->redirect($this->url_for('/index'));
+        }
+    }
+
 
     private function deleteContent($plugmodlist)
     {
@@ -190,8 +219,12 @@ class Course_PlusController extends AuthenticatedController
                 }
             }
         }
-        if (Request::get('mode') != null) $_SESSION['plus']['View'] = Request::get('mode');
-        if (Request::get('displaystyle') != null) $_SESSION['plus']['displaystyle'] = Request::get('displaystyle');
+        if (Request::get('mode') !== null) {
+            $_SESSION['plus']['View'] = Request::get('mode');
+        }
+        if (Request::get('displaystyle') !== null) {
+            $_SESSION['plus']['displaystyle'] = Request::get('displaystyle');
+        }
 
         $sidebar = Sidebar::get();
 
@@ -200,49 +233,82 @@ class Course_PlusController extends AuthenticatedController
 
         foreach ($_SESSION['plus']['Kategorie'] as $key => $val) {
 
-            if (Request::get(md5('cat_' . $key)) != null) $_SESSION['plus']['Kategorie'][$key] = Request::get(md5('cat_' . $key));
+            if (Request::get(md5('cat_' . $key)) !== null) {
+                $_SESSION['plus']['Kategorie'][$key] = Request::get(md5('cat_' . $key));
+            }
 
             if ($_SESSION['plus']['displaystyle'] == 'alphabetical') {
                 $_SESSION['plus']['Kategorie'][$key] = 1;
             }
 
-            if ($key == 'Sonstiges') continue;
-            $widget->addCheckbox($key, $_SESSION['plus']['Kategorie'][$key],
-                URLHelper::getURL('?', [md5('cat_' . $key) => 1, 'displaystyle' => 'category']), URLHelper::getURL('?', [md5('cat_' . $key) => 0, 'displaystyle' => 'category']));
+            if ($key == 'Sonstiges') {
+                continue;
+            }
+            $widget->addCheckbox(
+                $key,
+                $_SESSION['plus']['Kategorie'][$key],
+                URLHelper::getURL('?', [md5('cat_' . $key) => 1, 'displaystyle' => 'category']),
+                URLHelper::getURL('?', [md5('cat_' . $key) => 0, 'displaystyle' => 'category'])
+            );
 
         }
 
-        $widget->addCheckbox(_('Sonstiges'), $_SESSION['plus']['Kategorie']['Sonstiges'],
-            URLHelper::getURL('?', [md5('cat_Sonstiges') => 1, 'displaystyle' => 'category']), URLHelper::getURL('?', [md5('cat_Sonstiges') => 0, 'displaystyle' => 'category']));
+        $widget->addCheckbox(
+            _('Sonstiges'),
+            $_SESSION['plus']['Kategorie']['Sonstiges'],
+            URLHelper::getURL('?', [md5('cat_Sonstiges') => 1, 'displaystyle' => 'category']),
+            URLHelper::getURL('?', [md5('cat_Sonstiges') => 0, 'displaystyle' => 'category'])
+        );
 
-        $sidebar->addWidget($widget, "Kategorien");
+        $sidebar->addWidget($widget, 'Kategorien');
 
         $widget = new ActionsWidget();
         $widget->setTitle(_('Ansichten'));
 
-        if ($_SESSION['plus']['View'] == 'openall') {
-            $widget->addLink(_("Alles zuklappen"),
-                URLHelper::getURL('?', ['mode' => 'closeall']), Icon::create('assessment', 'clickable'));
+        if ($_SESSION['plus']['View'] === 'openall') {
+            $widget->addLink(
+                _('Alles zuklappen'),
+                URLHelper::getURL('?', ['mode' => 'closeall']),
+                Icon::create('assessment')
+            );
         } else {
-            $widget->addLink(_("Alles aufklappen"),
-                URLHelper::getURL('?', ['mode' => 'openall']), Icon::create('assessment', 'clickable'));
+            $widget->addLink(
+                _('Alles aufklappen'),
+                URLHelper::getURL('?', ['mode' => 'openall']),
+                Icon::create('assessment')
+            );
         }
 
-        if ($_SESSION['plus']['displaystyle'] == 'category') {
-            $widget->addLink(_("Alphabetische Anzeige ohne Kategorien"),
-                    URLHelper::getURL('?', ['displaystyle' => 'alphabetical']), Icon::create('assessment', 'clickable'));
+        if ($_SESSION['plus']['displaystyle'] === 'category') {
+            $widget->addLink(
+                _('Alphabetische Anzeige ohne Kategorien'),
+                URLHelper::getURL('?', ['displaystyle' => 'alphabetical']),
+                Icon::create('assessment')
+            );
         } else {
-            $widget->addLink(_("Anzeige nach Kategorien"),
-                    URLHelper::getURL('?', ['displaystyle' => 'category']), Icon::create('assessment', 'clickable'));
+            $widget->addLink(
+                _('Anzeige nach Kategorien'),
+                URLHelper::getURL('?', ['displaystyle' => 'category']),
+                Icon::create('assessment')
+            );
         }
 
-        $sidebar->addWidget($widget, "aktion");
+        $sidebar->addWidget($widget, 'ansicht');
+
+        $actions = new ActionsWidget();
+        $actions->addLink(
+            _('Werkzeugreihenfolge ändern'),
+            $this->url_for('/sorttools'),
+            Icon::create('arr_2down')
+        )->asDialog('size=500;reload-on-close');
+
+        $sidebar->addWidget($actions, 'aktion');
+
 
         unset($_SESSION['plus']['Kategorielist']);
         $plusconfig['course_plus'] = $_SESSION['plus'];
         UserConfig::get($GLOBALS['user']->id)->store('PLUS_SETTINGS', $plusconfig);
     }
-
 
     private function getSortedList(Range $context)
     {
@@ -250,17 +316,15 @@ class Course_PlusController extends AuthenticatedController
         $list = [];
         $cat_index = [];
 
-        foreach (PluginEngine::getPlugins('StandardPlugin') as $plugin) {
+        foreach (PluginEngine::getPlugins('StudipModule') as $plugin) {
             if (!$plugin->isActivatableForContext($context)) {
                 continue;
             }
 
 
 
-            if ((!$this->sem_class && !$plugin->isCorePlugin())
-                || ($this->sem_class && !$this->sem_class->isModuleMandatory(get_class($plugin))
+            if (!$this->sem_class->isModuleMandatory(get_class($plugin))
                     && $this->sem_class->isModuleAllowed(get_class($plugin))
-                    && !$this->sem_class->isSlotModule(get_class($plugin)))
             ) {
 
                 $info = $plugin->getMetadata();
@@ -270,15 +334,22 @@ class Course_PlusController extends AuthenticatedController
                     array_push($cat_index, $indcat);
                 }
                 $plugin_id = 'plugin_' . $plugin->getPluginId();
-                $displayname = mb_strtolower(isset($info['displayname']) ? $info['displayname'] : $plugin->getPluginname());
+                $tool = ToolActivation::find([$context->getRangeId(), $plugin->getPluginId()]);
+                $displayname = $info['displayname'] ?? $plugin->getPluginname();
+                if ($tool && $tool->metadata['displayname']) {
+                    $displayname .= ' (' .$tool->getDisplayname() . ')';
+                }
+                $visibility = $tool && $tool->metadata['visibility'] ? $tool->metadata['visibility'] : 'autor';
+
                 if ($_SESSION['plus']['displaystyle'] != 'category') {
 
 
                     $list['Funktionen von A-Z'][$plugin_id]['object'] = $plugin;
                     $list['Funktionen von A-Z'][$plugin_id]['type'] = 'plugin';
                     $list['Funktionen von A-Z'][$plugin_id]['moduleclass'] = get_class($plugin);
-                    $list['Funktionen von A-Z'][$plugin_id]['sorter'] = $displayname;
-
+                    $list['Funktionen von A-Z'][$plugin_id]['sorter'] = mb_strtolower($displayname);
+                    $list['Funktionen von A-Z'][$plugin_id]['displayname'] = $displayname;
+                    $list['Funktionen von A-Z'][$plugin_id]['visibility'] = $visibility;
                 } else {
 
                     $cat = isset($info['category']) ? $info['category'] : 'Sonstiges';
@@ -290,56 +361,9 @@ class Course_PlusController extends AuthenticatedController
                     $list[$cat][$plugin_id]['object'] = $plugin;
                     $list[$cat][$plugin_id]['moduleclass'] = get_class($plugin);
                     $list[$cat][$plugin_id]['type'] = 'plugin';
-                    $list[$cat][$plugin_id]['sorter'] = $displayname;
-
-                }
-            }
-        }
-
-        foreach ($this->registered_modules as $key => $val) {
-
-            if ($this->sem_class) {
-                $mod = $this->sem_class->getSlotModule($key);
-                $slot_editable = $mod && $this->sem_class->isModuleAllowed($mod) && !$this->sem_class->isModuleMandatory($mod);
-            }
-
-            if ($this->modules->isEnableable($key, $_SESSION['admin_modules_data']["range_id"]) && (!$this->sem_class || $slot_editable)) {
-
-                if ($this->sem_class) {
-                    $studip_module = $this->sem_class->getModule($mod);
-                    if (method_exists($studip_module, 'isActivatableForContext') && !$studip_module->isActivatableForContext($context)) {
-                        continue;
-                    }
-                }
-
-                $info = ($studip_module instanceOf StudipModule) ? $studip_module->getMetadata() : ($val['metadata'] ? $val['metadata'] : []);
-
-                $indcat = isset($info['category']) ? $info['category'] : 'Sonstiges';
-                if (!array_key_exists($indcat, $cat_index)) {
-                    array_push($cat_index, $indcat);
-                }
-
-                if ($_SESSION['plus']['displaystyle'] != 'category') {
-
-                    $list['Funktionen von A-Z'][$key]['object'] = $val;
-                    $list['Funktionen von A-Z'][$key]['moduleclass'] = $mod;
-                    $list['Funktionen von A-Z'][$key]['type'] = 'modul';
-                    $list['Funktionen von A-Z'][$key]['modulkey'] = $key;
-                    $list['Funktionen von A-Z'][$key]['sorter'] = mb_strtolower($info['displayname'] ?: $val['name']);
-
-
-                } else {
-
-                    $cat = isset($info['category']) ? $info['category'] : 'Sonstiges';
-
-                    if (!isset($_SESSION['plus']['Kategorie'][$cat])) $_SESSION['plus']['Kategorie'][$cat] = 1;
-
-                    $list[$cat][$key]['object'] = $val;
-                    $list[$cat][$key]['moduleclass'] = $mod;
-                    $list[$cat][$key]['type'] = 'modul';
-                    $list[$cat][$key]['modulkey'] = $key;
-                    $list[$cat][$key]['sorter'] = mb_strtolower($info['displayname'] ?: $val['name']);
-
+                    $list[$cat][$plugin_id]['sorter'] = mb_strtolower($displayname);
+                    $list[$cat][$plugin_id]['displayname'] = $displayname;
+                    $list[$cat][$plugin_id]['visibility'] = $visibility;
                 }
             }
         }
@@ -366,36 +390,4 @@ class Course_PlusController extends AuthenticatedController
         return $sortedcats;
     }
 
-    private function setPluginActivated(StudIPModule $plugin = null, bool $state = null)
-    {
-        static $manager = null;
-        if ($manager === null) {
-            $manager = PluginManager::getInstance();
-        }
-
-        if (
-            !is_a($plugin, 'StandardPlugin')
-            || !$plugin->isActivatableForContext(Context::get())
-        ) {
-            return null;
-        }
-
-        if ($state === null) {
-            $state = !$manager->isPluginActivated($plugin->getPluginId(), Context::getId());
-        }
-
-        $manager->setPluginActivated($plugin->getPluginId(), Context::getId(), $state);
-
-        if (Context::isCourse()) {
-            if ($state) {
-                StudipLog::log('PLUGIN_ENABLE', Context::getId(), $plugin->getPluginId(), $GLOBALS['user']->id);
-                NotificationCenter::postNotification('PluginDidActivate', Context::getId(), $plugin->getPluginId());
-            } else {
-                StudipLog::log('PLUGIN_DISABLE', Context::getId(), $plugin->getPluginId(), $GLOBALS['user']->id);
-                NotificationCenter::postNotification('PluginDidDeactivate', Context::getId(), $plugin->getPluginId());
-            }
-        }
-
-        return $manager->isPluginActivated($plugin->getPluginId(), Context::getId());
-    }
 }

@@ -194,11 +194,17 @@ class Institute extends SimpleORMap implements Range
             'on_delete'  => 'delete',
             'on_store'   => 'store',
         ];
+        $config['has_many']['tools'] = [
+            'class_name'        => 'ToolActivation',
+            'assoc_foreign_key' => 'range_id',
+            'on_delete'         => 'delete',
+        ];
         $config['additional_fields']['all_status_groups']['get'] = function ($institute) {
             return Statusgruppen::findAllByRangeId($institute->id, true);
         };
 
         $config['i18n_fields']['name'] = true;
+        $config['registered_callbacks']['after_create'][] = 'setDefaultTools';
 
         parent::configure($config);
     }
@@ -293,5 +299,41 @@ class Institute extends SimpleORMap implements Range
         $member = $this->members->findOneBy('user_id', $user_id);
         return ($member && in_array($member->inst_perms, ['tutor', 'dozent', 'admin']))
             || User::find($user_id)->perms === 'root';
+    }
+
+    /**
+     * @return SemClass
+     */
+    public function getSemClass()
+    {
+        return SemClass::getDefaultInstituteClass($this->type);
+    }
+
+    /**
+     *
+     */
+    public function setDefaultTools()
+    {
+        $this->tools = [];
+        foreach (array_values($this->getSemClass()->getActivatedModuleObjects()) as  $pos => $module) {
+            $this->tools[] = ToolActivation::create(
+                [
+                    'plugin_id' => $module->getPluginId(),
+                    'range_type'  => 'institute',
+                    'range_id' => $this->id,
+                    'position' => $pos
+                ]
+            );
+        }
+    }
+
+    /**
+     * @param $name string name of tool / plugin
+     * @return bool
+     */
+    public function isToolActive($name)
+    {
+        $plugin = PluginEngine::getPlugin($name);
+        return $plugin && $this->tools->findOneby('plugin_id', $plugin->getPluginId());
     }
 }

@@ -113,7 +113,7 @@ class SemClass implements ArrayAccess
             'wiki'                => 'CoreWiki',
             'calendar'            => 'CoreCalendar',
             'elearning_interface' => 'CoreElearningInterface',
-            'personal'            => 'personal'
+            'personal'            => 'CorePersonal'
         ];
         $modules = [
             'CoreOverview'        => ['activated' => 1, 'sticky' => 1],
@@ -167,32 +167,6 @@ class SemClass implements ArrayAccess
         return $sum;
     }
 
-    /**
-     * Returns the name of the module of the slot or the module itself, if it
-     * is a plugin.
-     * @param string $slot
-     * @return string
-     */
-    public function getSlotModule($slot)
-    {
-        if (in_array($slot, self::$slots)) {
-            return $this->data[$slot];
-        } else {
-            return $slot;
-        }
-    }
-
-    /**
-     * Defines a module for a slot and overwrites previous module.
-     * @param string $slot
-     * @param string $module (coremodule or classname of plugin)
-     */
-    public function setSlotModule($slot, $module)
-    {
-        if (in_array($slot, self::$slots)) {
-            $this->data[$slot] = $module ? $module : null;
-        }
-    }
 
     /**
      * Returns the metadata of a module regarding this sem_class object.
@@ -220,6 +194,25 @@ class SemClass implements ArrayAccess
     public function getModules()
     {
         return $this->data['modules'];
+    }
+
+    public function getActivatedModules()
+    {
+        return array_keys(array_filter($this->data['modules'], function ($meta) {
+            return $meta['activated'];
+        }));
+    }
+
+    public function getActivatedModuleObjects()
+    {
+        $result = [];
+        foreach ($this->getActivatedModules() as $module) {
+            $plugin = PluginManager::getInstance()->getPlugin($module);
+            if ($plugin) {
+                $result[$plugin->getPluginId()] = $plugin;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -254,84 +247,6 @@ class SemClass implements ArrayAccess
     {
         return $this->data['modules'][$module]['sticky']
             && $this->data['modules'][$module]['activated'];
-    }
-
-    /**
-     * Returns if the slot is mandatory, which it is if the module in this
-     * slot is mandatory.
-     * @param string  $slot
-     * @return boolean
-     */
-    public function isSlotMandatory($slot)
-    {
-        $module = $this->getSlotModule($slot);
-        return $module && $this->isModuleMandatory($module);
-    }
-
-    /**
-     * Returns if a module is a slot module. Good for plugins that should be
-     * displayed on a specific place only if they are no slot modules.
-     * @param string $module
-     * @return boolean
-     */
-    public function isSlotModule($module)
-    {
-        foreach (self::$slots as $slot) {
-            if ($module === $this->getSlotModule($slot)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns the slot name of a module.
-     * @param string $module
-     * @return string|null
-     */
-    public function getModuleSlot($module)
-    {
-        foreach (self::$slots as $slot) {
-            if ($module === $this->getSlotModule($slot)) {
-                return $slot;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * returns an instance of the module of a given slotname or pluginclassname
-     * @param string $slot_or_plugin
-     * @return StudipModule | null
-     */
-    public function getModule($slot_or_plugin)
-    {
-        $module = $this->getSlotModule($slot_or_plugin);
-        if ($module && $this->isModuleAllowed($module)) {
-            if (in_array($module, self::$core_modules)) {
-                return new $module();
-            }
-            if ($module) {
-                return PluginEngine::getPlugin($module);
-            }
-        }
-    }
-
-    /**
-     * Returns an array of navigation-objects. Those are for the tabs.
-     * And yes, a slot can contain more than one tab, but usually contains
-     * only one. The keys of the array are the names within the navigation-tree.
-     * @param string $slot
-     * @return array('navigation_name' => Navigation $nav, ...)
-     */
-    public function getNavigationForSlot($slot, $course_id = null)
-    {
-        $module = $this->getModule($slot);
-        if ($module) {
-            return (array) $module->getTabNavigation($course_id ? $course_id : Context::getId());
-        } else {
-            return [];
-        }
     }
 
     public function getSemTypes()
@@ -385,16 +300,6 @@ class SemClass implements ArrayAccess
                 "topic_create_autor = :topic_create_autor, " .
                 "visible = :visible, " .
                 "course_creation_forbidden = :course_creation_forbidden, " .
-                "overview = :overview, " .
-                "forum = :forum, " .
-                "admin = :admin, " .
-                "documents = :documents, " .
-                "schedule = :schedule, " .
-                "participants = :participants, " .
-                "scm = :scm, " .
-                "wiki = :wiki, " .
-                "calendar = :calendar, " .
-                "elearning_interface = :elearning_interface, " .
                 "modules = :modules, " .
                 "title_dozent = :title_dozent, " .
                 "title_dozent_plural = :title_dozent_plural, " .
@@ -426,16 +331,6 @@ class SemClass implements ArrayAccess
             'topic_create_autor' => (int) $this->data['topic_create_autor'],
             'visible' => (int) $this->data['visible'],
             'course_creation_forbidden' => (int) $this->data['course_creation_forbidden'],
-            'overview' => $this->data['overview'],
-            'forum' => $this->data['forum'],
-            'admin' => $this->data['admin'],
-            'documents' => $this->data['documents'],
-            'schedule' => $this->data['schedule'],
-            'participants' => $this->data['participants'],
-            'scm' => $this->data['scm'],
-            'wiki' => $this->data['wiki'],
-            'calendar' => $this->data['calendar'],
-            'elearning_interface' => $this->data['elearning_interface'],
             'modules' => json_encode((object) $this->data['modules']),
             'title_dozent' => $this->data['title_dozent']
                 ? $this->data['title_dozent']
@@ -537,16 +432,6 @@ class SemClass implements ArrayAccess
                 return (bool) $this->data['topic_create_autor'];
             case "visible":
                 return (bool) $this->data['visible'];
-            case "forum":
-                return $this->data['forum'] !== null;
-            case "documents":
-                return $this->data['documents'] !== null;
-            case "schedule":
-                return $this->data['schedule'] !== null;
-            case "participants":
-                return $this->data['participants'] !== null;
-            case "scm":
-                return $this->data['scm'] !== null;
             case "studygroup_mode":
                 return (bool) $this->data['studygroup_mode'];
             case "admission_prelim_default":
@@ -585,7 +470,7 @@ class SemClass implements ArrayAccess
     /**
      * Returns an array of all SemClasses in Stud.IP. Equivalent to global
      * $SEM_CLASS variable. This variable is statically stored in this class.
-     * @return array of SemClass
+     * @return SemClass[] of SemClass
      */
     static public function getClasses()
     {

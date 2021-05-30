@@ -3,7 +3,7 @@
  * @author  Jan-Hendrik Willms <tleilax+studip@gmail.com>
  * @license GPL2 or any later version
  */
-class ConsultationModule extends StudIPPlugin implements StandardPlugin, SystemPlugin, PrivacyPlugin, HomepagePlugin
+class ConsultationModule extends CorePlugin implements StudipModule, SystemPlugin, PrivacyPlugin, HomepagePlugin
 {
     public function __construct()
     {
@@ -92,6 +92,7 @@ class ConsultationModule extends StudIPPlugin implements StandardPlugin, SystemP
                                'anmelden können.'),
             'category'    => _('Kommunikation und Zusammenarbeit'),
             'keywords'    => _('Terminvergabe, Sprechstunden'),
+            'displayname' => _('Terminvergabe'),
             'icon'        => Icon::create('consultation', Icon::ROLE_INFO),
             // 'screenshots' => [
             //     'path'     => '../../assets/images/plus/screenshots/Consultations',

@@ -9,7 +9,7 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreDocuments implements StudipModule, OERModule
+class CoreDocuments extends CorePlugin implements StudipModule, OERModule
 {
 
 
@@ -173,7 +173,7 @@ class CoreDocuments implements StudipModule, OERModule
                 'Leserecht (r), festgelegt werden.'),
             'icon'             => Icon::create('files', Icon::ROLE_INFO),
             'screenshots'      => [
-                'path'     => 'plus/screenshots/Dateibereich_-_Dateiordnerberechtigung',
+                'path'     => 'assets/images/plus/screenshots/Dateibereich_-_Dateiordnerberechtigung',
                 'pictures' => [
                     0 => ['source' => 'Ordneransicht_mit_geoeffnetem_Ordner.jpg', 'title' => _('Ordneransicht mit geöffnetem Ordner')],
                     1 => ['source' => 'Ordneransicht_mit_Dateiinformationen.jpg', 'title' => _('Ordneransicht mit Dateiinformationen')],
@@ -183,5 +183,11 @@ class CoreDocuments implements StudipModule, OERModule
                 ]
             ]
         ];
+    }
+
+    public function getInfoTemplate($course_id)
+    {
+        // TODO: Implement getInfoTemplate() method.
+        return null;
     }
 }

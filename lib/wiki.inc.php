@@ -581,7 +581,8 @@ function listPages($mode, $sortby = NULL)
         Helpbar::get()->ignoreDatabaseContents();
         Helpbar::get()->addPlainText('', $help);
     } else if ($mode === 'new') {
-        $lastlogindate = object_get_visit(Context::getId(), 'wiki');
+        $core_wiki = PluginManager::getInstance()->getPlugin('CoreWiki');
+        $lastlogindate = object_get_visit(Context::getId(), $core_wiki->getPluginId());
 
         $selfurl = '?view=listnew';
         $sort = "ORDER by MAX(chdate)"; // default sort order for "new pages"

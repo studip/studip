@@ -9,7 +9,7 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreOverview implements StudipModule
+class CoreOverview extends CorePlugin implements StudipModule
 {
     /**
      * {@inheritdoc}
@@ -25,7 +25,7 @@ class CoreOverview implements StudipModule
                 LEFT JOIN object_user_visits AS b
                   ON b.object_id = a.news_id
                      AND b.user_id = :user_id
-                     AND b.type = 'news'
+                     AND b.plugin_id = :plugin_id
                 WHERE a.range_id = :course_id
                 GROUP BY a.range_id";
 
@@ -33,9 +33,9 @@ class CoreOverview implements StudipModule
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $course_id);
         $statement->bindValue(':threshold', object_get_visit_threshold());
+        $statement->bindValue(':plugin_id', $this->getPluginId());
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
-
         if (!$result) {
             return null;
         }
@@ -109,6 +109,14 @@ class CoreOverview implements StudipModule
      */
     public function getMetadata()
     {
-        return [];
+        return [
+            'displayname' => _('Übersicht')
+        ];
+    }
+
+    public function getInfoTemplate($course_id)
+    {
+        // TODO: Implement getInfoTemplate() method.
+        return null;
     }
 }

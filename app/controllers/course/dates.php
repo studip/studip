@@ -11,7 +11,7 @@ class Course_DatesController extends AuthenticatedController
 
         parent::before_filter($action, $args);
         checkObject();
-        checkObjectModule('schedule');
+        $this->studip_module = checkObjectModule('schedule');
 
         $this->course = Context::get();
         if ($this->course) {
@@ -48,10 +48,10 @@ class Course_DatesController extends AuthenticatedController
         }
         Navigation::activateItem('/course/schedule/dates');
 
-        object_set_visit_module('schedule');
+        object_set_visit_module($this->studip_module->getPluginId());
         $this->assignLockRulesToTemplate();
 
-        $this->last_visitdate = object_get_visit($this->course->id, 'schedule');
+        $this->last_visitdate = object_get_visit($this->course->id, $this->studip_module->getPluginId());
         $semester_id = Request::get('semester_id');
         $semester = null;
         if ($semester_id != 'all') {

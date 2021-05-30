@@ -1228,13 +1228,8 @@ class Admin_CoursesController extends AuthenticatedController
             return [];
         }
 
-        if (in_array('contents', $params['view_filter'])) {
-            $sem_types = SemType::getTypes();
-            $modules = new Modules();
-        }
-
         $seminars   = array_map('reset', $courses);
-        $visit_data = get_objects_visits(array_keys($seminars), 'sem', null, null, MyRealmModel::AVAILABLE_MODULES);
+        $visit_data = get_objects_visits(array_keys($seminars), 0, null, null, array_keys(MyRealmModel::getDefaultModules()));
 
         if (!empty($seminars)) {
             foreach ($seminars as $seminar_id => $seminar) {
@@ -1244,15 +1239,9 @@ class Admin_CoursesController extends AuthenticatedController
                 $seminars[$seminar_id]['dozenten'] = $dozenten;
 
                 if (in_array('contents', $params['view_filter'])) {
-                    $seminars[$seminar_id]['visitdate'] = $visit_data[$seminar_id]['sem']['visitdate'];
-                    $seminars[$seminar_id]['last_visitdate'] = $visit_data[$seminar_id]['sem']['last_visitdate'];
-                    $seminars[$seminar_id]['sem_class'] = $sem_types[$seminar['status']]->getClass();
-                    $seminars[$seminar_id]['modules'] = $modules->getLocalModules(
-                        $seminar_id,
-                        'sem',
-                        $seminar['modules'],
-                        $seminar['status']
-                    );
+                    $seminars[$seminar_id]['visitdate'] = $visit_data[$seminar_id][0]['visitdate'];
+                    $seminars[$seminar_id]['last_visitdate'] = $visit_data[$seminar_id][0]['last_visitdate'];
+                    $seminars[$seminar_id]['tools'] = new SimpleCollection(ToolActivation::findbyRange_id($seminar_id, "ORDER BY position"));
                     $seminars[$seminar_id]['navigation'] = MyRealmModel::getAdditionalNavigations(
                         $seminar_id,
                         $seminars[$seminar_id],

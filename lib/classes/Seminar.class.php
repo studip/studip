@@ -2345,16 +2345,10 @@ class Seminar
      */
     public function getSlotModule($slot)
     {
-        $m = new Modules();
-        $activated_slots = array_filter($m->getLocalModules($this->id, 'sem', $this->modules, $this->status));
-        if (isset($activated_slots[$slot])) {
-            $module = $this->getSemClass()->getSlotModule($slot);
-            if (is_subclass_of($module, 'StudIPPlugin')) {
-                return PluginManager::getInstance()->getPlugin($module);
-            } else {
-                return new $module();
-            }
-        }
+        $module = 'Core' . ucfirst($slot);
+       if ($this->course->isToolActive($module)) {
+           return PluginEngine::getPlugin($module);;
+       }
     }
 
     /**

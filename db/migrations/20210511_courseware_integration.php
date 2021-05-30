@@ -129,13 +129,6 @@ class CoursewareIntegration extends \Migration
             )
         ");
 
-        $db->exec("ALTER TABLE object_user_visits 
-            CHANGE type type 
-            ENUM('vote','documents','forum','literature','schedule','scm','sem','wiki','news','eval','inst','elearning_interface','ilias_interface','participants','courseware') 
-            CHARACTER SET latin1 
-            COLLATE latin1_bin NOT NULL DEFAULT 'vote'
-        ");
-
         $query = 'INSERT IGNORE INTO `config` (`field`, `value`, `type`, `range`, `mkdate`, `chdate`, `description`)
                   VALUES (:name, :value, :type, :range, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), :description)';
         $statement = $db->prepare($query);
@@ -170,7 +163,7 @@ class CoursewareIntegration extends \Migration
         ]);
 
         $db->exec("INSERT INTO plugins (pluginclassname, pluginname, plugintype, enabled, navigationpos)
-            VALUES ('CoursewareModule', 'Courseware', 'StandardPlugin,SystemPlugin', 'yes', 1)
+            VALUES ('CoursewareModule', 'Courseware', 'CorePlugin,StudipModule,SystemPlugin', 'yes', 1)
         ");
 
         $sql = "INSERT INTO roles_plugins (roleid, pluginid)
@@ -187,15 +180,6 @@ class CoursewareIntegration extends \Migration
 
         $db->exec("DROP TABLE IF EXISTS `cw_blocks`, `cw_block_comments`, `cw_bookmarks`, `cw_containers`, `cw_structural_elements`, `cw_user_data_fields`, `cw_user_progresses`, `cw_block_feedbacks`");
 
-        $db->exec("DELETE FROM object_user_visits
-            WHERE type = 'courseware'
-        ");
-        $db->exec("ALTER TABLE object_user_visits 
-            CHANGE type type 
-            ENUM('vote','documents','forum','literature','schedule','scm','sem','wiki','news','eval','inst','elearning_interface','ilias_interface','participants') 
-            CHARACTER SET latin1 
-            COLLATE latin1_bin NOT NULL DEFAULT 'vote'
-        ");
 
         $query = "DELETE `config`, `config_values`
                 FROM `config`

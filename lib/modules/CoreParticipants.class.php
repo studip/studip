@@ -9,7 +9,7 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreParticipants implements StudipModule
+class CoreParticipants extends CorePlugin implements StudipModule
 {
     /**
      * {@inheritdoc}
@@ -78,11 +78,13 @@ class CoreParticipants implements StudipModule
                   LEFT JOIN object_user_visits AS b
                     ON b.object_id = :course_id
                        AND b.user_id = :user_id
-                       AND b.type = 'participants'";
+                       AND b.plugin_id = :plugin_id";
         $statement = DBManager::get()->prepare($query);
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $course_id);
         $statement->bindValue(':threshold', $last_visit);
+        $statement->bindValue(':plugin_id', $this->getPluginId());
+
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
@@ -181,7 +183,7 @@ class CoreParticipants implements StudipModule
             'category' => _('Lehr- und Lernorganisation'),
             'icon' => Icon::create('persons', Icon::ROLE_INFO),
             'screenshots' => [
-                'path' => 'plus/screenshots/TeilnehmerInnen',
+                'path' => 'assets/images/plus/screenshots/TeilnehmerInnen',
                 'pictures' => [
                     ['source' => 'Liste_aller_Teilnehmenden_einer_Veranstaltung.jpg', 'title' => _('Liste aller Teilnehmenden einer Veranstaltung')],
                     ['source' => 'Rundmail_an_alle_TeilnehmerInnen_einer_Veranstaltung.jpg', 'title' => _('Rundmail an alle Teilnehmdenden einer Veranstaltung')],
@@ -202,5 +204,16 @@ class CoreParticipants implements StudipModule
         }
 
         return false;
+    }
+
+    public function getInfoTemplate($course_id)
+    {
+        // TODO: Implement getInfoTemplate() method.
+        return null;
+    }
+
+    public function isActivatableForContext(Range $context)
+    {
+        return $context->getRangeType() === 'course';
     }
 }

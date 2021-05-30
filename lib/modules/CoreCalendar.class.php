@@ -9,7 +9,7 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreCalendar implements StudipModule
+class CoreCalendar extends CorePlugin implements StudipModule
 {
     /**
      * {@inheritdoc}
@@ -45,6 +45,21 @@ class CoreCalendar implements StudipModule
      */
     public function getMetadata()
     {
-        return [];
+        return [
+            'summary' => _('Kalender'),
+            'category' => _('Lehr- und Lernorganisation'),
+            'icon' => Icon::create('schedule', Icon::ROLE_INFO),
+            'displayname' => _('Planer'),
+        ];
+    }
+    public function isActivatableForContext(Range $context)
+    {
+        return Config::get()->CALENDAR_GROUP_ENABLE && $context->getRangeType() === 'course';
+    }
+
+    public function getInfoTemplate($course_id)
+    {
+        // TODO: Implement getInfoTemplate() method.
+        return null;
     }
 }

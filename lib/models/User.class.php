@@ -178,6 +178,11 @@ class User extends AuthUserMd5 implements Range, PrivacyObject
             'assoc_func' => 'getCoursewareUser'
         ];
 
+        $config['has_many']['course_notifications'] = [
+            'class_name'        => CourseMemberNotification::class,
+            'on_delete'         => 'delete',
+        ];
+
         $config['additional_fields']['config']['get'] = function ($user) {
             return UserConfig::get($user->id);
         };

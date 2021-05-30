@@ -3,7 +3,7 @@
 use Courseware\Instance;
 use Courseware\StructuralElement;
 
-class CoursewareModule extends StudIPPlugin implements SystemPlugin, StandardPlugin, PrivacyPlugin
+class CoursewareModule extends CorePlugin implements SystemPlugin, StudipModule, PrivacyPlugin
 {
     /**
      * {@inheritdoc}
@@ -142,7 +142,7 @@ class CoursewareModule extends StudIPPlugin implements SystemPlugin, StandardPlu
                 in andere Kurse oder andere Installationen importiert werden.'),
             'icon' => Icon::create('courseware', 'info'),
             'screenshots' => [
-                'path' => 'plus/screenshots/Courseware',
+                'path' => 'assets/images/plus/screenshots/Courseware',
                 'pictures' => [
                     0 => ['source' => 'preview.png', 'title' => _('Überssichtsseite der Courseware')],
                 ],
@@ -158,47 +158,52 @@ class CoursewareModule extends StudIPPlugin implements SystemPlugin, StandardPlu
         $db = DBManager::get();
 
         $structuralElements = $db->fetchAll(
-            'SELECT * FROM cw_structural_elements WHERE owner_id = ? OR editor_id = ? OR range_id = ?', 
+            'SELECT * FROM cw_structural_elements WHERE owner_id = ? OR editor_id = ? OR range_id = ?',
             [$storage->user_id, $storage->user_id, $storage->user_id]
         );
         $storage->addTabularData(_('Courseware-Strukturelemente-Ergebnisse'), 'cw_structural_elements', $structuralElements);
 
         $containers = $db->fetchAll(
-            'SELECT * FROM cw_containers WHERE owner_id = ? OR editor_id = ?', 
+            'SELECT * FROM cw_containers WHERE owner_id = ? OR editor_id = ?',
             [$storage->user_id, $storage->user_id]
         );
         $storage->addTabularData(_('Courseware-Container-Ergebnisse'), 'cw_containers', $containers);
 
         $blocks = $db->fetchAll(
-            'SELECT * FROM cw_blocks WHERE owner_id = ? OR editor_id = ?', 
+            'SELECT * FROM cw_blocks WHERE owner_id = ? OR editor_id = ?',
             [$storage->user_id, $storage->user_id]
         );
         $storage->addTabularData(_('Courseware-Blöcke-Ergebnisse'), 'cw_blocks', $blocks);
 
         $comments = $db->fetchAll(
-            'SELECT * FROM cw_block_comments WHERE user_id = ?', 
+            'SELECT * FROM cw_block_comments WHERE user_id = ?',
             [$storage->user_id]
         );
         $storage->addTabularData(_('Courseware-Kommentare-Ergebnisse'), 'cw_block_comments', $comments);
 
         $userData = $db->fetchAll(
-            'SELECT * FROM cw_user_data_fields WHERE user_id = ?', 
+            'SELECT * FROM cw_user_data_fields WHERE user_id = ?',
             [$storage->user_id]
         );
         $storage->addTabularData(_('Courseware-Nutzer-Daten-Ergebnisse'), 'cw_user_data_fields', $userData);
 
         $userProgresses = $db->fetchAll(
-            'SELECT * FROM cw_user_progresses WHERE user_id = ?', 
+            'SELECT * FROM cw_user_progresses WHERE user_id = ?',
             [$storage->user_id]
         );
         $storage->addTabularData(_('Courseware-Nutzer-Fortschritt-Ergebnisse'), 'cw_user_progresses', $userProgresses);
 
         $bookmarks = $db->fetchAll(
-            'SELECT * FROM cw_bookmarks WHERE user_id = ?', 
+            'SELECT * FROM cw_bookmarks WHERE user_id = ?',
             [$storage->user_id]
         );
         $storage->addTabularData(_('Courseware-Lesezeichen-Ergebnisse'), 'cw_bookmarks', $bookmarks);
 
 
+    }
+
+    public function isActivatableForContext(Range $context)
+    {
+        return $context->getRangeType() === 'course';
     }
 }

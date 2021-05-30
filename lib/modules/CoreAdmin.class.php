@@ -7,7 +7,7 @@
  *  published by the Free Software Foundation; either version 2 of
  *  the License, or (at your option) any later version.
  */
-class CoreAdmin implements StudipModule
+class CoreAdmin extends CorePlugin implements StudipModule
 {
     /**
      * {@inheritdoc}
@@ -138,6 +138,19 @@ class CoreAdmin implements StudipModule
      */
     public function getMetadata()
     {
-        return [];
+        return [
+            'displayname' => _('Verwaltung')
+        ];
+    }
+
+    public function isActivatableForContext(Range $context)
+    {
+        return false;
+    }
+
+    public function getInfoTemplate($course_id)
+    {
+        // TODO: Implement getInfoTemplate() method.
+        return null;
     }
 }

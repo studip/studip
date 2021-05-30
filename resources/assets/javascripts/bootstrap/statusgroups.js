@@ -1,5 +1,5 @@
 /*jslint esversion: 6*/
-STUDIP.domReady(function() {
+STUDIP.ready(function() {
     STUDIP.Statusgroups.ajax_endpoint = $('meta[name="statusgroups-ajax-movable-endpoint"]').attr('content');
     STUDIP.Statusgroups.apply();
 

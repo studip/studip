@@ -9,7 +9,7 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreWiki implements StudipModule
+class CoreWiki extends CorePlugin implements StudipModule
 {
     /**
      * {@inheritdoc}
@@ -27,7 +27,7 @@ class CoreWiki implements StudipModule
                            COUNT(IF((wiki.chdate > IFNULL(ouv.visitdate, :threshold) AND wiki.user_id != :user_id), keyword, NULL)) AS neue
                     FROM wiki
                     LEFT JOIN object_user_visits AS ouv
-                      ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.type = 'wiki')
+                      ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.plugin_id = :plugin_id)
                     WHERE wiki.range_id = :course_id
                     GROUP BY wiki.range_id";
         } else {
@@ -36,7 +36,7 @@ class CoreWiki implements StudipModule
                     FROM wiki
                     LEFT JOIN wiki_page_config USING (range_id, keyword)
                     LEFT JOIN object_user_visits AS ouv
-                      ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.type = 'wiki')
+                      ON (ouv.object_id = wiki.range_id AND ouv.user_id = :user_id and ouv.plugin_id = :plugin_id)
                     WHERE wiki.range_id = :course_id
                       AND (
                           wiki_page_config.range_id IS NULL
@@ -48,6 +48,7 @@ class CoreWiki implements StudipModule
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $course_id);
         $statement->bindValue(':threshold', $last_visit);
+        $statement->bindValue(':plugin_id', $this->getPluginId());
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
@@ -115,7 +116,7 @@ class CoreWiki implements StudipModule
     /**
      * {@inheritdoc}
      */
-    function getMetadata()
+    public function getMetadata()
     {
         return [
             'summary' => _('Gemeinsames asynchrones Erstellen und Bearbeiten von Texten'),
@@ -151,11 +152,17 @@ class CoreWiki implements StudipModule
             'category' => _('Kommunikation und Zusammenarbeit'),
             'icon' => Icon::create('wiki', Icon::ROLE_INFO),
             'screenshots' => [
-                'path' => 'plus/screenshots/Wiki-Web',
+                'path' => 'assets/images/plus/screenshots/Wiki-Web',
                 'pictures' => [
                     0 => [ 'source' => 'Gemeinsam_erstellte_Texte.jpg', 'title' => 'Gemeinsam erstellte Texte']
                 ]
             ]
         ];
+    }
+
+    public function getInfoTemplate($course_id)
+    {
+        // TODO: Implement getInfoTemplate() method.
+        return null;
     }
 }

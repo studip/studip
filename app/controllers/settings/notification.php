@@ -91,9 +91,8 @@ class Settings_NotificationController extends Settings_SettingsController
             $this->render_nothing();
             return;
         }
-
-        $modules         = new ModulesNotification();
-        $enabled_modules = $modules->getGlobalEnabledNotificationModules('sem');
+        $modules_notification = new ModulesNotification();
+        $enabled_modules = $modules_notification->registered_notification_modules;
 
         $groups = [];
         $my_sem = [];
@@ -124,9 +123,10 @@ class Settings_NotificationController extends Settings_SettingsController
             add_sem_name($my_sem);
         }
 
+
         sort_groups($group_field, $groups);
         $group_names   = get_group_names($group_field, $groups);
-        $notifications = $modules->getModuleNotification();
+        $notifications = $this->user->course_notifications;
         $open          = UserConfig::get($this->user->user_id)->MY_COURSES_OPEN_GROUPS;
         $checked       = [];
         foreach ($groups as $group_id => $group_members) {
@@ -135,13 +135,13 @@ class Settings_NotificationController extends Settings_SettingsController
             }
             foreach ($group_members as $member) {
                 $checked[$member['seminar_id']] = [];
-                foreach (array_values($enabled_modules) as $index => $m_data) {
-                    $checked[$member['seminar_id']][$index] = $modules->isBit($notifications[$member['seminar_id']], $m_data['id']);
+                foreach ($enabled_modules as $index => $module) {
+                    $notify = $notifications->findOneBy('seminar_id', $member['seminar_id']);
+                    $checked[$member['seminar_id']][$index] = $notify && in_array($index, $notify->notification_data->getArrayCopy());
                 }
                 $checked[$member['seminar_id']]['all'] = count($enabled_modules) === count(array_filter($checked[$member['seminar_id']]));
             }
         }
-
 
         $this->modules       = $enabled_modules;
         $this->groups        = $groups;
@@ -149,7 +149,7 @@ class Settings_NotificationController extends Settings_SettingsController
         $this->group_field   = $group_field;
         $this->open          = $open;
         $this->seminars      = $my_sem;
-        $this->notifications = $modules->getModuleNotification();
+        $this->notifications = $notifications;
         $this->checked       = $checked;
     }
 
@@ -159,10 +159,16 @@ class Settings_NotificationController extends Settings_SettingsController
     public function store_action()
     {
         $this->check_ticket();
-
-        $modules = new ModulesNotification();
-        $modules->setModuleNotification(Request::getArray('m_checked'), 'sem');
-
+        foreach (Request::getArray('m_checked') as $course_id => $checked) {
+            unset($checked['empty']);
+            if (!count($checked)) {
+                CourseMemberNotification::deleteBySQL('user_id=? AND seminar_id=?', [$this->user->user_id, $course_id]);
+            } else {
+                $notify = new CourseMemberNotification([$this->user->user_id, $course_id]);
+                $notify->notification_data = array_keys($checked);
+                $notify->store();
+            }
+        }
         PageLayout::postSuccess(_('Die Einstellungen wurden gespeichert.'));
         $this->redirect('settings/notification');
     }

@@ -77,8 +77,8 @@ class SingleCalendar
         $this->range = $range_map[get_class($this->range_object)];
         if ($this->range == Calendar::RANGE_INST
                 || $this->range == Calendar::RANGE_SEM) {
-            $modules = new Modules();
-            if (!$modules->getStatus('calendar', $this->range_object->getId())) {
+
+            if (!$this->range_object->isToolActive('CoreCalendar')) {
                 throw new AccessDeniedException();
             }
         }

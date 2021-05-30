@@ -14,20 +14,4 @@
 
 interface StandardPlugin extends StudipModule
 {
-    /**
-     * Return a template (an instance of the Flexi_Template class)
-     * to be rendered on the course summary page. Return NULL to
-     * render nothing for this plugin.
-     *
-     * The template will automatically get a standard layout, which
-     * can be configured via attributes set on the template:
-     *
-     *  title        title to display, defaults to plugin name
-     *  icon_url     icon for this plugin (if any)
-     *  admin_url    admin link for this plugin (if any)
-     *  admin_title  title for admin link (default: Administration)
-     *
-     * @return object   template object to render or NULL
-     */
-    function getInfoTemplate($course_id);
 }

@@ -9,7 +9,7 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreScm implements StudipModule
+class CoreScm extends CorePlugin implements StudipModule
 {
     /**
      * {@inheritdoc}
@@ -27,7 +27,7 @@ class CoreScm implements StudipModule
                 LEFT JOIN object_user_visits AS ouv
                   ON ouv.object_id = scm.range_id
                      AND ouv.user_id = :user_id
-                     AND ouv.type = 'scm'
+                     AND ouv.plugin_id = :plugin_id
                 WHERE scm.range_id = :course_id
                 GROUP BY scm.range_id";
 
@@ -35,6 +35,7 @@ class CoreScm implements StudipModule
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $course_id);
         $statement->bindValue(':threshold', $last_visit);
+        $statement->bindValue(':plugin_id', $this->getPluginId());
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
@@ -139,12 +140,23 @@ class CoreScm implements StudipModule
                                     'etc.) verwendet werden.'),
             'icon' => Icon::create('infopage', Icon::ROLE_INFO),
             'screenshots' => [
-                'path' => 'plus/screenshots/Freie_Informationsseite',
+                'path' => 'assets/images/plus/screenshots/Freie_Informationsseite',
                 'pictures' => [
                     0 => ['source' => 'Zwei_Eintraege_mit_Inhalten_zur_Verfuegung_stellen.jpg', 'title' => _('Zwei Einträge mit Inhalten zur Verfügung stellen')],
                     1 => [ 'source' => 'Neue_Informationsseite_anlegen.jpg', 'title' => _('Neue Informationsseite anlegen')]
                 ]
             ]
         ];
+    }
+
+    public function getInfoTemplate($course_id)
+    {
+        // TODO: Implement getInfoTemplate() method.
+        return null;
+    }
+
+    function deleteContent($course_id)
+    {
+
     }
 }

@@ -113,35 +113,32 @@ class Calendar
 
     public static function GetInstituteActivatedCalendar($user_id)
     {
-        $stmt = DBManager::get()->prepare("SELECT ui.Institut_id, Name, modules "
-                . "FROM user_inst ui LEFT JOIN Institute i USING(Institut_id) "
-                . "WHERE user_id = ? AND inst_perms IN ('admin','dozent','tutor','autor') "
-                . "ORDER BY Name ASC");
-        $modules = new Modules();
-        $stmt->execute([$user_id]);
-        $active_calendar = [];
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            if ($modules->isBit($row['modules'],
-                    $modules->registered_modules['calendar']['id'])) {
-                $active_calendar[$row['Institut_id']] = $row['Name'];
-            }
-        }
-        return $active_calendar;
+
+        $ret = [];
+        Institute::findAndMapBySQL(function($i) use (&$ret) {
+                if ($i->isToolActive('CoreCalendar')) {
+                    $ret[$i->id] = $i->name;
+                }
+            },
+            "JOIN user_inst USING(Institut_id)
+            WHERE user_id = ? AND inst_perms IN ('admin','dozent','tutor','autor')
+            ORDER BY Name ASC",
+            [$user_id]
+            );
+        return $ret;
     }
 
     /**
      *
-     * @param type $user_id
-     * @return type
+     * @param string $user_id
+     * @return array
      */
     public static function GetCoursesActivatedCalendar($user_id)
     {
         $courses_user = SimpleCollection::createFromArray(
                 CourseMember::findByUser($user_id));
-        $modules = new Modules();
-        $courses = $courses_user->filter(function ($c) use ($modules) {
-            if ($modules->isBit($c->course->modules,
-                    $modules->registered_modules['calendar']['id'])) {
+        $courses = $courses_user->filter(function ($c) {
+            if ($c->course->isToolActive('CoreCalendar')) {
                 return $c;
             }
         });

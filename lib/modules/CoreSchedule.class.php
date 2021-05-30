@@ -9,7 +9,7 @@
  *  the License, or (at your option) any later version.
  */
 
-class CoreSchedule implements StudipModule
+class CoreSchedule extends CorePlugin implements StudipModule
 {
     /**
      * {@inheritdoc}
@@ -32,11 +32,12 @@ class CoreSchedule implements StudipModule
                   LEFT JOIN object_user_visits AS ouv
                     ON ouv.object_id = :course_id
                        AND ouv.user_id = :user_id
-                       AND ouv.type = 'schedule'";
+                       AND ouv.plugin_id = :plugin_id";
         $statement = DBManager::get()->prepare($query);
         $statement->bindValue(':user_id', $user_id);
         $statement->bindValue(':course_id', $course_id);
         $statement->bindValue(':threshold', $last_visit);
+        $statement->bindValue(':plugin_id', $this->getPluginId());
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
 
@@ -115,12 +116,23 @@ class CoreSchedule implements StudipModule
                                     'Themen hinzufügen, die z. B. eine Kurzbeschreibung der Inhalte darstellen.'),
             'icon' => Icon::create('schedule', Icon::ROLE_INFO),
             'screenshots' => [
-                'path' => 'plus/screenshots/Ablaufplan',
+                'path' => 'assets/images/plus/screenshots/Ablaufplan',
                 'pictures' => [
                     0 => ['source' => 'Termine_mit_Themen.jpg', 'title' => _('Termine mit Themen')],
                     1 => [ 'source' => 'Thema_bearbeiten_und_einem_Termin_zuordnen.jpg', 'title' => _('Thema bearbeiten und einem Termin zuordnen')]
                 ]
             ]
         ];
+    }
+
+    public function getInfoTemplate($course_id)
+    {
+        // TODO: Implement getInfoTemplate() method.
+        return null;
+    }
+
+    public function isActivatableForContext(Range $context)
+    {
+        return $context->getRangeType() === 'course';
     }
 }

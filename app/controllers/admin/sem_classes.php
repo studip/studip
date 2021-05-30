@@ -64,29 +64,30 @@ class Admin_SemClassesController extends AuthenticatedController
     public function details_action()
     {
         Navigation::activateItem("/admin/locations/sem_classes");
-        $modules = [
-            'CoreOverview' => ['id' => "CoreOverview", 'name' => _("Kern-Übersicht"), 'enabled' => true],
-            'CoreAdmin' => ['id' => "CoreAdmin", 'name' => _("Kern-Verwaltung"), 'enabled' => true],
-            'CoreForum' => ['id' => "CoreForum", 'name' => _("Kern-Forum"), 'enabled' => true],
-            'CoreStudygroupAdmin' => ['id' => "CoreStudygroupAdmin", 'name' => _("Studiengruppen-Verwaltung"), 'enabled' => true],
-            'CoreDocuments' => ['id' => "CoreDocuments", 'name' => _("Kern-Dateibereich"), 'enabled' => true],
-            'CoreSchedule' => ['id' => "CoreSchedule", 'name' => _("Kern-Termine"), 'enabled' => true],
-            'CoreParticipants' => ['id' => "CoreParticipants", 'name' => _("Kern-Teilnehmende"), 'enabled' => true],
-            'CoreStudygroupParticipants' => ['id' => "CoreStudygroupParticipants", 'name' => _("Kern-Studiengruppen-Teilnehmende"), 'enabled' => true],
-            'CoreScm' => ['id' => "CoreScm", 'name' => _("Kern-Freie-Informationen"), 'enabled' => true],
-            'CoreWiki' => ['id' => "CoreWiki", 'name' => _("Kern-Wiki"), 'enabled' => true],
-            'CoreCalendar' => ['id' => "CoreCalendar", 'name' => _("Kern-Kalender"), 'enabled' => true],
-            'CoreElearningInterface' => ['id' => "CoreElearningInterface", 'name' => _("Kern-Lernmodule"), 'enabled' => true]
-        ];
 
-        $plugin_infos = PluginManager::getInstance()->getPluginInfos("StandardPlugin");
-
-        foreach ($plugin_infos as $plugin_info) {
-            $modules[$plugin_info['class']] = $plugin_info;
+        $plugins = PluginManager::getInstance()->getPlugins("StudipModule");
+        $this->sem_class = SemClass::getClasses()[Request::get("id")];
+        $modules = [];
+        foreach ($this->sem_class->getActivatedModuleObjects() as $plugin) {
+            $modules[get_class($plugin)] = [
+                'name' => $plugin->getPluginName(),
+                'id' => $plugin->getPluginId(),
+                'enabled' => $plugin->isEnabled(),
+                'activated' => true
+            ];
+        }
+        foreach ($plugins as $plugin) {
+            if (!$plugin->isActivatableForContext(new Course)) continue;
+            if (isset($modules[get_class($plugin)])) continue;
+            $modules[get_class($plugin)] = [
+                'name' => $plugin->getPluginName(),
+                'id' => $plugin->getPluginId(),
+                'enabled' => $plugin->isEnabled(),
+                'activated' => false
+            ];
         }
 
         $this->modules = $modules;
-        $this->sem_class = $GLOBALS['SEM_CLASS'][Request::get("id")];
         $this->overview_url = $this->url_for("admin/sem_classes/overview");
     }
 

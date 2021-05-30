@@ -46,6 +46,7 @@ class PluginEngine
 
         // load course plugins
         if (Context::getId()) {
+            self::getPlugins('StudipModule');
             self::getPlugins('StandardPlugin');
         }
 
