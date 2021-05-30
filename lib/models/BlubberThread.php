@@ -976,100 +976,30 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             return [];
         }
 
-        $mandatory_classes = [];
-        $standard_classes = [];
-        $forbidden_classes = [];
-        $mandatory_types = [];
-        $standard_types = [];
-        $forbidden_types = [];
-
-        foreach (SemClass::getClasses() as $key => $class) {
-            $blubber_setting = $class->getModuleMetadata('Blubber');
-            if ($class->isModuleMandatory('Blubber')) {
-                $mandatory_classes[] = $key;
-            }
-            if ($class->isSlotModule('Blubber') || ($blubber_setting['activated'] && !$blubber_setting['sticky'])) {
-                $standard_classes[] = $key;
-            }
-            if (!$class->isModuleAllowed('Blubber')) {
-                $forbidden_classes[] = $key;
-            }
-        }
-
-        foreach (SemType::getTypes() as $key => $type) {
-            if (in_array($type['class'], $mandatory_classes)) {
-                $mandatory_types[] = $key;
-            }
-            if (in_array($type['class'], $standard_classes)) {
-                $standard_types[] = $key;
-            }
-            if (in_array($type['class'], $forbidden_classes)) {
-                $forbidden_types[] = $key;
-            }
-        }
-
         $is_deputy = Config::get()->DEPUTIES_ENABLE && Deputy::countByUser_id($user_id) > 0;
         $blubber_plugin_info = PluginManager::getInstance()->getPluginInfo('Blubber');
 
         $parameters = [
             'me'                => $user_id,
-            'mandatory_types'   => $mandatory_types ?: null,
-            'standard_types'    => $standard_types ?: null,
-            'forbidden_types'   => $forbidden_types ?: [-1],
             'blubber_plugin_id' => $blubber_plugin_info['id'],
         ];
 
         $query = "SELECT seminare.Seminar_id
                   FROM seminar_user
-                  INNER JOIN seminare ON (seminare.Seminar_id = seminar_user.Seminar_id)
-                  WHERE seminar_user.user_id = :me
-                    AND seminare.status IN (:mandatory_types)
-                    AND seminare.status NOT IN (:forbidden_types)
+                  INNER JOIN tools_activated
+                    ON plugin_id = :blubber_plugin_id
+                       AND tools_activated.range_id = seminare.Seminar_id
+                  WHERE seminar_user.user_id = :me";
 
-                  UNION DISTINCT
-
-                  SELECT seminare.Seminar_id
-                  FROM seminar_user
-                  INNER JOIN seminare ON (seminare.Seminar_id = seminar_user.Seminar_id)
-                  INNER JOIN plugins_activated
-                    ON pluginid = :blubber_plugin_id
-                       AND plugins_activated.range_type = 'sem'
-                       AND plugins_activated.range_id = seminare.Seminar_id
-                  WHERE seminar_user.user_id = :me
-                    AND plugins_activated.state = 1
-                    AND seminare.status NOT IN (:forbidden_types)
-
-                  UNION DISTINCT
-
-                  SELECT seminare.Seminar_id
-                  FROM seminar_user
-                  INNER JOIN seminare ON (seminare.Seminar_id = seminar_user.Seminar_id)
-                  LEFT JOIN plugins_activated
-                    ON pluginid = :blubber_plugin_id
-                       AND plugins_activated.range_type = 'sem'
-                       AND plugins_activated.range_id = seminare.Seminar_id
-                  WHERE seminar_user.user_id = :me
-                    AND plugins_activated.state IS NULL
-                    AND seminare.status NOT IN (:forbidden_types)";
         $my_courses = DBManager::get()->fetchFirst($query, $parameters);
 
         if ($is_deputy) {
             $query = "SELECT deputies.range_id
                       FROM deputies
-                      INNER JOIN seminare ON (seminare.Seminar_id = deputies.range_id)
-                      LEFT JOIN plugins_activated
-                        ON pluginid = :blubber_plugin_id AND plugins_activated.range_type = 'sem'
-                           AND plugins_activated.range_id = seminare.Seminar_id
-                      WHERE deputies.user_id = :me
-                        AND (
-                            seminare.status IN (:mandatory_types)
-                            OR plugins_activated.state = 1
-                            OR (
-                                seminare.status IN (:standard_types)
-                                AND plugins_activated.state != 0
-                            )
-                        )
-                        AND seminare.status NOT IN (:forbidden_types)";
+                      INNER JOIN tools_activated
+                    ON plugin_id = :blubber_plugin_id
+                       AND tools_activated.range_id = deputies.range_id
+                  WHERE deputies.user_id = :me";
             $my_courses = array_merge(
                 $my_courses,
                 DBManager::get()->fetchFirst($query, $parameters)
