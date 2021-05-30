@@ -984,11 +984,11 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
             'blubber_plugin_id' => $blubber_plugin_info['id'],
         ];
 
-        $query = "SELECT seminare.Seminar_id
+        $query = "SELECT seminar_user.Seminar_id
                   FROM seminar_user
                   INNER JOIN tools_activated
                     ON plugin_id = :blubber_plugin_id
-                       AND tools_activated.range_id = seminare.Seminar_id
+                       AND tools_activated.range_id = seminar_user.Seminar_id
                   WHERE seminar_user.user_id = :me";
 
         $my_courses = DBManager::get()->fetchFirst($query, $parameters);
