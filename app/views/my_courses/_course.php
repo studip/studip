@@ -51,7 +51,7 @@
             <? endif ?>
                 <div class="special_nav">
                 <? if (in_array($course['user_status'], ['dozent', 'tutor'])) : ?>
-                    <? $adminmodule = $sem_class->getModule("admin"); ?>
+                    <? $adminmodule = $sem_class->getAdminModuleObject(); ?>
                     <? if ($adminmodule) : ?>
                         <? $adminnavigation = $adminmodule->getIconNavigation($course['seminar_id'], 0, $GLOBALS['user']->id); ?>
                     <? endif ?>
@@ -110,7 +110,7 @@
         <td style="text-align: right" class="hidden-small-down">
         <? if (!$course['is_group']) : ?>
             <? if (in_array($course['user_status'], ['dozent', 'tutor'])) : ?>
-                <? $adminmodule = $sem_class->getModule("admin"); ?>
+                <? $adminmodule = $sem_class->getAdminModuleObject(); ?>
                 <? if ($adminmodule) : ?>
                     <? $adminnavigation = $adminmodule->getIconNavigation($course['seminar_id'], 0, $GLOBALS['user']->id); ?>
                 <? endif ?>

@@ -40,18 +40,7 @@
 class SemClass implements ArrayAccess
 {
     protected $data = [];
-    static protected $slots = [
-        "overview",
-        "forum",
-        "admin",
-        "documents",
-        "schedule",
-        "participants",
-        "scm",
-        "wiki",
-        "calendar",
-        "elearning_interface"
-    ];
+
     static protected $core_modules = [
         "CoreOverview",
         "CoreAdmin",
@@ -71,16 +60,6 @@ class SemClass implements ArrayAccess
     static public function getDefaultSemClass() {
         $data = [
             'name' => "Fehlerhafte Seminarklasse!",
-            'overview' => "CoreOverview",
-            'forum' => "Blubber",
-            'admin' => "CoreAdmin",
-            'documents' => "CoreDocuments",
-            'schedule' => "CoreSchedule",
-            'participants' => "CoreParticipants",
-            'scm' => "CoreScm",
-            'wiki' => "CoreWiki",
-            'calendar' => "CoreCalendar",
-            'elearning_interface' => "CoreElearningInterface",
             'modules' => '{"CoreOverview":{"activated":1,"sticky":1},"CoreAdmin":{"activated":1,"sticky":1}, "CoreResources":{"activated":1,"sticky":0}}',
             'visible' => 1,
             'is_group' => false
@@ -213,6 +192,16 @@ class SemClass implements ArrayAccess
             }
         }
         return $result;
+    }
+
+    public function getAdminModuleObject()
+    {
+        if ($this->studygroup_mode) {
+            $module = 'CoreStudygroupAdmin';
+        } else {
+            $module = 'CoreAdmin';
+        }
+        return PluginManager::getInstance()->getPlugin($module);
     }
 
     /**
@@ -538,13 +527,6 @@ class SemClass implements ArrayAccess
         return $arr;
     }
 
-    /**
-     * Returns an array of all slot-names.
-     * @return array of strings
-     */
-    static public function getSlots() {
-        return self::$slots;
-    }
 
     /**
      * Static method only to keep the translationstrings of the values. It is

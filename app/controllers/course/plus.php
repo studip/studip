@@ -156,11 +156,6 @@ class Course_PlusController extends AuthenticatedController
                 if ($val[$name]['type'] == 'plugin') {
                     $class = PluginEngine::getPlugin(get_class($val[$name]['object']));
                     $displayname = $class->getPluginName();
-                } elseif ($val[$name]['type'] == 'modul') {
-                    if ($this->sem_class) {
-                        $class = $this->sem_class->getModule($this->sem_class->getSlotModule($val[$name]['modulkey']));
-                        $displayname = $val[$name]['object']['name'];
-                    }
                 }
             }
         }

@@ -983,7 +983,7 @@ class MyCoursesController extends AuthenticatedController
 
         $extra_navigation = false;
         if ($is_teacher) {
-            $adminmodule = $course['sem_class']->getModule('admin');
+            $adminmodule = $course['sem_class']->getAdminModuleObject();
             if ($adminmodule) {
                 $adminnavigation = $adminmodule->getIconNavigation($course['seminar_id'], 0, $GLOBALS['user']->id);
                 $extra_navigation = [
