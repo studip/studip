@@ -116,38 +116,12 @@ class MyCoursesController extends AuthenticatedController
 
         $temp_courses = [];
         $groups = [];
-        foreach ($sem_courses as $_outer_index => $_outer) {
-            if ($group_field === 'sem_number') {
-                $_courses = [];
-
-                foreach ($_outer as $course) {
-                    $_courses[$course['seminar_id']] = $course;
-                    if ($course['children']) {
-                        foreach ($course['children'] as $child) {
-                            $_courses[$child['seminar_id']] = $child;
-                        }
-                    }
-                }
-
-                $groups[] = [
-                    'id'   => $_outer_index,
-                    'name' => (string) $this->sem_data[$_outer_index]['name'],
-                    'data' => [
-                        [
-                            'id'    => md5($_outer_index),
-                            'label' => false,
-                            'ids'   => array_keys($_courses),
-                        ],
-                    ],
-                ];
-                $temp_courses = array_merge($temp_courses, $_courses);
-            } else {
-                $count = 1;
-                $_groups = [];
-                foreach ($_outer as $_inner_index => $_inner) {
+        if (is_array($sem_courses)) {
+            foreach ($sem_courses as $_outer_index => $_outer) {
+                if ($group_field === 'sem_number') {
                     $_courses = [];
 
-                    foreach ($_inner as $course) {
+                    foreach ($_outer as $course) {
                         $_courses[$course['seminar_id']] = $course;
                         if ($course['children']) {
                             foreach ($course['children'] as $child) {
@@ -156,27 +130,55 @@ class MyCoursesController extends AuthenticatedController
                         }
                     }
 
-                    $label = $_inner_index;
-                    if ($group_field === 'sem_tree_id' && !$label) {
-                        $label = _('keine Zuordnung');
-                    } elseif ($group_field === 'gruppe') {
-                        $label = _('Gruppe') . ' ' . $count++;
+                    $groups[] = [
+                        'id' => $_outer_index,
+                        'name' => (string)$this->sem_data[$_outer_index]['name'],
+                        'data' => [
+                            [
+                                'id' => md5($_outer_index),
+                                'label' => false,
+                                'ids' => array_keys($_courses),
+                            ],
+                        ],
+                    ];
+                    $temp_courses = array_merge($temp_courses, $_courses);
+                } else {
+                    $count = 1;
+                    $_groups = [];
+                    foreach ($_outer as $_inner_index => $_inner) {
+                        $_courses = [];
+
+                        foreach ($_inner as $course) {
+                            $_courses[$course['seminar_id']] = $course;
+                            if ($course['children']) {
+                                foreach ($course['children'] as $child) {
+                                    $_courses[$child['seminar_id']] = $child;
+                                }
+                            }
+                        }
+
+                        $label = $_inner_index;
+                        if ($group_field === 'sem_tree_id' && !$label) {
+                            $label = _('keine Zuordnung');
+                        } elseif ($group_field === 'gruppe') {
+                            $label = _('Gruppe') . ' ' . $count++;
+                        }
+
+                        $_groups[] = [
+                            'id' => md5($_outer_index . $_inner_index),
+                            'label' => $label,
+                            'ids' => array_keys($_courses),
+                        ];
+
+                        $temp_courses = array_merge($temp_courses, $_courses);
                     }
 
-                    $_groups[] = [
-                        'id'    => md5($_outer_index . $_inner_index),
-                        'label' => $label,
-                        'ids'   => array_keys($_courses),
+                    $groups[] = [
+                        'id' => $_outer_index,
+                        'name' => (string)$this->sem_data[$_outer_index]['name'],
+                        'data' => $_groups,
                     ];
-
-                    $temp_courses = array_merge($temp_courses, $_courses);
                 }
-
-                $groups[] = [
-                    'id'   => $_outer_index,
-                    'name' => (string) $this->sem_data[$_outer_index]['name'],
-                    'data' => $_groups,
-                ];
             }
         }
 

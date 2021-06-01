@@ -1198,7 +1198,7 @@ class Admin_UserController extends AuthenticatedController
      */
     public function reset_notification_action($user_id)
     {
-        $resetted = DBManager::get()->execute("UPDATE seminar_user SET notification=0 WHERE user_id=?", [$user_id]);
+        $resetted = CourseMemberNotification::deleteBySQL("user_id = ?", [$user_id]);
         PageLayout::postSuccess(sprintf(_('Die Benachrichtigungseinstellungen für %s Veranstaltungen wurden zurück gesetzt.'), $resetted));
         $this->redirect('admin/user/edit/' . $user_id);
     }
@@ -1596,7 +1596,7 @@ class Admin_UserController extends AuthenticatedController
                 Icon::create('trash')
             )->asDialog('size=auto');
         }
-        if (Config::get()->MAIL_NOTIFICATION_ENABLE && CourseMember::findOneBySQL("user_id = ? AND notification <> 0", [$this->user->user_id])) {
+        if (Config::get()->MAIL_NOTIFICATION_ENABLE && CourseMemberNotification::findOneBySQL("user_id = ?", [$this->user->user_id])) {
             $user_actions->addLink(
                 _('Benachrichtigungen zurücksetzen'),
                 $this->url_for("admin/user/reset_notification/{$this->user->id}"),

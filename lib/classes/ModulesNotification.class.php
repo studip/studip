@@ -110,10 +110,11 @@ class ModulesNotification
 
         $news = [];
         foreach ($my_sem as $seminar_id => $s_data) {
+            if (!count($s_data->notification)) continue;
             $navigation = MyRealmModel::getAdditionalNavigations($seminar_id, $s_data, null, $user_id, $visit_data);
             $n_data = [];
             foreach ($this->registered_notification_modules as $id => $m_data) {
-                if (in_array($id, $m_data->notification->notification_data)
+                if (in_array($id, $s_data->notification->notification_data)
                     && isset($navigation[$id])
                     && $navigation[$id]->getImage()
                     && $navigation[$id]->getImage()->getRole() === Icon::ROLE_ATTENTION

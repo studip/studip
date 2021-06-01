@@ -100,10 +100,8 @@ class SendMailNotificationsJob extends CronJob
 
         $notification = new ModulesNotification();
 
-        $query = "SELECT DISTINCT user_id FROM seminar_user su WHERE notification <> 0";
-        if (Config::get()->DEPUTIES_ENABLE) {
-            $query .= " UNION SELECT DISTINCT user_id FROM deputies WHERE notification <> 0";
-        }
+        $query = "SELECT DISTINCT user_id FROM seminar_user_notifications";
+
         $rs = DBManager::get()->query($query);
         while($r = $rs->fetch()){
             $user = new Seminar_User($r["user_id"]);
