@@ -176,9 +176,24 @@ class MessagesController extends AuthenticatedController {
 
         $this->to = [];
         $this->default_message = new Message();
+        $this->default_attachments = [];
 
         //the message-ID for the new message:
         $this->default_message->setId(Request::option('message_id', $this->default_message->getNewId()));
+
+        if (Request::option('message_id')) {
+            //add default attachments if there are any:
+            if ($this->default_message->attachment_folder) {
+                foreach ($this->default_message->attachment_folder->getTypedFolder()->getFiles() as $filetype) {
+                    $this->default_attachments[] = [
+                        'icon'        => $filetype->getIcon('info')->asImg(['class' => 'text-bottom']),
+                        'name'        => $filetype->getFilename(),
+                        'document_id' => $filetype->getId(),
+                        'size'        => $filetype->getSize()
+                    ];
+                }
+            }
+        }
 
         //flag to determine if the message is forwarded or not:
         $forward_message = false;
