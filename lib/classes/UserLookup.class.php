@@ -453,7 +453,7 @@ class UserLookup
         $domains = [];
         $domains['keine'] = _('Ohne Domain');
         foreach (UserDomain::getUserDomains() as $domain) {
-            $domains[$domain->getId()] = $domain->getName();
+            $domains[$domain->getId()] = $domain->name;
         }
 
         return $domains;
