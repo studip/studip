@@ -12,6 +12,7 @@ $options = array_filter([
 ?>
 
 <form action="#" method="post" class="files_source_selector" data-dialog <? if ($hidden) echo ' style="display: none;"'; ?>>
+    <input type="hidden" name="webkitbugfix" value="1">
 <? foreach ($options as $key => $value): ?>
     <?= addHiddenFields($key, $value) ?>
 <? endforeach; ?>
@@ -27,41 +28,55 @@ $options = array_filter([
     <div class="file_select_possibilities">
         <div>
         <? if (isset($parent_folder) && ($parent_folder->isWritable($GLOBALS['user']->id) || count($parent_folder->getSubfolders()))): ?>
-            <!-- neu -->
-            <button formaction="<?= $controller->link_for('/choose_folder/' . $parent_folder->getId()) ?>" <? if ($options['from_plugin']): ?> name="to_plugin" value="<?= htmlReady($options['from_plugin']) ?>"<? endif; ?>>
-                <?= Icon::create('folder-parent', Icon::ROLE_CLICKABLE)->asImg(50) ?>
-                <?= _('Aktueller Ordner') ?>
-            </button>
+            <div class="clickable">
+                <?= Icon::create('folder-parent', Icon::ROLE_CLICKABLE)->asInput(50, ['formaction' => $controller->url_for('/choose_folder/' . $parent_folder->getId()), 'to_plugin' => $options['from_plugin']]) ?>
+                <button
+                    class="undecorated"
+                    formaction="<?= $controller->link_for('/choose_folder/' . $parent_folder->getId()) ?>" <? if ($options['from_plugin']): ?> name="to_plugin" value="<?= htmlReady($options['from_plugin']) ?>"<? endif; ?>>
+                    <?= _('Aktueller Ordner') ?>
+                </button>
+            </div>
         <? endif ?>
-            <!-- neu -->
-            <button formaction="<?= $controller->link_for('/choose_folder/' . Folder::findTopFolder($GLOBALS['user']->id)->getId()) ?>">
-                <?= Icon::create('files')->asImg(50) ?>
-                <?= _('Persönlicher Dateibereich') ?>
-            </button>
+            <div class="clickable">
+                <?= Icon::create('files')->asInput(50, ['formaction' => $controller->url_for('/choose_folder/' . Folder::findTopFolder($GLOBALS['user']->id)->getId())]) ?>
+                <button
+                    class="undecorated"
+                    formaction="<?= $controller->link_for('/choose_folder/' . Folder::findTopFolder($GLOBALS['user']->id)->getId()) ?>">
 
-            <!-- neu -->
-            <button formaction="<?= $controller->link_for('/choose_folder_from_course') ?>">
-                <?= Icon::create('seminar')->asImg(50) ?>
-                <?= _('Meine Veranstaltungen') ?>
-            </button>
+                    <?= _('Persönlicher Dateibereich') ?>
+                </button>
+            </div>
 
-            <!-- neu -->
-            <button formaction="<?= $controller->link_for('/choose_folder_from_institute') ?>">
-                <?= Icon::create('institute')->asImg(50) ?>
-                <?= _('Meine Einrichtungen') ?>
-            </button>
+            <div class="clickable">
+                <?= Icon::create('seminar')->asinput(50, ['formaction' => $controller->url_for('/choose_folder_from_course')]) ?>
+                <button class="undecorated"
+                        formaction="<?= $controller->link_for('/choose_folder_from_course') ?>">
+                    <?= _('Meine Veranstaltungen') ?>
+                </button>
+            </div>
+
+            <div class="clickable">
+                <?= Icon::create('institute')->asInput(50, ['formaction' => $controller->url_for('/choose_folder_from_institute')]) ?>
+                <button class="undecorated"
+                        formaction="<?= $controller->link_for('/choose_folder_from_institute') ?>">
+                    <?= _('Meine Einrichtungen') ?>
+                </button>
+            </div>
 
         <? foreach (PluginManager::getInstance()->getPlugins('FilesystemPlugin') as $plugin) : ?>
             <? if ($plugin->isPersonalFileArea()) : ?>
                 <? $nav = $plugin->getFileSelectNavigation() ?>
                 <? if ($nav) : ?>
-                    <!-- neu -->
-                    <button formaction="<?= $controller->link_for('/choose_folder') ?>"
-                            name="to_plugin"
-                            value="<?= htmlReady(get_class($plugin)) ?>">
-                        <?= $nav->getImage()->asImg(50) ?>
-                        <?= htmlReady($nav->getTitle()) ?>
-                    </button>
+                    <div class="clickable">
+                        <?= $nav->getImage()->asInput(50, ['formaction' => $controller->url_for('/choose_folder'), 'name' => 'to_plugin', 'value' => get_class($plugin)]) ?>
+                        <button formaction="<?= $controller->link_for('/choose_folder') ?>"
+                                type="submit"
+                                class="undecorated"
+                                name="to_plugin"
+                                value="<?= htmlReady(get_class($plugin)) ?>">
+                            <?= htmlReady($nav->getTitle()) ?>
+                        </button>
+                    </div>
                 <? endif ?>
             <? endif ?>
         <? endforeach ?>
