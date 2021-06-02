@@ -10,6 +10,7 @@ class User extends SchemaProvider
 
     const REL_ACTIVITYSTREAM = 'activitystream';
     const REL_BLUBBER = 'blubber-threads';
+    const REL_CONFIG_VALUES = 'config-values';
     const REL_CONTACTS = 'contacts';
     const REL_COURSES = 'courses';
     const REL_COURSE_MEMBERSHIPS = 'course-memberships';
@@ -136,6 +137,11 @@ class User extends SchemaProvider
                 $user,
                 $shouldInclude(self::REL_BLUBBER)
             );
+            $relationships = $this->getConfigValuesRelationship(
+                $relationships,
+                $user,
+                $shouldInclude(self::REL_CONTACTS)
+            );
             $relationships = $this->getContactsRelationship(
                 $relationships,
                 $user,
@@ -224,6 +230,24 @@ class User extends SchemaProvider
         $relationships[self::REL_BLUBBER] = [
             self::LINKS => [
                 Link::RELATED => $this->getRelationshipRelatedLink($user, self::REL_BLUBBER),
+            ],
+        ];
+
+        return $relationships;
+    }
+
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    private function getConfigValuesRelationship(
+        array $relationships,
+        \User $user,
+        $includeData
+    ) {
+        $relationships[self::REL_CONFIG_VALUES] = [
+            self::SHOW_SELF => true,
+            self::LINKS => [
+                Link::RELATED => $this->getRelationshipRelatedLink($user, self::REL_CONFIG_VALUES),
             ],
         ];
 
