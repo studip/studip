@@ -61,6 +61,11 @@ class StudipNavigation extends Navigation
             $this->addSubNavigation('course', new CourseNavigation());
         }
 
+        // contents pages
+        if (is_object($user) && $user->id != 'nobody') {
+            $this->addSubNavigation('contents', new ContentsNavigation());
+        }
+
         if (is_object($user) && $user->id != 'nobody') {
             // internal message system
             $this->addSubNavigation('messaging', new MessagingNavigation());
@@ -138,10 +143,7 @@ class StudipNavigation extends Navigation
             $this->addSubNavigation('files', new FilesNavigation());
         }
 
-        // contents pages
-        if (is_object($user) && $user->id != 'nobody') {
-            $this->addSubNavigation('contents', new ContentsNavigation());
-        }
+
 
         // quick links
         $links = new Navigation('Links');

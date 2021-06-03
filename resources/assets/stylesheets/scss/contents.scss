@@ -1,0 +1,52 @@
+.teaserbox {
+    width: 782px;
+    background-color: $content-color-20;
+    padding: 24px;
+    margin-bottom: 10px;
+    header{
+        font-size: 1.5em;
+        margin-bottom: 0.5em;
+    }
+}
+
+.content-items {
+    list-style: none;
+    padding: 0;
+
+    .content-item {
+        float: left;
+        width: 248px;
+        height: 180px;
+        padding: 10px 10px 16px 10px;
+        margin-right: 10px;
+        text-align: center;
+        border: solid thin $content-color-40;
+
+        header {
+            color: $base-color;
+            font-size: 2em;
+        }
+        .content-item-description {
+            color: black;
+            margin-bottom: 16px;
+        }
+        .content-item-img-wrapper {
+            position: relative;
+            height: 100px;
+
+            img {
+                position: absolute;
+                width: auto;
+                height: auto;
+                max-width: 100%;
+                max-height: 100%;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                margin: auto;
+
+            }
+        }
+    }
+}

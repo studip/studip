@@ -12,8 +12,7 @@ class Contents_OverviewController extends AuthenticatedController
     {
         parent::before_filter($action, $args);
 
-        Navigation::activateItem('/contents/overview');
-        PageLayout::setTitle(_('Übersicht'));
+        PageLayout::setTitle(_('Inhalte'));
 
         $this->user = $GLOBALS['user'];
     }
@@ -29,6 +28,7 @@ class Contents_OverviewController extends AuthenticatedController
      */
     public function index_action($action = false, $widgetId = null)
     {
+        Navigation::activateItem('/contents/overview/index');
         $this->user_id = $GLOBALS['user']->id;
 
         if ($GLOBALS['perm']->have_perm('root') && Request::get('username')) {

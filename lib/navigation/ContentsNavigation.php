@@ -21,7 +21,7 @@ class ContentsNavigation extends Navigation
     {
         parent::__construct(_('Inhalte'));
 
-        $this->setImage(Icon::create('eportfolio', 'navigation', ['title' => _('Inhalte')]));
+        $this->setImage(Icon::create('content', 'navigation', ['title' => _('Inhalte')]));
     }
 
     /**
@@ -32,7 +32,10 @@ class ContentsNavigation extends Navigation
     {
         parent::initSubNavigation();
 
-        $this->addSubNavigation('overview', new Navigation(_('Übersicht'), 'dispatch.php/contents/overview'));
+        $overview = new Navigation(_('Inhaltsübersicht'));
+        $overview->addSubNavigation('index', new Navigation(_('Übersicht'), 'dispatch.php/contents/overview'));
+
+        $this->addSubNavigation('overview', $overview);
 
         $courseware = new Navigation(_('Courseware'));
         $courseware->addSubNavigation('projects', new Navigation(_('Projekte'), 'dispatch.php/contents/courseware/index'));
