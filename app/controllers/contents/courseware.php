@@ -88,6 +88,12 @@ class Contents_CoursewareController extends AuthenticatedController
             $this->get_template_factory()->open('course/courseware/view_widget')
         );
         $sidebar->addWidget($views)->addLayoutCSSClass('courseware-view-widget');
+
+        $actions = new TemplateWidget(
+            _('Aktionen'),
+            $this->get_template_factory()->open('course/courseware/action_widget')
+        );
+        $sidebar->addWidget($actions)->addLayoutCSSClass('courseware-action-widget');
     }
 
     /**

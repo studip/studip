@@ -210,14 +210,14 @@
         </studip-dialog>
 
         <studip-dialog
-            v-if="showAddElementDialog"
+            v-if="showAddDialog"
             :title="$gettext('Seite hinzufügen')"
             :confirmText="'Erstellen'"
             :confirmClass="'accept'"
             :closeText="$gettext('Schließen')"
             :closeClass="'cancel'"
             class="cw-structural-element-dialog"
-            @close="showAddElementDialog = false"
+            @close="closeAddDialog"
             @confirm="createElement"
         >
             <template v-slot:dialogContent>
@@ -244,7 +244,7 @@
             :title="textInfo.title"
             :closeText="textInfo.close"
             :closeClass="'cancel'"
-            @close="showInfoDialog = false"
+            @close="showElementInfoDialog(false)"
         >
             <template v-slot:dialogContent>
                 <table class="cw-structural-element-info">
@@ -373,12 +373,8 @@ export default {
     data() {
         return {
             currentId: null,
-            showDeleteDialog: false,
-            showEditDialog: false,
-            showInfoDialog: false,
             showExportDialog: false,
             showOerDialog: false,
-            showAddElementDialog: false,
             newChapterName: '',
             newChapterParent: 'descendant',
             currentElement: '',
@@ -425,6 +421,10 @@ export default {
             containerById: 'courseware-containers/byId',
             structuralElementById: 'courseware-structural-elements/byId',
             userIsTeacher: 'userIsTeacher',
+            showEditDialog: 'showStructuralElementEditDialog',
+            showAddDialog: 'showStructuralElementAddDialog',
+            showInfoDialog: 'showStructuralElementInfoDialog',
+            showDeleteDialog : 'showStructuralElementDeleteDialog',
         }),
 
         inCourse() {
@@ -619,7 +619,7 @@ export default {
         },
         menuItems() {
             let menu = [
-                { id: 3, label: this.$gettext('Informationen zur Seite'), icon: 'info', emit: 'showInfo' },
+                { id: 3, label: this.$gettext('Informationen anzeigen'), icon: 'info', emit: 'showInfo' },
                 { id: 4, label: this.$gettext('Lesezeichen setzen'), icon: 'star', emit: 'setBookmark' },
             ];
             if (this.canEdit) {
@@ -693,6 +693,10 @@ export default {
             uploadImageForStructuralElement: 'uploadImageForStructuralElement',
             deleteImageForStructuralElement: 'deleteImageForStructuralElement',
             companionSuccess: 'companionSuccess',
+            showElementEditDialog: 'showElementEditDialog',
+            showElementAddDialog: 'showElementAddDialog',
+            showElementInfoDialog: 'showElementInfoDialog',
+            showElementDeleteDialog: 'showElementDeleteDialog',
         }),
 
         async setCurrentId(id) {
@@ -711,19 +715,19 @@ export default {
             switch (action) {
                 case 'editCurrentElement':
                     await this.lockObject({ id: this.currentId, type: 'courseware-structural-elements' });
-                    this.showEditDialog = true;
+                    this.showElementEditDialog(true);
                     break;
                 case 'addElement':
                     this.newChapterName = '';
                     this.newChapterParent = 'descendant';
-                    this.showAddElementDialog = true;
+                    this.showElementAddDialog(true);
                     break;
                 case 'deleteCurrentElement':
                     await this.lockObject({ id: this.currentId, type: 'courseware-structural-elements' });
-                    this.showDeleteDialog = true;
+                    this.showElementDeleteDialog(true);
                     break;
                 case 'showInfo':
-                    this.showInfoDialog = true;
+                    this.showElementInfoDialog(true);
                     break;
                 case 'showExportOptions':
                     this.showExportDialog = true;
@@ -738,8 +742,11 @@ export default {
         },
         async closeEditDialog() {
             await this.unlockObject({ id: this.currentId, type: 'courseware-structural-elements' });
-            this.showEditDialog = false;
+            this.showElementEditDialog(false)
             this.initCurrent();
+        },
+        closeAddDialog() {
+            this.showElementAddDialog(false);
         },
         checkUploadFile() {
             const file = this.$refs?.upload_image?.files[0];
@@ -788,7 +795,7 @@ export default {
             });
             await this.unlockObject({ id: this.currentId, type: 'courseware-structural-elements' });
             this.setCurrentId(this.$route.params.id);
-            this.showEditDialog = false;
+            this.showElementEditDialog(false);
         },
 
         async exportCurrentElement(data) {
@@ -811,7 +818,7 @@ export default {
         },
         async closeDeleteDialog() {
             await this.unlockObject({ id: this.currentId, type: 'courseware-structural-elements' });
-            this.showDeleteDialog = false;
+            this.showElementDeleteDialog(false);
         },
         async deleteCurrentElement() {
             let parent_id = this.structuralElement.relationships.parent.data.id;
@@ -819,7 +826,7 @@ export default {
                 id: this.currentId,
                 parentId: this.structuralElement.relationships.parent.data.id,
             });
-            this.showDeleteDialog = false;
+            this.showElementDeleteDialog(false);
             this.$router.push(parent_id);
         },
         async createElement() {
@@ -828,7 +835,7 @@ export default {
             if (this.newChapterParent === 'sibling') {
                 parent_id = this.structuralElement.relationships.parent.data.id;
             }
-            this.showAddElementDialog = false;
+            this.showElementAddDialog(false);
             await this.createStructuralElement({
                 attributes: {
                     title,

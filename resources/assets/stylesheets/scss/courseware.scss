@@ -1510,7 +1510,7 @@ c o m p a n i o n  s m a l l  e n d
 /* * * * * * * * * *
 v i e w  w i d g e t
 * * * * * * * * * * */
-
+.cw-action-widget,
 .cw-view-widget {
     li {
         color: $base-color;
@@ -1521,6 +1521,23 @@ v i e w  w i d g e t
         &.active {
             padding-left: 10px !important;
         }
+    }
+}
+.cw-action-widget {
+    .cw-action-widget-edit{
+        @include background-icon(edit, clickable);
+    }
+    .cw-action-widget-add{
+        @include background-icon(add, clickable);
+    }
+    .cw-action-widget-info{
+        @include background-icon(info, clickable);
+    }
+    .cw-action-widget-star{
+        @include background-icon(star, clickable);
+    }
+    .cw-action-widget-trash{
+        @include background-icon(trash, clickable);
     }
 }
 

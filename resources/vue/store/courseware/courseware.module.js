@@ -22,6 +22,11 @@ const getDefaultState = () => {
         viewMode: 'read',
         filingData: {},
         userIsTeacher: false,
+
+        showStructuralElementEditDialog: false,
+        showStructuralElementAddDialog: false,
+        showStructuralElementInfoDialog: false,
+        showStructuralElementDeleteDialog: false,
     };
 };
 
@@ -97,6 +102,18 @@ const getters = {
     filingData(state) {
         return state.filingData;
     },
+    showStructuralElementEditDialog(state) {
+        return state.showStructuralElementEditDialog;
+    },
+    showStructuralElementAddDialog(state) {
+        return state.showStructuralElementAddDialog;
+    },
+    showStructuralElementInfoDialog(state) {
+        return state.showStructuralElementInfoDialog;
+    },
+    showStructuralElementDeleteDialog(state) {
+        return state.showStructuralElementDeleteDialog;
+    }
 };
 
 export const state = { ...initialState };
@@ -608,6 +625,22 @@ export const actions = {
         commit('setUserId', userId);
     },
 
+    showElementEditDialog(context, bool) {
+        context.commit('setShowStructuralElementEditDialog', bool)
+    },
+
+    showElementAddDialog(context, bool) {
+        context.commit('setShowStructuralElementAddDialog', bool)
+    },
+
+    showElementInfoDialog(context, bool) {
+        context.commit('setShowStructuralElementInfoDialog', bool)
+    },
+
+    showElementDeleteDialog(context, bool) {
+        context.commit('setShowStructuralElementDeleteDialog', bool)
+    },
+
     addBookmark({ dispatch, rootGetters }, structuralElement) {
         const cw = rootGetters['courseware'];
 
@@ -881,6 +914,22 @@ export const mutations = {
     cwManagerFilingDataSet(state, data) {
         state.filingData = data;
     },
+
+    setShowStructuralElementEditDialog(state, showEdit) {
+        state.showStructuralElementEditDialog = showEdit;
+    },
+
+    setShowStructuralElementAddDialog(state, showAdd) {
+        state.showStructuralElementAddDialog = showAdd;
+    },
+
+    setShowStructuralElementInfoDialog(state, showInfo) {
+        state.showStructuralElementInfoDialog = showInfo;
+    },
+
+    setShowStructuralElementDeleteDialog(state, showDelete) {
+        state.showStructuralElementDeleteDialog = showDelete;
+    }
 };
 
 export default {
