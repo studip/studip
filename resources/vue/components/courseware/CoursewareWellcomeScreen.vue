@@ -8,8 +8,8 @@
             <a href="https://hilfe.studip.de/help/5.0/de/Basis.Courseware" target="_blank">
                 <button class="button"><translate>Mehr über Courseware erfahren</translate></button>
             </a>
-            <button class="button" :title="$gettext('Fügt einen Standard-Container mit einem Text-Block hinzu')" @click="addDefault"><translate>Ersten Inhalt erstellen</translate></button>
-            <button class="button" @click="addContainer"><translate>Einen Container auswählen</translate></button>
+            <button class="button" :title="$gettext('Fügt einen Standard-Abschnitt mit einem Text-Block hinzu')" @click="addDefault"><translate>Ersten Inhalt erstellen</translate></button>
+            <button class="button" @click="addContainer"><translate>Einen Abschnitt auswählen</translate></button>
 
         </div>
     </div>

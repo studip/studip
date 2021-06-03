@@ -27,7 +27,7 @@
                 </button>
             </div>
             <p v-if="!hasChildren">
-                <translate>Dieser Container enthält keine Blöcke.</translate>
+                <translate>Dieser Abschnitt enthält keine Blöcke.</translate>
             </p>
             <div v-else-if="sectionsWithBlocksCurrentState.length === 1">
                 <transition-group name="cw-sort-ease" tag="div">

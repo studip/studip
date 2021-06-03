@@ -26,7 +26,7 @@ class TabsContainer extends ContainerType
 
     public function getDescription(): string
     {
-        return _('Dieser Container verfügt über eine horizontale Navigation, '
+        return _('Dieser Abschnitt verfügt über eine horizontale Navigation, '
                 . 'über die sich Gruppen von Blöcken erreichen lassen.');
     }
 

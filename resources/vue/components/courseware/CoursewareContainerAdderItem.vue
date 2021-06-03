@@ -34,7 +34,7 @@ export default {
             };
             await this.createContainer({ structuralElementId: this.$route.params.id, attributes: attributes });
             this.companionSuccess({
-                info: this.$gettext('Container wurde erfolgreich eingefügt.'),
+                info: this.$gettext('Abschnitt wurde erfolgreich eingefügt.'),
             });
         },
     },

@@ -26,7 +26,7 @@ class AccordionContainer extends ContainerType
 
     public function getDescription(): string
     {
-        return _('Mit diesem Container lassen sich Blöcke unter Überschriften gruppieren.');
+        return _('Mit diesem Abschnitt lassen sich Blöcke unter Überschriften gruppieren.');
     }
 
     public function initialPayload(): array

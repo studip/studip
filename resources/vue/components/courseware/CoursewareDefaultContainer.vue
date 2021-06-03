@@ -26,6 +26,8 @@
                 :closeClass="'cancel'"
                 @close="closeEdit"
                 @confirm="storeContainer"
+                height="400"
+                width="680"
             >
                 <template v-slot:dialogContent>
                     <slot name="containerEditDialog"></slot>
@@ -68,9 +70,9 @@ export default {
             showEditDialog: false,
             textEditConfirm: this.$gettext('Speichern'),
             textEditClose: this.$gettext('Schließen'),
-            textEditTitle: this.$gettext('Container bearbeiten'),
-            textDeleteTitle: this.$gettext('Container unwiderruflich löschen'),
-            textDeleteAlert: this.$gettext('Möchten Sie diesen Container wirklich löschen?'),
+            textEditTitle: this.$gettext('Abschnitt bearbeiten'),
+            textDeleteTitle: this.$gettext('Abschnitt unwiderruflich löschen'),
+            textDeleteAlert: this.$gettext('Möchten Sie diesen Abschnitt wirklich löschen?'),
         };
     },
     computed: {

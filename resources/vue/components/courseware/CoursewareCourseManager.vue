@@ -32,7 +32,7 @@
                         Wählen Sie auf der linken Seite "Diese Courseware" aus.
                         Beim laden der Seite ist dies immer gewählt. Die Überschrift
                         gibt an welche Seite Sie grade ausgewählt haben. Darunter befinden
-                        sich die Container der Seite und innerhalb dieser dessen Blöcke.
+                        sich die Abschnitte der Seite und innerhalb dieser dessen Blöcke.
                         Möchten Sie eine Seite die unterhalb der gewählten liegt bearbeiten,
                         können Sie diese über die Schaltflächen im Bereich "Seiten" wählen.
                         Über der Überschrift wird eine Navigation eingeblendet, mit dieser können
@@ -41,9 +41,9 @@
                 </courseware-collapsible-box>
                 <courseware-collapsible-box :title="$gettext('Wie sortiere ich Objekte?')">
                     <p><translate>
-                        Seite, Container und Blöcke lassen sich in ihrer Reihenfolge sortieren.
+                        Seiten, Abschnitte und Blöcke lassen sich in ihrer Reihenfolge sortieren.
                         Hierzu wählen Sie auf der linken Seite unter "Diese Courseware" die Schaltfläche "Seiten sortieren",
-                        "Container sortieren" oder "Blöcke sortieren".
+                        "Abschnitte sortieren" oder "Blöcke sortieren".
                         An den Objekten werden Pfeile angezeigt, mit diesen können die Objekte an die gewünschte
                         Position gebracht werden. Um die neue Sortierung zu speichern wählen Sie "Sortieren beenden".
                         Sie können die Änderungen auch rückgängig machen indem Sie "Sortieren abbrechen" wählen.
@@ -51,9 +51,9 @@
                 </courseware-collapsible-box>
                 <courseware-collapsible-box :title="$gettext('Wie verschiebe ich Objekte?')">
                     <p><translate>
-                        Seite, Container und Blöcke lassen sich verschieben.
+                        Seiten, Abschnitte und Blöcke lassen sich verschieben.
                         Hierzu wählen Sie auf der linken Seite unter "Diese Courseware" die Schaltfläche
-                        "Seite an diese Stelle einfügen", "Container an diese Stelle einfügen" oder
+                        "Seite an diese Stelle einfügen", "Abschnitt an diese Stelle einfügen" oder
                         "Block an diese Stelle einfügen". Wählen Sie dann auf der rechten Seite unter
                         "Verschieben" das Objekt aus das Sie verschieben möchten. Verschiebbare Objekte
                         erkennen Sie an den zwei nach links zeigenden gelben Pfeilen.
@@ -61,10 +61,10 @@
                 </courseware-collapsible-box>
                 <courseware-collapsible-box :title="$gettext('Wie kopiere ich Objekte?')">
                     <p><translate>
-                        Seite, Container und Blöcke lassen sich aus einer anderen Veranstaltung und Ihren
+                        Seiten, Abschnitte und Blöcke lassen sich aus einer anderen Veranstaltung und Ihren
                         eigenen Inhalten kopieren.
                         Hierzu wählen Sie auf der linken Seite unter "Diese Courseware" die Schaltfläche
-                        "Seite an diese Stelle einfügen", "Container an diese Stelle einfügen" oder
+                        "Seite an diese Stelle einfügen", "Abschnitt an diese Stelle einfügen" oder
                         "Block an diese Stelle einfügen". Wählen Sie dann auf der rechten Seite unter
                         "Kopieren" erst die Veranstaltung aus der Sie kopieren möchten oder Ihre eigenen
                         Inhalte. Wählen sie dann das Objekt aus das Sie kopieren möchten. Kopierbare Objekte

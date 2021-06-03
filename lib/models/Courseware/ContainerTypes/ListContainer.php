@@ -26,7 +26,7 @@ class ListContainer extends ContainerType
 
     public function getDescription(): string
     {
-        return _('In diesem Container werden Blöcke untereinander dargestellt.');
+        return _('In diesem Abschnitt werden Blöcke untereinander dargestellt.');
     }
 
     public function initialPayload(): array

@@ -13,7 +13,7 @@
                 class="cw-tools-element-adder-tab"
                 @click="displayContainerAdder"
             >
-                <translate>Container</translate>
+                <translate>Abschnitte</translate>
             </li>
         </ul>
 

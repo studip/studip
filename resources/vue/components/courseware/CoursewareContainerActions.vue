@@ -18,11 +18,11 @@ export default {
     computed: {
         menuItems() {
             if (this.container.attributes["container-type"] === 'list') {
-                return [{ id: 1, label: this.$gettext('Container löschen'), icon: 'trash', emit: 'deleteContainer' }];
+                return [{ id: 1, label: this.$gettext('Abschnitt löschen'), icon: 'trash', emit: 'deleteContainer' }];
             } else {
                 return [
-                    { id: 1, label: this.$gettext('Container bearbeiten'), icon: 'edit', emit: 'editContainer' },
-                    { id: 2, label: this.$gettext('Container löschen'), icon: 'trash', emit: 'deleteContainer' },
+                    { id: 1, label: this.$gettext('Abschnitt bearbeiten'), icon: 'edit', emit: 'editContainer' },
+                    { id: 2, label: this.$gettext('Abschnitt löschen'), icon: 'trash', emit: 'deleteContainer' },
                 ];
             }
         },

@@ -22,12 +22,12 @@
             <courseware-collapsible-box
                 v-if="canRead"
                 :open="true" 
-                :title="$gettext('Container')" 
+                :title="$gettext('Abschnitt')" 
                 class="cw-manager-element-containers"
             >
                 <div v-if="canSortContainers">
                     <button v-show="!sortContainersActive && isCurrent" class="button sort" @click="sortContainers">
-                        <translate>Container sortieren</translate>
+                        <translate>Abschnitte sortieren</translate>
                     </button>
                     <button v-show="sortContainersActive && isCurrent" class="button accept" @click="storeContainersSort">
                         <translate>Sortieren beenden</translate>
@@ -37,7 +37,7 @@
                     </button>
                 </div>
                 <p v-if="!hasContainers">
-                    <translate>Dieses Element enthält keine Container.</translate>
+                    <translate>Dieses Element enthält keine Abschnitte.</translate>
                 </p>
                 <transition-group name="cw-sort-ease" tag="div">
                     <courseware-manager-container

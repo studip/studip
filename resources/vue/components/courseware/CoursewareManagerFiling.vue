@@ -5,7 +5,7 @@
         @click="toggleFiling"
     >
         <span v-if="itemType === 'element'"><translate>Seite</translate> </span>
-        <span v-if="itemType === 'container'"><translate>Container</translate> </span>
+        <span v-if="itemType === 'container'"><translate>Abschnitt</translate> </span>
         <span v-if="itemType === 'block'"><translate>Block</translate> </span>
         <translate>an dieser Stelle einfügen</translate>
     </div>
