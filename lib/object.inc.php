@@ -203,7 +203,7 @@ function get_objects_visits(array $object_ids, $plugin_id, $mode = 'last', $user
         } else {
             $return = max($threshold, (int) $row['visitdate']);
         }
-        $result[$row['object_id']][$row['type']] = $return;
+        $result[$row['object_id']][$row['plugin_id']] = $return;
     }
 
     // Reduce array if not additional types were passed

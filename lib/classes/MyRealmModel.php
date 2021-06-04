@@ -472,11 +472,13 @@ class MyRealmModel
             unset($nav);
         }
         foreach ($my_obj_values['tools'] as $tool) {
-            if (array_key_exists($tool->plugin_id, $navigation)) continue;
+            if (array_key_exists($tool->plugin_id, $navigation)) {
+                continue;
+            }
             $module = $tool->getStudipModule();
-            if (!$module) continue;
-            if (get_class($module)  === 'CoreAdmin') continue;
-            if (get_class($module)  === 'CoreStudygroupAdmin') continue;
+            if (!$module || get_class($module)  === 'CoreAdmin' || get_class($module)  === 'CoreStudygroupAdmin') {
+                continue;
+            }
             $navigation[$tool->plugin_id] = $module->getIconNavigation($object_id, $visit_data[$tool->plugin_id]['visitdate'], $user_id);
         }
         return $navigation;
@@ -943,8 +945,9 @@ class MyRealmModel
             $sem_class = SemClass::getDefaultInstituteClass(1);
         }
         foreach ($sem_class->getActivatedModuleObjects() as $id => $plugin) {
-            if (get_class($plugin) === 'CoreAdmin') continue;
-            if (get_class($plugin) === 'CoreStudygroupAdmin') continue;
+            if (get_class($plugin) === 'CoreAdmin' || get_class($plugin) === 'CoreStudygroupAdmin') {
+                continue;
+            }
             $default_modules[$id] = $plugin;
         }
         $default_modules[-1] = 'vote';
