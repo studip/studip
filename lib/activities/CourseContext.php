@@ -32,30 +32,24 @@ class CourseContext extends Context
         if (!$this->provider) {
             $course = $this->course;
 
-            $module_names = ['forum', 'participants', 'documents', 'wiki', 'schedule'];
+            $module_provider = [
+                'CoreForum' => 'ForumProvider',
+                'CoreParticipants' => 'ParticipantsProvider',
+                'CoreDocuments' => 'DocumentsProvider',
+                'CoreWiki' => 'WikiProvider',
+                'CoreSchedule' => 'ScheduleProvider'
+            ];
 
-            // get list of possible providers by checking the activated plugins
-            // and modules for the current seminar
-            $modules = new \Modules();
-            $activated_modules = array_keys(array_filter($modules->getLocalModules($course->id, 'sem', $course->modules, $course->status ?: 1)));
-
-            // check modules
-            foreach (array_intersect($module_names, $activated_modules) as $name) {
-                $this->addProvider('Studip\Activity\\'. ucfirst($name) .'Provider');
-            }
-
-            //news
-            $this->addProvider('Studip\Activity\NewsProvider');
-
-            //plugins
-            foreach (\PluginManager::getInstance()->getPlugins(ActivityProvider::class) as $plugin) {
-                if ($plugin instanceof \StandardPlugin
-                    && $plugin->isActivated($course->id)
-                    && !$course->getSemClass()->isSlotModule(get_class($plugin))
-                ) {
-                    $this->provider[$plugin->getPluginName()] = $plugin;
+            foreach ($course->tools as $tool) {
+                $studip_module = $tool->getStudipModule();
+                if (isset($module_provider[get_class($studip_module)])) {
+                    $this->addProvider('Studip\Activity\\'. $module_provider[get_class($studip_module)]);
+                } elseif ($studip_module instanceof ActivityProvider) {
+                    $this->provider[$studip_module->getPluginName()] = $studip_module;
                 }
             }
+            //news
+            $this->addProvider('Studip\Activity\NewsProvider');
         }
 
         return $this->provider;
