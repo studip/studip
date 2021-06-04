@@ -64,7 +64,7 @@ export default {
     }
 }
 .my-courses-navigation-important {
-    background-color: mixins.$red;
+    border: 1px solid mixins.$red;
 
     html.high-contrast-mode-activated &  {
         a {

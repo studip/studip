@@ -118,7 +118,7 @@ export default {
                 if (nav) {
                     if (nav.important) {
                         result.class = 'my-courses-navigation-important';
-                        result.icon.role = 'info_alt';
+                        result.icon.role = 'attention';
                         result.icon.shape = result.icon.shape.replace(/^new\//, '');
                     } else {
                         result.class = false;

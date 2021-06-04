@@ -162,9 +162,11 @@ export default {
 @use '../../assets/stylesheets/scss/variables.scss';
 @import '../../assets/stylesheets/scss/visibility.scss'; // Needs to be imported (breakpoint variables are missing)
 
+$tile-border-width: 1px;
+$tile-color-width: 15px;
+$tile-padding: 10px;
 
 .studip-grid {
-    $padding: 10px;
     $avatar-size: 60px;
     $header-size: $avatar-size;
     $element-height: (100px + $header-size);
@@ -179,11 +181,9 @@ export default {
         flex-direction: column;
         position: relative; // For color picker
 
-        border: 2px;
-        border-style: solid;
-        border-left-width: 15px;
+        border: $tile-border-width solid mixins.$base-color-20;
 
-        padding: $padding;
+        padding: $tile-padding;
     }
 
     .tiles-grid-element-header {
@@ -202,7 +202,7 @@ export default {
         float: left;
         display: block;
 
-        margin-right: $padding;
+        margin-right: $tile-padding;
 
         width: $avatar-size;
         height: $avatar-size;
@@ -266,7 +266,17 @@ $group-colors: (
 );
 @for $i from 0 through 8 {
     .studip-grid-element.my-courses-group-#{$i} {
-        border-color: map-get($group-colors, $i);
+        padding-left: $tile-padding + $tile-color-width;
+        &::before {
+            position: absolute;
+            top: -$tile-border-width;
+            left: -$tile-border-width;
+            bottom: -$tile-border-width;
+            width: $tile-color-width;
+            content: '';
+            background-color: map-get($group-colors, $i);
+
+        }
     }
 }
 
