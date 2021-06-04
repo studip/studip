@@ -30,6 +30,8 @@ export default {
 
 <style lang="scss">
 @use '../../assets/stylesheets/mixins.scss';
+$icon-padding: 3px;
+
 .my-courses-navigation {
     list-style: none;
     margin: 0;
@@ -40,8 +42,6 @@ export default {
     flex-wrap: wrap;
 }
 .my-courses-navigation-item {
-    $icon-padding: 3px;
-
     margin: 0 3px 10px 0;
 
     a {
@@ -64,8 +64,12 @@ export default {
     }
 }
 .my-courses-navigation-important {
-    border: 1px solid mixins.$red;
+    $border-width: 1px;
+    border: $border-width solid mixins.$red;
 
+    a {
+        padding: $icon-padding - $border-width;
+    }
     html.high-contrast-mode-activated &  {
         a {
             border: 1px dashed mixins.$black;
