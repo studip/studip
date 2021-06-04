@@ -1,5 +1,6 @@
 <template>
     <select v-model="currentValue" @change="changeSelection">
+        <option v-if="unchoose" value=""><translate>kein Ordner ausgewählt</translate></option>
         <optgroup v-if="this.context.type === 'courses'" :label="textOptGroupCourse">
             <option v-for="folder in loadedCourseFolders" :key="folder.id" :value="folder.id">
                 {{ folder.attributes.name }}
@@ -22,6 +23,7 @@ export default {
     props: {
         value: String,
         allowUserFolders: { type: Boolean, default: false },
+        unchoose: { type: Boolean, default: false },
     },
     data() {
         return {

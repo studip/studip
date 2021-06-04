@@ -95,6 +95,7 @@ const mountApp = (STUDIP, createApp, element) => {
 
     store.dispatch('setUrlHelper', STUDIP.URLHelper);
     store.dispatch('setUserId', STUDIP.USER_ID);
+    store.dispatch('users/loadById', {id: STUDIP.USER_ID});
     store.dispatch('setHttpClient', httpClient);
 
     store.dispatch('coursewareContext', {

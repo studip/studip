@@ -2763,7 +2763,7 @@ c a n v a s  b l o c k
             );
 
             @each $name, $color in $colors {
-                &.#{"" + color} {
+                &.#{"" + $name} {
                     background-color: $color;
                 }
             }

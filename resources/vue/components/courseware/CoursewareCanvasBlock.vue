@@ -14,8 +14,9 @@
                 </div>
                 <div class="cw-canvasblock-toolbar">
                     <div class="cw-canvasblock-buttonset">
-                        <button class="cw-canvasblock-reset" title="Zurücksetzen" @click="reset"></button>
-                        <button class="cw-canvasblock-undo" title="Rückgängig" @click="undo"></button>
+                        <button class="cw-canvasblock-reset" :title="$gettext('Zurücksetzen')" @click="reset"></button>
+                        <button class="cw-canvasblock-undo" :title="$gettext('Rückgängig')" @click="undo"></button>
+                        <button v-if="hasUploadFolder" class="cw-canvasblock-store" :title="$gettext('Bild im Dateibereich speichern')" @click="store"></button>
                     </div>
                     <div class="cw-canvasblock-buttonset">
                         <button
@@ -118,7 +119,7 @@
                     </label>
                     <label>
                         <translate>Speicherort</translate>
-                        <courseware-folder-chooser v-model="currentUploadFolderId" />
+                        <courseware-folder-chooser v-model="currentUploadFolderId" :unchoose="true"/>
                     </label>
                     <label>
                         <translate>Werte anderer Nutzer anzeigen</translate>
@@ -201,12 +202,13 @@ export default {
         ...mapGetters({
             userId: 'userId',
             getUserDataById: 'courseware-user-data-fields/byId',
+            usersById: 'users/byId',
         }),
         userData() {
             return this.getUserDataById({ id: this.block.relationships['user-data-field'].data.id });
         },
         canvasDraw() {
-            if (this.userData.attributes.payload.canvas_draw) {
+            if (this.userData !== undefined && this.userData.attributes.payload.canvas_draw) {
                 return this.userData.attributes.payload.canvas_draw;
             } else {
                 return false;
@@ -228,11 +230,23 @@ export default {
             return this.block?.attributes?.payload?.show_usersdata;
         },
         currentUrl() {
-            if (this.currentFile.download_url !== 'undefined' && this.currentFile?.meta) {
+            if (this.currentFile?.meta) {
                 return this.currentFile.meta['download-url'];
+            } else if(this.currentFile?.download_url) {
+                    return this.currentFile.download_url;
             } else {
                 return '';
             }
+        },
+        currentFileName() {
+            if (this.currentFile?.attributes?.name) {
+                return this.currentFile.attributes.name;
+            } else {
+                return this.currentTitle + '.jpg';
+            }
+        },
+        hasUploadFolder() {
+            return this.currentUploadFolderId !== "";
         },
     },
     mounted() {
@@ -246,7 +260,10 @@ export default {
     methods: {
         ...mapActions({
             updateBlock: 'updateBlockInContainer',
-            loadFileRefs: 'loadFileRefs'
+            loadFileRefs: 'loadFileRefs',
+            createFile: 'createFile',
+            companionSuccess: 'companionSuccess',
+            companionError: 'companionError',
         }),
         initCurrentData() {
             this.currentTitle = this.title;
@@ -501,6 +518,34 @@ export default {
                 blockId: this.block.id,
                 containerId: this.block.relationships.container.data.id,
             });
+        },
+        async store() {
+            let user = this.usersById({id: this.userId});
+            let imageBase64 = this.context.canvas.toDataURL("image/jpeg", 1.0);
+            let image = await fetch(imageBase64);
+            let imageBlob = await image.blob();
+            let file = {};
+            file.attributes = {};
+            file.attributes.name = (user.attributes["formatted-name"]).replace(/\s+/g, '_') + '_' + this.currentFile.attributes.name;
+            let img = false;
+            try {
+                 img = await this.createFile({
+                    file: file,
+                    filedata: imageBlob,
+                    folder: {id: this.currentUploadFolderId}
+                });
+            }
+            catch(e) {
+                this.companionError({
+                    info: this.$gettext('Es ist ein Fehler aufgetretten! Das Bild konnte nicht gespeichert werden.')
+                });
+                console.log(e);
+            }
+            if(img && img.type === 'file-refs') {
+                this.companionSuccess({
+                    info: this.$gettext('Bild wurde erfolgreich im Dateibereich abgelegt.')
+                });
+            }
         },
     },
 };
