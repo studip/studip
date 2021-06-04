@@ -323,7 +323,7 @@ class StructuralElement extends \SimpleORMap
      *
      * @return StructuralElement[] a list of projects
      */
-    public function findProjects(string $userId, string $purpose = 'all'): array
+    public static function findProjects(string $userId, string $purpose = 'all'): array
     {
         $root = self::getCoursewareUser($userId);
         if ('all' == $purpose) {
