@@ -1572,15 +1572,9 @@ class Course_MembersController extends AuthenticatedController
                     }
                 }
 
-                if (SeminarCategories::getByTypeId($sem->status)->only_inst_user) {
-                    $search_template = 'user_inst_not_already_in_sem';
-                } else {
-                    $search_template = 'user_not_already_in_sem';
-                }
-
                 // create new search for autor
                 $searchType = new PermissionSearch(
-                    $search_template,
+                    'user_not_already_in_sem',
                     sprintf(
                         _('%s suchen'),
                         get_title_for_status('autor', 1, $sem->status)
