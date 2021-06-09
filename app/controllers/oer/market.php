@@ -111,8 +111,8 @@ class Oer_MarketController extends StudipController
         if (!$GLOBALS['perm']->have_perm(Config::get()->OER_PUBLIC_STATUS)) {
             throw new AccessDeniedException();
         }
-        if (Navigation::hasItem("/oer/market")) {
-            Navigation::activateItem("/oer/market");
+        if (Navigation::hasItem("/contents/oer/market")) {
+            Navigation::activateItem("/contents/oer/market");
         }
         if (Request::get("search") || Request::get("type") || Request::get("tag") || Request::get("difficulty")) {
             if (Request::get("search")) {
@@ -200,8 +200,8 @@ class Oer_MarketController extends StudipController
 
     public function details_action($material_id)
     {
-        if (Navigation::hasItem("/oer/market")) {
-            Navigation::activateItem("/oer/market");
+        if (Navigation::hasItem("/contents/oer/market")) {
+            Navigation::activateItem("/contents/oer/market");
         }
         $this->material = new OERMaterial($material_id);
 
@@ -249,8 +249,8 @@ class Oer_MarketController extends StudipController
 
     public function embed_action($material_id)
     {
-        if (Navigation::hasItem("/oer/market")) {
-            Navigation::activateItem("/oer/market");
+        if (Navigation::hasItem("/contents/oer/market")) {
+            Navigation::activateItem("/contents/oer/market");
         }
 
         $this->material = new OERMaterial($material_id);
@@ -261,8 +261,8 @@ class Oer_MarketController extends StudipController
         if (!$GLOBALS['perm']->have_perm("autor")) {
             throw new AccessDeniedException();
         }
-        if (Navigation::hasItem("/oer/market")) {
-            Navigation::activateItem("/oer/market");
+        if (Navigation::hasItem("/contents/oer/market")) {
+            Navigation::activateItem("/contents/oer/market");
         }
         $this->material = new OERMaterial($material_id);
         $this->review = OERReview::findOneBySQL("context_id = ? AND user_id = ?", [
@@ -292,8 +292,8 @@ class Oer_MarketController extends StudipController
 
     public function discussion_action($review_id)
     {
-        if (Navigation::hasItem("/oer/market")) {
-            Navigation::activateItem("/oer/market");
+        if (Navigation::hasItem("/contents/oer/market")) {
+            Navigation::activateItem("/contents/oer/market");
         }
 
         $this->thread = new OERReview($review_id);
