@@ -194,8 +194,10 @@ class Contents_CoursewareController extends AuthenticatedController
         foreach ((array) $sem_courses as $sem_course) {
             $course = reset($sem_course);
             $element = StructuralElement::findOneBySQL('range_id = ? AND range_type = ?', array($course['seminar_id'], 'course'));
-            $element['payload'] = json_decode($element['payload'], true);
-            array_push($this->elements, $element);
+            if($element) {
+                $element['payload'] = json_decode($element['payload'], true);
+                array_push($this->elements, $element);
+            }
         }
 
         $this->empty_courses = empty($sem_courses);
