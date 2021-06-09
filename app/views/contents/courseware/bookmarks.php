@@ -1,4 +1,5 @@
 <div class="cw-bookmarks">
+    <? if(!empty($bookmarks)): ?>
     <ul class="cw-tiles">
         <? foreach($bookmarks as $bookmark) :?>
             <li class="tile <?= htmlReady($bookmark['element']['payload']['color'])?>">
@@ -22,4 +23,7 @@
             </li>
         <? endforeach; ?>
     </ul>
+    <? else: ?>
+        <?= MessageBox::info(_('Sie haben noch keine Lesezeichen angelegt.')); ?>
+    <? endif; ?>
 </div>
