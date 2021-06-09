@@ -526,7 +526,12 @@ export default {
             let imageBlob = await image.blob();
             let file = {};
             file.attributes = {};
-            file.attributes.name = (user.attributes["formatted-name"]).replace(/\s+/g, '_') + '_' + this.currentFile.attributes.name;
+            if(this.currentImage === 'true') {
+                file.attributes.name = (user.attributes["formatted-name"]).replace(/\s+/g, '_') + '_' + this.currentFile.attributes.name;
+            } else {
+                file.attributes.name = (user.attributes["formatted-name"]).replace(/\s+/g, '_') + '_' + this.block.attributes.title + '_' + this.block.id;
+            }
+
             let img = false;
             try {
                  img = await this.createFile({
