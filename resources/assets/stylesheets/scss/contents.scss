@@ -50,3 +50,24 @@
         }
     }
 }
+
+.cw-contents-overview-teaser {
+    width: 782px;
+    background-color: $content-color-20;
+    background-image: url("#{$image-path}/courseware-keyvisual.svg");
+    background-repeat: no-repeat;
+    background-size: 242px auto;
+    background-position-y: 50%;
+    background-position-x: 24px;
+    padding: 24px;
+    margin-bottom: 10px;
+
+    .cw-contents-overview-teaser-content {
+        padding-left: 270px;
+
+        header{
+            font-size: 1.5em;
+            margin-bottom: 0.5em;
+        }
+    }
+}
