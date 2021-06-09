@@ -8,11 +8,14 @@ class Oer_MymaterialController extends AuthenticatedController
     {
         parent::before_filter($action, $args);
         PageLayout::setTitle(_('Lernmaterialien'));
-        Navigation::activateItem('/oer/mymaterial');
+        
     }
 
     public function index_action()
     {
+        if (Navigation::hasItem("/contents/oer/mymaterial")) {
+            Navigation::activateItem("/contents/oer/mymaterial");
+        }
         $this->materialien = OERMaterial::findMine();
         $this->buildSidebar();
     }

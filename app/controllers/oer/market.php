@@ -20,8 +20,8 @@ class Oer_MarketController extends StudipController
         if (!$GLOBALS['perm']->have_perm(Config::get()->OER_PUBLIC_STATUS)) {
             throw new AccessDeniedException();
         }
-        if (Navigation::hasItem("/oer/market")) {
-            Navigation::activateItem("/oer/market");
+        if (Navigation::hasItem("/contents/oer/market")) {
+            Navigation::activateItem("/contents/oer/market");
         }
         $tag_matrix_entries_number = 9;
         $this->best_nine_tags = OERTag::findBest($tag_matrix_entries_number);

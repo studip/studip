@@ -133,6 +133,9 @@ class Contents_CoursewareController extends AuthenticatedController
             $bm = array();
             $bm['bookmark'] = $bookmark;
             $element = Courseware\StructuralElement::find($bookmark->element_id);
+            if(empty($element)) {
+                continue;
+            }
             $element['payload'] = json_decode($element['payload'], true);
             $bm['element'] = $element;
             if ($element->range_type === 'course') {
@@ -144,10 +147,60 @@ class Contents_CoursewareController extends AuthenticatedController
                 $bm['user'] = $this->user;
             }
 
-
             array_push($this->bookmarks, $bm);
         }
     }
+
+    /**
+     * displays coursewares in courses
+     *
+     * @param string $action
+     * @param string $widgetId
+     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+     * @SuppressWarnings(PHPMD.Superglobals)
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
+    public function courses_overview_action($action = false, $widgetId = null)
+    {
+        Navigation::activateItem('/contents/courseware/courses_overview');
+
+        $sidebar = Sidebar::get();
+        $semester_widget = new SemesterSelectorWidget(
+            $this->url_for('contents/courseware/courses_overview')
+        );
+        $semester_widget->includeAll();
+        $sidebar->addWidget($semester_widget);
+
+        $this->user_id = $GLOBALS['user']->id;
+
+        $sem_key = Request::get('semester_id');
+        if ($sem_key === '0' || $sem_key === null) {
+            $sem_key = 'all';
+            $this->all_semesters = true;
+        } else {
+            $this->all_semesters = false;
+        }
+        $params = [
+            'order_by'            => null,
+            'order'               => 'asc',
+            'studygroups_enabled' => Config::get()->MY_COURSES_ENABLE_STUDYGROUPS,
+            'deputies_enabled'    => Config::get()->DEPUTIES_ENABLE,
+        ];
+
+        $sem_courses  = MyRealmModel::getPreparedCourses($sem_key, $params);
+
+        $this->elements = [];
+
+        foreach ((array) $sem_courses as $sem_course) {
+            $course = reset($sem_course);
+            $element = StructuralElement::findOneBySQL('range_id = ? AND range_type = ?', array($course['seminar_id'], 'course'));
+            $element['payload'] = json_decode($element['payload'], true);
+            array_push($this->elements, $element);
+        }
+
+        $this->empty_courses = empty($sem_courses);
+    }
+
 
     private function getProjects($purpose)
     {
@@ -161,7 +214,7 @@ class Contents_CoursewareController extends AuthenticatedController
 
     public function create_project_action($action = false, $widgetId = null)
     {
-        PageLayout::setTitle(_('Neues Projekt'));
+        PageLayout::setTitle(_('Neues Lernmaterial'));
 
         if (!Request::submitted('create_project')) {
             return;
@@ -246,7 +299,7 @@ class Contents_CoursewareController extends AuthenticatedController
     {
         $sidebar = Sidebar::Get();
         $actions = new ActionsWidget();
-        $actions->addLink(_('Neues Projekt anlegen'), $this->url_for('contents/courseware/create_project'), Icon::create('add', 'clickable'))->asDialog('size=700');
+        $actions->addLink(_('Neues Lernmaterial anlegen'), $this->url_for('contents/courseware/create_project'), Icon::create('add', 'clickable'))->asDialog('size=700');
         $sidebar->addWidget($actions);
     }
 }

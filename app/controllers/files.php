@@ -305,8 +305,8 @@ class FilesController extends AuthenticatedController
      */
     public function overview_action()
     {
-        if (Navigation::hasItem('/files/overview')) {
-            Navigation::activateItem('/files/overview');
+        if (Navigation::hasItem('/contents/files/overview')) {
+            Navigation::activateItem('/contents/files/overview');
         }
 
         PageLayout::setTitle(_('Übersicht'));
@@ -540,8 +540,8 @@ class FilesController extends AuthenticatedController
         if (Request::get("from_plugin")) {
             $this->redirect("files/index/".$topFolderId);
         }
-        if (Navigation::hasItem('/files/my_files')) {
-            Navigation::activateItem('/files/my_files');
+        if (Navigation::hasItem('/contents/files/my_files')) {
+            Navigation::activateItem('/contents/files/my_files');
         }
 
         PageLayout::setTitle(_('Persönliche Dateien'));
@@ -577,8 +577,8 @@ class FilesController extends AuthenticatedController
      **/
     public function flat_action()
     {
-        if (Navigation::hasItem('/files/my_files')) {
-            Navigation::activateItem('/files/my_files');
+        if (Navigation::hasItem('/contents/files/my_files')) {
+            Navigation::activateItem('/contents/files/my_files');
         }
         $sidebar = Sidebar::get();
 

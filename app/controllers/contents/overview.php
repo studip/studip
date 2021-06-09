@@ -28,12 +28,12 @@ class Contents_OverviewController extends AuthenticatedController
      */
     public function index_action($action = false, $widgetId = null)
     {
-        Navigation::activateItem('/contents/overview/index');
-        $this->user_id = $GLOBALS['user']->id;
+        global $perm;
 
-        if ($GLOBALS['perm']->have_perm('root') && Request::get('username')) {
-            $user = User::findOneByUsername(Request::get('username'));
-            $this->user_id = $user->id;
+        if (Navigation::hasItem("/contents/overview/index")) {
+            Navigation::activateItem("/contents/overview/index");
         }
+
+        $this->show_oer_item = Config::get()->OERCAMPUS_ENABLED && $perm && $perm->have_perm(Config::get()->OER_PUBLIC_STATUS);
     }
 }

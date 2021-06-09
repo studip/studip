@@ -62,8 +62,8 @@ class FilesDashboardController extends AuthenticatedController
         // FilesController::getRangeLink
         require_once 'app/controllers/files.php';
 
-        if (Navigation::hasItem('/files/search')) {
-            Navigation::activateItem('/files/search');
+        if (Navigation::hasItem('/contents/files/search')) {
+            Navigation::activateItem('/contents/files/search');
         }
         PageLayout::setTitle(_('Dokumentensuche'));
 
