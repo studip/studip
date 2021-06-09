@@ -95,7 +95,9 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
         $config['additional_fields']['room_name'] = ['resource', 'name'];
 
         $config['registered_callbacks']['after_store'][] = 'updateIntervals';
+        $config['registered_callbacks']['after_store'][] = 'createStoreLogEntry';
         $config['registered_callbacks']['after_delete'][] = 'sendDeleteNotification';
+        $config['registered_callbacks']['after_delete'][] = 'createDeleteLogEntry';
 
         //In regard to TIC 6460:
         //As long as TIC 6460 is not implemented, we must add the validate
@@ -105,6 +107,54 @@ class ResourceBooking extends SimpleORMap implements PrivacyObject, Studip\Calen
         }
 
         parent::configure($config);
+    }
+
+
+    public function createStoreLogEntry()
+    {
+        if ($this->isSimpleBooking()) {
+            StudipLog::log(
+                'RES_ASSIGN_SINGLE',
+                $this->resource_id,
+                null,
+                $this->__toString(),
+                null,
+                $GLOBALS['user']->id
+            );
+        } else {
+            StudipLog::log(
+                'RES_ASSIGN_SEM',
+                $this->resource_id,
+                $this->range_id,
+                $this->__toString(),
+                null,
+                $GLOBALS['user']->id
+            );
+        }
+    }
+
+
+    public function createDeleteLogEntry()
+    {
+        if ($this->isSimpleBooking()) {
+            StudipLog::log(
+                'RES_ASSIGN_DEL_SINGLE',
+                $this->resource_id,
+                null,
+                $this->__toString(),
+                null,
+                $GLOBALS['user']->id
+            );
+        } else {
+            StudipLog::log(
+                'RES_ASSIGN_DEL_SEM',
+                $this->resource_id,
+                $this->range_id,
+                $this->__toString(),
+                null,
+                $GLOBALS['user']->id
+            );
+        }
     }
 
 
