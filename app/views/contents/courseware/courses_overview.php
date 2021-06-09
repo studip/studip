@@ -3,22 +3,24 @@
     <? if(!empty($elements)): ?>
         <ul class="cw-tiles">
             <? foreach($elements as $element) :?>
-                <li class="tile <?= htmlReady($element['payload']['color'])?>">
-                    <a href="<?= URLHelper::getLink('dispatch.php/course/courseware/?cid='.$element['range_id'].'#/structural_element/'.$element['id']) ?>">
-                        <div class="preview-image" style="background-image: url(<?= htmlReady($element->getImageUrl()) ?>)" ></div>
-                        <div class="description">
-                            <header><?= htmlReady($element['title']) ?></header>
-                            <div class="description-text-wrapper">
-                                <p>
-                                    <?= htmlReady($element['payload']['description']) ?>
-                                </p>
+                <? if(get_class($element) === 'Courseware\StructuralElement'): ?>
+                    <li class="tile <?= htmlReady($element['payload']['color'])?>">
+                        <a href="<?= URLHelper::getLink('dispatch.php/course/courseware/?cid='.$element['range_id'].'#/structural_element/'.$element['id']) ?>">
+                            <div class="preview-image" style="background-image: url(<?= htmlReady($element->getImageUrl()) ?>)" ></div>
+                            <div class="description">
+                                <header><?= htmlReady($element['title']) ?></header>
+                                <div class="description-text-wrapper">
+                                    <p>
+                                        <?= htmlReady($element['payload']['description']) ?>
+                                    </p>
+                                </div>
+                                <footer>
+                                    <?= Icon::create('seminar', Icon::ROLE_INFO_ALT)?> <?= htmlReady($element['course']['name'])?>
+                                </footer>
                             </div>
-                            <footer>
-                                <?= Icon::create('seminar', Icon::ROLE_INFO_ALT)?> <?= htmlReady($element['course']['name'])?>
-                            </footer>
-                        </div>
-                    </a>
-                </li>
+                        </a>
+                    </li>
+                <? endif; ?>
             <? endforeach; ?>
         </ul>
     <? endif; ?> 
