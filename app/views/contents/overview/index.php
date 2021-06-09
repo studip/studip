@@ -1,6 +1,6 @@
 <div class="teaserbox">
     <header>
-        <?= _('Alle Inhalte an einem Ort. - Super, oder?')?>
+        <?= _('Alle Inhalte an einem Ort.')?>
     </header>
     <p>
         <?= _('Sie finden in diesem neuen Bereich Zugriff auf Ihre eigenen Inhalte: Courseware Lernmodule, Dateien und freie Lernmaterialien (OER), die Sie auch mit anderen Standorten austauschen können. Ihre Lehrveranstaltungen finden Sie am gewohnten Platz im ')?>
@@ -17,15 +17,6 @@
             </div>
         </a>
     </li>
-    <li class="content-item content-item-oer">
-        <a href="<?= URLHelper::getLink('dispatch.php/oer/market') ?>">
-            <header><?= _('OER-Campus')?></header>
-            <p class="content-item-description"><?= _('Freies Wissen für freie Köpfe')?></p>
-            <div class="content-item-img-wrapper">
-                <?= Assets::img('oer-keyvisual.svg');?>
-            </div>
-        </a>
-    </li>
     <li class="content-item content-item-files">
         <a href="<?= URLHelper::getLink('dispatch.php/files/overview') ?>">
             <header><?= _('Dateien')?></header>
@@ -35,4 +26,16 @@
             </div>
         </a>
     </li>
+    <? if($show_oer_item): ?>
+        <li class="content-item content-item-oer">
+            <a href="<?= URLHelper::getLink('dispatch.php/oer/market') ?>">
+                <header><?= Config::get()->OER_TITLE ?></header>
+                <p class="content-item-description"><?= _('Freies Wissen für freie Köpfe')?></p>
+                <div class="content-item-img-wrapper">
+                    <?= Assets::img('oer-keyvisual.svg');?>
+                </div>
+            </a>
+        </li>
+    <? endif; ?>
+
 </ul>

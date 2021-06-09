@@ -5,7 +5,7 @@
     <fieldset>
         <label>
             <span>
-                <?= _('Titel des Projektes') ?>
+                <?= _('Titel des Lernmaterials') ?>
             </span>
             <input required type="text" name="title">
         </label>
@@ -18,7 +18,7 @@
         </label>
 
         <label class="col-3">
-            <?= _('Art des Projektes') ?>
+            <?= _('Art des Lernmaterials') ?>
             <select name="project_type">
                 <option value="content">
                     <?= _('Inhalt') ?>
@@ -112,7 +112,7 @@
     </fieldset>
 
     <footer data-dialog-button>
-        <?= Studip\Button::createAccept(_('Erstellen'), 'create_project', ['title' => _('Neues Projekt erstellen')]) ?>
+        <?= Studip\Button::createAccept(_('Erstellen'), 'create_project', ['title' => _('Neues Lernmaterial erstellen')]) ?>
         <?= Studip\LinkButton::createCancel(_('Abbrechen'), $controller->url_for('contents/courseware'), ['title' => _('Zurück zur Übersicht')]) ?>
     </footer>
 </form>
