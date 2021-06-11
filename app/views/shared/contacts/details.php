@@ -5,7 +5,7 @@
         <? $object_types = ['Studiengang', 'StudiengangTeil', 'Modul'] ?>
         <? foreach ($object_types as $object_type) : ?>
             <? $object_relations = $relations[$object_type] ?>
-            <? if (!$object_relations) : continue; endif; ?>
+            <? if (!is_array($object_relations) || count($object_relations) === 0) : continue; endif; ?>
             <table class="default sortable-table" style="margin-top: 10px;" data-sortlist="[[0, 0]]">
                 <colgroup>
                     <? if($object_type === 'Studiengang'): ?>
@@ -22,7 +22,7 @@
                 </caption>
                 <thead>
                     <tr class="sortable">
-                    <? if($object_type === 'Studiengang'): ?>
+                    <? if ($object_type === 'Studiengang') : ?>
                         <th data-sorter="text"><?= _('Name'); ?></th>
                         <th data-empty="top" data-sorter="text"><?= _('Ansprechpartnertyp'); ?></th>
                     <? else: ?>
@@ -34,6 +34,7 @@
                 </thead>
                 <tbody>
                     <? foreach ($object_relations as $range_entries) : ?>
+                        <? uasort($range_entries, function ($a, $b) { return strcmp($a->getDisplayName(), $b->getDisplayName()); }) ?>
                         <? foreach ($range_entries as $rel) : ?>
                             <? $object_name = htmlReady($object_type::find($rel['range_id'])->getDisplayName()); ?>
                                 <tr>
@@ -42,7 +43,7 @@
                                             <?= $object_name ?>
                                         </a>
                                     </td>
-                                    <? if($object_type === 'Studiengang'): ?>
+                                    <? if ($object_type === 'Studiengang') : ?>
                                     <td>
                                         <?= htmlReady($GLOBALS['MVV_CONTACTS']['TYPE']['values'][$rel['type']]['name']); ?>
                                     </td>
