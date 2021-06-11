@@ -4,12 +4,11 @@
 	 viewBox="0 0 771.9 324.4" style="enable-background:new 0 0 771.9 324.4;" xml:space="preserve">
 <style type="text/css">
 	.st0{fill:#FFFFFF;}
-	.st1{fill:#E7EBF0;}
-	.st2{fill:#28497C;}
-	.st3{fill:#D60000;}
+	.st1{fill:#28497C;}
+	.st2{fill:#D60000;}
 </style>
 <ellipse class="st0" cx="379.5" cy="220.1" rx="154.9" ry="89.2"/>
-<path class="st1" d="M708.1,155.7c-30.1,0-54.9,23.2-57.3,52.7H538.4c-1.9-8.7-5.9-17.2-11.8-25.1l45.3-10.7
+<path class="st0" d="M708.1,155.7c-30.1,0-54.9,23.2-57.3,52.7H538.4c-1.9-8.7-5.9-17.2-11.8-25.1l45.3-10.7
 	c6.4,13,19.7,21.9,35.1,21.9c21.6,0,39.1-17.5,39.1-39.1c0-21.6-17.5-39.1-39.1-39.1S568,133.7,568,155.3c0,2.7,0.3,5.3,0.8,7.9
 	l-49.3,11.7c-7.4-7.6-16.7-14.6-27.7-20.8c-1.3-0.7-2.7-1.5-4.1-2.2l101-62.3c8.8,10.8,22.2,17.6,37.2,17.6
 	c26.6,0,48.2-21.6,48.2-48.2s-21.6-48.2-48.2-48.2c-26.6,0-48.2,21.6-48.2,48.2c0,8.1,2,15.7,5.5,22.4l-106.1,65.4
@@ -37,71 +36,71 @@
 <g id="Gruppe_1924" transform="translate(-484 -240.313)">
 	<g id="Gruppe_1907" transform="translate(64 -26.666)">
 		<g id="Gruppe_1863" transform="translate(446 379)">
-			<path id="Pfad_2456" class="st2" d="M12.9,18.4h-7v14.1h7l10.5,7H27v-28h-3.5L12.9,18.4z"/>
-			<path id="Pfad_2457" class="st2" d="M44.5,0.8L42,3.3c12.1,12.2,12.1,32,0,44.2l2.5,2.5C58,36.3,58,14.4,44.5,0.8z"/>
-			<path id="Pfad_2458" class="st2" d="M39.6,5.6l-2.5,2.5c9.4,9.5,9.4,24.9,0,34.4l0,0l2.5,2.5C50.5,34.2,50.5,16.6,39.6,5.6z"/>
-			<path id="Pfad_2459" class="st2" d="M34.6,10.6L32.2,13c6.8,6.8,6.8,17.8,0,24.6l2.5,2.5C42.8,32,42.8,18.7,34.6,10.6z"/>
+			<path id="Pfad_2456" class="st1" d="M12.9,18.4h-7v14.1h7l10.5,7H27v-28h-3.5L12.9,18.4z"/>
+			<path id="Pfad_2457" class="st1" d="M44.5,0.8L42,3.3c12.1,12.2,12.1,32,0,44.2l2.5,2.5C58,36.3,58,14.4,44.5,0.8z"/>
+			<path id="Pfad_2458" class="st1" d="M39.6,5.6l-2.5,2.5c9.4,9.5,9.4,24.9,0,34.4l0,0l2.5,2.5C50.5,34.2,50.5,16.6,39.6,5.6z"/>
+			<path id="Pfad_2459" class="st1" d="M34.6,10.6L32.2,13c6.8,6.8,6.8,17.8,0,24.6l2.5,2.5C42.8,32,42.8,18.7,34.6,10.6z"/>
 		</g>
 	</g>
 	<g id="Gruppe_1913" transform="translate(-35 25.396)">
 		<g id="Gruppe_1880" transform="translate(1210 400)">
-			<path id="Pfad_2468" class="st2" d="M23.7,54.2l12.4-11.4H23.7V54.2z"/>
-			<path id="Pfad_2469" class="st2" d="M-5-0.4v57.5h25.3V39.4h17.8V-0.4H-5z M34.4,35.4h-18v18H-1.3V3.1h35.6L34.4,35.4L34.4,35.4z
+			<path id="Pfad_2468" class="st1" d="M23.7,54.2l12.4-11.4H23.7V54.2z"/>
+			<path id="Pfad_2469" class="st1" d="M-5-0.4v57.5h25.3V39.4h17.8V-0.4H-5z M34.4,35.4h-18v18H-1.3V3.1h35.6L34.4,35.4L34.4,35.4z
 				"/>
-			<rect id="Rechteck_2081" x="2.1" y="6.7" class="st2" width="10.8" height="10.8"/>
-			<rect id="Rechteck_2082" x="16.5" y="6.7" class="st2" width="14.4" height="3.6"/>
-			<rect id="Rechteck_2083" x="16.5" y="13.9" class="st2" width="14.4" height="3.6"/>
-			<rect id="Rechteck_2084" x="2.1" y="21.1" class="st2" width="28.7" height="3.6"/>
-			<rect id="Rechteck_2085" x="2.1" y="28.2" class="st2" width="28.7" height="3.6"/>
+			<rect id="Rechteck_2081" x="2.1" y="6.7" class="st1" width="10.8" height="10.8"/>
+			<rect id="Rechteck_2082" x="16.5" y="6.7" class="st1" width="14.4" height="3.6"/>
+			<rect id="Rechteck_2083" x="16.5" y="13.9" class="st1" width="14.4" height="3.6"/>
+			<rect id="Rechteck_2084" x="2.1" y="21.1" class="st1" width="28.7" height="3.6"/>
+			<rect id="Rechteck_2085" x="2.1" y="28.2" class="st1" width="28.7" height="3.6"/>
 		</g>
 	</g>
 	<g id="Gruppe_1914" transform="translate(6 8.365)">
 		<g id="vote" transform="translate(619 336)">
-			<path id="Pfad_2471" class="st2" d="M29.5,1h-8.2v23.7h8.2C29.5,24.7,29.5,1,29.5,1z M18.2,13.6H10v11h8.2V13.6z M32.7,8.1v16.5
+			<path id="Pfad_2471" class="st1" d="M29.5,1h-8.2v23.7h8.2C29.5,24.7,29.5,1,29.5,1z M18.2,13.6H10v11h8.2V13.6z M32.7,8.1v16.5
 				h8.2V8.1H32.7z M6.9,6.2H4v24.5h2.1l0,0h34.7v-2.9H6.9V6.2z"/>
 		</g>
 	</g>
 	<g id="Gruppe_1906" transform="translate(17.628 22.818)">
 		<g id="dialog-cards" transform="translate(706.008 270)">
 			<g id="Gruppe_1881" transform="translate(0 0)">
-				<path id="Pfad_2472" class="st2" d="M2.4,41h47.7V6.9H2.4V41z M5.9,10.4h40.9v27.2H5.9V10.4z"/>
-				<path id="Pfad_2473" class="st2" d="M6.6,1.8v3.4h46v32.4h3.4V1.8H6.6z"/>
-				<rect id="Rechteck_2088" x="10.9" y="17.4" class="st2" width="7.3" height="13.1"/>
-				<rect id="Rechteck_2089" x="34" y="26.2" class="st2" width="7.3" height="4.2"/>
-				<rect id="Rechteck_2090" x="22.5" y="26.2" class="st2" width="7.3" height="4.2"/>
-				<rect id="Rechteck_2091" x="22.5" y="17.4" class="st2" width="18.9" height="4.2"/>
+				<path id="Pfad_2472" class="st1" d="M2.4,41h47.7V6.9H2.4V41z M5.9,10.4h40.9v27.2H5.9V10.4z"/>
+				<path id="Pfad_2473" class="st1" d="M6.6,1.8v3.4h46v32.4h3.4V1.8H6.6z"/>
+				<rect id="Rechteck_2088" x="10.9" y="17.4" class="st1" width="7.3" height="13.1"/>
+				<rect id="Rechteck_2089" x="34" y="26.2" class="st1" width="7.3" height="4.2"/>
+				<rect id="Rechteck_2090" x="22.5" y="26.2" class="st1" width="7.3" height="4.2"/>
+				<rect id="Rechteck_2091" x="22.5" y="17.4" class="st1" width="18.9" height="4.2"/>
 			</g>
 		</g>
 	</g>
 	<g id="Gruppe_1912" transform="translate(-40.129 -22.897)">
 		<g id="Gruppe_1883" transform="translate(1130 304)">
-			<path id="Pfad_2474" class="st2" d="M-3.6,2v34.3h48V2H-3.6z M40.9,5.4v23L31,21.2l-7.6,5.9L12.3,17L-0.2,28.5V5.4H40.9z"/>
-			<circle id="Ellipse_33" class="st2" cx="30.3" cy="12.5" r="3.4"/>
+			<path id="Pfad_2474" class="st1" d="M-3.6,2v34.3h48V2H-3.6z M40.9,5.4v23L31,21.2l-7.6,5.9L12.3,17L-0.2,28.5V5.4H40.9z"/>
+			<circle id="Ellipse_33" class="st1" cx="30.3" cy="12.5" r="3.4"/>
 		</g>
 	</g>
 	<g id="courseware" transform="translate(761.786 350.894)">
-		<path id="Pfad_2421" class="st2" d="M116.2,14.7L100.3,0.8L84.5,14.7l15.8,7.4L116.2,14.7z"/>
-		<path id="Pfad_2422" class="st3" d="M143.7,38.8l-15.8-13.9l-27.5,13.8L72.8,24.9L57,38.8l43.6,26L143.7,38.8z"/>
-		<path id="Pfad_2423" class="st2" d="M171.2,62.9L155.4,49l-54.9,37.9L45.2,49.1L29.3,62.9l71.2,55L171.2,62.9z"/>
-		<path id="Pfad_2424" class="st2" d="M183,73.2l-82.5,68.7L17.6,73.2L1.8,87.1l98.5,86.3l98.5-86.3L183,73.2z"/>
+		<path id="Pfad_2421" class="st1" d="M116.2,14.7L100.3,0.8L84.5,14.7l15.8,7.4L116.2,14.7z"/>
+		<path id="Pfad_2422" class="st2" d="M143.7,38.8l-15.8-13.9l-27.5,13.8L72.8,24.9L57,38.8l43.6,26L143.7,38.8z"/>
+		<path id="Pfad_2423" class="st1" d="M171.2,62.9L155.4,49l-54.9,37.9L45.2,49.1L29.3,62.9l71.2,55L171.2,62.9z"/>
+		<path id="Pfad_2424" class="st1" d="M183,73.2l-82.5,68.7L17.6,73.2L1.8,87.1l98.5,86.3l98.5-86.3L183,73.2z"/>
 	</g>
 	<g id="Gruppe_1908" transform="translate(-32.343 34.334)">
 		<g id="Gruppe_1864" transform="translate(635 442)">
-			<path id="Pfad_2460" class="st2" d="M6.5,15.1l63.1-6.6l-0.8-7.1c-0.1-1.6-1.4-2.7-2.9-2.7c-0.1,0-0.2,0-0.3,0L7,5
+			<path id="Pfad_2460" class="st1" d="M6.5,15.1l63.1-6.6l-0.8-7.1c-0.1-1.6-1.4-2.7-2.9-2.7c-0.1,0-0.2,0-0.3,0L7,5
 				C5.4,5.2,4.3,6.5,4.4,8.1l0,0l0.8,7.1l0,0v35.7c0,3.2,2.6,5.8,5.8,5.8h53.2c3.2,0,5.8-2.6,5.8-5.8V15.1H6.5z M14.7,19.7l-4.9,4.9
 				v-4.9H14.7z M64.2,52.1H11c-0.7,0-1.2-0.5-1.2-1.2l0,0V29H12l9.2-9.2h4.4L16.4,29H23l9.2-9.2h4.4L27.4,29h6.5l9.2-9.2h4.4
 				L38.3,29h6.6l9.2-9.2h4.3L49.3,29h6.6l9.2-9.2h0.3v4.1L60.3,29h5.1v21.9C65.4,51.6,64.8,52.1,64.2,52.1L64.2,52.1z"/>
-			<path id="Pfad_2461" class="st2" d="M30.7,49.8l13.9-9.2l-13.9-9.2L30.7,49.8z"/>
+			<path id="Pfad_2461" class="st1" d="M30.7,49.8l13.9-9.2l-13.9-9.2L30.7,49.8z"/>
 		</g>
 	</g>
 	<g id="Gruppe_1909" transform="translate(-79.909 -56.465)">
 		<g id="block-typewriter" transform="translate(991.342 316.896)">
 			<g id="Gruppe_1905" transform="translate(-0.001 1.97)">
-				<path id="Pfad_2483" class="st2" d="M35.6,24.5h2.8v-2.8h-2.8V5.2h-2.9v16.6H30v2.8h2.8v8.4h-5.6v2.9h5.6v-2.7h2.8v2.7h5.6V33
+				<path id="Pfad_2483" class="st1" d="M35.6,24.5h2.8v-2.8h-2.8V5.2h-2.9v16.6H30v2.8h2.8v8.4h-5.6v2.9h5.6v-2.7h2.8v2.7h5.6V33
 					h-5.6L35.6,24.5L35.6,24.5z"/>
-				<rect id="Rechteck_2097" x="27.2" y="2.3" class="st2" width="5.6" height="2.8"/>
-				<rect id="Rechteck_2098" x="35.6" y="2.3" class="st2" width="5.6" height="2.8"/>
-				<path id="Pfad_2484" class="st2" d="M15.8,7.9l-1-2.8H7.7v2.8h3L3,30.1h-3.6v2.8h5.2c0.3,0,0.5-0.1,0.7-0.3
+				<rect id="Rechteck_2097" x="27.2" y="2.3" class="st1" width="5.6" height="2.8"/>
+				<rect id="Rechteck_2098" x="35.6" y="2.3" class="st1" width="5.6" height="2.8"/>
+				<path id="Pfad_2484" class="st1" d="M15.8,7.9l-1-2.8H7.7v2.8h3L3,30.1h-3.6v2.8h5.2c0.3,0,0.5-0.1,0.7-0.3
 					c0.2-0.2,0.3-0.4,0.4-0.6l2.3-6.7h10.7l2.3,6.7c0.1,0.2,0.2,0.5,0.4,0.7c0.2,0.2,0.5,0.3,0.7,0.3h5.2v-2.8h-3.6L15.8,7.9z
 					 M8.8,22.6l3.7-11.3c0.3-0.9,0.5-1.8,0.7-2.7c0.1,0.5,0.2,1,0.4,1.5c0.1,0.5,0.2,0.9,0.4,1.2l3.7,11.3H8.8z"/>
 			</g>
@@ -109,26 +108,26 @@
 	</g>
 	<g id="Gruppe_1911" transform="translate(-11 -17.829)">
 		<g id="block-imagemap-2" transform="translate(1084 395.03)">
-			<path id="Pfad_2481" class="st2" d="M0.6,6.2h35.2v15.7l3,2.6V3.4H-2.4v29.3h20.6v-3H0.6V6.2z"/>
-			<rect id="Rechteck_2093" x="9.4" y="9.3" class="st2" width="3" height="5.9"/>
-			<rect id="Rechteck_2094" x="3.5" y="15.2" class="st2" width="5.9" height="3"/>
-			<rect id="Rechteck_2095" x="12.4" y="15.2" class="st2" width="5.9" height="3"/>
-			<rect id="Rechteck_2096" x="9.4" y="18.1" class="st2" width="3" height="5.9"/>
-			<path id="Pfad_2482" class="st2" d="M21,12.1v27.4l9-7.1l11.3-2L21,12.1z"/>
+			<path id="Pfad_2481" class="st1" d="M0.6,6.2h35.2v15.7l3,2.6V3.4H-2.4v29.3h20.6v-3H0.6V6.2z"/>
+			<rect id="Rechteck_2093" x="9.4" y="9.3" class="st1" width="3" height="5.9"/>
+			<rect id="Rechteck_2094" x="3.5" y="15.2" class="st1" width="5.9" height="3"/>
+			<rect id="Rechteck_2095" x="12.4" y="15.2" class="st1" width="5.9" height="3"/>
+			<rect id="Rechteck_2096" x="9.4" y="18.1" class="st1" width="3" height="5.9"/>
+			<path id="Pfad_2482" class="st1" d="M21,12.1v27.4l9-7.1l11.3-2L21,12.1z"/>
 		</g>
 	</g>
 	<g id="Gruppe_1910" transform="translate(-30 18.683)">
 		<g id="Gruppe_1847" transform="translate(1014 480)">
-			<path id="Pfad_2435" class="st2" d="M37.2-1.6h-39v27.8h28.8c2.3,4.2,4.6,8,5.4,7.7c0.7-0.3,0-3.7-1.1-7.7H37V-1.6H37.2z
+			<path id="Pfad_2435" class="st1" d="M37.2-1.6h-39v27.8h28.8c2.3,4.2,4.6,8,5.4,7.7c0.7-0.3,0-3.7-1.1-7.7H37V-1.6H37.2z
 				 M34.3,23.5h-3.7c-1.5-5.2-3.2-10.3-3.2-10.3c-0.7-1.6-2.5-2.4-4.1-1.8c-1.7,0.6-2.4,2.5-1.8,4.1l0,0c0,0,1.9,3.8,4,8H0.9V1.2
 				h33.4L34.3,23.5z"/>
-			<path id="Pfad_2436" class="st2" d="M18.9,5.9c0.5,0.7,0.7,1.7,0.4,2.6l0.1,0.1c0,0.2,0,0.5,0,0.7c0.3,1.3,1.6,2,2.9,1.7
+			<path id="Pfad_2436" class="st1" d="M18.9,5.9c0.5,0.7,0.7,1.7,0.4,2.6l0.1,0.1c0,0.2,0,0.5,0,0.7c0.3,1.3,1.6,2,2.9,1.7
 				s2-1.6,1.7-2.9V7.9c-0.5-1.4-1.4-2.6-2.6-3.4c-1.8-1.2-4.5-1-4.5-0.3C16.8,5,17.9,4.8,18.9,5.9z"/>
-			<path id="Pfad_2437" class="st2" d="M7.8,12.6c0.8-0.1,1.3-1.3,1.2-2.7S8.2,7.4,7.4,7.5c-0.8,0.1-1.3,1.3-1.2,2.7
+			<path id="Pfad_2437" class="st1" d="M7.8,12.6c0.8-0.1,1.3-1.3,1.2-2.7S8.2,7.4,7.4,7.5c-0.8,0.1-1.3,1.3-1.2,2.7
 				C6.3,11.5,7,12.6,7.8,12.6z"/>
-			<path id="Pfad_2438" class="st2" d="M12.5,9.5c0.6-0.3,0.6-1.6,0-2.8c-0.6-1.2-1.6-2-2.2-1.8c-0.6,0.2-0.6,1.6,0,2.8
+			<path id="Pfad_2438" class="st1" d="M12.5,9.5c0.6-0.3,0.6-1.6,0-2.8c-0.6-1.2-1.6-2-2.2-1.8c-0.6,0.2-0.6,1.6,0,2.8
 				C10.9,8.9,11.9,9.8,12.5,9.5z"/>
-			<path id="Pfad_2439" class="st2" d="M6.9,19.6c1.9,0.8,3.9,0.9,5.9,0.2c2-0.6,3.6-2,4.6-3.7c1-1.7,1.3-3.6,0.9-5.5
+			<path id="Pfad_2439" class="st1" d="M6.9,19.6c1.9,0.8,3.9,0.9,5.9,0.2c2-0.6,3.6-2,4.6-3.7c1-1.7,1.3-3.6,0.9-5.5
 				c-1.5,3.3-3.5,5.8-6.4,6.6c-1.5,0.5-3,0.6-4.4,0.3c-1.7-0.3-3.2-0.8-4.7-1.6C3.6,17.6,5.1,18.9,6.9,19.6z"/>
 		</g>
 	</g>
