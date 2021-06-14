@@ -135,7 +135,7 @@ class MvvContact extends ModuleManagementModel
      * @param boolean $refresh Refresh ids if true.
      * @return array An array with range_ids of assigned contacts.
      */
-    public static function getIdsFiltered($filter, $refresh = false)
+    public static function getIdsFiltered($filter, $refresh = true)
     {
         static $ids = null;
 

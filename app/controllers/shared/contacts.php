@@ -39,14 +39,7 @@ class Shared_ContactsController extends MVVController
 
         $this->initPageParams();
         $this->initSearchParams();
-
         $search_result = $this->getSearchResult('MvvContact');
-        if ($search_result) {
-            $this->filter = array_merge(
-                ['mvv_contacts.contact_id' => $search_result],
-                (array) $this->filter
-            );
-        }
 
         // set default semester filter
         if (!isset($this->filter['start_sem.beginn'], $this->filter['end_sem.ende'])) {
@@ -61,19 +54,34 @@ class Shared_ContactsController extends MVVController
                 $this->filter['end_sem.ende']     = $current_sem->beginn;
             }
         }
+        $this->sessSet('filter', $this->filter);
 
         if (Request::option('range_id')) {
-            $this->filter = ['mvv_contacts_ranges.range_id' => Request::option('range_id')];
-            $this->sortby = 'position';
             $this->range_id = Request::option('range_id');
+            $this->filter['mvv_contacts_ranges.range_id'] = $this->range_id;
+            $this->sortby = 'position';
         }
 
         // Nur Module von verantwortlichen Einrichtungen an denen der User
         // eine Rolle hat
         if (!$this->filter['mvv_modul_inst.institut_id']) {
-            $this->filter['mvv_modul_inst.institut_id'] = MvvPerm::getOwnInstitutes();
-            $this->filter['mvv_studiengang.institut_id'] = MvvPerm::getOwnInstitutes();
+            unset($this->filter['mvv_modul_inst.institut_id']);
         }
+        if ($search_result) {
+            $this->filter['mvv_contacts.contact_id'] = $search_result;
+        }
+
+        $own_institutes = MvvPerm::getOwnInstitutes();
+        if ($this->filter['mvv_modul_inst.institut_id']) {
+            if ($own_institutes) {
+                $this->filter['mvv_modul_inst.institut_id']  = array_intersect(
+                        $this->filter['mvv_modul_inst.institut_id'],
+                        MvvPerm::getOwnInstitutes());
+            }
+        } else {
+            $this->filter['mvv_modul_inst.institut_id'] = MvvPerm::getOwnInstitutes();
+        }
+        $this->filter['mvv_studiengang.institut_id'] = $this->filter['mvv_modul_inst.institut_id'];
 
         $this->sortby = $this->sortby ?: 'name';
         $this->order = $this->order ?: 'ASC';
@@ -176,7 +184,7 @@ class Shared_ContactsController extends MVVController
      */
     public function reset_search_action()
     {
-        $this->reset_search('MvvContactRange');
+        $this->reset_search('MvvContact');
         $this->perform_relayed('index');
     }
 
