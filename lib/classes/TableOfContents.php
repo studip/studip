@@ -129,15 +129,15 @@ class TableOfContents
 
         if (isset($pages[1])) {
             if ($current_page->keyword == $pages[1]) {
-                $bc_links .= ' / ' . htmlReady($pages[1]);
+                $bc_links .= '&nbsp;/&nbsp;' . htmlReady($pages[1]);
             } else {
-                $bc_links .= '<div> / <a class="navigate" href="' . URLHelper::getLink('wiki.php',
+                $bc_links .= '<div>&nbsp;/&nbsp;<a class="navigate" href="' . URLHelper::getLink('wiki.php',
                         ['keyword' => $pages[1]]) . '">' . htmlReady($pages[1]) . '</a></div>';
             }
         }
 
         if (isset($pages[2])) {
-            $bc_links .= '<div> / ' . htmlReady($pages[2]);
+            $bc_links .= '<div>&nbsp;/&nbsp;' . htmlReady($pages[2]);
         }
 
         return $bc_links;
