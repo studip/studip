@@ -8,7 +8,7 @@ class Oer_MymaterialController extends AuthenticatedController
     {
         parent::before_filter($action, $args);
         PageLayout::setTitle(_('Lernmaterialien'));
-        
+
     }
 
     public function index_action()
@@ -51,25 +51,26 @@ class Oer_MymaterialController extends AuthenticatedController
                 }
                 $material['filename'] = $_FILES['file']['name'];
                 move_uploaded_file($_FILES['file']['tmp_name'], $material->getFilePath());
-            } elseif (Request::get('tmp_file')) {
-                $material['content_type'] = Request::get('mime_type') ?: get_mime_type(Request::get('tmp_file'));
+            } elseif($_SESSION['NEW_OER']) {
+                $material['content_type'] = $_SESSION['NEW_OER']['content_type'] ?: get_mime_type($_SESSION['NEW_OER']['tmp_name']);
                 if (in_array($material['content_type'], $content_types)) {
                     mkdir($tmp_folder);
-                    \Studip\ZipArchive::extractToPath(Request::get('tmp_file'), $tmp_folder);
+                    \Studip\ZipArchive::extractToPath($_SESSION['NEW_OER']['tmp_name'], $tmp_folder);
                     $material['structure'] = $this->getFolderStructure($tmp_folder);
                     rmdirr($tmp_folder);
                 } else {
                     $material['structure'] = null;
                 }
-                $material['filename'] = Request::get('filename');
-                move_uploaded_file(Request::get('tmp_file'), $material->getFilePath());
+                $material['filename'] = $_SESSION['NEW_OER']['filename'];
+                copy($_SESSION['NEW_OER']['tmp_name'], $material->getFilePath());
             }
+
+
             if ($_FILES['image']['tmp_name']) {
                 $material['front_image_content_type'] = $_FILES['image']['type'];
                 move_uploaded_file($_FILES['image']['tmp_name'], $material->getFrontImageFilePath());
-            } elseif (Request::get('logo_tmp_file')) {
-                $material['front_image_content_type'] = get_mime_type(Request::get('logo_tmp_file'));
-                copy(Request::get('logo_tmp_file'), $material->getFrontImageFilePath());
+            } elseif($_SESSION['NEW_OER']) {
+                copy($_SESSION['NEW_OER']['image_tmp_name'], $material->getFrontImageFilePath());
             }
             if (Request::get('delete_front_image')) {
                 $material['front_image_content_type'] = null;
@@ -129,6 +130,8 @@ class Oer_MymaterialController extends AuthenticatedController
 
             $material->pushDataToIndexServers();
 
+            unset($_SESSION['NEW_OER']);
+
             PageLayout::postSuccess(_('Lernmaterial erfolgreich gespeichert.'));
 
             if (Request::get('redirect_url')) {
@@ -140,9 +143,8 @@ class Oer_MymaterialController extends AuthenticatedController
                 $this->redirect('oer/market/details/' . $material->id);
             }
         }
-        if (isset($_SESSION['LernMarktplatz_CREATE_TEMPLATE'])) {
-            $this->template = $_SESSION['LernMarktplatz_CREATE_TEMPLATE'];
-            unset($_SESSION['LernMarktplatz_CREATE_TEMPLATE']);
+        if (isset($_SESSION['NEW_OER'])) {
+            $this->template = $_SESSION['NEW_OER'];
         }
 
         $this->usersearch = new SQLSearch("

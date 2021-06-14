@@ -464,6 +464,34 @@ class FileController extends AuthenticatedController
         $this->content_terms_of_use = $this->file->getTermsOfUse();
     }
 
+    /**
+     * The action for sharing a file on the oer campus
+     */
+    public function share_oer_action($file_ref_id)
+    {
+        $this->file_ref = FileRef::find($file_ref_id);
+        $this->file = $this->file_ref->getFileType();
+
+        $this->folder = $this->file->getFoldertype();
+
+        if (!$this->folder || !$this->folder->isFileEditable($this->file->getId(), $GLOBALS['user']->id)) {
+            throw new AccessDeniedException();
+        }
+
+        $_SESSION['NEW_OER'] = [
+            'name' => $this->file->getFilename(),
+            'filename' => $this->file->getFilename(),
+            'description' => $this->file->getDescription(),
+            'player_url' => null,
+            'tags' => [],
+            'tmp_name' => $this->file->getPath(),
+            'content_type' => $this->file->getMimeType(),
+            'image_tmp_name' => null
+        ];
+
+        $this->redirect("oer/mymaterial/edit");
+    }
+
     public function edit_urlfile_action($file_ref_id)
     {
         $this->file_ref = FileRef::find($file_ref_id);

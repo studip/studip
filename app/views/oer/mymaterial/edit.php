@@ -19,73 +19,65 @@
                        maxlength="64">
             </label>
 
-            <? if ($template['tmp_file']) : ?>
-                <input type="hidden" name="logo_tmp_file" value="<?= htmlReady($template['logo_tmp_file']) ?>">
-            <? else : ?>
-                <div>
-                    <?= _('Vorschau') ?>
-                </div>
 
-                <div class="hgroup" @drop.prevent="dropImage">
-                    <label for="oer_logo_uploader">
-                        <article class="contentbox" :title="name">
-                            <header>
-                                <h1>
-                                    <studip-icon shape="file"
-                                                 role="clickable"
-                                                 size="20"
-                                                 class="text-bottom"></studip-icon>
-                                    {{ name }}
-                                </h1>
-                            </header>
-                            <div class="image"
-                                 :style="'background-image: url(' + logo_url + ');' + (!customlogo ? ' background-size: 60% auto;': '')"></div>
-                        </article>
+            <div>
+                <?= _('Vorschau') ?>
+            </div>
+
+            <div class="hgroup" @drop.prevent="dropImage">
+                <label for="oer_logo_uploader">
+                    <article class="contentbox" :title="name">
+                        <header>
+                            <h1>
+                                <studip-icon shape="file"
+                                             role="clickable"
+                                             size="20"
+                                             class="text-bottom"></studip-icon>
+                                {{ name }}
+                            </h1>
+                        </header>
+                        <div class="image"
+                             :style="'background-image: url(' + logo_url + ');' + (!customlogo ? ' background-size: 60% auto;': '')"></div>
+                    </article>
+                </label>
+
+                <div>
+                    <label class="file-upload logo_file"
+                           data-oldurl="<?= htmlReady($material->getLogoURL()) ?>"
+                           data-customlogo="<?= $material['front_image_content_type'] ? 1 : 0 ?>">
+                        <?= _('Vorschau-Bilddatei (optional)') ?>
+                        <input type="file"
+                               name="image"
+                               id="oer_logo_uploader"
+                               accept="image/*"
+                               @change="editImage">
                     </label>
 
-                    <div>
-                        <label class="file-upload logo_file"
-                               data-oldurl="<?= htmlReady($material->getLogoURL()) ?>"
-                               data-customlogo="<?= $material['front_image_content_type'] ? 1 : 0 ?>">
-                            <?= _('Vorschau-Bilddatei (optional)') ?>
-                            <input type="file"
-                                   name="image"
-                                   id="oer_logo_uploader"
-                                   accept="image/*"
-                                   @change="editImage">
+                    <? if ($material['front_image_content_type']) : ?>
+                        <label>
+                            <input type="checkbox" name="delete_front_image" value="1">
+                            <?= _('Logo löschen') ?>
                         </label>
-
-                        <? if ($material['front_image_content_type']) : ?>
-                            <label>
-                                <input type="checkbox" name="delete_front_image" value="1">
-                                <?= _('Logo löschen') ?>
-                            </label>
-                        <? endif ?>
-                    </div>
-
+                    <? endif ?>
                 </div>
 
-            <? endif ?>
+            </div>
 
 
-            <? if ($template['tmp_file']) : ?>
-                <input type="hidden" name="tmp_file" value="<?= htmlReady($template['tmp_file']) ?>">
-                <input type="hidden" name="mime_type" value="<?= htmlReady($template['mime_type']) ?>">
-                <input type="hidden" name="filename" value="<?= htmlReady($template['filename']) ?>">
-            <? else : ?>
 
-                <label class="file drag-and-drop"
-                       data-filename="<?= htmlReady($material['filename']) ?>"
-                       data-filesize="<?= htmlReady(!$material->isNew() ? filesize($material->getFilePath()) : "") ?>"
-                       @drop.prevent="dropFile">
-                    <?= _('Datei (gerne auch eine ZIP-Datei) auswählen') ?>
-                    <input type="file" name="file" id="oer_file" @change="editFile">
-                    <div v-if="filename">
-                        <span>{{ filename }}</span>
-                        <span>{{ filesize }}</span>
-                    </div>
-                </label>
-            <? endif ?>
+
+
+            <label class="file drag-and-drop"
+                   data-filename="<?= htmlReady($material['filename']) ?>"
+                   data-filesize="<?= htmlReady(!$material->isNew() ? filesize($material->getFilePath()) : "") ?>"
+                   @drop.prevent="dropFile">
+                <?= _('Datei (gerne auch eine ZIP-Datei) auswählen') ?>
+                <input type="file" name="file" id="oer_file" @change="editFile">
+                <div v-if="filename">
+                    <span>{{ filename }}</span>
+                    <span>{{ filesize }}</span>
+                </div>
+            </label>
 
             <label>
                 <?= _('Beschreibung') ?>

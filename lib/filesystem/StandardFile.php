@@ -293,6 +293,14 @@ class StandardFile implements FileType, ArrayAccess
                 'link-to-clipboard'
             );
         }
+        if ($this->isEditable($GLOBALS['user']->id) && Config::get()->OERCAMPUS_ENABLED) {
+            $actionMenu->addLink(
+                URLHelper::getURL('dispatch.php/file/share_oer/' . $this->fileref->id),
+                _('Im OER Campus veröffentlichen'),
+                Icon::create('service', Icon::ROLE_CLICKABLE, ['size' => 20]),
+                ['data-dialog' => '1']
+            );
+        }
         if (Context::isCourse() && Feedback::isActivated()) {
             if (Feedback::hasCreatePerm(Context::getId())) {
                 $actionMenu->addLink(
