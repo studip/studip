@@ -7,7 +7,7 @@
             >
         </div>
         <div class="cw-dashboard-progress-chapter">
-            <h1>{{ currentChapter.name }}</h1>
+                <h1><a :href="chapterUrl">{{ currentChapter.name }}</a></h1>
             <courseware-progress-circle
                 :title="$gettext('diese Seite inkl. darunter liegende Seiten')"
                 :value="parseInt(currentChapter.progress.total)"
@@ -57,6 +57,9 @@ export default {
         },
         currentChapter() {
             return this.progressData[this.currentProgressData];
+        },
+        chapterUrl() {
+            return STUDIP.URLHelper.base_url + 'dispatch.php/course/courseware/?cid=' + STUDIP.URLHelper.parameters.cid + '#/structural_element/' + this.currentChapter.id;
         },
     },
     methods: {
