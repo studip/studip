@@ -9,7 +9,7 @@
                 {{ item.name }}
             </router-link>
         </div>
-        <ul v-show="isOpen" v-if="hasChildren" :class="{'cw-tree-chapter-list': isRoot}">
+        <ul v-if="hasChildren" :class="{'cw-tree-chapter-list': isRoot}">
             <courseware-tree-item
                 v-for="(child, index) in item.children"
                 :key="index"
@@ -26,11 +26,6 @@ export default {
     props: {
         item: Object,
     },
-    data() {
-        return {
-            isOpen: true,
-        };
-    },
     computed: {
         hasChildren() {
             return this.item.children && this.item.children.length;
@@ -41,24 +36,6 @@ export default {
         isFirstLevel() {
             return this.item.depth === 1;
         },
-        showToggleButton() {
-            return this.hasChildren && !this.isRoot && !this.isFirstLevel;
-        },
-        showDisabledToggleButton() {
-            return !this.hasChildren && !this.isRoot && !this.isFirstLevel;
-        }
     },
-    methods: {
-        toggle: function () {
-            if (this.hasChildren) {
-                this.isOpen = !this.isOpen;
-            }
-        },
-    },
-    mounted() {
-        if (this.item.depth > 2) {
-            this.isOpen = false;
-        }
-    }
 };
 </script>
