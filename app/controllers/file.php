@@ -486,7 +486,7 @@ class FileController extends AuthenticatedController
             'tags' => [],
             'tmp_name' => $this->file->getPath(),
             'content_type' => $this->file->getMimeType(),
-            'image_tmp_name' => null
+            'image_tmp_name' => "/Users/rasmusfuhse/studip/trunk/data/upload_doc/3f/3fe3ff4dca0b505985076e0ca7e7f763"
         ];
 
         $this->redirect("oer/mymaterial/edit");

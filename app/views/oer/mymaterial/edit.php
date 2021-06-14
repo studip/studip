@@ -43,8 +43,8 @@
 
                 <div>
                     <label class="file-upload logo_file"
-                           data-oldurl="<?= htmlReady($material->getLogoURL()) ?>"
-                           data-customlogo="<?= $material['front_image_content_type'] ? 1 : 0 ?>">
+                           data-oldurl="<?= htmlReady($_SESSION['NEW_OER']['image_tmp_name'] ? URLHelper::getURL("dispatch.php/oer/mymaterial/show_tmp_image") : $material->getLogoURL()) ?>"
+                           data-customlogo="<?= $_SESSION['NEW_OER']['image_tmp_name'] || $material['front_image_content_type'] ? 1 : 0 ?>">
                         <?= _('Vorschau-Bilddatei (optional)') ?>
                         <input type="file"
                                name="image"

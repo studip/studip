@@ -69,7 +69,8 @@ class Oer_MymaterialController extends AuthenticatedController
             if ($_FILES['image']['tmp_name']) {
                 $material['front_image_content_type'] = $_FILES['image']['type'];
                 move_uploaded_file($_FILES['image']['tmp_name'], $material->getFrontImageFilePath());
-            } elseif($_SESSION['NEW_OER']) {
+            } elseif($_SESSION['NEW_OER']['image_tmp_name']) {
+                $material['front_image_content_type'] = get_mime_type($_SESSION['NEW_OER']['image_tmp_name']);
                 copy($_SESSION['NEW_OER']['image_tmp_name'], $material->getFrontImageFilePath());
             }
             if (Request::get('delete_front_image')) {
@@ -215,6 +216,20 @@ class Oer_MymaterialController extends AuthenticatedController
             'material_id' => $materia->id,
             'start' => mktime(0, 0, 0)
         ]);
+    }
+
+    public function show_tmp_image_action()
+    {
+        if ($_SESSION['NEW_OER']['image_tmp_name'] && file_exists($_SESSION['NEW_OER']['image_tmp_name'])) {
+            $this->render_file(
+                $_SESSION['NEW_OER']['image_tmp_name'],
+                null,
+                null,
+                'inline'
+            );
+        } else {
+            throw new Exception(_("Datei ist nicht vorhanden"));
+        }
     }
 
 
