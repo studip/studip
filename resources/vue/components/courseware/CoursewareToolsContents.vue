@@ -52,6 +52,7 @@ export default {
                     let new_childs = this.loadChildren(data[i].id, data, depth + 1);
                     children.push({
                         name: data[i].attributes.title,
+                        position: data[i].attributes.position,
                         element_id: data[i].id,
                         children: new_childs,
                         depth: depth,
@@ -59,6 +60,10 @@ export default {
                     });
                 }
             }
+
+            children.sort((a, b) => {
+                return a.position > b.position ? 1 : b.position > a.position ? -1 : 0;
+            });
 
             return children;
         },
