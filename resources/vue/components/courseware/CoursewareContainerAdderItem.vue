@@ -19,6 +19,7 @@ export default {
         type: String,
         colspan: String,
         firstSection: String,
+        secondSection: String,
     },
     methods: {
         ...mapActions({
@@ -28,9 +29,15 @@ export default {
         async addContainer() {
             let attributes = {};
             attributes["container-type"] = this.type;
+            let sections = [];
+            if (this.type === 'list') {
+                sections = [{ name: this.firstSection, icon: '', blocks: [] }];
+            } else {
+                sections = [{ name: this.firstSection, icon: '', blocks: [] },{ name: this.secondSection, icon: '', blocks: [] }];
+            }
             attributes.payload = {
                 colspan: this.colspan,
-                sections: [{ name: this.firstSection, icon: '', blocks: [] }],
+                sections: sections,
             };
             await this.createContainer({ structuralElementId: this.$route.params.id, attributes: attributes });
             this.companionSuccess({
