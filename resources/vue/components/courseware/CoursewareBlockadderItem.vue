@@ -33,7 +33,6 @@ export default {
     methods: {
         ...mapActions({
             createBlock: 'createBlockInContainer',
-            coursewareBlockAdder: 'coursewareBlockAdder',
             companionInfo: 'companionInfo',
             companionWarning: 'companionWarning',
             companionSuccess: 'companionSuccess',
@@ -61,8 +60,6 @@ export default {
                 await this.updateContainer({ container, structuralElementId });
                 // unlock container
                 await this.unlockObject({ id: this.blockAdder.container.id, type: 'courseware-containers' });
-                // then clear block adder
-                this.coursewareBlockAdder({});
                 this.companionSuccess({
                     info: this.$gettext('Block wurde erfolgreich eingefügt.'),
                 });

@@ -108,6 +108,7 @@
                     :colspan="style.colspan"
                     :description="container.description"
                     :firstSection="$gettext('erstes Element')"
+                    :secondSection="$gettext('zweites Element')"
                 ></courseware-container-adder-item>
             </courseware-collapsible-box>
         </div>

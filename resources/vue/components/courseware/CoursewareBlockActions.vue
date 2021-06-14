@@ -28,7 +28,7 @@ export default {
     data() {
         return {
             menuItems: [
-                { id: 6, label: this.$gettext('Kommentare anzeigen'), icon: 'comment2', action: 'showComments' },
+                { id: 6, label: this.$gettext('Kommentare anzeigen'), icon: 'comment2', emit: 'showComments' },
             ],
         };
     },
