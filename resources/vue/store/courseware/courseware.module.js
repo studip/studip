@@ -25,8 +25,10 @@ const getDefaultState = () => {
 
         showStructuralElementEditDialog: false,
         showStructuralElementAddDialog: false,
+        showStructuralElementExportDialog: false,
         showStructuralElementInfoDialog: false,
         showStructuralElementDeleteDialog: false,
+        showStructuralElementOerDialog: false,
     };
 };
 
@@ -108,8 +110,14 @@ const getters = {
     showStructuralElementAddDialog(state) {
         return state.showStructuralElementAddDialog;
     },
+    showStructuralElementExportDialog(state) {
+        return state.showStructuralElementExportDialog;
+    },
     showStructuralElementInfoDialog(state) {
         return state.showStructuralElementInfoDialog;
+    },
+    showStructuralElementOerDialog(state) {
+        return state.showStructuralElementOerDialog;
     },
     showStructuralElementDeleteDialog(state) {
         return state.showStructuralElementDeleteDialog;
@@ -633,8 +641,16 @@ export const actions = {
         context.commit('setShowStructuralElementAddDialog', bool)
     },
 
+    showElementExportDialog(context, bool) {
+        context.commit('setShowStructuralElementExportDialog', bool)
+    },
+
     showElementInfoDialog(context, bool) {
         context.commit('setShowStructuralElementInfoDialog', bool)
+    },
+
+    showElementOerDialog(context, bool) {
+        context.commit('setShowStructuralElementOerDialog', bool)
     },
 
     showElementDeleteDialog(context, bool) {
@@ -923,8 +939,16 @@ export const mutations = {
         state.showStructuralElementAddDialog = showAdd;
     },
 
+    setShowStructuralElementExportDialog(state, showExport) {
+        state.showStructuralElementExportDialog = showExport;
+    },
+
     setShowStructuralElementInfoDialog(state, showInfo) {
         state.showStructuralElementInfoDialog = showInfo;
+    },
+
+    setShowStructuralElementOerDialog(state, showOer) {
+        state.showStructuralElementOerDialog = showOer;
     },
 
     setShowStructuralElementDeleteDialog(state, showDelete) {

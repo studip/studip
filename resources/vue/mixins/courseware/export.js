@@ -1,6 +1,7 @@
 import { mapActions, mapGetters } from 'vuex';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
+import axios from 'axios';
 
 export default {
     computed: {
@@ -24,6 +25,13 @@ export default {
 
     methods: {
         async sendExportZip(root_id = null, options) {
+            let zip = await this.createExportFile(root_id, options);
+            await zip.generateAsync({ type: 'blob' }).then(function (content) {
+                FileSaver.saveAs(content, 'courseware-export-' + new Date().toISOString().slice(0, 10) + '.zip');
+            });
+        },
+
+        async createExportFile(root_id = null, options) {
             let completeExport = false;
 
             if (!root_id) {
@@ -53,9 +61,7 @@ export default {
                 );
             }
 
-            await zip.generateAsync({ type: 'blob' }).then(function (content) {
-                FileSaver.saveAs(content, 'courseware-export-' + new Date().toISOString().slice(0, 10) + '.zip');
-            });
+            return zip;
         },
 
         async exportCourseware(root_id, options) {
@@ -66,6 +72,9 @@ export default {
             }
 
             let root_element = await this.structuralElementById({id: root_id});
+
+            //prevent loss of data
+            root_element = JSON.parse(JSON.stringify(root_element));
 
             // load whole courseware nonetheless, only export relevant elements
             let elements = await this.$store.getters['courseware-structural-elements/all'];
@@ -104,6 +113,35 @@ export default {
                 files: this.exportFiles,
                 settings: settings
             };
+        },
+
+        async exportToOER(element) {
+            let formData = new FormData();
+
+            let exportZip = await this.createExportFile(element.id, { withChildren: false });
+            let zip = await exportZip.generateAsync({ type: 'blob' });
+
+            let description = element.attributes.payload.description ? element.attributes.payload.description : '';
+
+            if (element.relationships.image.data !== null) {
+                let image = {};
+                await axios.get(element.relationships.image.meta['download-url'] , {responseType: 'blob'}).then(response => { image = response.data });
+                formData.append("image", image);
+            }
+
+            formData.append("data[name]", element.attributes.title);
+            formData.append("tags[]", "Courseware");
+            formData.append("file", zip, (element.attributes.title).replace(/\s+/g, '_') + '.zip');
+            formData.append("data[description]", description);
+
+            axios({
+                method: 'post',
+                url: STUDIP.URLHelper.getURL('dispatch.php/oer/mymaterial/edit/'),
+                data: formData,
+                headers: { "Content-Type": "multipart/form-data"}
+            }).then( () => {
+                this.companionInfo({ info: this.$gettext('Seite wurde an OER Campus gesendet.') });
+            });
         },
 
         async exportStructuralElement(parentId, data) {
@@ -211,7 +249,8 @@ export default {
         ...mapActions([
             'loadStructuralElement',
             'loadFileRefs',
-            'loadFolder'
+            'loadFolder',
+            'companionInfo'
         ]),
     },
 };

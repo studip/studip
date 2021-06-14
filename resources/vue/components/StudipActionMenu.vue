@@ -10,7 +10,7 @@
                 {{ $gettext('Aktionen') }}
             </div>
             <ul class="action-menu-list">
-                <li v-for="item in navigationItems" class="action-menu-item">
+                <li v-for="item in navigationItems" :key="item.id" class="action-menu-item">
                     <a v-if="item.type === 'link'" v-bind="linkAttributes(item)" v-on="linkEvents(item)">
                         <studip-icon v-if="item.icon !== false" :shape="item.icon.shape" :role="item.icon.role"></studip-icon>
                         <span v-else class="action-menu-no-icon"></span>
@@ -22,7 +22,7 @@
         </div>
     </nav>
     <nav v-else>
-        <a v-for="item in navigationItems" v-bind="linkAttributes(item)" v-on="linkEvents(item)">
+        <a v-for="item in navigationItems" :key="item.id" v-bind="linkAttributes(item)" v-on="linkEvents(item)">
             <studip-icon :title="item.label" :shape="item.icon.shape" :role="item.icon.role" :size="20"></studip-icon>
         </a>
     </nav>
