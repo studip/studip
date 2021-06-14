@@ -5,11 +5,11 @@
             <courseware-ribbon :canEdit="canEdit">
                 <template #buttons>
                     <router-link v-if="prevElement" :to="'/structural_element/' + prevElement.id">
-                        <button class="cw-ribbon-button cw-ribbon-button-prev" />
+                        <button class="cw-ribbon-button cw-ribbon-button-prev" :title="textRibbon.perv" />
                     </router-link>
                     <button v-else class="cw-ribbon-button cw-ribbon-button-prev-disabled" />
                     <router-link v-if="nextElement" :to="'/structural_element/' + nextElement.id">
-                        <button class="cw-ribbon-button cw-ribbon-button-next" />
+                        <button class="cw-ribbon-button cw-ribbon-button-next" :title="textRibbon.next" />
                     </router-link>
                     <button v-else class="cw-ribbon-button cw-ribbon-button-next-disabled" />
                 </template>
@@ -283,11 +283,11 @@
             :confirmClass="'accept'"
             :closeText="textExport.close"
             :closeClass="'cancel'"
-            @close="showExportDialog = false"
+            @close="showElementExportDialog(false)"
             @confirm="exportCurrentElement"
         >
             <template v-slot:dialogContent>
-                <translate>Hiermit exportieren sie die Seite "{{ currentElement.attributes.title }}" als ZIP-Datei.</translate>
+                <translate>Hiermit exportieren Sie die Seite "{{ currentElement.attributes.title }}" als ZIP-Datei.</translate>
 
                 <div class="cw-element-export">
                     <label>
@@ -310,10 +310,20 @@
             :confirmClass="'accept'"
             :closeText="textOer.close"
             :closeClass="'cancel'"
-            @close="showOerDialog = false"
+            @close="showElementOerDialog(false)"
             @confirm="publishCurrentElement"
         >
-            <template v-slot:dialogContent> show export options for current element </template>
+            <template v-slot:dialogContent>
+                <translate>Hiermit veröffentlichen Sie die Seite</translate> "{{ currentElement.attributes.title }}".
+
+                <div class="cw-element-export">
+                    <label>
+                        <input type="checkbox" v-model="oerChildren">
+                        <translate>Unterseiten exportieren</translate>
+                    </label>
+                </div>
+            </template>
+
         </studip-dialog>
 
         <studip-dialog
@@ -373,8 +383,6 @@ export default {
     data() {
         return {
             currentId: null,
-            showExportDialog: false,
-            showOerDialog: false,
             newChapterName: '',
             newChapterParent: 'descendant',
             currentElement: '',
@@ -400,7 +408,7 @@ export default {
                 close: this.$gettext('Schließen'),
             },
             textOer: {
-                title: this.$gettext('Seite veröffentlichen'),
+                title: this.$gettext('Seite als OER veröffentlichen'),
                 confirm: this.$gettext('Veröffentlichen'),
                 close: this.$gettext('Schließen'),
             },
@@ -409,8 +417,13 @@ export default {
                 confirm: this.$gettext('Erstellen'),
                 close: this.$gettext('Schließen'),
             },
+            textRibbon: {
+                perv: this.$gettext('zurück'),
+                next: this.$gettext('weiter'),
+            },
             exportRunning: false,
-            exportChildren: false
+            exportChildren: false,
+            oerChildren: false,
         };
     },
 
@@ -423,8 +436,10 @@ export default {
             userIsTeacher: 'userIsTeacher',
             showEditDialog: 'showStructuralElementEditDialog',
             showAddDialog: 'showStructuralElementAddDialog',
+            showExportDialog: 'showStructuralElementExportDialog',
             showInfoDialog: 'showStructuralElementInfoDialog',
             showDeleteDialog : 'showStructuralElementDeleteDialog',
+            showOerDialog : 'showStructuralElementOerDialog',
         }),
 
         inCourse() {
@@ -626,7 +641,7 @@ export default {
                 menu.push({ id: 1, label: this.$gettext('Seite bearbeiten'), icon: 'edit', emit: 'editCurrentElement' });
                 menu.push({ id: 2, label: this.$gettext('Seite hinzufügen'), icon: 'add', emit: 'addElement' });
                 menu.push({ id: 5, label: this.$gettext('Seite exportieren'), icon: 'export', emit: 'showExportOptions' });
-                // menu.push({ id: 6, label: this.$gettext('Seite veröffentlichen'), icon: 'service', emit: 'oerCurrentElement' });
+                menu.push({ id: 6, label: this.$gettext('Seite als OER veröffentlichen'), icon: 'service', emit: 'oerCurrentElement' });
             }
             if(!this.isRoot && this.canEdit) {
                 menu.push({ id: 7, label: this.$gettext('Seite löschen'), icon: 'trash', emit: 'deleteCurrentElement' });
@@ -695,8 +710,10 @@ export default {
             companionSuccess: 'companionSuccess',
             showElementEditDialog: 'showElementEditDialog',
             showElementAddDialog: 'showElementAddDialog',
+            showElementExportDialog: 'showElementExportDialog',
             showElementInfoDialog: 'showElementInfoDialog',
             showElementDeleteDialog: 'showElementDeleteDialog',
+            showElementOerDialog: 'showElementOerDialog',
         }),
 
         async setCurrentId(id) {
@@ -730,10 +747,10 @@ export default {
                     this.showElementInfoDialog(true);
                     break;
                 case 'showExportOptions':
-                    this.showExportDialog = true;
+                    this.showElementExportDialog(true);
                     break;
                 case 'oerCurrentElement':
-                    this.showOerDialog = true;
+                    this.showElementOerDialog(true);
                     break;
                 case 'setBookmark':
                     this.setBookmark();
@@ -810,12 +827,13 @@ export default {
             });
 
             this.exportRunning = false;
-            this.showExportDialog = false;
+            this.showElementExportDialog(false);
         },
 
-        publishCurrentElement(data) {
-            this.showOerDialog = false;
+        async publishCurrentElement() {
+            this.exportToOER(this.currentElement, {withChildren: this.oerChildren});
         },
+
         async closeDeleteDialog() {
             await this.unlockObject({ id: this.currentId, type: 'courseware-structural-elements' });
             this.showElementDeleteDialog(false);

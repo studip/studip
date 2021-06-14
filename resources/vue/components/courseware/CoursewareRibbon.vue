@@ -13,8 +13,13 @@
                 </nav>
             </div>
             <div class="cw-ribbon-wrapper-right">
-                <button class="cw-ribbon-button cw-ribbon-button-menu" @click="activeToolbar"></button>
-                <button class="cw-ribbon-button" :class="[consumeMode ? 'cw-ribbon-button-zoom-out' : 'cw-ribbon-button-zoom']" @click="toggleConsumeMode"></button>
+                <button class="cw-ribbon-button cw-ribbon-button-menu" @click="activeToolbar" :title="textRibbon.toolbar"></button>
+                <button 
+                    class="cw-ribbon-button" 
+                    :class="[consumeMode ? 'cw-ribbon-button-zoom-out' : 'cw-ribbon-button-zoom']"
+                    :title="consumeMode ? textRibbon.fullscreen_off : textRibbon.fullscreen_on"
+                     @click="toggleConsumeMode"
+                ></button>
                 <slot name="menu" />
             </div>
             <div v-if="consumeMode" class="cw-ribbon-consume-bottom"></div>
@@ -45,6 +50,11 @@ export default {
         return {
             readModeActive: false,
             stickyRibbon: false,
+            textRibbon: {
+                toolbar: this.$gettext('Inhaltsverzeichnis'),
+                fullscreen_on: this.$gettext('Vollbild einschalten'),
+                fullscreen_off: this.$gettext('Vollbild ausschalten'),
+            }
         };
     },
     computed: {

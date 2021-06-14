@@ -231,11 +231,13 @@ r i b b o n
         &.cw-ribbon-button-prev-disabled {
             @include background-icon(arr_1left, inactive, false);
             margin: 0 0.5em 0 0;
+            cursor: default;
         }
 
         &.cw-ribbon-button-next-disabled {
             @include background-icon(arr_1right, inactive, false);
             margin: 0 1em 0 0;
+            cursor: default;
         }
     }
 
@@ -1359,6 +1361,8 @@ b l o c k a d d e r
     }
     &.cw-block-adder-disabled {
         @include background-icon(add, inactive, false);
+        color: $dark-gray-color-80;
+        cursor: default;
     }
 }
 .cw-block-helper-buttons {
@@ -1538,6 +1542,12 @@ v i e w  w i d g e t
     }
     .cw-action-widget-trash{
         @include background-icon(trash, clickable);
+    }
+    .cw-action-widget-export{
+        @include background-icon(export, clickable);
+    }
+    .cw-action-widget-oer{
+        @include background-icon(service, clickable);
     }
 }
 
