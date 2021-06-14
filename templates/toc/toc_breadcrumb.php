@@ -35,12 +35,17 @@
     <a href="<?= URLHelper::getLink('wiki.php', ['keyword' => 'WikiWikiWeb'])?>"><?=Icon::create('wiki', 'clickable')->asImg(24, ['style' => '']) ?></a>
     <ul class="breadcrumb"><?= $toc_breadcrumb_pages ?></ul>
         <span id="change_info"><?= $toc_breadcrumb_info ?></span>
-        <input type="checkbox" id="cb-toc"/>
 
+        <!-- do not show if 0 entries -->
+        <? if ($count > 0) : ?>
+        <input type="checkbox" id="cb-toc"/>
         <label for="cb-toc" class="check-box" data-tooltip="<?= _('Inhaltsverzeichnis') ?>" >
             <?= Icon::create('table-of-contents', 'clickable')->asImg(20) ?>
         </label>
-    <?= $toc_entries ?>
+        <?= $toc_entries ?>
+        <? endif ?>
+    <!-- -->
+
     <?= $actionMenu->render() ?>
 
 </div>

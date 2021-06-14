@@ -178,6 +178,7 @@ class TableOfContents
         $template = $GLOBALS['template_factory']->open('toc/toc_breadcrumb');
         $template->set_attribute('toc_breadcrumb_pages', $bcLinks);
         $template->set_attribute('toc_breadcrumb_info', $bcdetails);
+        $template->set_attribute('count', $this->page_counter);
         $template->set_attribute('toc_entries', $entries);
         $template->set_attribute('wikipage', $wiki_data);
         return $template->render();
