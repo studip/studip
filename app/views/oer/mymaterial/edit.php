@@ -66,18 +66,19 @@
 
 
 
-
-            <label class="file drag-and-drop"
-                   data-filename="<?= htmlReady($material['filename']) ?>"
-                   data-filesize="<?= htmlReady(!$material->isNew() ? filesize($material->getFilePath()) : "") ?>"
-                   @drop.prevent="dropFile">
-                <?= _('Datei (gerne auch eine ZIP-Datei) auswählen') ?>
-                <input type="file" name="file" id="oer_file" @change="editFile">
-                <div v-if="filename">
-                    <span>{{ filename }}</span>
-                    <span>{{ filesize }}</span>
-                </div>
-            </label>
+            <? if (!$_SESSION['NEW_OER']['tmp_name']) : ?>
+                <label class="file drag-and-drop"
+                       data-filename="<?= htmlReady($material['filename']) ?>"
+                       data-filesize="<?= htmlReady(!$material->isNew() ? filesize($material->getFilePath()) : "") ?>"
+                       @drop.prevent="dropFile">
+                    <?= _('Datei (gerne auch eine ZIP-Datei) auswählen') ?>
+                    <input type="file" name="file" id="oer_file" @change="editFile">
+                    <div v-if="filename">
+                        <span>{{ filename }}</span>
+                        <span>{{ filesize }}</span>
+                    </div>
+                </label>
+            <? endif ?>
 
             <label>
                 <?= _('Beschreibung') ?>

@@ -51,7 +51,7 @@ class Oer_MymaterialController extends AuthenticatedController
                 }
                 $material['filename'] = $_FILES['file']['name'];
                 move_uploaded_file($_FILES['file']['tmp_name'], $material->getFilePath());
-            } elseif($_SESSION['NEW_OER']) {
+            } elseif($_SESSION['NEW_OER']['tmp_name']) {
                 $material['content_type'] = $_SESSION['NEW_OER']['content_type'] ?: get_mime_type($_SESSION['NEW_OER']['tmp_name']);
                 if (in_array($material['content_type'], $content_types)) {
                     mkdir($tmp_folder);
