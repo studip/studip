@@ -57,11 +57,11 @@
                         <translate>Autoplay Timer in Sekunden</translate>
                         <input type="number" min="1" max="60" v-model="currentAutoplayTimer" />
                     </label>
-                    <label>
+                    <label v-if="currentAutoplay === 'true'">
                         <translate>Navigation</translate>
                         <select v-model="currentNav">
                             <option value="true"><translate>Ja</translate></option>
-                            <option value="false" v-if="currentAutoplay === 'true'"><translate>Nein</translate></option>
+                            <option value="false"><translate>Nein</translate></option>
                         </select>
                     </label>
                     <label>
@@ -74,7 +74,7 @@
                 </form>
             </template>
             <template #info>
-                <p><translate>Informationen zum Gallery-Block</translate></p>
+                <p><translate>Informationen zum Galerie-Block</translate></p>
             </template>
         </courseware-default-block>
     </div>
