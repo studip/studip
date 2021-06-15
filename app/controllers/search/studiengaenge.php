@@ -379,24 +379,37 @@ class Search_StudiengaengeController extends MVVController
         if (!$this->studiengang) {
             throw new AccessDeniedException();
         }
+        $this->all_contacts = $this->studiengang->contact_assignments->orderBy('position')
+                ->toGroupedArray('category', ['name'], function ($ca) {
+                    return array_values($ca);
+                });
+        
         $this->all_documents = [];
         // get documents in current selected language with fallback to default language
         // grouped by category
         foreach ($this->studiengang->document_assignments->orderBy('position') as $document) {
             $file = $document->mvv_file;
-            $mvv_file_ref = null;
-            foreach ($GLOBALS['MVV_LANGUAGES']['values'] as $key => $mvv_language) {
-                if ($mvv_language['locale'] === $_SESSION['_language']) {
-                    $mvv_file_ref = $file->file_refs->findOneBy('file_language', $key);
-                } else {
-                    $mvv_file_ref = $file->file_refs->findOneBy('file_language', $GLOBALS['MVV_LANGUAGES']['default']);
+            if ($file->extern_visible) {
+                $mvv_file_ref = null;
+                foreach ($GLOBALS['MVV_LANGUAGES']['values'] as $key => $mvv_language) {
+                    if ($mvv_language['locale'] === $_SESSION['_language']) {
+                        $mvv_file_ref = $file->file_refs->findOneBy('file_language', $key);
+                    } else {
+                        $mvv_file_ref = $file->file_refs->findOneBy('file_language', $GLOBALS['MVV_LANGUAGES']['default']);
+                    }
+                }
+                if ($mvv_file_ref) {
+                    $this->all_documents[$file->category][$file->id]['name'] = $file->getDisplayName();
+                    $this->all_documents[$file->category][$file->id]['url'] = $mvv_file_ref->file_ref->download_url;
+                    $this->all_documents[$file->category][$file->id]['extension'] = $mvv_file_ref->file_ref->file->getExtension();
+                    $this->all_documents[$file->category][$file->id]['is_link'] = $mvv_file_ref->file_ref->is_link;
                 }
             }
-            if ($mvv_file_ref) {
-                $this->all_documents[$file->category][$file->id]['name'] = $file->getDisplayName();
-                $this->all_documents[$file->category][$file->id]['url'] = $mvv_file_ref->file_ref->download_url;
-                $this->all_documents[$file->category][$file->id]['extension'] = $mvv_file_ref->file_ref->file->getExtension();
-                $this->all_documents[$file->category][$file->id]['is_link'] = $mvv_file_ref->file_ref->is_link;
+        }
+        $this->all_aufbaustgs = [];
+        foreach ($this->studiengang->aufbaustg_assignments as $aufbaustg) {
+            if ($GLOBALS['MVV_AUFBAUSTUDIENGANG']['TYP']['values'][$aufbaustg->typ]['visible']) {
+                $this->all_aufbaustgs[$aufbaustg->typ][] = $aufbaustg;
             }
         }
         PageLayout::setTitle(sprintf(_('Informationen zum Studiengang: %s'),
