@@ -91,16 +91,16 @@
 
     <label>
         <?= _('Kategoriezuordnung') ?>
-        <select style="display: inline-block; max-width: 40em;" name="doc_cat">
+        <select name="doc_cat">
         <? foreach ($GLOBALS['MVV_DOCUMENTS']['CATEGORY']['values'] as $key => $entry) : ?>
             <option value="<?= $key ?>"<?= $key == $doc_cat ? ' selected' : '' ?>><?= htmlReady($entry['name']) ?></option>
         <? endforeach; ?>
         </select>
     </label>
 
-    <label>
+    <label for="mvv-files-tags">
         <?= _('Schlagwörter') ?>
-        <select id="mvv-files-tags" style="display: inline-block; max-width: 40em;" multiple name="doc_tags[]">
+        <select id="mvv-files-tags" multiple name="doc_tags[]">
             <option value=""></option>
         <? foreach ($GLOBALS['MVV_DOCUMENTS']['TAG']['values'] as $key => $entry) : ?>
             <option value="<?= $key ?>"<?= $key == in_array($key, explode(';', $doc_tags))? ' selected' : '' ?>><?= htmlReady($entry['name']) ?></option>

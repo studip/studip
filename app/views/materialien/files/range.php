@@ -8,10 +8,10 @@
 <table id="mvv_files" class="default sortable-table" data-sortlist="[[0, 0]]">
     <caption>
         <span class="actions">
-            <a href="<?= $controller->url_for('materialien/files/add_dokument', 'range', $range_type, $range_id);?>" data-dialog="size=auto">
+            <a href="<?= $controller->url_for('materialien/files/add_dokument', 'range', $range_type, $range_id);?>" data-dialog="">
                 <?= Icon::create('upload+add', Icon::ROLE_CLICKABLE, ['title' => _('neues Dokument hinzufügen')]); ?>
             </a>
-            <a href="<?= $controller->url_for('materialien/files/add_files_to_range',$range_type, $range_id);?>" data-dialog="size=auto">
+            <a href="<?= $controller->url_for('materialien/files/add_files_to_range',$range_type, $range_id);?>" data-dialog="">
                 <?= Icon::create('file+add', Icon::ROLE_CLICKABLE, ['title' => _('vorhandenes Dokument hinzufügen')]); ?>
             </a>
             <a href="<?= $controller->url_for('materialien/files/sort', $range_type, $range_id);?>" data-dialog="size=auto">
@@ -84,7 +84,7 @@
                     $controller->url_for('materialien/files/add_dokument','range', $range_type, $range_id, $mvv_file->mvvfile_id),
                     _('Dokument bearbeiten'),
                     Icon::create('edit'),
-                    ['data-dialog' => 'size=auto']
+                    ['data-dialog' => '']
                 );
                 foreach ($mvv_file->file_refs as $fileref) {
                     $actions->addLink(
