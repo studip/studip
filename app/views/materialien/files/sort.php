@@ -12,7 +12,7 @@ jQuery(function ($) {
             <ol class="dd-list">
                 <? foreach ($mvv_files as $mvv_file): ?>
                     <li class="dd-item" data-id="<?= $mvv_file->mvvfile_id; ?>">
-                        <div class="dd-handle"><?= formatReady($mvv_file->name) ?></div>
+                        <div class="dd-handle"><?= formatReady($mvv_file->getDisplayName()) ?></div>
                     </li>
                 <? endforeach; ?>
             </ol>
