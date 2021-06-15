@@ -1,22 +1,24 @@
 <template>
     <div class="cw-ribbon-tools" :class="{ unfold: toolsActive, 'cw-ribbon-tools-consume': consumeMode }">
         <div class="cw-ribbon-tool-content">
-            <ul class="cw-ribbon-tool-content-nav">
-                <li :class="{ active: showContents }" @click="displayTool('contents')">
-                    <translate>Inhaltsverzeichnis</translate>
-                </li>
-                <li
-                    v-if="!consumeMode && showEditMode && canEdit"
-                    :class="{ active: showBlockAdder }"
-                    @click="displayTool('blockadder')"
-                >
-                    <translate>Elemente hinzufügen</translate>
-                </li>
-                <li v-if="!consumeMode && displaySettings" :class="{ active: showAdmin }" @click="displayTool('admin')">
-                    <translate>Einstellungen</translate>
-                </li>
-                <li class="cw-tools-hide-button" @click="$emit('deactivate')"></li>
-            </ul>
+            <div class="cw-ribbon-tool-content-nav">
+                <ul>
+                    <li :class="{ active: showContents }" @click="displayTool('contents')">
+                        <translate>Inhaltsverzeichnis</translate>
+                    </li>
+                    <li
+                        v-if="!consumeMode && showEditMode && canEdit"
+                        :class="{ active: showBlockAdder }"
+                        @click="displayTool('blockadder')"
+                    >
+                        <translate>Elemente hinzufügen</translate>
+                    </li>
+                    <li v-if="!consumeMode && displaySettings" :class="{ active: showAdmin }" @click="displayTool('admin')">
+                        <translate>Einstellungen</translate>
+                    </li>
+                </ul>
+                <button :title="textClose" class="cw-tools-hide-button" @click="$emit('deactivate')"></button>
+            </div>
             <div class="cw-ribbon-tool">
                 <courseware-tools-contents v-if="showContents" />
                 <courseware-tools-blockadder v-if="showBlockAdder" />
@@ -47,6 +49,7 @@ export default {
             showContents: true,
             showAdmin: false,
             showBlockAdder: false,
+            textClose: this.$gettext('schließen')
         };
     },
     computed: {

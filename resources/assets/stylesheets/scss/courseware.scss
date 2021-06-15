@@ -123,12 +123,14 @@ r i b b o n
 }
 .cw-ribbon {
     display: flex;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 30px;
     border: solid thin $dark-gray-color-30;
     margin-bottom: 1em;
     padding: 1em;
     justify-content: space-between;
     background-color: $dark-gray-color-5;
-    height: 30px;
 
     &.cw-ribbon-sticky {
         position: fixed;
@@ -292,7 +294,6 @@ r i b b o n
             position: sticky;
             top: 0;
             background-color: $white;
-            list-style-type: none;
             margin: 0 0 14px 0;
             padding: 10px 0 0 0;
             color: $base-color;
@@ -300,12 +301,37 @@ r i b b o n
             border-bottom: solid thin $content-color-40;
             z-index: 43;
 
+            .cw-tools-hide-button {
+                border: none;
+                height: 36px;
+                width: 24px;
+                min-width: 24px;
+                margin-right: 2em;
+                padding: 0 4px;
+                float: right;
 
+                @include background-icon(decline, clickable, 24);
+                background-repeat: no-repeat;
+                background-size: 24px;
+                background-position: center right;
+                background-color: #fff;
+                outline: none;
+                cursor: pointer;
+            }
+
+            ul {
+                list-style-type: none;
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                margin: 0;
+                padding: 0;
+            }
             li{
                 padding: 0 8px;
                 margin-top: 8px;
                 text-align: center;
-                flex-grow: 1;
+                flex-grow: 0.5;
                 cursor: pointer;
 
                 &:after {
@@ -325,22 +351,6 @@ r i b b o n
                     }
                 }
 
-                &.cw-tools-hide-button {
-                    border: none;
-                    height: 24px;
-                    width: 24px;
-                    margin-right: 2em;
-                    float: right;
-
-                    @include background-icon(decline, clickable, 24);
-                    background-repeat: no-repeat;
-                    background-size: 24px;
-                    background-position: center right;
-                    outline: none;
-                    &::after {
-                        border: none;
-                    }
-                   }
             }
 
             &:hover li {
