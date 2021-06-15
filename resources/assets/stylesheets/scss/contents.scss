@@ -15,12 +15,18 @@
 
     .content-item {
         float: left;
-        width: 248px;
-        height: 180px;
-        padding: 10px 10px 16px 10px;
+        width: 268px;
+        height: 206px;
         margin-right: 10px;
         text-align: center;
         border: solid thin $content-color-40;
+
+        .content-item-link {
+            display: block;
+            width: calc(100% - 20px);
+            height: calc(100% - 20px);
+            padding: 10px;
+        }
 
         header {
             color: $base-color;

@@ -9,7 +9,7 @@
 </div>
 <ul class="content-items">
     <li class="content-item content-item-courseware">
-        <a href="<?= URLHelper::getLink('dispatch.php/contents/courseware') ?>">
+        <a href="<?= URLHelper::getLink('dispatch.php/contents/courseware') ?>" class="content-item-link">
             <header><?= _('Courseware')?></header>
             <p class="content-item-description"><?= _('Schöner lernen mit Stud.IP')?></p>
             <div class="content-item-img-wrapper">
@@ -18,7 +18,7 @@
         </a>
     </li>
     <li class="content-item content-item-files">
-        <a href="<?= URLHelper::getLink('dispatch.php/files/overview') ?>">
+        <a href="<?= URLHelper::getLink('dispatch.php/files/overview') ?>" class="content-item-link">
             <header><?= _('Dateien')?></header>
             <p class="content-item-description"><?= _('Alle Dokumente an einem Ort')?></p>
             <div class="content-item-img-wrapper">
@@ -28,7 +28,7 @@
     </li>
     <? if($show_oer_item): ?>
         <li class="content-item content-item-oer">
-            <a href="<?= URLHelper::getLink('dispatch.php/oer/market') ?>">
+            <a href="<?= URLHelper::getLink('dispatch.php/oer/market') ?>" class="content-item-link">
                 <header><?= Config::get()->OER_TITLE ?></header>
                 <p class="content-item-description"><?= _('Freies Wissen für freie Köpfe')?></p>
                 <div class="content-item-img-wrapper">
