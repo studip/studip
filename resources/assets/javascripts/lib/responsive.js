@@ -76,7 +76,7 @@ const Responsive = {
                 .appendTo('#barBottomright > ul');
 
             $('<label id="sidebar-shadow-toggle">')
-                .on('click', () => Sidebar.open())
+                .on('click', () => Sidebar.close())
                 .prependTo('#layout-sidebar');
 
             $('#responsive-toggle').on('change', function() {
