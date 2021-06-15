@@ -259,6 +259,7 @@ r i b b o n
     top: 15px;
     height: calc(100% - 32px);
     max-height: 760px;
+    max-width: calc(100% - 28px);
     scrollbar-width: thin;
     scrollbar-color: $base-color $white;
     display: flex;
@@ -1437,6 +1438,7 @@ c o m p a n i o n  o v e r l a y
     bottom: 46px;
     right: 0;
     width: 360px;
+    max-width: calc(100% - 140px);
     height: 120px;
     z-index: 42000;
     border: solid thin $content-color-40;
@@ -1662,6 +1664,7 @@ w y s i w y g  e n d
 /* * * * * *
 d i a l o g
 * * * * * */
+
 .studip-dialog-backdrop {
     position: fixed;
     top: 0;

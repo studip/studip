@@ -29,6 +29,11 @@
                         <span>{{ structuralElement.attributes.title }}</span>
                     </li>
                 </template>
+                <template #breadcrumbFallback>
+                    <li class="cw-ribbon-breadcrumb-item cw-ribbon-breadcrumb-item-current" :title="structuralElement.attributes.title">
+                        <span>{{ structuralElement.attributes.title }}</span>
+                    </li>
+                </template>
                 <template #menu>
                     <studip-action-menu 
                         v-if="!consumeMode"

@@ -8,7 +8,8 @@
                 </nav>
                 <nav class="cw-ribbon-breadcrumb">
                     <ul>
-                        <slot name="breadcrumbList" />
+                         <slot v-if="breadcrumbFallback" name="breadcrumbFallback" />
+                        <slot v-else name="breadcrumbList" />
                     </ul>
                 </nav>
             </div>
@@ -64,6 +65,9 @@ export default {
         toolsActive() {
             return this.$store.getters.showToolbar;
         },
+        breadcrumbFallback() {
+            return window.outerWidth < 1200;
+        }
     },
     methods: {
         toggleConsumeMode() {
