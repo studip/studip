@@ -32,7 +32,7 @@ class CourseMember extends SchemaProvider
 
         if ($user = $this->getDiContainer()->get('studip-current-user')) {
             if (MembershipAuthority::canIndexMembershipsOfUser($user, $membership->user)) {
-                $attributes['notification'] = (int) $membership->notification;
+                # TODO: $attributes['notification'] = (int) $membership->notification;
                 $attributes['visible'] = $membership->visible;
             }
             if (CourseAuthority::canEditCourse($user, $membership->course)) {
