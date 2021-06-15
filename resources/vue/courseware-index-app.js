@@ -25,6 +25,7 @@ const mountApp = (STUDIP, createApp, element) => {
     let elem_id = null;
     let entry_id = null;
     let entry_type = null;
+    let oer_title = null;
     let elem;
 
     if ((elem = document.getElementById(element.substring(1))) !== undefined) {
@@ -39,6 +40,10 @@ const mountApp = (STUDIP, createApp, element) => {
 
             if (elem.attributes['entry-id'] !== undefined) {
                 entry_id = elem.attributes['entry-id'].value;
+            }
+
+            if (elem.attributes['oer-title'] !== undefined) {
+                oer_title = elem.attributes['oer-title'].value;
             }
         }
     }
@@ -104,6 +109,8 @@ const mountApp = (STUDIP, createApp, element) => {
     });
 
     store.dispatch('coursewareCurrentElement', elem_id);
+
+    store.dispatch('oerTitle', oer_title);
 
     const pluginManager = new PluginManager();
     store.dispatch('setPluginManager', pluginManager);

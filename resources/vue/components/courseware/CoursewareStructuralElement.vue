@@ -412,11 +412,6 @@ export default {
                 confirm: this.$gettext('Exportieren'),
                 close: this.$gettext('Schließen'),
             },
-            textOer: {
-                title: this.$gettext('Seite als OER veröffentlichen'),
-                confirm: this.$gettext('Veröffentlichen'),
-                close: this.$gettext('Schließen'),
-            },
             textAdd: {
                 title: this.$gettext('Seite hinzufügen'),
                 confirm: this.$gettext('Erstellen'),
@@ -445,7 +440,16 @@ export default {
             showInfoDialog: 'showStructuralElementInfoDialog',
             showDeleteDialog : 'showStructuralElementDeleteDialog',
             showOerDialog : 'showStructuralElementOerDialog',
+            oerTitle: 'oerTitle',
         }),
+
+        textOer() {
+            return {
+                title: this.$gettext('Seite auf') + ' ' + this.oerTitle + ' ' + this.$gettext('veröffentlichen'),
+                confirm: this.$gettext('Veröffentlichen'),
+                close: this.$gettext('Schließen'),
+            }
+        },
 
         inCourse() {
             return this.$store.getters.context.type === 'courses';
@@ -646,7 +650,7 @@ export default {
                 menu.push({ id: 1, label: this.$gettext('Seite bearbeiten'), icon: 'edit', emit: 'editCurrentElement' });
                 menu.push({ id: 2, label: this.$gettext('Seite hinzufügen'), icon: 'add', emit: 'addElement' });
                 menu.push({ id: 5, label: this.$gettext('Seite exportieren'), icon: 'export', emit: 'showExportOptions' });
-                menu.push({ id: 6, label: this.$gettext('Seite als OER veröffentlichen'), icon: 'service', emit: 'oerCurrentElement' });
+                menu.push({ id: 6, label: this.textOer.title, icon: 'service', emit: 'oerCurrentElement' });
             }
             if(!this.isRoot && this.canEdit) {
                 menu.push({ id: 7, label: this.$gettext('Seite löschen'), icon: 'trash', emit: 'deleteCurrentElement' });

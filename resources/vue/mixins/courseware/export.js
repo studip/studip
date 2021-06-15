@@ -130,7 +130,7 @@ export default {
             }
 
             formData.append("data[name]", element.attributes.title);
-            formData.append("tags[]", "Courseware");
+            formData.append("tags[]", "Lernmaterial");
             formData.append("file", zip, (element.attributes.title).replace(/\s+/g, '_') + '.zip');
             formData.append("data[description]", description);
 

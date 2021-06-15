@@ -5,7 +5,7 @@
         <li class="cw-action-widget-info" @click="showElementInfo"><translate>Informationen anzeigen</translate></li>
         <li class="cw-action-widget-star" @click="createBookmark"><translate>Lesezeichen setzen</translate></li>
         <li v-show="canEdit" @click="exportElement" class="cw-action-widget-export"><translate>Seite exportieren</translate></li>
-        <li v-show="canEdit" @click="oerElement" class="cw-action-widget-oer"><translate>Seite als OER veröffentlichen</translate></li>
+        <li v-show="canEdit" @click="oerElement" class="cw-action-widget-oer"><translate>Seite auf %{oerTitle} veröffentlichen</translate></li>
         <li v-show="!isRoot && canEdit" class="cw-action-widget-trash" @click="deleteElement"><translate>Seite löschen</translate></li>
     </ul>
 </template>
@@ -30,6 +30,7 @@ export default {
     computed: {
          ...mapGetters({
             structuralElementById: 'courseware-structural-elements/byId',
+            oerTitle: 'oerTitle',
         }),
         structuralElement() {
             if (!this.currentId) {

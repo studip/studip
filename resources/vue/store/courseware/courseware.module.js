@@ -8,6 +8,7 @@ const getDefaultState = () => {
         context: {},
         courseware: {},
         currentElement: {},
+        oerTitle: null,
         httpClient: null,
         lastElement: null,
         msg: 'Dehydrated',
@@ -46,6 +47,9 @@ const getters = {
     },
     currentElement(state) {
         return state.currentElement;
+    },
+    oerTitle(state) {
+        return state.oerTitle;
     },
     context(state) {
         return state.context;
@@ -589,6 +593,10 @@ export const actions = {
         context.commit('coursewareContextSet', id);
     },
 
+    oerTitle(context, title) {
+        context.commit('oerTitleSet', title);
+    },
+
     coursewareViewMode(context, view) {
         context.commit('coursewareViewModeSet', view);
     },
@@ -873,6 +881,10 @@ export const mutations = {
 
     coursewareContextSet(state, data) {
         state.context = data;
+    },
+
+    oerTitleSet(state, data) {
+        state.oerTitle = data;
     },
 
     coursewareViewModeSet(state, data) {

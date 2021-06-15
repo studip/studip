@@ -2920,7 +2920,7 @@ d o c u m e n t  b l o c k
             right: 0;
             @include background-icon(arr_1right, clickable, false);
             &.inactive {
-                @include background-icon(arr_1left, navigation, false);
+                @include background-icon(arr_1right, navigation, false);
             }
         }
 
