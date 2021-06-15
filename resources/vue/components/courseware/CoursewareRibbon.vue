@@ -85,7 +85,11 @@ export default {
             this.$store.dispatch('coursewareShowToolbar', false);
         },
         handleScroll() {
-            this.stickyRibbon = window.scrollY > 130;
+            if (window.outerWidth > 767) {
+                this.stickyRibbon = window.scrollY > 130;
+            } else {
+                this.stickyRibbon = window.scrollY > 75;
+            }
         },
     },
     mounted() {

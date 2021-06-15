@@ -327,7 +327,7 @@ r i b b o n
                 margin: 0;
                 padding: 0;
             }
-            li{
+            li {
                 padding: 0 8px;
                 margin-top: 8px;
                 text-align: center;
@@ -350,7 +350,6 @@ r i b b o n
                         transform: scaleX(1);
                     }
                 }
-
             }
 
             &:hover li {
@@ -361,15 +360,10 @@ r i b b o n
                     transform: scaleX(1);
                 }
             }
-
-
         }
 
         .cw-ribbon-tool {
             padding: 0 8px;
-
-            .cw-tools-contents {
-            }
         }
     }
 }
@@ -377,6 +371,17 @@ r i b b o n
 .cw-structural-element-consumemode {
     .cw-ribbon-tools {
         top: 14px;
+    }
+}
+
+.responsive-display {
+    .cw-ribbon {
+        &.cw-ribbon-sticky {
+            width: calc(100% - 62px);
+        }
+    }
+    .cw-ribbon-sticky-spacer {
+        height: 75px;
     }
 }
 
@@ -420,6 +425,7 @@ ribbon end
         }
         .cw-wellcome-screen-actions {
             display: flex;
+            flex-wrap: wrap;
             justify-content: center;
         }
 
