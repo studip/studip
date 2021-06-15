@@ -64,11 +64,6 @@ class SharedVersionController extends MVVController
             $this->version->beschreibung = Request::i18n('beschreibung')->trim();
             $this->version->stat = Request::option('status', 'planung');
             $this->version->kommentar_status = trim(Request::get('kommentar_status'));
-            /* MvvDokument::updateDocuments(
-                $this->version,
-                Request::optionArray('dokumente_items'),
-                Request::getArray('dokumente_properties')
-            ); */
 
             $this->version->verifyPermission();
 
@@ -91,8 +86,6 @@ class SharedVersionController extends MVVController
                 return;
             }
         }
-        $this->search_dokumente =
-                MvvFile::getQuickSearch($this->dokumente->pluck('fileref_id'));
         $this->cancel_url = $this->url_for('/index');
 
         $this->setSidebar();

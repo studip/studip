@@ -1180,10 +1180,48 @@ class Studiengaenge_StudiengaengeController extends MVVController
                 $this->relocate('/export/' . $studiengang->id);
             }
 
+            $all_contacts = $studiengang->contact_assignments->orderBy('position')
+                ->toGroupedArray('category', ['name'], function ($ca) {
+                    return array_values($ca);
+                });
+            $all_documents = [];
+            // get documents in current selected language with fallback to default language
+            // grouped by category
+            foreach ($studiengang->document_assignments->orderBy('position') as $document) {
+                $file = $document->mvv_file;
+                if ($file->extern_visible) {
+                    $mvv_file_ref = null;
+                    foreach ($GLOBALS['MVV_LANGUAGES']['values'] as $key => $mvv_language) {
+                        if ($mvv_language['locale'] === $_SESSION['_language']) {
+                            $mvv_file_ref = $file->file_refs->findOneBy('file_language', $key);
+                        } else {
+                            $mvv_file_ref = $file->file_refs->findOneBy('file_language', $GLOBALS['MVV_LANGUAGES']['default']);
+                        }
+                    }
+                    if ($mvv_file_ref) {
+                        $all_documents[$file->category][$file->id]['name'] = $file->getDisplayName();
+                        $all_documents[$file->category][$file->id]['url'] = $mvv_file_ref->file_ref->download_url;
+                        $all_documents[$file->category][$file->id]['extension'] = $mvv_file_ref->file_ref->file->getExtension();
+                        $all_documents[$file->category][$file->id]['is_link'] = $mvv_file_ref->file_ref->is_link;
+                    }
+                }
+            }
+            $all_aufbaustgs = [];
+            foreach ($studiengang->aufbaustg_assignments as $aufbaustg) {
+                if ($GLOBALS['MVV_AUFBAUSTUDIENGANG']['TYP']['values'][$aufbaustg->typ]['visible']) {
+                    $all_aufbaustgs[$aufbaustg->typ][] = $aufbaustg;
+                }
+            }
+
             $factory = $this->get_template_factory();
             $template = $factory->open('studiengaenge/studiengaenge/export');
-            $template->set_attributes(['studiengang' => $studiengang]);
-
+            $template->set_attributes(
+                    [
+                        'studiengang'    => $studiengang,
+                        'all_contacts'   => $all_contacts,
+                        'all_documents'  => $all_documents,
+                        'all_aufbaustgs' => $all_aufbaustgs
+                    ]);
             $as_pdf = Request::int('pdf');
 
             if ($as_pdf) {

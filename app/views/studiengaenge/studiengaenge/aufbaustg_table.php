@@ -54,7 +54,7 @@
                 </td>
                 <td class="actions">
                 <? if ($perm->haveFieldPerm('aufbaustg_assignments', MvvPerm::PERM_WRITE)) : ?>
-                    <a data-dialog="size=auto" href="<?= $controller->link_for('studiengaenge/studiengaenge/aufbaustg_edit', $aufbau_stg->id) ?>">
+                    <a data-dialog="" href="<?= $controller->link_for('studiengaenge/studiengaenge/aufbaustg_edit', $aufbau_stg->id) ?>">
                         <?= Icon::create('edit') ?>
                     </a>
                 <? endif; ?>

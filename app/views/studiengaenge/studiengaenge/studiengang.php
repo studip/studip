@@ -219,11 +219,9 @@
         <label for="mvv-language-chooser-select"><?= _('Lehrsprachen') ?>
         <? if ($perm->haveFieldPerm('languages', MvvPerm::PERM_CREATE)) : ?>
             <ul id="language_target" class="mvv-assigned-items sortable mvv-languages">
-                <? if (!count($studiengang->languages)) : ?>
-                <li class="mvv-item-list-placeholder"<?= (count($modul->languages) ? ' style="display:none;"' : '') ?>>
+                <li class="mvv-item-list-placeholder"<?= (count($studiengang->languages) ? ' style="display:none;"' : '') ?>>
                     <?= _('Geben Sie die Lehrsprachen an.') ?>
                 </li>
-                <? endif; ?>
                 <? foreach ($studiengang->languages as $assigned_language) : ?>
                 <li id="language_<?= $assigned_language->lang ?>" class="sort_items">
                     <div class="mvv-item-list-text"><?= htmlReady($assigned_language->getDisplayName()) ?></div>
