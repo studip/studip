@@ -26,7 +26,10 @@ label[for=cb-toc] {
 
 #cb-toc:checked + .check-box + #cb-toc-close + article.toc_overview {
     visibility: visible;
-    width: 50%;
+    width: 540px;
+
+
+
 }
 
 #cb-toc-close:checked .article.toc_overview {
@@ -51,7 +54,12 @@ label[for=cb-toc] {
 
     border: 1px solid #d0d7e3;
     margin-bottom: 10px;
+    -webkit-box-shadow: 2px 2px #ccc;
+    box-shadow: 2px 2px #ccc;
 
+    > section {
+        width: 100%;
+    }
 }
 
 #toc_header {
