@@ -144,29 +144,35 @@
         <? endif ?>
         
         <? foreach ($studiengang->datafields as $df) : ?>
-            <? if (mb_strpos($df->datafield->object_class, 'settings') !== false) : ?>
+            <? if (mb_strpos($df->datafield->object_class, 'settings') !== false
+                    && !$df->isNew()) : ?>
                 <? $tdf = $df->getTypedDatafield(); ?>
-                <tr>
-                    <td>
-                        <strong><?= htmlReady($tdf->getName()) ?></strong>
-                    </td>
-                    <td colspan="2" data-mvv-field="mvv_studiengang.<?= $tdf->id ?>">
-                        <?= $tdf->getDisplayValue() ?>
-                    </td>
-                </tr>
+                <? if ($tdf->isVisible() && trim($tdf->getValue())) : ?>
+                    <tr>
+                        <td>
+                            <strong><?= htmlReady($tdf->getName()) ?></strong>
+                        </td>
+                        <td colspan="2" data-mvv-field="mvv_studiengang.<?= $tdf->id ?>">
+                            <?= $tdf->getDisplayValue() ?>
+                        </td>
+                    </tr>
+                <? endif ?>
             <? endif; ?>
         <? endforeach; ?>
         <? foreach ($studiengang->datafields as $df) : ?>
-            <? if (mb_strpos($entry->datafield->object_class, 'info') !== false) : ?>
+            <? if (mb_strpos($df->datafield->object_class, 'info') !== false
+                    && !$df->isNew()) : ?>
                 <? $tdf = $df->getTypedDatafield(); ?>
-                <tr>
-                    <td>
-                        <strong><?= htmlReady($tdf->getName()) ?></strong>
-                    </td>
-                    <td colspan="2" data-mvv-field="mvv_studiengang.<?= $tdf->id ?>">
-                        <?= $tdf->getDisplayValue() ?>
-                    </td>
-                </tr>
+                <? if ($tdf->isVisible() && trim($tdf->getValue())) : ?>
+                    <tr>
+                        <td>
+                            <strong><?= htmlReady($tdf->getName()) ?></strong>
+                        </td>
+                        <td colspan="2" data-mvv-field="mvv_studiengang.<?= $tdf->id ?>">
+                            <?= $tdf->getDisplayValue() ?>
+                        </td>
+                    </tr>
+                <? endif ?>
             <? endif; ?>
         <? endforeach; ?>
         <? if (is_array($all_contacts) && count($all_contacts)) : ?>
