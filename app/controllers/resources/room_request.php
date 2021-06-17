@@ -1147,7 +1147,7 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         if (!Request::submitted('single-request')) {
             $request_ids = $this->getFilteredRoomRequests();
-            if($request_ids && count($request_ids) > 1) {
+            if ($request_ids && count($request_ids) > 1) {
                 $this->setRequestForPagination($request_ids);
             }
         }
@@ -1714,7 +1714,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
         $this->delete_mode = Request::get('delete');
         $request_ids = $this->getFilteredRoomRequests();
-        if($request_ids && count($request_ids) > 1) {
+        if ($request_ids && count($request_ids) > 1) {
             $this->setRequestForPagination($request_ids);
         }
         if ($this->request->resource) {
