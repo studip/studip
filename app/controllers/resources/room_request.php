@@ -299,14 +299,16 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         $requests = RoomRequest::findBySql($sql, $sql_params);
         if ($this->filter['get_only_request_ids']) {
-            $request_ids = SimpleCollection::createFromArray($requests);
-            if ($this->filter['filter_request_id']) {
-                $req_id = $this->filter['filter_request_id'];
-                $requests_ids = $request_ids->filter(function ($req) use ($req_id) {
+            return SimpleCollection::createFromArray($requests)->pluck('id');
+            if ($requests_ids && count($requests_ids) > 1 && $this->filter['filter_request_id']) {
+                $pos = array_search($this->filter['filter_request_id'], $requests_ids);
+
+                $requests_ids = $request_ids->o(function ($req) use ($req_id) {
                     return $req->id !== $req_id;
                 });
             }
-            return $requests_ids->pluck('id');
+
+            return ;
         }
         $result = [];
         if (!empty($this->filter['dow'])) {
@@ -1154,11 +1156,8 @@ class Resources_RoomRequestController extends AuthenticatedController
 
         if (!Request::submitted('single-request')) {
             $request_ids = $this->getFilteredRoomRequests();
-            if ($request_ids) {
-                $this->next_request = array_shift($request_ids);
-            }
-            if ($request_ids) {
-                $this->prev_request = array_shift($request_ids);
+            if($request_ids && count($request_ids) > 1) {
+                $this->setRequestForPagination($request_ids);
             }
         }
         //$this->current_user is set in the before_filter.
@@ -1724,11 +1723,9 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
         $this->delete_mode = Request::get('delete');
         $request_ids = $this->getFilteredRoomRequests();
-        if ($request_ids) {
-            $this->next_request = array_shift($request_ids);
-        }
-        if ($request_ids) {
-            $this->prev_request = array_shift($request_ids);
+        $request_ids = $this->getFilteredRoomRequests();
+        if($request_ids && count($request_ids) > 1) {
+            $this->setRequestForPagination($request_ids);
         }
         if ($this->request->resource) {
             $user_has_permission = $this->request->resource->userHasPermission(
@@ -1805,6 +1802,24 @@ class Resources_RoomRequestController extends AuthenticatedController
         }
     }
 
+    protected function setRequestForPagination(array $request_ids)
+    {
+        $pos = array_search($this->filter['filter_request_id'], $request_ids);
+        $max = count($request_ids);
+        if($pos === 0) {
+            $prev_pos = count($request_ids)-1;
+            $next_pos = $pos+1;
+        } else {
+            $prev_pos = $pos-1;
+            $next_pos = $pos+1;
+
+            if($next_pos === $max) {
+                $next_pos = 0;
+            }
+        }
+        $this->prev_request = $request_ids[$prev_pos];
+        $this->next_request = $request_ids[$next_pos];
+    }
 
     protected function getSingleDateDataForExportRow(CourseDate $date)
     {
