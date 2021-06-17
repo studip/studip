@@ -59,6 +59,12 @@ class Course_CoursewareController extends AuthenticatedController
 
         Navigation::activateItem('course/courseware/content');
         $this->setIndexSidebar();
+        $this->licenses = array();
+        $sorm_licenses = License::findBySQL("1 ORDER BY name ASC");
+        foreach($sorm_licenses as $license) {
+            array_push($this->licenses, $license->toArray());
+        }
+        $this->licenses = json_encode($this->licenses);
     }
 
     public function dashboard_action(): void

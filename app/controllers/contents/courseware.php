@@ -78,6 +78,13 @@ class Contents_CoursewareController extends AuthenticatedController
 
         $last[$this->user_id] = $this->entry_element_id;
         UserConfig::get($this->user_id)->store('COURSEWARE_LAST_ELEMENT', $last);
+
+        $this->licenses = array();
+        $sorm_licenses = License::findBySQL("1 ORDER BY name ASC");
+        foreach($sorm_licenses as $license) {
+            array_push($this->licenses, $license->toArray());
+        }
+        $this->licenses = json_encode($this->licenses);
     }
 
     private function setCoursewareSidebar()
@@ -232,6 +239,8 @@ class Contents_CoursewareController extends AuthenticatedController
         $color = Request::get('color');
         $licenseType = Request::get('license_type');
         $requiredTime = Request::get('required_time');
+        $difficultyStart = Request::get('difficulty_start');
+        $difficultyEnd = Request::get('difficulty_end');
 
 
         $currentDate = time();
@@ -251,7 +260,14 @@ class Contents_CoursewareController extends AuthenticatedController
         $structural_element->range_type = 'user';
         $structural_element->parent_id = StructuralElement::getCoursewareUser($this->user_id)->id;
 
-        $structural_element->payload = json_encode(array('description'=> $description, 'color' => $color, 'required_time' => $requiredTime));
+        $structural_element->payload = json_encode(array(
+            'description'=> $description,
+            'color' => $color,
+            'required_time' => $requiredTime,
+            'license_type' => $licenseType,
+            'difficulty_start' => $difficulty_start,
+            'difficulty_end' => $difficulty_end
+        ));
 
         $structural_element->mkdate = $currentDate;
         $structural_element->chdate = $currentDate;

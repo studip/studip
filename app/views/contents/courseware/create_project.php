@@ -17,7 +17,7 @@
             <textarea name="description"></textarea>
         </label>
 
-        <label class="col-3">
+        <label>
             <?= _('Art des Lernmaterials') ?>
             <select name="project_type">
                 <option value="content">
@@ -41,29 +41,36 @@
             </select>
         </label>
 
-        <label class="col-3">
+        <label>
             <?= _('Lizenztyp') ?>
             <select name="license_type">
-                <option value="Open Educational Resources">
-                    <?= _('Open Educational Resources') ?>
+                <? foreach (License::findBySQL("1 ORDER BY name ASC") as $l) : ?>
+                <option value="<?= htmlReady($l->id) ?>" <?= $l->id === License::findDefault()->id ? " selected" : "" ?>>
+                    <?= htmlReady($l['name']) ?>
                 </option>
-                <option value="Creative Commons">
-                    <?= _('Creative Commons') ?>
-                </option>
-                <option value="Sonstiges">
-                    <?= _('Sonstiges') ?>
-                </option>
+                <? endforeach ?>
             </select>
         </label>
 
-        <label class="col-3">
+        <label>
             <span>
                 <?= _('Geschätzter zeitlicher Aufwand') ?>
             </span>
             <input type="text" name="required_time">
         </label>
 
-        <label class="col-3">
+        <label>
+            <span>
+                <?= _('Niveau') ?>
+            </span>
+            <select name="difficulty">
+                <? for ($i = 1; $i<=12; $i++): ?> 
+                    <option value="<?= $i?>"><?= $i?></option>
+                <? endfor; ?>
+            </select>
+        </label>
+
+        <label>
             <span>
                 <?= _('Farbe') ?>
             </span>

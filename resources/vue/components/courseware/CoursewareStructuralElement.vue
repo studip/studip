@@ -136,25 +136,34 @@
                             <label>
                                 <translate>Zweck</translate>
                                 <select v-model="currentElement.attributes.purpose">
-                                    <option value="CONTENT"><translate>Inhalt</translate></option>
-                                    <option value="TEMPLATE"><translate>Vorlage</translate></option>
-                                    <option value="OER"><translate>OER-Material</translate></option>
-                                    <option value="PORTFOLIO"><translate>ePortfolio</translate></option>
-                                    <option value="DRAFT"><translate>Entwurf</translate></option>
-                                    <option value="OTHER"><translate>Sonstiges</translate></option>
+                                    <option value="content"><translate>Inhalt</translate></option>
+                                    <option value="template"><translate>Vorlage</translate></option>
+                                    <option value="oer"><translate>OER-Material</translate></option>
+                                    <option value="portfolio"><translate>ePortfolio</translate></option>
+                                    <option value="draft"><translate>Entwurf</translate></option>
+                                    <option value="other"><translate>Sonstiges</translate></option>
                                 </select>
                             </label>
                             <label>
                                 <translate>Lizenztyp</translate>
-                                <select v-model="currentElement.attributes.payload.meta.license_type">
-                                    <option value="OER"><translate>Open Educational Resources</translate></option>
-                                    <option value="CC"><translate>Creative Commons</translate></option>
-                                    <option value="other"><translate>Sonstiges</translate></option>
+                                <select v-model="currentElement.attributes.payload.license_type">
+                                    <option v-for="license in licenses" :key="license.id" :value="license.id">{{license.name}}</option>
                                 </select>
                             </label>
-                            <label class="col-3">
+                            <label>
                                 <translate>Geschätzter zeitlicher Aufwand</translate>
-                                <input type="text" v-model="currentElement.attributes.payload.meta.required_time" />
+                                <input type="text" v-model="currentElement.attributes.payload.required_time" />
+                            </label>
+                            <label>
+                                <translate>Niveau</translate><br>
+                                <translate>von</translate>
+                                <select v-model="currentElement.attributes.payload.difficulty_start">
+                                    <option v-for="difficulty_start in 12" :key="difficulty_start" :value="difficulty_start">{{difficulty_start}}</option>
+                                </select>
+                                <translate>bis</translate>
+                                <select v-model="currentElement.attributes.payload.difficulty_end">
+                                    <option v-for="difficulty_end in 12" :key="difficulty_end" :value="difficulty_end">{{difficulty_end}}</option>
+                                </select>
                             </label>
                         </form>
                     </courseware-tab>
@@ -310,6 +319,8 @@
 
         <studip-dialog
             v-if="showOerDialog"
+            height="600"
+            width="600"
             :title="textOer.title"
             :confirmText="textOer.confirm"
             :confirmClass="'accept'"
@@ -318,17 +329,46 @@
             @close="showElementOerDialog(false)"
             @confirm="publishCurrentElement"
         >
+        
             <template v-slot:dialogContent>
-                <translate>Hiermit veröffentlichen Sie die Seite</translate> "{{ currentElement.attributes.title }}".
+                <form class="default" @submit.prevent="">
+                    <fieldset>
+                        <legend><translate>Grunddaten</translate></legend>
+                        <label>
+                            <p><translate>Vorschaubild</translate>:</p>
+                            <img
+                                v-if="currentElement.relationships.image.data"
+                                :src="currentElement.relationships.image.meta['download-url']"
+                                width="400"
+                            />
+                        </label>
+                        <label>
+                            <p><translate>Beschreibung</translate>:</p>
+                            <p> {{ currentElement.attributes.payload.description }}</p>
+                        </label>
+                        <label>
+                            <translate>Niveau</translate>:
+                            <p> {{ currentElement.attributes.payload.difficulty_start }} - {{ currentElement.attributes.payload.difficulty_end }}</p>
+                        </label>
+                        <label>
+                            <translate>Lizenztyp</translate>:
+                            <p>{{currentLicenseName}}</p>
+                        </label>
+                        <label>
+                            <translate>Sie können diese Daten unter "Seite bearbeiten" verändern</translate>.
+                        </label>
 
-                <div class="cw-element-export">
-                    <label>
-                        <input type="checkbox" v-model="oerChildren">
-                        <translate>Unterseiten exportieren</translate>
-                    </label>
-                </div>
+                    </fieldset>
+                    <fieldset>
+                        <legend><translate>Einstellungen</translate></legend>
+                        <label>
+                            <translate>Unterseiten veröffentlichen</translate>
+                            <input type="checkbox" v-model="oerChildren">
+                        </label>
+                    </fieldset>
+                </form>
             </template>
-
+            
         </studip-dialog>
 
         <studip-dialog
@@ -423,7 +463,7 @@ export default {
             },
             exportRunning: false,
             exportChildren: false,
-            oerChildren: false,
+            oerChildren: true,
         };
     },
 
@@ -441,6 +481,7 @@ export default {
             showDeleteDialog : 'showStructuralElementDeleteDialog',
             showOerDialog : 'showStructuralElementOerDialog',
             oerTitle: 'oerTitle',
+            licenses: 'licenses'
         }),
 
         textOer() {
@@ -689,6 +730,15 @@ export default {
             });
 
             return elementColors;
+        },
+        currentLicenseName() {
+            for(let i = 0; i < this.licenses.length; i++) {
+                if (this.licenses[i]['id'] == this.currentElement.attributes.payload.license_type) {
+                    return this.licenses[i]['name'];
+                }
+            }
+
+            return '';
         }
     },
 
@@ -733,9 +783,6 @@ export default {
         initCurrent() {
             this.currentElement = JSON.parse(JSON.stringify(this.structuralElement));
             this.uploadFileError = '';
-            if (!this.currentElement.attributes.payload.meta) {
-                this.currentElement.attributes.payload.meta = {};
-            }
         },
         async menuAction(action) {
             switch (action) {

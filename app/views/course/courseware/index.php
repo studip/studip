@@ -4,5 +4,6 @@
     entry-type="courses"
     entry-id="<?= Context::getId() ?>"
     oer-title="<?= Config::get()->OER_TITLE ?>"
+    licenses='<?= $licenses ?>'
     >
 </div>

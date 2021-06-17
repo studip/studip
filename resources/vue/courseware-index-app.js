@@ -26,6 +26,7 @@ const mountApp = (STUDIP, createApp, element) => {
     let entry_id = null;
     let entry_type = null;
     let oer_title = null;
+    let licenses = null;
     let elem;
 
     if ((elem = document.getElementById(element.substring(1))) !== undefined) {
@@ -44,6 +45,10 @@ const mountApp = (STUDIP, createApp, element) => {
 
             if (elem.attributes['oer-title'] !== undefined) {
                 oer_title = elem.attributes['oer-title'].value;
+            }
+            // we need a route for License SORM
+            if (elem.attributes['licenses'] !== undefined) {
+                licenses = JSON.parse(elem.attributes['licenses'].value);
             }
         }
     }
@@ -111,6 +116,7 @@ const mountApp = (STUDIP, createApp, element) => {
     store.dispatch('coursewareCurrentElement', elem_id);
 
     store.dispatch('oerTitle', oer_title);
+    store.dispatch('licenses', licenses);
 
     const pluginManager = new PluginManager();
     store.dispatch('setPluginManager', pluginManager);

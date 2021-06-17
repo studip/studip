@@ -115,13 +115,15 @@ export default {
             };
         },
 
-        async exportToOER(element) {
+        async exportToOER(element, options) {
             let formData = new FormData();
 
-            let exportZip = await this.createExportFile(element.id, { withChildren: false });
+            let exportZip = await this.createExportFile(element.id, options);
             let zip = await exportZip.generateAsync({ type: 'blob' });
 
             let description = element.attributes.payload.description ? element.attributes.payload.description : '';
+            let difficulty_start = element.attributes.payload.difficulty_start ? element.attributes.payload.difficulty_start : '1';
+            let difficulty_end = element.attributes.payload.difficulty_end ? element.attributes.payload.difficulty_end : '12';
 
             if (element.relationships.image.data !== null) {
                 let image = {};
@@ -133,6 +135,9 @@ export default {
             formData.append("tags[]", "Lernmaterial");
             formData.append("file", zip, (element.attributes.title).replace(/\s+/g, '_') + '.zip');
             formData.append("data[description]", description);
+            formData.append("data[difficulty_start]", difficulty_start);
+            formData.append("data[difficulty_end]", difficulty_end);
+            formData.append("data[category]", 'elearning');
 
             axios({
                 method: 'post',
