@@ -300,15 +300,6 @@ class Resources_RoomRequestController extends AuthenticatedController
         $requests = RoomRequest::findBySql($sql, $sql_params);
         if ($this->filter['get_only_request_ids']) {
             return SimpleCollection::createFromArray($requests)->pluck('id');
-            if ($requests_ids && count($requests_ids) > 1 && $this->filter['filter_request_id']) {
-                $pos = array_search($this->filter['filter_request_id'], $requests_ids);
-
-                $requests_ids = $request_ids->o(function ($req) use ($req_id) {
-                    return $req->id !== $req_id;
-                });
-            }
-
-            return ;
         }
         $result = [];
         if (!empty($this->filter['dow'])) {
@@ -1722,7 +1713,6 @@ class Resources_RoomRequestController extends AuthenticatedController
             return;
         }
         $this->delete_mode = Request::get('delete');
-        $request_ids = $this->getFilteredRoomRequests();
         $request_ids = $this->getFilteredRoomRequests();
         if($request_ids && count($request_ids) > 1) {
             $this->setRequestForPagination($request_ids);
