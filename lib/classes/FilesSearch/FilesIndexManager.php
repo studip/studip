@@ -108,6 +108,7 @@ class FilesIndexManager
             self::log($e->getMessage());
             var_dump($e);
             self::log('Aborting');
+            throw $e;
         }
     }
 
