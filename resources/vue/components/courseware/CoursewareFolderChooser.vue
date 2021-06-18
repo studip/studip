@@ -19,10 +19,10 @@ import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'courseware-folder-chooser',
-    components: {},
     props: {
         value: String,
         allowUserFolders: { type: Boolean, default: false },
+        allowHomeworkFolders: { type: Boolean, default: false },
         unchoose: { type: Boolean, default: false },
     },
     data() {
@@ -45,7 +45,25 @@ export default {
             return { type: 'users', id: `${this.userId}` };
         },
         loadedCourseFolders() {
-            return this.relatedFolders({ parent: this.courseObject, relationship: 'folders' }) ?? [];
+            let loadedCourseFolders = [];
+            let CourseFolders = this.relatedFolders({ parent: this.courseObject, relationship: 'folders' }) ?? [];
+            CourseFolders.forEach(folder => {
+                switch (folder.attributes['folder-type']) {
+                    case 'HiddenFolder':
+                        if (folder.attributes['data-content']['download_allowed'] === 1) {
+                            loadedCourseFolders.push(folder);
+                        }
+                        break;
+                    case 'HomeworkFolder':
+                        if(this.allowHomeworkFolders) {
+                            loadedCourseFolders.push(folder);
+                        }
+                    default:
+                        loadedCourseFolders.push(folder);
+                }
+            });
+
+            return loadedCourseFolders;
         },
         loadedUserFolders() {
             let loadedUserFolders = [];
@@ -55,6 +73,7 @@ export default {
                     loadedUserFolders.push(folder);
                 }
             });
+
             return loadedUserFolders;
         },
     },

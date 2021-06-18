@@ -10,7 +10,7 @@
         >
             <template #content>
                 <div v-if="currentTitle !== ''" class="cw-block-title">{{ currentTitle }}</div>
-                <div class="cw-block-download-content">
+                <div v-if="currentFile !== null" class="cw-block-download-content">
                     <div v-if="currentInfo !== '' && !userHasDownloaded" class="messagebox messagebox_info">
                         {{ currentInfo }}
                     </div>
@@ -85,7 +85,7 @@ export default {
             currentSuccess: '',
             currentGrade: '',
             currentFileId: '',
-            currentFile: {},
+            currentFile: null,
             userHasDownloaded: false, // Todo set and get user_data
         };
     },

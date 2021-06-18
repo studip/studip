@@ -1,19 +1,22 @@
 <template>
     <div class="cw-file-chooser">
         <span v-translate>Ordner-Filter</span>
-        <courseware-folder-chooser allowUserFolders v-model="selectedFolderId" />
+        <courseware-folder-chooser allowUserFolders unchoose v-model="selectedFolderId" />
         <span v-translate>Datei</span>
         <select v-model="currentValue" @change="selectFile">
-            <optgroup v-if="this.context.type === 'courses'" :label="textOptGroupCourse">
+            <optgroup v-if="this.context.type === 'courses' && courseFiles.length !== 0" :label="textOptGroupCourse">
                 <option v-for="(file, index) in courseFiles" :key="index" :value="file.id">
                     {{ file.name }}
                 </option>
             </optgroup>
-            <optgroup :label="textOptGroupUser">
+            <optgroup v-if="userFiles.length !== 0" :label="textOptGroupUser">
                 <option v-for="(file, index) in userFiles" :key="index" :value="file.id">
                     {{ file.name }}
                 </option>
             </optgroup>
+            <option v-show="userFiles.length === 0 && courseFiles.length === 0" disabled>
+                <translate>Keine Dateien vorhanden</translate>
+            </option>
         </select>
     </div>
 </template>
@@ -52,6 +55,7 @@ export default {
             relatedFileRefs: 'file-refs/related',
             urlHelper: 'urlHelper',
             userId: 'userId',
+            relatedTermOfUse: 'terms-of-use/related'
         }),
     },
     methods: {
@@ -66,6 +70,9 @@ export default {
         },
         filterFiles(loadArray) {
             const filterFile = (file) => {
+                if (this.relatedTermOfUse({parent: file, relationship: 'terms-of-use'}).attributes['download-condition'] !== 0) {
+                    return false;
+                }
                 if (this.selectedFolderId !== '' && this.selectedFolderId !== file.relationships.parent.data.id) {
                     return false;
                 }
@@ -107,7 +114,8 @@ export default {
         async getCourseFiles() {
             const parent = { type: 'courses', id: `${this.context.id}` };
             const relationship = 'file-refs';
-            await this.loadRelatedFileRefs({ parent, relationship });
+            const options = { include: 'terms-of-use' };
+            await this.loadRelatedFileRefs({ parent, relationship, options });
 
             this.loadedCourseFiles = this.relatedFileRefs({ parent, relationship });
             this.updateFiles();
@@ -115,7 +123,8 @@ export default {
         async getUserFiles() {
             const parent = { type: 'users', id: `${this.userId}` };
             const relationship = 'file-refs';
-            await this.loadRelatedFileRefs({ parent, relationship });
+            const options = { include: 'terms-of-use' };
+            await this.loadRelatedFileRefs({ parent, relationship, options });
 
             this.loadedUserFiles = this.relatedFileRefs({ parent, relationship });
             this.updateFiles();
