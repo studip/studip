@@ -15,7 +15,7 @@ label {
 
 }
 
-label[for=cb-toc] {
+label[for=cb-toc], label[for=cb-fullscreen] {
     margin-top: 6px;
 }
 
@@ -190,13 +190,19 @@ section > .toc {
     min-height: 38px;
     padding: 9px;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    > a {
+        //align-self: flex-start;
+
+    }
 
     span {
         vertical-align: middle;
         line-height: 20px;
         border-bottom: none;
         font-size: medium;
-        width: 30%;
         text-align: right;
         margin-right: 0;
         padding-right: 10px;
@@ -206,6 +212,11 @@ section > .toc {
         margin-top: 6px;
     }
 
+}
+
+#contentbar_info {
+    display: flex;
+    align-self: flex-start;
 }
 
 #wikifooter {
