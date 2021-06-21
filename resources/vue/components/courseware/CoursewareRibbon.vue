@@ -25,7 +25,8 @@
             </div>
             <div v-if="consumeMode" class="cw-ribbon-consume-bottom"></div>
             <courseware-ribbon-toolbar
-                :toolsActive="toolsActive"
+                v-show="showTools"
+                :toolsActive="unfold"
                 :class="{ 'cw-ribbon-tools-sticky': stickyRibbon }"
                 :canEdit="canEdit"
                 @deactivate="deactivateToolbar"
@@ -55,7 +56,9 @@ export default {
                 toolbar: this.$gettext('Inhaltsverzeichnis'),
                 fullscreen_on: this.$gettext('Vollbild einschalten'),
                 fullscreen_off: this.$gettext('Vollbild ausschalten'),
-            }
+            },
+            unfold: false,
+            showTools: false,
         };
     },
     computed: {
@@ -67,7 +70,7 @@ export default {
         },
         breadcrumbFallback() {
             return window.outerWidth < 1200;
-        }
+        },
     },
     methods: {
         toggleConsumeMode() {
@@ -95,5 +98,17 @@ export default {
     mounted() {
         window.addEventListener('scroll', this.handleScroll);
     },
+    watch: {
+        toolsActive(newState, oldState) {
+            let view = this;
+            if(newState && !oldState) {
+                this.showTools = true;
+                setTimeout(() => {view.unfold = true}, 10);
+            } else {
+                this.unfold = false;
+                setTimeout(() => {view.showTools = false}, 800);
+            }
+        }
+    }
 };
 </script>
