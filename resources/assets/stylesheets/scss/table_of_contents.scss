@@ -25,26 +25,25 @@ label[for=cb-toc], label[for=cb-fullscreen] {
 }
 
 #cb-toc:checked + .check-box + #cb-toc-close + article.toc_overview {
-    //visibility: visible;
-    display: block;
+    visibility: visible;
     width: 540px;
-    right: 0;
+
+
 
 }
 
 #cb-toc-close:checked .article.toc_overview {
-    //visibility: hidden;
-    display: none;
+    visibility: hidden;
     width: 0;
 }
 
 .toc_overview {
-    //visibility: hidden;
-    display: none;
+    visibility: hidden;
     width: 0%;
+    max-width: 35%;
     z-index: 100;
     position: absolute;
-    right: -570px;
+    right: 12px;
     top: 186px;
     background-color: $white;
 
@@ -58,15 +57,17 @@ label[for=cb-toc], label[for=cb-fullscreen] {
     -webkit-box-shadow: 2px 2px #ccc;
     box-shadow: 2px 2px #ccc;
 
-    transition: right 0.8s;
 
     > section {
-        width: 100%;
+        width: 520px;
+        overflow: hidden;
     }
 }
 
 #toc_header {
     height: 56px;
+    width: 540px;
+    overflow: hidden;
     background-color: $white;
     color: $black !important;
     margin-bottom: -0.5em;
@@ -83,6 +84,7 @@ label[for=cb-toc], label[for=cb-fullscreen] {
     margin-left: 10px;
 }
 .toc_transform {
+    transition: all 0.8s ease!important;
 }
 
 #main_content {
