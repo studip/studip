@@ -680,7 +680,7 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                           AND `user_id` != :user_id";
 
             if (!$this->external_contact && $this->user_id !== $GLOBALS['user']->id) {
-                $query .= " UNION SELECT '{$this->user_id} AS `user_id`";
+                $query .= " UNION SELECT '{$this->user_id}' AS `user_id`";
             }
 
             return compact('query', 'parameters');
@@ -1009,7 +1009,9 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
     }
 
     /**
-     * @param string $user_id  optional; use this ID instead of $GLOBALS['user']->id
+     * @param ?string $user_id  optional; use this ID instead of $GLOBALS['user']->id
+     *
+     * @return array
      *
      * @SuppressWarnings(PHPMD.Superglobals)
      */
@@ -1025,6 +1027,9 @@ class BlubberThread extends SimpleORMap implements PrivacyObject
                   WHERE user_id = ?";
         $institut_ids = DBManager::get()->fetchFirst($query, [$user_id]);
         $blubberplugin = PluginManager::getInstance()->getPlugin("Blubber");
+        if (!$blubberplugin) {
+            return [];
+        }
 
         foreach ($institut_ids as $index => $institut_id) {
             if (!PluginManager::getInstance()->isPluginActivated($blubberplugin->getPluginId(), $institut_id)) {
