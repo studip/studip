@@ -44,9 +44,11 @@
         <label for="cb-toc" class="check-box" title="<?= _('Inhaltsverzeichnis') ?>" >
             <?= Icon::create('table-of-contents', 'clickable')->asImg(20) ?>
         </label>
-        <?= $toc_entries ?>
+            <?= $toc_entries ?>
+
         <? endif ?>
     <!-- -->
+
 
     <?= $actionMenu->render() ?>
 
