@@ -108,18 +108,18 @@ class WikiPage extends SchemaProvider
     private function addParentRelationship($relationships, $wiki, $includeList)
     {
         $related = $wiki->parent;
+        $relationships[self::REL_PARENT] = [
+            self::SHOW_SELF => true,
+            self::DATA => $related
+        ];
         if ($related) {
-            $relationships[self::REL_PARENT] = [
-                self::SHOW_SELF => true,
-                self::LINKS => [
-                    Link::RELATED => $this->getSchemaContainer()
-                                          ->getSchema($related)
-                                          ->getSelfSubLink($related)
-                ],
-                self::DATA => $related
+            $relationships[self::REL_PARENT][self::LINKS] = [
+                Link::RELATED => $this->getSchemaContainer()
+                    ->getSchema($related)
+                    ->getSelfSubLink($related)
             ];
-
         }
+
         return $relationships;
     }
 
