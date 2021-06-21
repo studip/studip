@@ -298,9 +298,6 @@ class Resources_RoomRequestController extends AuthenticatedController
         $sql .= " GROUP BY resource_requests.id ORDER BY mkdate ASC";
 
         $requests = RoomRequest::findBySql($sql, $sql_params);
-        if ($this->filter['get_only_request_ids']) {
-            return SimpleCollection::createFromArray($requests)->pluck('id');
-        }
         $result = [];
         if (!empty($this->filter['dow'])) {
             $week_days = [$this->filter['dow']];
@@ -344,8 +341,14 @@ class Resources_RoomRequestController extends AuthenticatedController
                     }
                 }
             }
+            if ($this->filter['get_only_request_ids']) {
+                return array_keys($result);
+            }
         } else {
             $result = $requests;
+            if ($this->filter['get_only_request_ids']) {
+                return SimpleCollection::createFromArray($requests)->pluck('id');
+            }
         }
         return $result;
     }
@@ -1797,7 +1800,7 @@ class Resources_RoomRequestController extends AuthenticatedController
         $pos = array_search($this->filter['filter_request_id'], $request_ids);
         $max = count($request_ids);
         if($pos === 0) {
-            $prev_pos = count($request_ids)-1;
+            $prev_pos = $max-1;
             $next_pos = $pos+1;
         } else {
             $prev_pos = $pos-1;
