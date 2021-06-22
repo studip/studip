@@ -61,20 +61,27 @@ const OER = {
                     hideFilterPanel: function () {
                         this.activeFilterPanel = false;
                     },
-                    clearAllFilters: function () {
+                    clearAllFilters: function (keep_results) {
                         this.clearCategory();
                         this.clearDifficulty();
-                        this.searchtext = '';
+                        if (this.searchtext != '') {
+                            this.searchtext = '';
+                        }
                         $(".oer_search input[name=search]").val('');
-                        $(".oer_search input[name=search]").focus();
-                        this.results = false;
+                        if (keep_results !== true) {
+                            this.results = false;
+                        }
                     },
                     clearDifficulty: function () {
-                        this.difficulty = [1, 12];
+                        if ((this.difficulty[0] != 1) && (this.difficulty[1] != 12)) {
+                            this.difficulty = [1, 12];
+                        }
                         jQuery("#difficulty_slider").slider("values", this.difficulty);
                     },
                     clearCategory: function () {
-                        this.category = null;
+                        if (this.category != null) {
+                            this.category = null;
+                        }
                     },
                     getIconShape: function (result) {
                         if (result.category === "video") {
@@ -118,7 +125,7 @@ const OER = {
                     },
                     browseTag: function (tag_hash, name) {
                         let v = this;
-                        this.clearAllFilters();
+                        this.clearAllFilters(true);
                         let tags = [];
                         for (let i in this.tagHistory) {
                             tags.push(this.tagHistory[i].tag_hash);
