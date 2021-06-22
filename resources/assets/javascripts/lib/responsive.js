@@ -134,7 +134,7 @@ const Responsive = {
             Sidebar.disableSticky();
             HeaderMagic.disable();
         } else {
-            Sidebar.ensableSticky();
+            Sidebar.enableSticky();
             HeaderMagic.enable();
         }
     },
