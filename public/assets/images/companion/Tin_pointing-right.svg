@@ -1,1 +1,49 @@
-<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 1024 1024" xml:space="preserve"><style>.st24{fill:#28497c}</style><path id="rect909_6_" transform="rotate(-17.465 495.011 203.614)" class="st24" d="M481.9 151.1h26.3v105.1h-26.3z"/><path class="st24" d="M747 290.3H617.6c-4.5-26.9-49.7-48.1-104.7-48.1s-100.2 21.1-104.7 48.1H278.8c-73.8.1-133.6 59.9-133.6 133.7v261c.1 73.8 59.9 133.5 133.7 133.7h10.4c-5.1 21.3-17.2 44.7-43.8 68.9L162.6 962l110.2-16.9c124.8-19.8 202-95 229.7-126.5H747c73.8-.1 133.6-59.9 133.7-133.7V424c-.1-73.8-59.9-133.6-133.7-133.7zM696.8 610H329.1C271 610 224 563 224 504.9s47-105 105-105h367.8c58 0 105.1 47 105.1 105.1s-47.1 105-105.1 105z"/><ellipse id="path911_6_" transform="rotate(-17.465 472.503 126.396)" class="st24" cx="472.6" cy="126.4" rx="68.3" ry="52.5"/><circle id="path860_9_" class="st24" cx="524.4" cy="504.9" r="52.5"/><circle id="path860-6_9_" class="st24" cx="670.5" cy="504.9" r="52.5"/><ellipse id="path877-7_6_" class="st24" cx="145.2" cy="541.7" rx="52.5" ry="105.1"/><ellipse id="path877-7-5_6_" class="st24" cx="880.7" cy="541.7" rx="52.5" ry="105.1"/><path fill="#fff" d="M602.8 710.5L556 757.3l24.3 24.3 71.1-71.1-71.1-71.1-24.3 24.3z"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1024 1024" style="enable-background:new 0 0 1024 1024;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#28497C;}
+	.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#D60000;}
+	.st2{opacity:0.2;fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st3{opacity:0.1;}
+	.st4{clip-path:url(#SVGID_2_);fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st5{opacity:0.2;}
+	.st6{clip-path:url(#SVGID_6_);}
+	.st7{fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st8{fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;}
+	.st9{clip-path:url(#SVGID_8_);fill-rule:evenodd;clip-rule:evenodd;fill:#ECECED;}
+	.st10{clip-path:url(#SVGID_10_);fill-rule:evenodd;clip-rule:evenodd;fill:#ECECED;}
+	.st11{opacity:0.1;fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st12{clip-path:url(#SVGID_12_);fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st13{clip-path:url(#SVGID_14_);fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st14{fill-rule:evenodd;clip-rule:evenodd;fill:#ECECED;}
+	.st15{clip-path:url(#SVGID_18_);fill-rule:evenodd;clip-rule:evenodd;fill:#D8D9DA;}
+	.st16{clip-path:url(#SVGID_20_);}
+	.st17{fill-rule:evenodd;clip-rule:evenodd;fill:#B0B2B3;}
+	.st18{clip-path:url(#SVGID_22_);fill-rule:evenodd;clip-rule:evenodd;fill:#D8D9DA;}
+	.st19{clip-path:url(#SVGID_24_);fill-rule:evenodd;clip-rule:evenodd;fill:#D8D9DA;}
+	.st20{clip-path:url(#SVGID_26_);fill-rule:evenodd;clip-rule:evenodd;fill:#1A171B;}
+	.st21{clip-path:url(#SVGID_28_);fill-rule:evenodd;clip-rule:evenodd;fill:#1A171B;}
+	.st22{fill:#24437C;}
+	.st23{fill:#FFFFFF;}
+	.st24{fill:#28497C;}
+	.st25{fill:#D60000;}
+	.st26{opacity:0.2;fill:#1D1D1B;}
+	.st27{fill:#1D1D1B;}
+	.st28{opacity:0.2;fill:#FFFFFF;}
+	.st29{fill:#3C444E;}
+</style>
+<g>
+	<path class="st0" d="M422.3,237.5c-109,0-197.3,109.7-197.3,244.9c0,135.3,88.4,244.9,197.3,244.9c109,0,197.3-109.7,197.3-244.9
+		C619.6,347.1,531.3,237.5,422.3,237.5z M272.1,482.4c0-102.9,67.2-186.4,150.2-186.4c82.9,0,150.2,83.4,150.2,186.4
+		C572.5,585.3,272.1,585.3,272.1,482.4z"/>
+	<path class="st0" d="M169.5,709.3c0-102.9,35-186.4,78.1-186.4c43.1,0,78.1,83.4,78.1,186.4C325.8,812.3,169.5,812.3,169.5,709.3z"
+		/>
+	<path class="st0" d="M777.3,590.9c-102.9,0-186.4-35-186.4-78.1s83.4-78.1,186.4-78.1C880.2,434.7,880.2,590.9,777.3,590.9z"/>
+	<path class="st0" d="M450.8,463.9c0,19.6-8.6,35.5-19.2,35.5c-10.6,0-19.2-15.9-19.2-35.5c0-19.6,8.6-35.5,19.2-35.5
+		C442.2,428.4,450.8,444.3,450.8,463.9z"/>
+	<path class="st0" d="M512.9,463.9c0,19.6-8.6,35.5-19.2,35.5c-10.6,0-19.2-15.9-19.2-35.5c0-19.6,8.6-35.5,19.2-35.5
+		C504.3,428.4,512.9,444.3,512.9,463.9z"/>
+</g>
+</svg>

@@ -1,1 +1,48 @@
-<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" viewBox="0 0 1024 1024" xml:space="preserve"><style>.st23{fill:#fff}.st24{fill:#28497c}</style><path id="rect909_4_" class="st24" d="M498.9 142.4h26.3v105.1h-26.3z"/><path class="st24" d="M746 290.3H616.7c-4.5-26.9-49.7-48.1-104.7-48.1s-100.2 21.1-104.7 48.1H277.9c-73.8.1-133.6 59.9-133.7 133.7v261c.1 73.8 59.9 133.5 133.7 133.7h10.4c-5.1 21.3-17.2 44.7-43.8 68.9L161.7 962l110.2-16.9c124.8-19.8 202-95 229.7-126.5h244.5c73.8-.1 133.6-59.9 133.7-133.7V424c-.1-73.8-60-133.6-133.8-133.7zM695.9 610H328.1c-58 0-105.1-47-105.1-105.1s47-105.1 105.1-105.1h367.8c58 0 105.1 47 105.1 105.1S753.9 610 695.9 610z"/><ellipse id="path911_4_" class="st24" cx="513.7" cy="114.5" rx="68.3" ry="52.5"/><g id="g836_7_" transform="translate(.425)"><circle id="path851_7_" class="st23" cx="511.6" cy="704.6" r="21"/><circle id="path851-6_7_" class="st23" cx="564.1" cy="704.6" r="21"/><circle id="path851-7_7_" class="st23" cx="459" cy="704.6" r="21"/></g><circle id="path860_7_" class="st24" cx="354.4" cy="504.9" r="52.5"/><circle id="path860-6_7_" class="st24" cx="669.6" cy="504.9" r="52.5"/><ellipse id="path877-7_4_" class="st24" cx="144.2" cy="541.7" rx="52.5" ry="105.1"/><ellipse id="path877-7-5_4_" class="st24" cx="879.8" cy="541.7" rx="52.5" ry="105.1"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 25.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 1024 1024" style="enable-background:new 0 0 1024 1024;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#28497C;}
+	.st1{fill-rule:evenodd;clip-rule:evenodd;fill:#D60000;}
+	.st2{opacity:0.2;fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st3{opacity:0.1;}
+	.st4{clip-path:url(#SVGID_2_);fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st5{opacity:0.2;}
+	.st6{clip-path:url(#SVGID_6_);}
+	.st7{fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st8{fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;}
+	.st9{clip-path:url(#SVGID_8_);fill-rule:evenodd;clip-rule:evenodd;fill:#ECECED;}
+	.st10{clip-path:url(#SVGID_10_);fill-rule:evenodd;clip-rule:evenodd;fill:#ECECED;}
+	.st11{opacity:0.1;fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st12{clip-path:url(#SVGID_12_);fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st13{clip-path:url(#SVGID_14_);fill-rule:evenodd;clip-rule:evenodd;fill:#1D1D1B;}
+	.st14{fill-rule:evenodd;clip-rule:evenodd;fill:#ECECED;}
+	.st15{clip-path:url(#SVGID_18_);fill-rule:evenodd;clip-rule:evenodd;fill:#D8D9DA;}
+	.st16{clip-path:url(#SVGID_20_);}
+	.st17{fill-rule:evenodd;clip-rule:evenodd;fill:#B0B2B3;}
+	.st18{clip-path:url(#SVGID_22_);fill-rule:evenodd;clip-rule:evenodd;fill:#D8D9DA;}
+	.st19{clip-path:url(#SVGID_24_);fill-rule:evenodd;clip-rule:evenodd;fill:#D8D9DA;}
+	.st20{clip-path:url(#SVGID_26_);fill-rule:evenodd;clip-rule:evenodd;fill:#1A171B;}
+	.st21{clip-path:url(#SVGID_28_);fill-rule:evenodd;clip-rule:evenodd;fill:#1A171B;}
+	.st22{fill:#24437C;}
+	.st23{fill:#FFFFFF;}
+	.st24{fill:#28497C;}
+	.st25{fill:#D60000;}
+	.st26{opacity:0.2;fill:#1D1D1B;}
+	.st27{fill:#1D1D1B;}
+	.st28{opacity:0.2;fill:#FFFFFF;}
+	.st29{fill:#3C444E;}
+</style>
+<g>
+	<path class="st0" d="M511.2,219.7c-109,0-197.3,109.7-197.3,244.9c0,135.3,88.4,244.9,197.3,244.9c109,0,197.3-109.7,197.3-244.9
+		C708.5,329.4,620.2,219.7,511.2,219.7z M361,464.7c0-102.9,67.2-186.4,150.2-186.4c82.9,0,150.2,83.4,150.2,186.4
+		C661.4,567.6,361,567.6,361,464.7z"/>
+	<path class="st0" d="M267.3,727.1c0-102.9,35-186.4,78.1-186.4s78.1,83.4,78.1,186.4C423.6,830,267.3,830,267.3,727.1z"/>
+	<path class="st0" d="M600.4,727.1c0-102.9,35-186.4,78.1-186.4c43.1,0,78.1,83.4,78.1,186.4C756.7,830,600.4,830,600.4,727.1z"/>
+	<path class="st0" d="M495.4,463.9c0,19.6-8.6,35.5-19.2,35.5c-10.6,0-19.2-15.9-19.2-35.5s8.6-35.5,19.2-35.5
+		C486.8,428.4,495.4,444.3,495.4,463.9z"/>
+	<path class="st0" d="M557.5,463.9c0,19.6-8.6,35.5-19.2,35.5c-10.6,0-19.2-15.9-19.2-35.5s8.6-35.5,19.2-35.5
+		C548.9,428.4,557.5,444.3,557.5,463.9z"/>
+</g>
+</svg>
