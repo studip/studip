@@ -1,5 +1,5 @@
 .teaserbox {
-    width: 782px;
+    max-width: 782px;
     background-color: $content-color-20;
     padding: 24px;
     margin-bottom: 10px;
@@ -12,12 +12,14 @@
 .content-items {
     list-style: none;
     padding: 0;
+    display: flex;
+    flex-wrap: wrap;
 
     .content-item {
-        float: left;
         width: 268px;
         height: 206px;
         margin-right: 10px;
+        margin-bottom: 10px;
         text-align: center;
         border: solid thin $content-color-40;
 
@@ -31,6 +33,7 @@
         header {
             color: $base-color;
             font-size: 2em;
+            width: 248px;
         }
         .content-item-description {
             color: black;
