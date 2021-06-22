@@ -615,6 +615,7 @@ class Course_MembersController extends AuthenticatedController
         $csv_mult_founds = [];
         $csv_count_insert = 0;
         $csv_count_multiple = 0;
+        $csv_count_double = 0;
         $datafield_id = null;
 
         if (Request::get('csv_import_format') && !in_array(Request::get('csv_import_format'), words('realname username email'))) {
@@ -654,11 +655,11 @@ class Course_MembersController extends AuthenticatedController
                 if (count($csv_users) > 1) {
 
                     // if user have two accounts
-                    $csv_count_present = 0;
                     foreach ($csv_users as $row) {
 
                         if ($row['is_present']) {
-                            $csv_count_present++;
+                            $csv_count_double++;
+
                         } else {
                             $csv_mult_founds[$csv_line][] = $row;
                         }
@@ -720,7 +721,7 @@ class Course_MembersController extends AuthenticatedController
         }
 
         if ($csv_count_present) {
-            PageLayout::postInfo(sprintf(_('%s Personen waren bereits in der Veranstaltung eingetragen!'), $csv_count_present));
+            PageLayout::postInfo(sprintf(_('%s Personen waren bereits in der Veranstaltung eingetragen!'), $csv_count_double + $csv_count_present));
         }
 
         // redirect to manual assignment
