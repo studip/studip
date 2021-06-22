@@ -32,7 +32,7 @@ label[for=cb-toc], label[for=cb-fullscreen] {
 
 }
 
-#cb-toc-close:checked .article.toc_overview {
+#cb-toc-close:checked article.toc_overview {
     visibility: hidden;
     width: 0;
 }
@@ -40,7 +40,6 @@ label[for=cb-toc], label[for=cb-fullscreen] {
 .toc_overview {
     visibility: hidden;
     width: 0%;
-    max-width: 35%;
     z-index: 100;
     position: absolute;
     right: 12px;
@@ -64,6 +63,10 @@ label[for=cb-toc], label[for=cb-fullscreen] {
     }
 }
 
+#toc {
+    padding: 10px;
+}
+
 #toc_header {
     height: 56px;
     width: 540px;
@@ -72,6 +75,9 @@ label[for=cb-toc], label[for=cb-fullscreen] {
     color: $black !important;
     margin-bottom: -0.5em;
     border-bottom: thin solid #d0d7e3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     label {
         margin-right: 25px;
