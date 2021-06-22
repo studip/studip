@@ -209,35 +209,35 @@ r i b b o n
         outline: none;
 
         &.cw-ribbon-button-menu {
-            @include background-icon(table-of-contents, clickable, false);
+            @include background-icon(table-of-contents, clickable, 24);
         }
 
         &.cw-ribbon-button-zoom {
-            @include background-icon(zoom-in2, clickable, false);
+            @include background-icon(zoom-in2, clickable, 24);
         }
 
         &.cw-ribbon-button-zoom-out {
-            @include background-icon(zoom-out2, clickable, false);
+            @include background-icon(zoom-out2, clickable, 24);
         }
 
         &.cw-ribbon-button-prev {
-            @include background-icon(arr_1left, clickable, false);
+            @include background-icon(arr_1left, clickable, 24);
             margin: 0 0.5em 0 0;
         }
 
         &.cw-ribbon-button-next {
-            @include background-icon(arr_1right, clickable, false);
+            @include background-icon(arr_1right, clickable, 24);
             margin: 0 1em 0 0;
         }
 
         &.cw-ribbon-button-prev-disabled {
-            @include background-icon(arr_1left, inactive, false);
+            @include background-icon(arr_1left, inactive, 24);
             margin: 0 0.5em 0 0;
             cursor: default;
         }
 
         &.cw-ribbon-button-next-disabled {
-            @include background-icon(arr_1right, inactive, false);
+            @include background-icon(arr_1right, inactive, 24);
             margin: 0 1em 0 0;
             cursor: default;
         }
@@ -730,8 +730,7 @@ form.cw-container-dialog-edit-form {
     border: none;
     height: 24px;
     width: 24px;
-    background-size: 16px;
-    @include background-icon(decline);
+    @include background-icon(decline, clickable);
     background-repeat: no-repeat;
     background-color: transparent;
     cursor: pointer;
@@ -935,10 +934,10 @@ label[for="cw-keypoint-color"] {
                 background-repeat: no-repeat;
                 background-position: 3px 3px;
                 &:hover {
-                    @include background-icon(courseware, attention, false);
+                    @include background-icon(courseware, attention, 18);
                 }
                 &.cw-tree-item-link-current {
-                    @include background-icon(courseware, info, false);
+                    @include background-icon(courseware, info, 18);
                 }
             }
         }
@@ -1017,8 +1016,7 @@ c o l l a p s i b l e   b o x
     }
 
     .cw-collapsible-title {
-        @include background-icon(arr_1right);
-        background-size: 16px 16px;
+        @include background-icon(arr_1right, clickable);
         background-position: 6px center;
         background-repeat: no-repeat;
         background-color: $content-color-20;
@@ -1029,7 +1027,7 @@ c o l l a p s i b l e   b o x
         cursor: pointer;
 
         &.cw-collapsible-open {
-            @include background-icon(arr_1down);
+            @include background-icon(arr_1down, clickable);
         }
 
         img {
@@ -1183,7 +1181,7 @@ $icons: (
             &.is-active.cw-tabs-nav-icon-text-#{$icon},
             &.cw-tabs-nav-icon-text-#{$icon}:hover {
                 &::before {
-                    @include background-icon($icon, info, false);
+                    @include background-icon($icon, info);
                 }
             }
         };
@@ -1203,7 +1201,7 @@ $icons: (
             &.is-active.cw-tabs-nav-icon-solo-#{$icon},
             &.cw-tabs-nav-icon-solo-#{$icon}:hover {
                 &::before {
-                    @include background-icon($icon, info, false);
+                    @include background-icon($icon, info);
                 }
             }
         };
@@ -1345,21 +1343,17 @@ b l o c k a d d e r
 
     @each $item, $icon in $blockadder-items {
         &.cw-blockadder-item-#{$item} {
-            @include background-icon($icon, clickable, false);
+            @include background-icon($icon, clickable, 48);
         }
     }
 
     .cw-blockadder-item-title {
         font-weight: 600;
     }
-
-    .cw-blockadder-item-description{
-
-    }
 }
 
 .cw-block-adder-area {
-    @include background-icon(add, clickable, false);
+    @include background-icon(add, clickable);
     background-repeat: no-repeat;
     background-position: calc(50% - 5em) calc(50% - 1px);
     border: solid thin $content-color-40;
@@ -1373,11 +1367,11 @@ b l o c k a d d e r
     &.cw-block-adder-active {
         border: solid thin $base-color;
         background-color: $base-color;
-        @include background-icon(add, info-alt, false);
+        @include background-icon(add, info-alt);
         color: $white;
     }
     &.cw-block-adder-disabled {
-        @include background-icon(add, inactive, false);
+        @include background-icon(add, inactive);
         color: $dark-gray-color-80;
         cursor: default;
     }
@@ -1433,7 +1427,7 @@ b l o c k a d d e r
             }
 
             &.cw-block-fav-item-active {
-                @include background-icon(star, clickable, false);
+                @include background-icon(star, clickable, 48);
             }
         }
     }
@@ -1722,7 +1716,7 @@ d i a l o g
         }
     }
     .studip-dialog-close-button {
-        @include background-icon(decline, info-alt);
+        @include background-icon(decline, info-alt, 16);
         background-repeat: no-repeat;
         background-position-y: center;
 
@@ -1753,7 +1747,6 @@ d i a l o g
             padding: 15px 15px 15px 62px;
             background-position: 12px center;
             background-repeat: no-repeat;
-            background-size: 32px;
             box-sizing: border-box;
             display: flex;
             align-items: center;
@@ -1765,7 +1758,7 @@ d i a l o g
             background: $active-color none repeat scroll 0 0;
         }
         .studip-dialog-content {
-            @include background-icon(question-circle-full, attention, false);
+            @include background-icon(question-circle-full, attention, 32);
         }
     }
     &.studip-dialog-warning {
@@ -1774,10 +1767,10 @@ d i a l o g
             background: $activity-color none repeat scroll 0 0;
         }
         .studip-dialog-close-button {
-            @include background-icon(decline, info, false);
+            @include background-icon(decline, info);
         }
         .studip-dialog-content {
-            @include background-icon(question-circle-full, status-yellow, false);
+            @include background-icon(question-circle-full, status-yellow, 32);
         }
     }
 
@@ -2261,13 +2254,13 @@ m a n a g e r
         cursor: pointer;
 
         &.cw-manager-filing-active {
-            @include background-icon(arr_eol-down, info-alt, false);
+            @include background-icon(arr_eol-down, info-alt, 24);
             background-color: $activity-color;
             border: solid thin $activity-color;
             color: $white;
         }
         &.cw-manager-filing-disabled {
-            @include background-icon(arr_eol-down, inactive, false);
+            @include background-icon(arr_eol-down, inactive, 24);
             background-color: $white;
             color: $dark-gray-color-80;
         }
@@ -2381,9 +2374,9 @@ a u d i o  b l o c k
 
         @each $button, $icon in $media-buttons {
             &.cw-audio-#{$button}button {
-                @include background-icon($icon, clickable, false);
+                @include background-icon($icon, clickable, 24);
                 &:hover {
-                    @include background-icon($icon, info-alt, false);
+                    @include background-icon($icon, info-alt, 24);
                 }
             }
         };
@@ -2489,7 +2482,7 @@ a u d i o  b l o c k
                 color: $active-color;
             }
             &.is-playing {
-                @include background-icon(pause, clickable, false);
+                @include background-icon(pause, clickable);
             }
             &.current-item {
                 font-weight: 700;
@@ -2638,15 +2631,18 @@ c o d e  b l o c k  e n d
 c o n f i r m  b l o c k
 * * * * * * * * * * * * */
 .cw-block-confirm {
-    border: solid thin $content-color-20;
-    header{
-        color: $base-color;
-        background-color: $content-color-20;
-        padding: 4px;
-        font-weight: 700;
-    }
     .cw-block-confirm-content{
+        border: solid thin $content-color-40;
         padding: 1em;
+        display: flex;
+        .cw-block-confirm-checkbox img{
+            margin-right: 2em;
+            vertical-align: middle;
+            height: 100%;
+        }
+        .cw-block-confirm-text {
+            margin: 0;
+        }
     }
 }
 /* * * * * * * * * * * * * * * *
@@ -2803,11 +2799,11 @@ c a n v a s  b l o c k
         }
 
         &.cw-canvasblock-reset {
-            @include background-icon(refresh, clickable, false);
+            @include background-icon(refresh, clickable, 24);
         }
 
         &.cw-canvasblock-size {
-            @include background-icon(stop, clickable, false);
+            @include background-icon(stop, clickable);
 
             &.cw-canvasblock-size-small {
                 background-size: 8px 7px;
@@ -2828,7 +2824,7 @@ c a n v a s  b l o c k
 
         &.cw-canvasblock-tool {
             &.cw-canvasblock-tool-pen {
-                @include background-icon(comment, clickable, false);
+                @include background-icon(comment, clickable);
             }
 
             &.cw-canvasblock-tool-text {
@@ -2844,23 +2840,23 @@ c a n v a s  b l o c k
         }
 
         &.cw-canvasblock-undo {
-            @include background-icon(arr_2left, clickable, false);
+            @include background-icon(arr_2left, clickable, 24);
         }
 
         &.cw-canvasblock-download {
-            @include background-icon(download, clickable, false);
+            @include background-icon(download, clickable, 24);
         }
         &.cw-canvasblock-store {
-            @include background-icon(upload, clickable, false);
+            @include background-icon(upload, clickable, 24);
         }
         &.cw-canvasblock-show-all {
-            @include background-icon(group2, clickable, false);
+            @include background-icon(group2, clickable, 24);
             &.selected-view {
                 border: solid 2px $black;
             }
         }
         &.cw-canvasblock-show-own {
-            @include background-icon(headache, clickable, false);
+            @include background-icon(headache, clickable, 24);
             &.selected-view {
                 border: solid 2px $black;
             }
@@ -2876,30 +2872,13 @@ d o c u m e n t  b l o c k
 * * * * * * * * * * * * */
 .cw-block-document {
     .cw-pdf-header {
-        min-width: 10%;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-        font-style: normal;
-        font-weight: 600;
-        color: $base-color;
-        font-size: 16px;
-        line-height: 20px;
-        padding: 10px 20px 14px;
         position: relative;
-        margin: 0;
-        text-align: center;
-        background-color: $white;
-        border: solid thin $content-color-40;
-        border-bottom: none;
 
         .cw-pdf-button-prev,
         .cw-pdf-button-next {
             position: absolute;
             border: none;
             background-repeat: no-repeat;
-            background-size: 24px;
             background-color: transparent;
             height: 24px;
             width: 24px;
@@ -2910,30 +2889,31 @@ d o c u m e n t  b l o c k
 
         .cw-pdf-button-prev {
             left: 0;
-            @include background-icon(arr_1left, clickable, false);
+            @include background-icon(arr_1left, clickable, 18);
             &.inactive {
-                @include background-icon(arr_1left, navigation, false);
+                @include background-icon(arr_1left, navigation, 18);
             }
         }
 
         .cw-pdf-button-next {
             right: 0;
-            @include background-icon(arr_1right, clickable, false);
+            @include background-icon(arr_1right, clickable, 18);
             &.inactive {
-                @include background-icon(arr_1right, navigation, false);
+                @include background-icon(arr_1right, navigation, 18);
             }
         }
 
         .cw-pdf-download {
             display: inline-block;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             margin: 0 0.25em;
             border: none;
             cursor: pointer;
+            vertical-align: sub;
 
             background: no-repeat scroll 0 0;
-            @include background-icon(download, clickable, false);
+            @include background-icon(download, clickable, 18);
         }
     }
     .cw-pdf-canvas {
@@ -2948,13 +2928,12 @@ d o c u m e n t  b l o c k
             @include background-icon(file, clickable, 24);
             display: inline-block;
             background-repeat: no-repeat;
-            background-size: 24px;
             padding-left: 26px;
             margin: 1em;
             line-height: 24px;
             color: $base-color;
             &.cw-pdf-fileicon-pdf {
-                @include background-icon(file-pdf, clickable, false);
+                @include background-icon(file-pdf, clickable, 24);
             }
         }
         .cw-pdf-download-icon {
@@ -2962,7 +2941,6 @@ d o c u m e n t  b l o c k
             @include background-icon(download, clickable, 24);
             height: 24px;
             width: 24px;
-            background-size: 24px;
             background-repeat: no-repeat;
             margin: 1em;
         }
@@ -2984,6 +2962,9 @@ e m b e d  b l o c k
                 height: 100% !important;
                 width: 100% !important;
             }
+        }
+        .cw-block-embed-info {
+            margin-top: 0.5em;
         }
     }
 }
@@ -3097,34 +3078,34 @@ f o l d e r  b l o c k
     color: $base-color;
 
     &.cw-block-file-icon-audio {
-        @include background-icon(file-audio, clickable, false);
+        @include background-icon(file-audio, clickable, 24);
     }
     &.cw-block-file-icon-pic {
-        @include background-icon(file-pic, clickable, false);
+        @include background-icon(file-pic, clickable, 24);
     }
     &.cw-block-file-icon-video {
-        @include background-icon(file-video, clickable, false);
+        @include background-icon(file-video, clickable, 24);
     }
     &.cw-block-file-icon-pdf {
-        @include background-icon(file-pdf, clickable, false);
+        @include background-icon(file-pdf, clickable, 24);
     }
     &.cw-block-file-icon-word {
-        @include background-icon(file-word, clickable, false);
+        @include background-icon(file-word, clickable, 24);
     }
     &.cw-block-file-icon-spreadsheet {
-        @include background-icon(file-excel, clickable, false);
+        @include background-icon(file-excel, clickable, 24);
     }
     &.cw-block-file-icon-text {
-        @include background-icon(file-text, clickable, false);
+        @include background-icon(file-text, clickable, 24);
     }
     &.cw-block-file-icon-ppt {
-        @include background-icon(file-ppt, clickable, false);
+        @include background-icon(file-ppt, clickable, 24);
     }
     &.cw-block-file-icon-archive {
-        @include background-icon(file-archive, clickable, false);
+        @include background-icon(file-archive, clickable, 24);
     }
     &.cw-block-file-icon-file {
-        @include background-icon(file, clickable, false);
+        @include background-icon(file, clickable, 24);
     }
 }
 /* * * * * * * * * * * * * * *
@@ -3197,7 +3178,6 @@ g a l l e r y  b l o c k
     top: 50%;
     height: 36px;
     width: 36px;
-    background-size: 24px;
     background-repeat: no-repeat;
     background-position: center;
     margin-top: -22px;
@@ -3210,16 +3190,16 @@ g a l l e r y  b l o c k
 }
 
 .cw-block-gallery-prev {
-    @include background-icon(arr_1left, clickable, false);
+    @include background-icon(arr_1left, clickable, 24);
     &:hover{
-        @include background-icon(arr_1left, info-alt, false);
+        @include background-icon(arr_1left, info-alt, 24);
     }
 }
 .cw-block-gallery-next {
     right: 0;
-    @include background-icon(arr_1right, clickable, false);
+    @include background-icon(arr_1right, clickable, 24);
     &:hover {
-        @include background-icon(arr_1right, info-alt, false);
+        @include background-icon(arr_1right, info-alt, 24);
     }
 }
 
@@ -3294,6 +3274,11 @@ l i n k  b l o c k
         border: solid thin $content-color-40;
         color: $base-color;
         height: 20px;
+        padding: 1em;
+
+        .cw-link-title {
+            margin-left: 3em;
+        }
 
         &:hover {
             background-color: $base-color;
@@ -3303,29 +3288,18 @@ l i n k  b l o c k
 
         &.internal {
             @include background-icon(link-intern, clickable, 28);
-            background-position: 1.5em 50%;
+            background-position: 1em 50%;
             background-repeat: no-repeat;
-            background-size: 28px;
-
-            .cw-link-progress-true,
-            .cw-link-progress-false {
-                background-repeat: no-repeat;
-                background-size: 16px;
-                height: 16px;
-                width: 16px;
-                display: inline-block;
-            }
 
             &:hover {
-                @include background-icon(link-intern, info-alt, false);
+                @include background-icon(link-intern, info-alt, 28);
             }
         }
 
         &.external {
             @include background-icon(link-extern, clickable, 28);
-            background-position: 2em 50%;
+            background-position: 1em 50%;
             background-repeat: no-repeat;
-            background-size: 28px;
             &:hover {
                 @include background-icon(link-extern, info-alt, 28);
             }
@@ -3415,11 +3389,11 @@ dialog cards block
             }
 
             .cw-dialogcards-front-no-image {
-                @include background-icon(question, navigation, false);
+                @include background-icon(question, navigation, 150);
             }
 
             .cw-dialogcards-back-no-image {
-                @include background-icon(exclaim, navigation, false);
+                @include background-icon(exclaim, navigation, 150);
             }
 
             .cw-dialogcards-front-no-image,
@@ -3428,7 +3402,6 @@ dialog cards block
                 height: 180px;
                 margin-top: 2em;
                 background-repeat: no-repeat;
-                background-size: 150px 150px;
                 background-position-x: center;
             }
 
@@ -3442,14 +3415,14 @@ dialog cards block
         }
 
         .card__face--front {
-            @include background-icon(arr_1right, clickable, false);
+            @include background-icon(arr_1right, clickable);
             background-color: $white;
             background-repeat: no-repeat;
             background-position: 95% 95%;
         }
 
         .card__face--back {
-            @include background-icon(arr_1left, clickable, false);
+            @include background-icon(arr_1left, clickable);
             background-color: $white;
             background-repeat: no-repeat;
             background-position: 5% 95%;
@@ -3464,7 +3437,6 @@ dialog cards block
         background-color: #bbb;
         background-size: 20px;
         border-radius: 2px;
-        background-size: 24px;
         background-position: 50%;
         background-repeat: no-repeat;
         background-color: $base-color;
@@ -3477,11 +3449,11 @@ dialog cards block
         cursor: pointer;
 
         &.cw-dialogcards-prev {
-            @include background-icon(arr_1left, info-alt, false);
+            @include background-icon(arr_1left, info-alt, 24);
         }
 
         &.cw-dialogcards-next {
-            @include background-icon(arr_1right, info-alt, false);
+            @include background-icon(arr_1right, info-alt, 24);
             right: 0;
         }
     }
@@ -3549,19 +3521,20 @@ headline block
                 background-size: 196px;
                 min-height: 600px;
 
+                @each $icon in $icons {
+                    &.icon-black-#{$icon} {
+                        @include background-icon($icon, info, 196);
+                    }
+                    &.icon-white-#{$icon} {
+                        @include background-icon($icon, info-alt, 196);
+                    }
+                };
+
                 &.half {
                     min-height: 300px;
                     background-size: 144px;
-                    background-position: center calc(50% - 5em);
+                    background-position: center calc(50% - 4em);
                 }
-                @each $icon in $icons {
-                    &.icon-black-#{$icon} {
-                        @include background-icon($icon, info, false);
-                    }
-                    &.icon-white-#{$icon} {
-                        @include background-icon($icon, info-alt, false);
-                    }
-                };
             }
 
 
@@ -3592,7 +3565,6 @@ headline block
                 align-items: center;
                 background-repeat: no-repeat;
                 background-position: 4em center;
-                background-size: 196px;
                 min-height: 600px;
 
                 &.half {
@@ -3600,10 +3572,10 @@ headline block
                 }
                 @each $icon in $icons {
                     &.icon-black-#{$icon} {
-                        @include background-icon($icon, info, false);
+                        @include background-icon($icon, info, 196);
                     }
                     &.icon-white-#{$icon} {
-                        @include background-icon($icon, info-alt, false);
+                        @include background-icon($icon, info-alt, 196);
                     }
                 };
             }

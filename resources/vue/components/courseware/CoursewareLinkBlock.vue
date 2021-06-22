@@ -39,12 +39,12 @@
                             <option value="internal"><translate>Intern</translate></option>
                         </select>
                     </label>
-                    <label v-if="currentType === 'external'">
+                    <label v-show="currentType === 'external'">
                         <translate>URL</translate>
                         <input type="text" v-model="currentUrl" @change="fixUrl" />
                     </label>
-                    <label v-if="currentType === 'internal'">
-                        <translate>Struktur-Element</translate>
+                    <label v-show="currentType === 'internal'">
+                        <translate>Seite</translate>
                         <select v-model="currentTarget">
                             <option v-for="(el, index) in courseware" :key="index" :value="el.id">
                                 {{ el.attributes.title }}

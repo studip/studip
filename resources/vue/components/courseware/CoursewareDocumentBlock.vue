@@ -9,7 +9,7 @@
             @closeEdit="initCurrentData"
         >
             <template #content>
-                <div class="cw-pdf-header">
+                <div class="cw-pdf-header cw-block-title">
                     <button class="cw-pdf-button-prev" :class="{ inactive: pageNum - 1 === 0 }" @click="prevPage" />
                     <span class="cw-pdf-title">{{ currentTitle }}</span>
                     <a :href="currentUrl" class="cw-pdf-download" download></a>

@@ -10,11 +10,17 @@
             @closeEdit="initCurrentData"
         >
             <template #content>
-                <header><translate>Bestätigung</translate></header>
+                <div class="cw-block-title">
+                    <translate>Bestätigung</translate>
+                </div>
                 <div class="cw-block-confirm-content">
-                    {{ currentText }}
-                    <studip-icon v-if="!confirm" shape="checkbox-unchecked" role="info" @click="setConfirm" />
-                    <studip-icon v-if="confirm" shape="checkbox-checked" role="info" />
+                    <div class="cw-block-confirm-checkbox">
+                        <studip-icon v-if="!confirm" shape="checkbox-unchecked" role="info" @click="setConfirm" />
+                        <studip-icon v-if="confirm" shape="checkbox-checked" role="info" />
+                    </div>
+                    <p class="cw-block-confirm-text">
+                        {{ currentText }}
+                    </p>
                 </div>
             </template>
             <template v-if="canEdit" #edit>

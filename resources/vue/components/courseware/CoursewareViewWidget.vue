@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
     name: 'courseware-view-widget',
     computed: {
@@ -17,8 +19,12 @@ export default {
         },
     },
     methods: {
+        ...mapActions(
+            ['coursewareBlockAdder']
+        ),
         setReadView() {
             this.$store.dispatch('coursewareViewMode', 'read');
+            this.coursewareBlockAdder({});
         },
         setEditView() {
             this.$store.dispatch('coursewareViewMode', 'edit');

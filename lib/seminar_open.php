@@ -53,6 +53,9 @@ function startpage_redirect($page_code) {
                 $jump_page = "dispatch.php/blubber";
             }
             break;
+        case 7:
+            $jump_page = "dispatch.php/contents/overview";
+            break;
     }
 
     page_close();

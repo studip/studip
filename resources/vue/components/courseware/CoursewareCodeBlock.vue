@@ -9,8 +9,8 @@
             @closeEdit="initCurrentData"
         >
             <template #content>
-                <pre v-highlightjs="currentContent"><code ref="code" :class="[currentLang]"></code></pre>
-                <div class="code-lang">
+                <pre v-show="currentContent !== ''"  v-highlightjs="currentContent"><code ref="code" :class="[currentLang]"></code></pre>
+                <div v-show="currentLang !== ''" class="code-lang">
                     <span>{{ currentLang }}</span>
                 </div>
             </template>

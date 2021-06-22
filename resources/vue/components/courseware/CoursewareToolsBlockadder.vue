@@ -24,6 +24,11 @@
 
             <courseware-collapsible-box :title="textAdderFavs" :open="favoriteBlockTypes.length > 0">
                 <div class="cw-element-adder-wrapper" v-if="!showEditFavs">
+                    <courseware-companion-box 
+                        v-if="favoriteBlockTypes.length === 0"
+                        mood="sad"
+                        :msgCompanion="textFavsEmpty"
+                    />
                     <courseware-blockadder-item
                         v-for="(block, index) in favoriteBlockTypes"
                         :key="index"
@@ -58,7 +63,7 @@
                 <button v-show="!showEditFavs" class="button" @click="showEditFavs = true">
                     <translate>Favoriten bearbeiten</translate>
                 </button>
-                <button v-show="showEditFavs" class="button" @click="showEditFavs = false">
+                <button v-show="showEditFavs" class="button" @click="endEditFavs">
                     <translate>Favoriten bearbeiten schließen</translate>
                 </button>
             </courseware-collapsible-box>
@@ -121,6 +126,7 @@ import CoursewareBlockadderItem from './CoursewareBlockadderItem.vue';
 import CoursewareContainerAdderItem from './CoursewareContainerAdderItem.vue';
 import CoursewareBlockHelper from './CoursewareBlockHelper.vue';
 import { mapGetters } from 'vuex';
+import CoursewareCompanionBox from './CoursewareCompanionBox.vue';
 
 export default {
     name: 'cw-tools-blockadder',
@@ -129,6 +135,7 @@ export default {
         CoursewareBlockadderItem,
         CoursewareContainerAdderItem,
         CoursewareBlockHelper,
+        CoursewareCompanionBox,
     },
     data() {
         return {
@@ -138,6 +145,7 @@ export default {
             textAdderFavs: this.$gettext('Favoriten'),
             textAdderAll: this.$gettext('Alle Blöcke'),
             textBlockHelper: this.$gettext('Blockassistent'),
+            textFavsEmpty: this.$gettext('Sie haben noch keine Lieblingsblöcke ausgewählt.'),
         };
     },
     computed: {
@@ -169,6 +177,7 @@ export default {
                 { title: this.$gettext('Texte'), type: 'text' },
                 { title: this.$gettext('Multimedia'), type: 'multimedia' },
                 { title: this.$gettext('Aufgaben & Interaktion'), type: 'interaction' },
+                { title: this.$gettext('Gestaltung'), type: 'layout' },
                 { title: this.$gettext('Dateien'), type: 'files' },
                 { title: this.$gettext('Externe Inhalte'), type: 'external' },
             ];
@@ -203,6 +212,10 @@ export default {
         },
         disableContainerAdder() {
             this.$store.dispatch('coursewareContainerAdder', false);
+        },
+        endEditFavs() {
+            this.showEditFavs = false;
+            this.$emit('scrollTop');
         }
     },
     mounted() {

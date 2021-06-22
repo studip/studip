@@ -1,6 +1,6 @@
 <template>
     <div class="cw-ribbon-tools" :class="{ unfold: toolsActive, 'cw-ribbon-tools-consume': consumeMode }">
-        <div class="cw-ribbon-tool-content">
+        <div class="cw-ribbon-tool-content" ref="ribbonContent">
             <div class="cw-ribbon-tool-content-nav">
                 <ul>
                     <li :class="{ active: showContents }" @click="displayTool('contents')">
@@ -21,7 +21,7 @@
             </div>
             <div class="cw-ribbon-tool">
                 <courseware-tools-contents v-if="showContents" />
-                <courseware-tools-blockadder v-if="showBlockAdder" />
+                <courseware-tools-blockadder v-if="showBlockAdder" @scrollTop="scrollTop"/>
                 <courseware-tools-admin v-if="showAdmin" />
             </div>
         </div>
@@ -95,6 +95,9 @@ export default {
             if (this.containerAdder !== false) {
                 this.$store.dispatch('coursewareContainerAdder', false);
             }
+        },
+        scrollTop() {
+            this.$refs.ribbonContent.scrollTop = 0;
         }
     },
     watch: {

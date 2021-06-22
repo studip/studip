@@ -89,7 +89,7 @@ class Headline extends BlockType
 
     public static function getCategories(): array
     {
-        return ['text', 'layout'];
+        return ['layout'];
     }
 
     public static function getContentTypes(): array

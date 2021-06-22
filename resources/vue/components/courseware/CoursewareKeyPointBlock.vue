@@ -29,7 +29,14 @@
 
                     <label for="cw-keypoint-color">
                         <translate>Farbe</translate>
-                        <v-select :options="colors" label="icon" :reduce="option => option.icon" v-model="currentColor" class="cw-vs-select">
+                        <v-select
+                            :options="colors"
+                            label="icon"
+                            :clearable="false"
+                            :reduce="option => option.icon"
+                            v-model="currentColor"
+                            class="cw-vs-select"
+                        >
                             <template #open-indicator="selectAttributes">
                                 <span v-bind="selectAttributes"><studip-icon shape="arr_1down" size="10"/></span>
                             </template>
@@ -47,7 +54,7 @@
 
                     <label for="cw-keypoint-icons">
                         <translate>Icon</translate>
-                        <v-select :options="icons" v-model="currentIcon" class="cw-vs-select">
+                        <v-select :options="icons" :clearable="false" v-model="currentIcon" class="cw-vs-select">
                             <template #open-indicator="selectAttributes">
                                 <span v-bind="selectAttributes"><studip-icon shape="arr_1down" size="10"/></span>
                             </template>

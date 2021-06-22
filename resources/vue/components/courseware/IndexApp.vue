@@ -8,7 +8,9 @@
             <courseware-view-widget></courseware-view-widget>
         </MountingPortal>
     </div>
-    <div v-else>TODO: Loading</div>
+    <div v-else>
+        <translate>Inhalte werden geladen</translate>...
+    </div>
 </template>
 
 <script>
@@ -24,15 +26,20 @@ export default {
         CoursewareActionWidget,
     },
     computed: {
-        ...mapGetters(['courseware', 'userId']),
+        ...mapGetters(['courseware', 'userId', 'blockAdder']),
     },
     methods: {
-        ...mapActions(['loadCoursewareStructure', 'loadTeacherStatus']),
+        ...mapActions(['loadCoursewareStructure', 'loadTeacherStatus', 'coursewareBlockAdder']),
     },
     async mounted() {
         await this.loadCoursewareStructure();
         await this.loadTeacherStatus(this.userId);
         // console.debug('IndexApp mounted for courseware:', this.courseware, this.$store);
     },
+    watch: {
+        $route() {
+            this.coursewareBlockAdder({}); //reset block adder on navigate
+        }
+    }
 };
 </script>

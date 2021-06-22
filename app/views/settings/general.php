@@ -6,6 +6,7 @@ $start_pages = [
      5 => _('Mein Terminkalender'),
      4 => _('Mein Adressbuch'),
      6 => _('Mein globaler Blubberstream'),
+     7 => _('Meine Inhalte'),
 ];
 ?>
 

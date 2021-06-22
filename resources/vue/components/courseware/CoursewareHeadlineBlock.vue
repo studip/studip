@@ -49,7 +49,14 @@
                     </label>
                     <label>
                         <translate>Textfarbe</translate>
-                        <v-select :options="colors" label="hex" :reduce="color => color.hex" v-model="currentTextColor" class="cw-vs-select">
+                        <v-select
+                            :options="colors"
+                            label="hex"
+                            :reduce="color => color.hex"
+                            :clearable="false"
+                            v-model="currentTextColor"
+                            class="cw-vs-select"
+                        >
                             <template #open-indicator="selectAttributes">
                                 <span v-bind="selectAttributes"><studip-icon shape="arr_1down" size="10"/></span>
                             </template>
@@ -74,7 +81,7 @@
                     </label>
                     <label>
                         <translate>Icon</translate>
-                        <v-select :options="icons" v-model="currentIcon" class="cw-vs-select">
+                        <v-select :clearable="false" :options="icons" v-model="currentIcon" class="cw-vs-select">
                             <template #open-indicator="selectAttributes">
                                 <span v-bind="selectAttributes"><studip-icon shape="arr_1down" size="10"/></span>
                             </template>
@@ -98,7 +105,14 @@
                     </label>
                     <label  v-if="currentBackgroundType === 'color'">
                         <translate>Hintergrundfarbe</translate>
-                        <v-select :options="colors" label="hex" :reduce="color => color.hex" v-model="currentBackgroundColor" class="cw-vs-select">
+                        <v-select
+                            :options="colors"
+                            label="hex"
+                            :reduce="color => color.hex"
+                            v-model="currentBackgroundColor"
+                            :clearable="false"
+                            class="cw-vs-select"
+                        >
                             <template #open-indicator="selectAttributes">
                                 <span v-bind="selectAttributes"><studip-icon shape="arr_1down" size="10"/></span>
                             </template>

@@ -48,12 +48,12 @@ class Link extends BlockType
 
     public static function getCategories(): array
     {
-        return ['layout'];
+        return ['layout', 'external'];
     }
 
     public static function getContentTypes(): array
     {
-        return ['text', 'link', 'layout'];
+        return ['text', 'layout', 'link'];
     }
 
     public static function getFileTypes(): array
