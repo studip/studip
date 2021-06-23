@@ -51,8 +51,9 @@
 
         <?= $toc_entries ?>
 
-
-        <?= $actionMenu->render() ?>
+        <? if ($toc_breadcrumb_info) : ?>
+            <?= $actionMenu->render() ?>
+        <? endif ?>
     </div>
 
 </div>
