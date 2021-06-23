@@ -1,6 +1,6 @@
 <div class="contents-widget">
     <p>
-        <?= _('Lernmaterialien, auch von anderen Standorten') ?>
+        <?= _('Suchen, erstellen und finden Sie freie Lernmaterialien!') ?>
     </p>
     <ul class="content-items">
         <li class="content-item content-item-courseware">
