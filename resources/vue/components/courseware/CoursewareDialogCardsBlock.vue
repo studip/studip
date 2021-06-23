@@ -10,7 +10,13 @@
         >
             <template #content>
                 <div class="cw-block-dialog-cards-content">
-                    <button class="cw-dialogcards-prev cw-dialogcards-navbutton" @click="prevCard"></button>
+                    <button 
+                        class="cw-dialogcards-prev cw-dialogcards-navbutton"
+                        :class="{'cw-dialogcards-prev-disabled': hasNoPerv}"
+                        @click="prevCard"
+                        :title="hasNoPerv ? $gettext('keine vorherige Karte') : $gettext('zur vorherigen Karte')"
+                    >
+                    </button>
                     <div class="cw-dialogcards">
                         <div
                             class="scene scene--card"
@@ -18,33 +24,50 @@
                             v-for="card in currentCards"
                             :key="card.index"
                         >
-                            <div class="card" @click="flipCard">
+                            <div
+                                class="card"
+                                tabindex="0"
+                                :title="$gettext('Karte umdrehen')"
+                                @click="flipCard"
+                                @keydown.enter="flipCard"
+                                @keydown.space="flipCard"
+                            >
                                 <div class="card__face card__face--front">
-                                    <img v-if="card.front_file" :src="card.front_file.download_url" />
-                                    <div v-if="!card.front_file" class="cw-dialogcards-front-no-image"></div>
+                                    <img v-if="card.front_file.length !== 0" :src="card.front_file.download_url" />
+                                    <div v-else class="cw-dialogcards-front-no-image"></div>
                                     <p>{{ card.front_text }}</p>
                                 </div>
                                 <div class="card__face card__face--back">
-                                    <img v-if="card.back_file" :src="card.back_file.download_url" />
-                                    <div v-if="!card.back_file" class="cw-dialogcards-back-no-image"></div>
+                                    <img v-if="card.back_file.length !== 0" :src="card.back_file.download_url" />
+                                    <div v-else class="cw-dialogcards-back-no-image"></div>
                                     <p>{{ card.back_text }}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <button class="cw-dialogcards-next cw-dialogcards-navbutton" @click="nextCard"></button>
+                    <button
+                        class="cw-dialogcards-next cw-dialogcards-navbutton"
+                        :class="{'cw-dialogcards-next-disabled': hasNoNext}"
+                        @click="nextCard"
+                        :title="hasNoNext ? $gettext('keine nächste Karte') : $gettext('zur nächsten Karte')"
+                    >
+                    </button>
                 </div>
             </template>
             <template v-if="canEdit" #edit>
                 <button class="button add" @click="addCard"><translate>Karte hinzufügen</translate></button>
-                <courseware-tabs v-if="currentCards.length > 0" @selectTab="activateCard($event)">
+                <courseware-tabs
+                    v-if="currentCards.length > 0"
+                    @selectTab="activateCard(parseInt($event.replace($gettext('Karte') +  ' ', '')) - 1)"
+                >
                     <courseware-tab
                         v-for="(card, index) in currentCards"
                         :key="index"
-                        :name="index.toString()"
+                        :name="$gettext('Karte') +  ' ' + (index + 1).toString()"
                         :selected="index === 0"
+                        canBeEmpty
                     > 
-                    <form class="default" @submit.prevent="">
+                        <form class="default" @submit.prevent="">
                             <label>
                                 <translate>Bild Vorderseite</translate>:
                                 <courseware-file-chooser
@@ -69,6 +92,11 @@
                                 <translate>Text Rückseite</translate>:
                                 <input type="text" v-model="card.back_text" />
                             </label>
+                            <label v-if="!onlyCard">
+                                <button class="button trash" @click="removeCard(index)">
+                                    <translate>Karte entfernen</translate>
+                                </button>
+                            </label>
                         </form>
                     </courseware-tab>
                 </courseware-tabs>
@@ -87,6 +115,7 @@ import CoursewareTabs from './CoursewareTabs.vue';
 import CoursewareTab from './CoursewareTab.vue';
 
 import { mapActions } from 'vuex';
+import StudipIcon from '../StudipIcon.vue';
 
 export default {
     name: 'courseware-dialog-cards-block',
@@ -95,6 +124,7 @@ export default {
         CoursewareFileChooser,
         CoursewareTabs,
         CoursewareTab,
+        StudipIcon,
     },
     props: {
         block: Object,
@@ -110,6 +140,23 @@ export default {
         cards() {
             return this.block?.attributes?.payload?.cards;
         },
+        onlyCard() {
+            return this.currentCards.length === 1;
+        },
+        hasNoPerv() {
+            if(this.currentCards[0] !== undefined) {
+                return this.currentCards[0].active;
+            } else {
+                return true;
+            }
+        },
+        hasNoNext() {
+            if(this.currentCards[this.currentCards.length -1] !== undefined) {
+                return this.currentCards[this.currentCards.length -1].active;
+            } else {
+                return true;
+            }
+        }
     },
     mounted() {
         this.initCurrentData();
@@ -155,12 +202,19 @@ export default {
             this.currentCards.push({
                 index: this.currentCards.length,
                 front_file_id: '',
+                front_file: [],
                 front_text: '',
                 back_file_id: '',
                 back_text: '',
+                back_file: []
             });
         },
-
+        removeCard(cardIndex){
+            this.currentCards = this.currentCards.filter((val, index) => {
+                return !(index === cardIndex);
+            });
+            this.activateCard(0);
+        },
         flipCard(event) {
             event.currentTarget.classList.toggle('is-flipped');
         },

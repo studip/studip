@@ -104,6 +104,9 @@ button.button {
 .button.add {
     @include button-with-icon(add, clickable, info_alt);
 }
+.button.trash {
+    @include button-with-icon(trash, clickable, info_alt);
+}
 .button.download {
     @include button-with-icon(download, clickable, info_alt);
 }

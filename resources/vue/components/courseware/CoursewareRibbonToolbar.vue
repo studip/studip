@@ -1,19 +1,33 @@
 <template>
-    <div class="cw-ribbon-tools" :class="{ unfold: toolsActive, 'cw-ribbon-tools-consume': consumeMode }">
+    <div
+        class="cw-ribbon-tools"
+        :class="{ unfold: toolsActive, 'cw-ribbon-tools-consume': consumeMode }"
+    >
         <div class="cw-ribbon-tool-content" ref="ribbonContent">
             <div class="cw-ribbon-tool-content-nav">
                 <ul>
-                    <li :class="{ active: showContents }" @click="displayTool('contents')">
+                    <li 
+                        tabindex="0"
+                        ref="focusPoint"
+                        :class="{ active: showContents }"
+                        @click="displayTool('contents')"
+                    >
                         <translate>Inhaltsverzeichnis</translate>
                     </li>
                     <li
                         v-if="!consumeMode && showEditMode && canEdit"
+                        tabindex="0"
                         :class="{ active: showBlockAdder }"
                         @click="displayTool('blockadder')"
                     >
                         <translate>Elemente hinzufügen</translate>
                     </li>
-                    <li v-if="!consumeMode && displaySettings" :class="{ active: showAdmin }" @click="displayTool('admin')">
+                    <li 
+                        v-if="!consumeMode && displaySettings" 
+                        tabindex="0" 
+                        :class="{ active: showAdmin }"
+                        @click="displayTool('admin')"
+                    >
                         <translate>Einstellungen</translate>
                     </li>
                 </ul>
@@ -120,7 +134,7 @@ export default {
             if (!newValue) {
                 this.displayTool('contents');
             }
-        },
+        }
     },
 };
 </script>

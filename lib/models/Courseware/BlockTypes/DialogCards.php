@@ -32,7 +32,7 @@ class DialogCards extends BlockType
     public function initialPayload(): array
     {
         return [
-            'cards' => [],
+            'cards' => [['index' => 0, 'front_file_id' => '', 'front_text' => '', 'back_file_id' => '', 'back_text' => '']],
         ];
     }
 

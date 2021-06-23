@@ -125,7 +125,6 @@ r i b b o n
     display: flex;
     flex-wrap: wrap;
     height: auto;
-    min-height: 30px;
     border: solid thin $dark-gray-color-30;
     margin-bottom: 1em;
     padding: 1em;
@@ -295,7 +294,7 @@ r i b b o n
             top: 0;
             background-color: $white;
             margin: 0 0 14px 0;
-            padding: 10px 0 0 0;
+            padding: 8px 0 0 0;
             color: $base-color;
             display: flex;
             border-bottom: solid thin $content-color-40;
@@ -570,10 +569,12 @@ ribbon end
     margin-bottom: 1em;
 
     &.cw-container-colspan-full {
-        width: 1095px;
+        max-width: 1095px;
+        width: 100%;
     }
     &.cw-container-colspan-half {
-        width: 540px;
+        max-width: 540px;
+        width: 100%;
         margin-right: 15px;
     }
     &.cw-container-colspan-half-center {
@@ -2531,6 +2532,25 @@ b e f o r e  a f t e r  b l o c k
 b e f o r e  a f t e r  b l o c k  e n d
 * * * * * * * * * * * * * * * * * * * */
 
+/* * * * * * * * * *
+c h a r t  b l o c k
+* * * * * * * * * */
+
+.cw-block-chart {
+    .cw-block-chart-item-remove {
+        float: right;
+        margin-right: 5px;
+        cursor: pointer;
+        img {
+            vertical-align: text-top;
+        }
+    }
+}
+
+/* * * * * * * * * * * * * *
+c h a r t  b l o c k  e n d
+* * * * * * * * * * * * * */
+
 /* * * * * * * * *
 c o d e  b l o c k
 * * * * * * * * */
@@ -3435,7 +3455,6 @@ dialog cards block
         width: 35px;
         height: 35px;
         background-color: #bbb;
-        background-size: 20px;
         border-radius: 2px;
         background-position: 50%;
         background-repeat: no-repeat;
@@ -3450,11 +3469,17 @@ dialog cards block
 
         &.cw-dialogcards-prev {
             @include background-icon(arr_1left, info-alt, 24);
+
         }
 
         &.cw-dialogcards-next {
             @include background-icon(arr_1right, info-alt, 24);
             right: 0;
+        }
+
+        &.cw-dialogcards-prev-disabled, 
+        &.cw-dialogcards-next-disabled {
+            background-color: $light-gray-color-40;
         }
     }
 

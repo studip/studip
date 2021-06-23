@@ -4,6 +4,9 @@
         <courseware-folder-chooser allowUserFolders unchoose v-model="selectedFolderId" />
         <span v-translate>Datei</span>
         <select v-model="currentValue" @change="selectFile">
+            <option v-show="canBeEmpty" value="">
+                <translate>Keine Auswahl</translate>
+            </option>
             <optgroup v-if="this.context.type === 'courses' && courseFiles.length !== 0" :label="textOptGroupCourse">
                 <option v-for="(file, index) in courseFiles" :key="index" :value="file.id">
                     {{ file.name }}
@@ -36,6 +39,7 @@ export default {
         isVideo: { type: Boolean, default: false },
         isAudio: { type: Boolean, default: false },
         isDocument: { type: Boolean, default: false },
+        canBeEmpty: { type: Boolean, default: false },
     },
     data() {
         return {

@@ -64,10 +64,10 @@
                                 <translate>Es steht keine Auswahl zur Verfügung</translate>.
                             </template>
                             <template #selected-option="{name, hex}">
-                                <span class="vs__option-color" :style="{'background-color': hex}"></span><span>{{$gettext(name)}}</span>
+                                <span class="vs__option-color" :style="{'background-color': hex}"></span><span>{{name}}</span>
                             </template>
                             <template #option="{name, hex}">
-                                <span class="vs__option-color" :style="{'background-color': hex}"></span><span>{{$gettext(name)}}</span>
+                                <span class="vs__option-color" :style="{'background-color': hex}"></span><span>{{name}}</span>
                             </template>
                         </v-select>
                     </label>

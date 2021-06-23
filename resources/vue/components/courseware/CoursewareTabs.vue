@@ -10,7 +10,10 @@
                     tab.icon !== '' && tab.name === '' ? 'cw-tabs-nav-icon-solo-' + tab.icon : '',
                 ]"
                 :href="tab.href"
+                :tabindex="index"
                 @click="selectTab(tab)"
+                @keydown.enter="selectTab(tab)"
+                @keydown.space="selectTab(tab)"
             >
                 {{ tab.name }}
             </li>
