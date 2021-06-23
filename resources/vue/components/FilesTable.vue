@@ -296,7 +296,8 @@ export default {
             const directionFactor = this.sortDirection === "asc" ? 1 : -1;
 
             // Default sort function by string comparison of field
-            let sortFunction = (a, b) => a[this.sortedBy].localeCompare(b[this.sortedBy]);
+            const collator = new Intl.Collator(String.locale, {numeric: true, sensitivity: 'base'});
+            let sortFunction = (a, b) => collator.compare(a[this.sortedBy], b[this.sortedBy]);
 
             // Sort numerically by field
             if (["size", "downloads", "chdate"].includes(this.sortedBy) && arrayHasKey) {
@@ -310,7 +311,7 @@ export default {
                         && !isNaN(parseFloat(item.additionalColumns[this.sortedBy].order));
                 });
                 if (is_string) {
-                    sortFunction = (a, b) => a.additionalColumns[this.sortedBy].order.localeCompare(b.additionalColumns[this.sortedBy].order);
+                    sortFunction = (a, b) => collator.compare(a.additionalColumns[this.sortedBy].order, b.additionalColumns[this.sortedBy].order);
                 } else {
                     sortFunction = (a, b) => a.additionalColumns[this.sortedBy].order - b.additionalColumns[this.sortedBy].order;
                 }
