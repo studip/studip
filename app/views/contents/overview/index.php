@@ -1,4 +1,4 @@
-<div class="teaserbox">
+ <div class="teaserbox">
     <header>
         <?= _('Alle Inhalte an einem Ort.')?>
     </header>

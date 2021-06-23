@@ -1,0 +1,6 @@
+pluginclassname=ContentsWidget
+pluginname=ContentsWidget
+origin=core
+version=1.0
+plugincontext=Startseite
+description=Mit diesem Widget haben Sie einen Überblick über Ihre Inhalte
