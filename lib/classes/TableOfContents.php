@@ -149,20 +149,26 @@ class TableOfContents
     public function getInfosForBC()
     {
         $this->toc  = WikiPage::findLatestPage(Context::getId(), Request::get('keyword') ?: $this->entry_page);
-        $this->user = User::find($this->toc->user_id);
-        if ($this->user) {
-            $editor = sprintf('<a href="%s">%s</a>',
-                URLHelper::getLink('dispatch.php/profile?username=' . $this->user->username),
-                htmlReady($this->user->getFullName()));
+        if ($this->toc) {
+            $this->user = User::find($this->toc->user_id);
+            if ($this->user) {
+                $editor = sprintf('<a href="%s">%s</a>',
+                    URLHelper::getLink('dispatch.php/profile?username=' . $this->user->username),
+                    htmlReady($this->user->getFullName()));
+            } else {
+                $editor = _('unbekannt');
+            }
+            $page_string = sprintf(_('<a %s> Version %s</a>, geändert von %s'),
+                ' href="' . URLHelper::getLink('', ['keyword' => $this->toc->keyword, 'version' => $this->toc->version]) . '"',
+                $this->toc->version, $editor);
+            $page_string .= '<br />';
+            $page_string .= strftime(_('am %x, %X'), $this->toc->chdate);
+
+
+            return $page_string;
         } else {
-            $editor = _('unbekannt');
+            return "";
         }
-        $page_string = sprintf(_('<a %s> Version %s</a>, geändert von %s'),
-            ' href="' . URLHelper::getLink('', ['keyword' => $this->toc->keyword, 'version' => $this->toc->version]) . '"',
-            $this->toc->version, $editor);
-        $page_string .= '<br />';
-        $page_string .= strftime(_('am %x, %X'), $this->toc->chdate);
-        return $page_string;
     }
 
     /**

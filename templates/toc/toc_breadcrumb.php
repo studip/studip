@@ -50,10 +50,7 @@
         <!-- -->
 
         <?= $toc_entries ?>
-        <label for="cb-fullscreen" class="check-box" title="<?= _('Vollbild einschalten') ?>" >
-            <?= Icon::create('zoom-in2', 'clickable')->asImg(24) ?>
-        </label>
-        <input type="checkbox" id="cb-toc"/>
+
 
         <?= $actionMenu->render() ?>
     </div>
