@@ -403,3 +403,12 @@ $(window).on('load', () => {
         prefersContrast()
     );
 });
+
+
+// Trigger consuming mode on contentbar
+STUDIP.domReady(function () {
+    $(document).on("click", ".consuming_mode_trigger", function () {
+        $("body").toggleClass("consuming_mode");
+        return false;
+    });
+});

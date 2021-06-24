@@ -133,37 +133,56 @@ const OER = {
                         if (tag_hash) {
                             tags.push(tag_hash);
                         }
-                        $.ajax({
-                            url: STUDIP.URLHelper.getURL("dispatch.php/oer/market/get_tags"),
-                            data: {
-                                tags: tags
-                            },
-                            dataType: "json",
-                            success: function (output) {
-                                v.results = output.results.materials;
-                                v.tags = output.tags;
-                                if (tag_hash) {
-                                    v.tagHistory.push({
-                                        tag_hash: tag_hash,
-                                        name: name
-                                    });
+                        console.log(tags);
+                        let p = new Promise(function (resolve, reject) {
+                            console.log(name);
+                            console.log(tags);
+                            $.ajax({
+                                url: STUDIP.URLHelper.getURL("dispatch.php/oer/market/get_tags"),
+                                data: {
+                                    tags: tags
+                                },
+                                dataType: "json",
+                                success: function (output) {
+                                    v.results = output.results.materials;
+                                    console.log(output.tags);
+                                    v.tags = output.tags;
+                                    if (tag_hash) {
+                                        v.tagHistory.push({
+                                            tag_hash: tag_hash,
+                                            name: name
+                                        });
+                                    }
+                                    if (v.tagHistory.length > 0) {
+                                        $("#new_ones").hide();
+                                    }
+                                    resolve();
+                                },
+                                error: function () {
+                                    reject();
                                 }
-                                if (v.tagHistory.length > 0) {
-                                    $("#new_ones").hide();
-                                }
-                            }
+                            });
                         });
+                        return p;
                     },
                     backInCloud: function () {
                         this.tagHistory.pop();
-                        let tag = null;
-                        if (this.tagHistory.length === 0) {
-                            $("#new_ones").show();
-                        }
+                        let tag_hash = null;
+                        let tag_name = null;
                         if (this.tagHistory.length > 0) {
-                            tag = this.tagHistory.pop();
+                            tag_hash = this.tagHistory[this.tagHistory.length - 1].tag_hash;
+                            tag_name = this.tagHistory[this.tagHistory.length - 1].name;
                         }
-                        this.browseTag(tag ? tag.tag_hash : null, tag ? tag.tag_name : null);
+                        let v = this;
+                        this.browseTag(tag_hash, tag_name).then(function () {
+                            if (v.tagHistory.length === 0) {
+                                $("#new_ones").show();
+                            }
+                            if (v.tagHistory.length > 0) {
+                                v.tagHistory.pop();
+                            }
+                        });
+
                     },
                     getTagStyle: function (tag_hash) {
                         return "position: relative; top: " + Math.floor(Math.random() * 15 - 15) + "px";

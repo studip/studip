@@ -1,8 +1,15 @@
+<div class="contentbar">
+    <div class="contentbar_title">
+        <?= htmlReady($material['name']) ?>
+    </div>
+    <div class="contentbar_info">
+        <a class="consuming_mode_trigger"
+           href="#"
+           title="<?= _("Konsummodus ein-/ausschalten") ?>">
+        </a>
+    </div>
+</div>
 
-<article class="studip">
-    <header>
-        <h1><?= htmlReady($material['name']) ?></h1>
-    </header>
 
     <? $url = $material['host_id'] ? $material->host->url."download/".$material['foreign_material_id'] : $controller->link_for("oer/endpoints/download/".$material->getId()) ?>
 
@@ -201,7 +208,6 @@
         <? endif ?>
     </div>
 
-</article>
 
 <? $allowed_to_review = !$material->isMine() && $GLOBALS['perm']->have_perm("autor") ?>
 <? if (!$material->isMine() || count($material->reviews)) : ?>
