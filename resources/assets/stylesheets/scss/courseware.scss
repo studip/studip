@@ -69,8 +69,8 @@ $media-buttons: (
     play: play,
     stop: stop,
     pause: pause,
-    prev: arr_2left,
-    next: arr_2right
+    prev: arr_eol-left,
+    next: arr_eol-right
 );
 
 /* * * * * *
@@ -145,6 +145,7 @@ r i b b o n
 
     .cw-ribbon-wrapper-left {
         display: flex;
+        max-width: calc(100% - 106px);
 
         .cw-ribbon-nav {
             min-width: 75px;
@@ -212,11 +213,11 @@ r i b b o n
         }
 
         &.cw-ribbon-button-zoom {
-            @include background-icon(zoom-in2, clickable, 24);
+            @include background-icon(fullscreen-on, clickable, 24);
         }
 
         &.cw-ribbon-button-zoom-out {
-            @include background-icon(zoom-out2, clickable, 24);
+            @include background-icon(fullscreen-off, clickable, 24);
         }
 
         &.cw-ribbon-button-prev {
@@ -2318,7 +2319,7 @@ a u d i o  b l o c k
 .cw-block-audio {
     .cw-audio-container {
         border: solid thin $content-color-40;
-        padding-top: 2em;
+        padding-top: 1em;
     }
     .cw-audio-controls {
         text-align: right;
@@ -2471,26 +2472,40 @@ a u d i o  b l o c k
         cursor: pointer;
 
         .cw-playlist-item {
-            @include background-icon(play);
+            @include background-icon(file-audio2, clickable, 24);
             background-repeat: no-repeat;
             background-position: 1em center;
 
             margin: 1em;
             padding: 1em;
-            padding-left: 3em;
+            padding-left: 4em;
             color: $base-color;
             &:hover {
                 color: $active-color;
             }
-            &.is-playing {
-                @include background-icon(pause, clickable);
-            }
             &.current-item {
+                @include background-icon(play, clickable, 24);
                 font-weight: 700;
+                &.is-playing {
+                    @include background-icon(pause, clickable, 24);
+                }
             }
             &:not(:last-child) {
                 border-bottom: solid thin $dark-gray-color-30;
             }
+        }
+    }
+
+    .cw-audio-current-track {
+        @include background-icon(file-audio2, info, 96);
+        background-position: top center;
+        background-repeat: no-repeat;
+        width: 100%;
+        min-height: 140px;
+        margin: 1em 0 2em 0;
+        p {
+            text-align: center;
+            padding-top: 106px;
         }
     }
 }
