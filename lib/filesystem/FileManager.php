@@ -978,7 +978,6 @@ class FileManager
         //now go through all files and copy them, too:
         foreach ($source_folder->getFiles() as $file) {
             $result = self::copyFile($file, $new_folder, $user);
-            //$result = self::copyFile($file->getFiletype(), $new_folder, $user);
             if (!$result instanceof FileType) {
                 return $result;
             }
