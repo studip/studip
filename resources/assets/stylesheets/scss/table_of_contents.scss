@@ -191,42 +191,6 @@ section > .toc {
 
 }
 
-#contentbar {
-    background-color: $base-gray-color-5;
-    border: 1px solid $content-color-40;
-    margin-bottom: 15px;
-    min-height: 38px;
-    padding: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    > a {
-        //align-self: flex-start;
-
-    }
-
-    span {
-        vertical-align: middle;
-        line-height: 20px;
-        border-bottom: none;
-        font-size: medium;
-        text-align: right;
-        margin-right: 0;
-        padding-right: 10px;
-    }
-
-    nav {
-        margin-top: 6px;
-    }
-
-}
-
-#contentbar_info {
-    display: flex;
-    align-self: flex-start;
-}
-
 #wikifooter {
     background-color: $content-color-20;
     border-top: 1px solid $brand-color-darker;
@@ -238,9 +202,9 @@ section > .toc {
 
 ul.breadcrumb {
     list-style: none;
-    font-size: 1.3em;
     padding-left: 10px;
     width: 70%;
+    display: inline-block;
 
     div {
         float: left;

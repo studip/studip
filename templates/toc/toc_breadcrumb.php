@@ -31,14 +31,22 @@
     <? endif ?>
 <? endif ?>
 
-<div id="contentbar">
-    <a href="<?= URLHelper::getLink('wiki.php', ['keyword' => 'WikiWikiWeb'])?>" title="<?= _('Wiki-Startseite') ?>">
-        <?=Icon::create('wiki', 'clickable')->asImg(24, ['style' => '']) ?>
-    </a>
-    <ul class="breadcrumb"><?= $toc_breadcrumb_pages ?></ul>
+<div class="contentbar">
+    <div class="contentbar_title">
+        <a href="<?= URLHelper::getLink('wiki.php', ['keyword' => 'WikiWikiWeb'])?>"
+           title="<?= _('Wiki-Startseite') ?>">
+            <?=Icon::create('wiki', 'clickable')->asImg(24, ['class' => 'text-bottom']) ?>
+        </a>
+        <ul class="breadcrumb"><?= $toc_breadcrumb_pages ?></ul>
+    </div>
 
-    <div id="contentbar_info">
-    <span id="change_info"><?= $toc_breadcrumb_info ?></span>
+    <div class="contentbar_info">
+        <div class="textblock"><?= $toc_breadcrumb_info ?></div>
+
+        <a class="consuming_mode_trigger"
+           href="#"
+           title="<?= _("Konsummodus ein-/ausschalten") ?>">
+        </a>
 
         <!-- do not show if 0 entries -->
         <? if ($count > 0) : ?>
@@ -48,6 +56,7 @@
         </label>
         <? endif ?>
         <!-- -->
+
 
         <?= $toc_entries ?>
 

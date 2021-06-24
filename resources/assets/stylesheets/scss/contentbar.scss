@@ -11,17 +11,28 @@
 
     .contentbar_title {
         font-size: 1.3em;
+        width: 50%;
+    }
+
+    .textblock {
+        display: inline-block;
+        margin-left: 10px;
+        margin-right: 10px;
     }
 
     .contentbar_info {
         text-align: right;
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
         .consuming_mode_trigger:not(body.consuming_mode .consuming_mode_trigger) {
             position: relative;
             top: -3px;
             display: inline-block;
-            width: 25px;
-            height: 25px;
-            @include icon(before, zoom-in2, clickable, 25px, 0px);
+            width: 24px;
+            height: 24px;
+            @include icon(before, zoom-in2, clickable, 24px, 0px);
+            margin-left: 5px;
         }
     }
 }
