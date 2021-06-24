@@ -2461,40 +2461,47 @@ a u d i o  b l o c k
     .cw-audio-range::-ms-tooltip {
         display: none;
     }
-
-    .cw-audio-playlist {
+    .cw-audio-playlist-wrapper {
         margin-top: -1em;
-        padding-left: 0;
         padding-top: 1em;
         border: solid thin $content-color-40;
         border-top: none;
-        list-style: none;
-        cursor: pointer;
 
-        .cw-playlist-item {
-            @include background-icon(file-audio2, clickable, 24);
-            background-repeat: no-repeat;
-            background-position: 1em center;
-
-            margin: 1em;
-            padding: 1em;
-            padding-left: 4em;
-            color: $base-color;
-            &:hover {
-                color: $active-color;
-            }
-            &.current-item {
-                @include background-icon(play, clickable, 24);
-                font-weight: 700;
-                &.is-playing {
-                    @include background-icon(pause, clickable, 24);
+        .cw-audio-playlist {
+            padding-left: 0;
+            list-style: none;
+            cursor: pointer;
+    
+            .cw-playlist-item {
+                @include background-icon(file-audio2, clickable, 24);
+                background-repeat: no-repeat;
+                background-position: 1em center;
+    
+                margin: 1em;
+                padding: 1em;
+                padding-left: 4em;
+                color: $base-color;
+                &:hover {
+                    color: $active-color;
+                }
+                &.current-item {
+                    @include background-icon(play, clickable, 24);
+                    font-weight: 700;
+                    &.is-playing {
+                        @include background-icon(pause, clickable, 24);
+                    }
+                }
+                &:not(:last-child) {
+                    border-bottom: solid thin $dark-gray-color-30;
                 }
             }
-            &:not(:last-child) {
-                border-bottom: solid thin $dark-gray-color-30;
-            }
+        }
+        .cw-audio-playlist-recorder {
+            border-top: solid thin $content-color-40;
+            padding: 1em;
         }
     }
+
 
     .cw-audio-current-track {
         @include background-icon(file-audio2, info, 96);

@@ -33,10 +33,11 @@ class Audio extends BlockType
     {
         return [
             'title' => 'Audio',
-            'source' => 'studip',
+            'source' => 'studip_folder',
             'file_id' => '',
             'folder_id' => '',
             'web_url' => '',
+            'recorder_enabled' => 'false'
         ];
     }
 

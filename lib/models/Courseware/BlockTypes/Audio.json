@@ -16,6 +16,9 @@
         },
         "web_url": {
             "type": "string"
+        },
+        "recorder_enabled": {
+            "type": "string"
         }
     },
     "required": [
