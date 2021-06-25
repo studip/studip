@@ -2,7 +2,7 @@
 
 class Contents_OverviewController extends AuthenticatedController
 {
-        /**
+    /**
      * Callback function being called before an action is executed.
      *
      * @SuppressWarnings(PHPMD.CamelCaseMethodName)
@@ -17,23 +17,17 @@ class Contents_OverviewController extends AuthenticatedController
         $this->user = $GLOBALS['user'];
     }
 
-        /**
+    /**
      * Entry point of the controller that displays the dashboard page of Stud.IP.
      *
-     * @param string $action
-     * @param string $widgetId
      * @SuppressWarnings(PHPMD.CamelCaseMethodName)
      * @SuppressWarnings(PHPMD.Superglobals)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function index_action($action = false, $widgetId = null)
+    public function index_action()
     {
-        global $perm;
+        Navigation::activateItem('/contents/overview/index');
 
-        if (Navigation::hasItem("/contents/overview/index")) {
-            Navigation::activateItem("/contents/overview/index");
-        }
-
-        $this->show_oer_item = Config::get()->OERCAMPUS_ENABLED && $perm && $perm->have_perm(Config::get()->OER_PUBLIC_STATUS);
+        $this->tiles = Navigation::getItem('/contents');
     }
 }

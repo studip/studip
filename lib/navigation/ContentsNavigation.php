@@ -44,6 +44,9 @@ class ContentsNavigation extends Navigation
 
 
         $courseware = new Navigation(_('Courseware'));
+        $courseware->setDescription(_('Schöner lernen mit Stud.IP'));
+        $courseware->setImage(Icon::create(Assets::image_path('courseware-keyvisual.svg')));
+
         $courseware->addSubNavigation(
             'projects',
             new Navigation(_('Übersicht'), 'dispatch.php/contents/courseware/index')
@@ -69,6 +72,9 @@ class ContentsNavigation extends Navigation
 
 
         $files = new Navigation(_('Dateien'));
+        $files->setDescription(_('Alle Dokumente an einem Ort'));
+        $files->setImage(Icon::create(Assets::image_path('files-keyvisual.svg')));
+
         $files->addSubNavigation(
             'overview',
             new Navigation(_('Übersicht'), 'dispatch.php/files/overview')
@@ -87,6 +93,9 @@ class ContentsNavigation extends Navigation
 
         if (Config::get()->OERCAMPUS_ENABLED && $perm && $perm->have_perm(Config::get()->OER_PUBLIC_STATUS)) {
             $oer = new Navigation(Config::get()->OER_TITLE);
+            $oer->setDescription(_('Freies Wissen für freie Köpfe'));
+            $oer->setImage(Icon::create(Assets::image_path('oer-keyvisual.svg')));
+
             $oer->addSubNavigation(
                 'market',
                 new Navigation(Config::get()->OER_TITLE, 'dispatch.php/oer/market')

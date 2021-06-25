@@ -18,9 +18,7 @@ class ContentsWidget extends StudIPPlugin implements PortalPlugin
     {
         $template_factory = new Flexi_TemplateFactory(__DIR__ . '/templates');
         $template = $template_factory->open('index');
-        $template->show_oer_item = Config::get()->OERCAMPUS_ENABLED
-            && $GLOBALS['perm']
-            && $GLOBALS['perm']->have_perm(Config::get()->OER_PUBLIC_STATUS);
+        $template->tiles = Navigation::getItem('/contents');
         return $template;
     }
 }
