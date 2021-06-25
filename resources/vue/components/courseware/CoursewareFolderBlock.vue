@@ -19,6 +19,11 @@
                             <span class="cw-block-folder-download-icon"></span>
                         </a>
                     </li>
+                    <li v-if="files.length === 0">
+                        <span class="cw-block-file-info cw-block-file-icon-empty">
+                            <translate>Dieser Ordner ist leer</translate>
+                        </span>
+                    </li>
                 </ul>
             </template>
             <template v-if="canEdit" #edit>
@@ -69,6 +74,7 @@ export default {
         ...mapGetters({
             relatedFileRefs: 'file-refs/related',
             urlHelper: 'urlHelper',
+            relatedTermOfUse: 'terms-of-use/related',
         }),
         folderType() {
             return this.block?.attributes?.payload?.type;
@@ -96,12 +102,21 @@ export default {
         async getFolderFiles() {
             const parent = { type: 'folders', id: `${this.currentFolderId}` };
             const relationship = 'file-refs';
-            await this.loadRelatedFileRefs({ parent, relationship });
+            const options = { include: 'terms-of-use' };
+            await this.loadRelatedFileRefs({ parent, relationship, options });
             const fileRefs = this.relatedFileRefs({ parent, relationship }) ?? [];
             this.processFiles(fileRefs);
         },
         processFiles(files) {
-            this.files = files.map(({ id, attributes }) => ({
+            this.files = files
+            .filter((file) => {
+                if (this.relatedTermOfUse({parent: file, relationship: 'terms-of-use'}).attributes['download-condition'] !== 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            })
+            .map(({ id, attributes }) => ({
                 id,
                 name: attributes.name,
                 icon: this.getIcon(attributes['mime-type']),

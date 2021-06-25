@@ -18,7 +18,7 @@
                     @loadeddata="setDuration"
                     @ended="onEndedListener"
                 />
-                <div class="cw-audio-container">
+                <div v-if="!emptyAudio" class="cw-audio-container">
                     <div class="cw-audio-current-track">
                         <p>{{ activeTrackName }}</p>
                     </div>
@@ -103,6 +103,9 @@
                             <translate>Aufnahme läuft</translate>: {{seconds2time(timer)}}
                         </span>
                     </div>
+                </div>
+                <div v-if="emptyAudio" class="cw-audio-empty">
+                    <p><translate>Es ist keine Audio-Datei verfügbar</translate></p>
                 </div>
             </template>
             <template v-if="canEdit" #edit>
@@ -190,7 +193,6 @@ export default {
             timer: 0,
             isRecording: false,
             newRecording: false,
-
         };
     },
     computed: {
@@ -298,6 +300,18 @@ export default {
             }
 
             return '';
+        },
+        emptyAudio() {
+            if (this.currentSource === 'studip_folder' && this.currentFolderId !== '') {
+                return false;
+            }
+            if (this.currentSource === 'studip_file' && this.currentFileId !== '') {
+                return false;
+            }
+            if (this.currentSource === 'web' && this.currentWebUrl !== '') {
+                return false;
+            }
+            return true;
         }
     },
     mounted() {

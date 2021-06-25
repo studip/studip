@@ -42,6 +42,7 @@ class Headline extends BlockType
             'background_type' => 'color',
             'text_color' => '#ffffff',
             'icon' => 'learnmodule',
+            'icon_color' => 'white',
         ];
     }
 

@@ -9,13 +9,14 @@
             @closeEdit="initCurrentData"
         >
             <template #content>
-                <div v-if="currentTitle !== ''" class="cw-block-title">{{ currentTitle }}</div>
+                <div v-if="currentTitle !== '' && currentURL" class="cw-block-title">{{ currentTitle }}</div>
                 <video
+                    v-if="currentURL"
                     :src="currentURL"
                     controls
                     :autoplay="currentAutoplay === 'enabled'"
                     @contextmenu="contextHandler"
-                ></video>
+                />
             </template>
             <template v-if="canEdit" #edit>
                 <form class="default" @submit.prevent="">
@@ -32,7 +33,7 @@
                     </label>
                     <label v-if="currentSource === 'web'">
                         <translate>URL</translate>
-                        <input type="text" v-model="webAddress" />
+                        <input type="text" v-model="currentWebUrl" />
                     </label>
                     <label v-if="currentSource === 'studip'">
                         <translate>Datei</translate>
@@ -127,7 +128,9 @@ export default {
             if (this.currentSource === 'web') {
                 return this.currentWebUrl;
             }
+            return false;
         },
+
     },
     mounted() {
         this.loadFileRefs(this.block.id).then((response) => {
@@ -139,9 +142,11 @@ export default {
     methods: {
         ...mapActions({
             updateBlock: 'updateBlockInContainer',
-            loadFileRefs: 'loadFileRefs'
+            loadFileRefs: 'loadFileRefs',
+            companionWarning: 'companionWarning',
         }),
         storeBlock() {
+            let cmpInfo = false;
             let attributes = {};
             attributes.payload = {};
             attributes.payload.title = this.currentTitle;
@@ -149,15 +154,20 @@ export default {
             if (this.currentSource === 'studip' && this.currentFile !== undefined) {
                 attributes.payload.file_id = this.currentFile.id;
                 attributes.payload.web_url = '';
-            } else if (this.currentSource === 'web') {
+            } else if (this.currentSource === 'web' && this.currentWebUrl !== '') {
                 attributes.payload.file_id = '';
-                attributes.payload.web_url = this.currentURL;
+                attributes.payload.web_url = this.currentWebUrl;
             } else {
-                return false;
+                cmpInfo = this.$gettext('Bitte wählen Sie ein Video aus');
             }
             attributes.payload.aspect = this.currentAspect;
             attributes.payload.context_menu = this.currentContextMenu;
             attributes.payload.autoplay = this.currentAutoplay;
+
+            if (cmpInfo) {
+                this.companionWarning({ info: cmpInfo });
+                return false;
+            }
 
             this.updateBlock({
                 attributes: attributes,

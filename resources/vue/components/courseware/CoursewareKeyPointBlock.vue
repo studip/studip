@@ -10,7 +10,7 @@
         >
             <template #content>
                 <div class="cw-keypoint-content" :class="['cw-keypoint-' + currentColor]">
-                    <studip-icon v-if="currentIcon" :size="36" :shape="currentIcon" :role="currentRole"/>
+                    <studip-icon v-if="currentIcon" size="48" :shape="currentIcon" :role="currentRole"/>
                     <p class="cw-keypoint-sentence">{{currentText}}</p>
                 </div>
             </template>

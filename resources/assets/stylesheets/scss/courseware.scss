@@ -1059,23 +1059,46 @@ t a b s
 $icons: (
     accept,
     add,
+    add-circle,
     admin,
+    aladdin,
+    arr_1down,
+    arr_1left,
+    arr_1right,
+    arr_1up,
+    arr_2down,
+    arr_2left,
+    arr_2right,
+    arr_2up,
     audio,
+    audio3,
     billboard,
+    block-canvas,
+    block-comparison,
+    block-eyecatcher,
+    block-gallery,
+    block-gallery2,
+    block-imagemap,
+    brainstorm,
     campusnavi,
     chat2,
     code,
-    community,
+    community2,
     computer,
-    crown,
     consultation,
+    content,
     courseware,
-    date,
+    crown,
+    date-single,
     decline,
+    decline-circle,
     doctoral_cap,
+    download,
     dropbox,
     edit,
     exclaim,
+    exclaim-circle,
+    export,
     favorite,
     filter,
     globe,
@@ -1083,13 +1106,14 @@ $icons: (
     group2,
     group3,
     group4,
-    headache,
+    home2,
     info,
+    info-circle,
     install,
     institute,
     key,
+    knife,
     learnmodule,
-    light-bulb,
     link2,
     link3,
     link-extern,
@@ -1097,32 +1121,48 @@ $icons: (
     literature,
     lock-locked,
     lock-unlocked,
-    mail,
+    mail2,
     medal,
     metro,
+    module,
+    network,
     notification,
     notification2,
     outer-space,
+    permalink,
+    person,
     phone,
+    picture,
     place,
     plugin,
     question,
+    question-circle,
     ranking,
     remove,
+    remove-circle,
     resources,
     roles,
+    schedule2,
+    search,
     settings,
-    notification2,
     span-empty,
     span-1quarter,
     span-2quarter,
     span-3quarter,
     span-full,
+    spiral,
+    sport,
     staple,
     star,
+    star-empty,
+    star-halffull,
+    test,
     tools,
     topic,
-    visibility-visible
+    ufo,
+    video2,
+    visibility-visible,
+    wizard
 );
 
 .cw-tabs-nav {
@@ -2515,6 +2555,18 @@ a u d i o  b l o c k
             padding-top: 106px;
         }
     }
+    .cw-audio-empty {
+        @include background-icon(file, info, 96);
+        border: solid thin $content-color-40;
+        background-position: center 1em;
+        background-repeat: no-repeat;
+        min-height: 140px;
+        padding: 1em;
+        p {
+            text-align: center;
+            padding-top: 106px;
+        }
+    }
 }
 /* * * * * * * * * * * * * *
 a u d i o  b l o c k  e n d
@@ -2898,7 +2950,7 @@ c a n v a s  b l o c k
             }
         }
         &.cw-canvasblock-show-own {
-            @include background-icon(headache, clickable, 24);
+            @include background-icon(person, clickable, 24);
             &.selected-view {
                 border: solid 2px $black;
             }
@@ -3084,6 +3136,7 @@ f o l d e r  b l o c k
 .cw-block-folder-list {
     border: solid thin #ccc;
     padding: 4px;
+    list-style: none;
 
     .cw-block-folder-file-item {
         list-style: none;
@@ -3119,6 +3172,14 @@ f o l d e r  b l o c k
     line-height: 24px;
     color: $base-color;
 
+    &.cw-block-file-icon-empty {
+        color: $black;
+        @include background-icon(folder-empty, info, 24);
+    }
+    &.cw-block-file-icon-none {
+        color: $black;
+        @include background-icon(file, info, 24);
+    }
     &.cw-block-file-icon-audio {
         @include background-icon(file-audio, clickable, 24);
     }
@@ -3575,6 +3636,18 @@ headline block
                     &.icon-white-#{$icon} {
                         @include background-icon($icon, info-alt, 196);
                     }
+                    &.icon-studip-blue-#{$icon} {
+                        @include background-icon($icon, clickable, 196);
+                    }
+                    &.icon-studip-red-#{$icon} {
+                        @include background-icon($icon, status-red, 196);
+                    }
+                    &.icon-studip-yellow-#{$icon} {
+                        @include background-icon($icon, status-yellow, 196);
+                    }
+                    &.icon-studip-green-#{$icon} {
+                        @include background-icon($icon, status-green, 196);
+                    }
                 };
 
                 &.half {
@@ -3623,6 +3696,18 @@ headline block
                     }
                     &.icon-white-#{$icon} {
                         @include background-icon($icon, info-alt, 196);
+                    }
+                    &.icon-studip-blue-#{$icon} {
+                        @include background-icon($icon, clickable, 196);
+                    }
+                    &.icon-studip-red-#{$icon} {
+                        @include background-icon($icon, status-red, 196);
+                    }
+                    &.icon-studip-yellow-#{$icon} {
+                        @include background-icon($icon, status-yellow, 196);
+                    }
+                    &.icon-studip-green-#{$icon} {
+                        @include background-icon($icon, status-green, 196);
                     }
                 };
             }

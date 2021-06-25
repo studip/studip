@@ -16,7 +16,7 @@
                 >
                     <div
                         class="icon-layer"
-                        :class="['icon-' + iconColor + '-' + currentIcon, currentHeight === 'half' ? 'half' : 'full']"
+                        :class="['icon-' + currentIconColor + '-' + currentIcon, currentHeight === 'half' ? 'half' : 'full']"
                     >
                         <div class="cw-block-headline-textbox">
                             <div class="cw-block-headline-title">
@@ -48,6 +48,14 @@
                         </select>
                     </label>
                     <label>
+                        <translate>Haupttitel</translate>
+                        <input type="text" v-model="currentTitle" />
+                    </label>
+                    <label>
+                        <translate>Untertitel</translate>
+                        <input type="text" v-model="currentSubtitle" />
+                    </label>
+                    <label>
                         <translate>Textfarbe</translate>
                         <v-select
                             :options="colors"
@@ -72,14 +80,6 @@
                         </v-select>
                     </label>
                     <label>
-                        <translate>Haupttitel</translate>
-                        <input type="text" v-model="currentTitle" />
-                    </label>
-                    <label>
-                        <translate>Untertitel</translate>
-                        <input type="text" v-model="currentSubtitle" />
-                    </label>
-                    <label>
                         <translate>Icon</translate>
                         <v-select :clearable="false" :options="icons" v-model="currentIcon" class="cw-vs-select">
                             <template #open-indicator="selectAttributes">
@@ -93,6 +93,30 @@
                             </template>
                             <template #option="option">
                                 <studip-icon :shape="option.label"/> <span class="vs__option-with-icon">{{option.label}}</span>
+                            </template>
+                        </v-select>
+                    </label>
+                    <label>
+                        <translate>Icon-Farbe</translate>
+                        <v-select
+                            :options="iconColors"
+                            label="value"
+                            :reduce="iconColor => iconColor.class"
+                            :clearable="false"
+                            v-model="currentIconColor"
+                            class="cw-vs-select"
+                        >
+                            <template #open-indicator="selectAttributes">
+                                <span v-bind="selectAttributes"><studip-icon shape="arr_1down" size="10"/></span>
+                            </template>
+                            <template #no-options="{ search, searching, loading }">
+                                <translate>Es steht keine Auswahl zur Verfügung</translate>.
+                            </template>
+                            <template #selected-option="{name, hex}">
+                                <span class="vs__option-color" :style="{'background-color': hex}"></span><span>{{name}}</span>
+                            </template>
+                            <template #option="{name, hex}">
+                                <span class="vs__option-color" :style="{'background-color': hex}"></span><span>{{name}}</span>
                             </template>
                         </v-select>
                     </label>
@@ -168,6 +192,7 @@ export default {
             currentBackgroundColor: '',
             currentTextColor: '',
             currentIcon: '',
+            currentIconColor: '',
             currentBackgroundType: '',
             currentBackgroundImageId: '',
             currentBackgroundImage: {},
@@ -194,6 +219,9 @@ export default {
         },
         icon() {
             return this.block?.attributes?.payload?.icon;
+        },
+        iconColor() {
+            return this.block?.attributes?.payload?.icon_color;
         },
         backgroundImageId() {
             return this.block?.attributes?.payload?.background_image_id;
@@ -235,8 +263,17 @@ export default {
 
             return colors;
         },
-        iconColor() {
-            return this.calcIconColor(this.currentBackgroundColor);
+        iconColors() {
+            const iconColors = [
+                {name: this.$gettext('Schwarz'), class: 'black', hex: '#000000'},
+                {name: this.$gettext('Weiß'), class: 'white', hex: '#ffffff'},
+                {name: this.$gettext('Blau'), class: 'studip-blue', hex: '#28497c'},
+                {name: this.$gettext('Rot'), class: 'studip-red', hex: '#d60000'},
+                {name: this.$gettext('Grün'), class: 'studip-green', hex: '#008512'},
+                {name: this.$gettext('Gelb'), class: 'studip-yellow', hex: '#ffbd33'},
+            ];
+
+            return iconColors;
         },
         textStyle() {
             let style = {};
@@ -275,6 +312,7 @@ export default {
             this.currentBackgroundColor = this.backgroundColor;
             this.currentTextColor = this.textColor;
             this.currentIcon = this.icon;
+            this.currentIconColor = this.iconColor;
             this.currentBackgroundType = this.backgroundType;
             this.currentBackgroundImageId = this.backgroundImageId;
             if (typeof this.backgroundImage === 'object' && !Array.isArray(this.backgroundImage)) {
@@ -298,6 +336,7 @@ export default {
             attributes.payload.background_color = this.currentBackgroundColor;
             attributes.payload.text_color = this.currentTextColor;
             attributes.payload.icon = this.currentIcon;
+            attributes.payload.icon_color = this.currentIconColor;
             attributes.payload.background_image_id = this.currentBackgroundImageId;
             attributes.payload.background_type = this.currentBackgroundType;
 

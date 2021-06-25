@@ -60,16 +60,27 @@
                         >
                             <label>
                                 <translate>Farbe</translate>
-                                <select v-model="shape.data.color" @change="drawScreen">
-                                    <option
-                                        v-for="(rgba, color) in colors"
-                                        :key="color"
-                                        class="cw-image-map-color"
-                                        :value="color"
-                                    >
-                                        {{ color }}
-                                    </option>
-                                </select>
+                                <v-select
+                                    :options="colors"
+                                    label="name"
+                                    :reduce="color => color.class"
+                                    :clearable="false"
+                                    v-model="shape.data.color"
+                                    class="cw-vs-select"
+                                >
+                                    <template #open-indicator="selectAttributes">
+                                        <span v-bind="selectAttributes"><studip-icon shape="arr_1down" size="10"/></span>
+                                    </template>
+                                    <template #no-options="{ search, searching, loading }">
+                                        <translate>Es steht keine Auswahl zur Verfügung</translate>.
+                                    </template>
+                                    <template #selected-option="{name, rgba}">
+                                        <span class="vs__option-color" :style="{'background-color': rgba}"></span><span>{{name}}</span>
+                                    </template>
+                                    <template #option="{name, rgba}">
+                                        <span class="vs__option-color" :style="{'background-color': rgba}"></span><span>{{name}}</span>
+                                    </template>
+                                </v-select>
                             </label>
                             <label v-if="shape.type === 'arc'" class="cw-block-image-map-dimensions">
                                 X: <input type="number" v-model="shape.data.centerX" @change="drawScreen" /> Y:
@@ -175,19 +186,19 @@ export default {
             map_name: '',
             areas: [],
             darkColors: ['black', 'darkgrey', 'purple'],
-            colors: {
-                transparent: 'rgba(0,0,0,0)',
-                white: 'rgba(255,255,255,1)',
-                blue: 'rgba(52,152,219,1)',
-                green: 'rgba(46,204,113,1)',
-                purple: 'rgba(155,89,182,1)',
-                red: 'rgba(231,76,60,1)',
-                yellow: 'rgba(254,211,48,1)',
-                orange: 'rgba(243,156,18,1)',
-                grey: 'rgba(236, 240, 241,1)',
-                darkgrey: 'rgba(52,73,94,1)',
-                black: 'rgba(0,0,0,1)',
-            },
+            colors: [
+                { name: this.$gettext('Transparent'), class: 'transparent', rgba: 'rgba(0,0,0,0)' },
+                { name: this.$gettext('Weiß'), class: 'white', rgba: 'rgba(255,255,255,1)' },
+                { name: this.$gettext('Blau'), class: 'blue', rgba: 'rgba(52,152,219,1)' },
+                { name: this.$gettext('Grün'), class: 'green', rgba: 'rgba(46,204,113,1)' },
+                { name: this.$gettext('Lila'), class: 'purple', rgba: 'rgba(155,89,182,1)' },
+                { name: this.$gettext('Rot'), class: 'red', rgba: 'rgba(231,76,60,1)' },
+                { name: this.$gettext('Gelb'), class: 'yellow', rgba: 'rgba(254,211,48,1)' },
+                { name: this.$gettext('Orange'), class: 'orange', rgba: 'rgba(243,156,18,1)' },
+                { name: this.$gettext('Grau'), class: 'grey', rgba: 'rgba(236, 240, 241,1)' },
+                { name: this.$gettext('Dunkelgrau'), class: 'darkgrey', rgba: 'rgba(52,73,94,1)' },
+                { name: this.$gettext('Schwarz'), class: 'black', rgba: 'rgba(0,0,0,1)' }
+            ],
             file: null
         };
     },
@@ -202,8 +213,8 @@ export default {
             return this.block?.attributes?.payload?.shapes;
         },
         currentUrl() {
-            if (this.currentFile.download_url !== 'undefined' && this.currentFile?.meta) {
-                return this.currentFile.meta['download-url'];
+            if (this.currentFile.download_url !== 'undefined') {
+                return this.currentFile.download_url;
             } else {
                 return '';
             }
@@ -212,7 +223,9 @@ export default {
     mounted() {
         this.loadFileRefs(this.block.id).then((response) => {
             this.file = response[0];
-            this.currentFile = this.file;
+            if(this.file !== undefined) {
+                this.currentFile = this.file;
+            }
         });
         this.initCurrentData();
     },
@@ -294,7 +307,7 @@ export default {
                         text_X = shape.data.centerX;
                         text_Y = shape.data.centerY - shape.data.radius * 0.75;
                         context.arc(shape.data.centerX, shape.data.centerY, shape.data.radius, 0, 2 * Math.PI); // x, y, r, startAngle, endAngle ... Angle in radians!
-                        context.fillStyle = view.colors[shape.data.color];
+                        context.fillStyle = view.colors.filter((color) => {return color.class === shape.data.color})[0].rgba;
                         context.fill();
                         break;
                     case 'ellipse':
@@ -311,7 +324,7 @@ export default {
                             0,
                             2 * Math.PI
                         );
-                        context.fillStyle = view.colors[shape.data.color];
+                        context.fillStyle = view.colors.filter((color) => {return color.class === shape.data.color})[0].rgba;
                         context.fill();
                         break;
                     case 'rect':
@@ -320,7 +333,7 @@ export default {
                         text_X = shape.data.X + shape.data.width / 2;
                         text_Y = shape.data.Y;
                         context.rect(shape.data.X, shape.data.Y, shape.data.width, shape.data.height);
-                        context.fillStyle = view.colors[shape.data.color];
+                        context.fillStyle = view.colors.filter((color) => {return color.class === shape.data.color})[0].rgba;
                         context.fill();
                         break;
                     default:

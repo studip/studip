@@ -28,6 +28,9 @@
         },
         "icon": {
             "type": "string"
+        },
+        "icon_color": {
+            "type": "string"
         }
     },
     "required": [],

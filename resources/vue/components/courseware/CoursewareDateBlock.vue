@@ -133,6 +133,7 @@ export default {
     methods: {
         ...mapActions({
             updateBlock: 'updateBlockInContainer',
+            companionWarning: 'companionWarning',
         }),
         initCurrentData() {
             this.currentTitle = this.title;
@@ -172,16 +173,31 @@ export default {
             this.currentTimestamp = new Date(this.currentDate + ' ' + this.currentTime).getTime();
         },
         storeBlock() {
-            let attributes = {};
-            attributes.payload = {};
-            attributes.payload.timestamp = this.currentTimestamp;
-            attributes.payload.style = this.currentStyle;
+            let cmpInfo = false;
+            if (this.currentDate === '') {
+                cmpInfo = this.$gettext('Bitte geben Sie ein Datum an');
+            } else if (this.currentTime === '') {
+                cmpInfo = this.$gettext('Bitte geben Sie eine Uhrzeit an');
+            }
+            if (cmpInfo) {
+                this.companionWarning({
+                    info: cmpInfo
+                });
+                return false;
+            } else {
+                let attributes = {};
+                attributes.payload = {};
+                attributes.payload.timestamp = this.currentTimestamp;
+                attributes.payload.style = this.currentStyle;
 
-            this.updateBlock({
-                attributes: attributes,
-                blockId: this.block.id,
-                containerId: this.block.relationships.container.data.id,
-            });
+                this.updateBlock({
+                    attributes: attributes,
+                    blockId: this.block.id,
+                    containerId: this.block.relationships.container.data.id,
+                });
+            }
+
+
         },
     },
 };

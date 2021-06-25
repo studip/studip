@@ -26,6 +26,13 @@
                         </a>
                     </div>
                 </div>
+                <div v-else class="cw-block-download-content">
+                    <div class="cw-block-download-file-item-not-available">
+                            <span class="cw-block-file-info cw-block-file-icon-none">
+                                <translate>Datei ist nicht verfügbar</translate>
+                            </span>
+                    </div>
+                </div>
             </template>
             <template v-if="canEdit" #edit>
                 <form class="default" @submit.prevent="">
@@ -93,6 +100,7 @@ export default {
         ...mapGetters({
             fileRefById: 'file-refs/byId',
             urlHelper: 'urlHelper',
+            relatedTermOfUse: 'terms-of-use/related',
         }),
         title() {
             return this.block?.attributes?.payload?.title;
@@ -130,9 +138,10 @@ export default {
         },
         async loadFile() {
             const id = `${this.currentFileId}`;
-            await this.loadFileRef({ id });
-            const fileRef = this.fileRefById({ id });
-            if (fileRef) {
+            const options = { include: 'terms-of-use' };
+            await this.loadFileRef({ id: id, options });
+            const fileRef = this.fileRefById({ id: id });
+            if (fileRef && this.relatedTermOfUse({parent: fileRef, relationship: 'terms-of-use'}).attributes['download-condition'] === 0) {
                 this.updateCurrentFile({
                     id: fileRef.id,
                     name: fileRef.attributes.name,

@@ -105,6 +105,7 @@ export default {
     methods: {
         ...mapActions({
             updateBlock: 'updateBlockInContainer',
+            companionWarning: 'companionWarning',
         }),
         initCurrentData() {
             this.currentType = this.type;
@@ -129,12 +130,19 @@ export default {
             attributes.payload.target = this.currentTarget;
             attributes.payload.url = this.currentUrl;
             attributes.payload.title = this.currentTitle;
+            if (this.currentType === 'internal' && this.currentTarget === '') {
+                this.companionWarning({
+                    info: this.$gettext('Bitte wählen Sie eine Seite als Ziel aus')
+                });
+                return false;
+            } else {
+                this.updateBlock({
+                    attributes: attributes,
+                    blockId: this.block.id,
+                    containerId: this.block.relationships.container.data.id,
+                });
+            }
 
-            this.updateBlock({
-                attributes: attributes,
-                blockId: this.block.id,
-                containerId: this.block.relationships.container.data.id,
-            });
         },
     },
 };

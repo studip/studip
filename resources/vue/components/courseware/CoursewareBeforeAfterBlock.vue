@@ -150,7 +150,8 @@ export default {
     methods: {
         ...mapActions({
             updateBlock: 'updateBlockInContainer',
-            loadFileRefs: 'loadFileRefs'
+            loadFileRefs: 'loadFileRefs',
+            companionWarning: 'companionWarning',
         }),
         initCurrentData() {
             this.currentBeforeSource = this.beforeSource;
@@ -169,33 +170,61 @@ export default {
             this.currentAfterFileId = file.id;
         },
         storeBlock() {
+            let cmpInfo = false;
+            let cmpInfoBefore = this.$gettext('Bitte wählen Sie ein Vorherbilder aus.');
+            let cmpInfoAfter = this.$gettext('Bitte wählen Sie ein Nachherbilder aus.');
             let attributes = {};
             attributes.payload = {};
             attributes.payload.before_source = this.currentBeforeSource;
             attributes.payload.after_source = this.currentAfterSource;
-            if (this.currentBeforeSource === 'studip') {
-                attributes.payload.before_file_id = this.currentBeforeFile.id;
-                attributes.payload.before_web_url = '';
-            } else if (this.currentBeforeSource === 'web') {
-                attributes.payload.before_file_id = '';
-                attributes.payload.before_web_url = this.currentBeforeWebUrl;
-            } else {
-                return false;
-            }
             if (this.currentAfterSource === 'studip') {
-                attributes.payload.after_file_id = this.currentAfterFile.id;
-                attributes.payload.after_web_url = '';
+                if (this.currentAfterFile === null) {
+                    cmpInfo = cmpInfoAfter;
+                } else {
+                    attributes.payload.after_file_id = this.currentAfterFile.id;
+                    attributes.payload.after_web_url = '';
+                }
             } else if (this.currentAfterSource === 'web') {
-                attributes.payload.after_file_id = '';
-                attributes.payload.after_web_url = this.currentAfterWebUrl;
+                if (this.currentAfterWebUrl === '') {
+                    cmpInfo = cmpInfoAfter;
+                } else {
+                    attributes.payload.after_file_id = '';
+                    attributes.payload.after_web_url = this.currentAfterWebUrl;
+                }
+
             } else {
-                return false;
+                cmpInfo = cmpInfoAfter;
             }
-            this.updateBlock({
-                attributes: attributes,
-                blockId: this.block.id,
-                containerId: this.block.relationships.container.data.id,
-            });
+            if (this.currentBeforeSource === 'studip') {
+                if (this.currentBeforeFile === null) {
+                    cmpInfo = cmpInfoBefore;
+                } else {
+                    attributes.payload.before_file_id = this.currentBeforeFile.id;
+                    attributes.payload.before_web_url = '';
+                }
+            } else if (this.currentBeforeSource === 'web') {
+                if (this.currentBeforeWebUrl === '') {
+                    cmpInfo = cmpInfoBefore;
+                } else {
+                    attributes.payload.before_file_id = '';
+                    attributes.payload.before_web_url = this.currentBeforeWebUrl;
+                }
+            } else {
+                cmpInfo = cmpInfoBefore;
+            }
+
+            if (cmpInfo) {
+                this.companionWarning({
+                    info: cmpInfo
+                });
+                return false;
+            } else {
+                this.updateBlock({
+                    attributes: attributes,
+                    blockId: this.block.id,
+                    containerId: this.block.relationships.container.data.id,
+                });
+            }
         },
     },
 };

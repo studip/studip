@@ -9,7 +9,7 @@
             @closeEdit="initCurrentData"
         >
             <template #content>
-                <div class="cw-pdf-header cw-block-title">
+                <div v-if="hasFile" class="cw-pdf-header cw-block-title">
                     <button class="cw-pdf-button-prev" :class="{ inactive: pageNum - 1 === 0 }" @click="prevPage" />
                     <span class="cw-pdf-title">{{ currentTitle }}</span>
                     <a :href="currentUrl" class="cw-pdf-download" download></a>
@@ -21,6 +21,7 @@
                     <button class="cw-pdf-button-next" :class="{ inactive: pageNum === pageCount }" @click="nextPage" />
                 </div>
                 <canvas
+                    v-if="hasFile"
                     ref="pdfcanvas"
                     class="cw-pdf-canvas"
                     @mousedown="browse = true"
@@ -71,7 +72,7 @@ import CoursewareFileChooser from './CoursewareFileChooser.vue';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
     name: 'courseware-document-block',
@@ -122,8 +123,13 @@ export default {
         currentUrl() {
             if (this.currentFile?.meta) {
                 return this.currentFile.meta['download-url'];
+            } else {
+                return '';
             }
         },
+        hasFile() {
+            return this.currentFileId !== '';
+        }
     },
     watch: {
         browseDirection: function (val) {
@@ -143,7 +149,8 @@ export default {
     methods: {
         ...mapActions({
             updateBlock: 'updateBlockInContainer',
-            loadFileRefs: 'loadFileRefs'
+            loadFileRefs: 'loadFileRefs',
+            companionWarning: 'companionWarning',
         }),
         initCurrentData() {
             this.currentTitle = this.title;
@@ -230,18 +237,26 @@ export default {
         },
 
         storeBlock() {
-            let attributes = {};
-            attributes.payload = {};
-            attributes.payload.title = this.currentTitle;
-            attributes.payload.file_id = this.currentFile.id;
-            attributes.payload.downloadable = this.currentDownloadable;
-            attributes.payload.doc_type = this.currentDocType;
+            if (this.currentFile === undefined) {
+                this.companionWarning({
+                    info: this.$gettext('Bitte wählen Sie eine Datei aus')
+                });
+                return false;
+            } else {
+                let attributes = {};
+                attributes.payload = {};
+                attributes.payload.title = this.currentTitle;
+                attributes.payload.file_id = this.currentFile.id;
+                attributes.payload.downloadable = this.currentDownloadable;
+                attributes.payload.doc_type = this.currentDocType;
 
-            this.updateBlock({
-                attributes: attributes,
-                blockId: this.block.id,
-                containerId: this.block.relationships.container.data.id,
-            });
+                this.updateBlock({
+                    attributes: attributes,
+                    blockId: this.block.id,
+                    containerId: this.block.relationships.container.data.id,
+                });
+            }
+
         },
     },
 };

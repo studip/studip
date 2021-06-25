@@ -113,6 +113,7 @@ export default {
         ...mapGetters({
             urlHelper: 'urlHelper',
             relatedFileRefs: 'file-refs/related',
+            relatedTermOfUse: 'terms-of-use/related',
         }),
         folderId() {
             return this.block?.attributes?.payload?.folder_id;
@@ -159,14 +160,24 @@ export default {
         async getFolderFiles() {
             const parent = { type: 'folders', id: `${this.currentFolderId}` };
             const relationship = 'file-refs';
-            await this.loadRelatedFileRefs({ parent, relationship });
+            const options = { include: 'terms-of-use'}
+            await this.loadRelatedFileRefs({ parent, relationship, options });
 
             const files = this.relatedFileRefs({ parent, relationship });
             this.processFiles(files);
         },
         processFiles(files) {
             this.files = files
-                .filter((file) => file.attributes['mime-type'].includes('image'))
+                .filter((file) => {
+                    if (this.relatedTermOfUse({parent: file, relationship: 'terms-of-use'}).attributes['download-condition'] !== 0) {
+                        return false;
+                    }
+                    if (! file.attributes['mime-type'].includes('image')) {
+                        return false;
+                    }
+
+                    return true;
+                })
                 .map((file) => ({
                     id: file.id,
                     name: file.attributes.name,
