@@ -20,19 +20,25 @@ class OercampusIntegration extends Migration
         }
 
         if ($already_installed_plugin) {
-            try {
-                //test if all plugin tables are in place
-                DBManager::get()->exec("SELECT 1 FROM `lernmarktplatz_abo`");
-                DBManager::get()->exec("SELECT 1 FROM `lernmarktplatz_comments`");
-                DBManager::get()->exec("SELECT 1 FROM `lernmarktplatz_downloadcounter`");
-                DBManager::get()->exec("SELECT 1 FROM `lernmarktplatz_hosts`");
-                DBManager::get()->exec("SELECT 1 FROM `lernmarktplatz_material_users`");
-                DBManager::get()->exec("SELECT 1 FROM `lernmarktplatz_reviews`");
-                DBManager::get()->exec("SELECT 1 FROM `lernmarktplatz_tags`");
-                DBManager::get()->exec("SELECT 1 FROM `lernmarktplatz_tags_material`");
-                DBManager::get()->exec("SELECT 1 FROM `lernmarktplatz_user`");
-            } catch(Exception $e) {
-                throw new Exception("Your OER Campus / Lernmarktplatz plugin is not in a current state. Uninstall or update it first, before you restart this migration.");
+            //test if all plugin tables are in place
+            $oldtables = [
+                'lernmarktplatz_abo',
+                'lernmarktplatz_comments',
+                'lernmarktplatz_downloadcounter',
+                'lernmarktplatz_hosts',
+                'lernmarktplatz_material_users',
+                'lernmarktplatz_reviews',
+                'lernmarktplatz_tags',
+                'lernmarktplatz_tags_material',
+                'lernmarktplatz_user'
+            ];
+            foreach ($oldtables as $tablename) {
+                $query = "SHOW TABLES LIKE ? ";
+                $statement = DBManager::get()->prepare($query);
+                $statement->execute([$tablename]);
+                if ($statement->rowCount() === 0) {
+                    throw new Exception("Your OER Campus / Lernmarktplatz plugin is not in a current state. Uninstall or update it first, before you restart this migration.");
+                }
             }
         }
 
