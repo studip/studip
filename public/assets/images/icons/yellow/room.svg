@@ -1,1 +1,1 @@
-<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" fill="#ffad00"><path d="M1 1v14h14l-.05-4.492-4.45-.008C10.5 6.558 14.116 7 15 7V1zm2 2h10v3c-3.621.97-3.5 3.436-3.5 5.5H13V13H3z"/><path d="M4 9h3v3H4zm0-6h4v2H4z"/></svg>
+<svg id="icons" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54 54" fill="#ffad00"><g id="room"><polygon points="51 37.2 44.14 37.2 44.14 43.94 9.86 43.94 9.86 9.65 44.14 9.77 44.14 16.62 51 16.62 51 2.79 3 2.79 3 50.79 51 50.79 51 37.2"/></g></svg>

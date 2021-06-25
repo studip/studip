@@ -1,1 +1,13 @@
-<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="geometricPrecision" fill="#fff"><path d="M13.997 2.942v9.965H2.958V2.942h11.039m1-1H1.958v11.965h13.039V1.942z"/><path d="M1.958 4.061h13.054v1.064H1.958z"/><path d="M5.871 4.061h1.064v9.576H5.871zm4.231 0h1.064v9.576h-1.064zM3.985 5.89h1.106v1.106H3.985zm0 5h1.106v1.106H3.985zm3.947-2.041h1.106v1.106H7.932zm0-1.853h1.106v1.106H7.932zm4.01 2.959h1.106v1.106h-1.106zm0-1.955h1.106v1.106h-1.106z"/></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-0.485,0.0755)">
+        <path d="M13.997,2.942L13.997,12.907L2.958,12.907L2.958,2.942L13.997,2.942M14.997,1.942L1.958,1.942L1.958,13.907L14.997,13.907L14.997,1.942Z" style="fill:#ffffff;fill-rule:nonzero;"/>
+    </g>
+    <g transform="matrix(1,0,0,1,-0.485,0.0755)">
+        <rect x="1.958" y="4.061" width="13.054" height="1.064" style="fill:#ffffff;fill-rule:nonzero;"/>
+    </g>
+    <g transform="matrix(1,0,0,1,-0.485,0.0755)">
+        <path d="M5.871,4.061L6.935,4.061L6.935,13.637L5.871,13.637L5.871,4.061ZM10.102,4.061L11.166,4.061L11.166,13.637L10.102,13.637L10.102,4.061ZM3.985,5.89L5.091,5.89L5.091,6.996L3.985,6.996L3.985,5.89ZM3.985,10.89L5.091,10.89L5.091,11.996L3.985,11.996L3.985,10.89ZM7.932,8.849L9.038,8.849L9.038,9.955L7.932,9.955L7.932,8.849ZM7.932,6.996L9.038,6.996L9.038,8.102L7.932,8.102L7.932,6.996ZM11.942,9.955L13.048,9.955L13.048,11.061L11.942,11.061L11.942,9.955ZM11.942,8L13.048,8L13.048,9.106L11.942,9.106L11.942,8Z" style="fill:#ffffff;fill-rule:nonzero;"/>
+    </g>
+</svg>

@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="#cb1800"><path d="M6 10v5H1v-5h5m1-1H0v7h7V9zM6 1v5H1V1h5m1-1H0v7h7V0zm8 10v5h-5v-5h5m1-1H9v7h7V9zm-1-8v5h-5V1h5m1-1H9v7h7V0z" data-name="Ebene 2"/></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(0.88046,0,0,0.88046,0.956316,0.956316)">
+        <path d="M6,10L6,15L1,15L1,10L6,10M7,9L0,9L0,16L7,16L7,9ZM6,1L6,6L1,6L1,1L6,1M7,0L0,0L0,7L7,7L7,0ZM15,10L15,15L10,15L10,10L15,10M16,9L9,9L9,16L16,16L16,9ZM15,1L15,6L10,6L10,1L15,1M16,0L9,0L9,7L16,7L16,0Z" style="fill:#cb1800;fill-rule:nonzero;"/>
+    </g>
+</svg>

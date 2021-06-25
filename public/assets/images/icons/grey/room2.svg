@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" fill="#6e6e6e"><path d="M14 9.03h-1v4H1v-12h12v4h1V0H0v14h14V9.03z" data-name="Ebene 2"/></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 14 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(0.869004,0,0,0.869004,0.916975,0.916975)">
+        <path d="M14,9.03L13,9.03L13,13.03L1,13.03L1,1.03L13,1.03L13,5.03L14,5.03L14,0L0,0L0,14L14,14L14,9.03Z" style="fill:#6e6e6e;fill-rule:nonzero;"/>
+    </g>
+</svg>
