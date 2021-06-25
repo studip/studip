@@ -90,6 +90,12 @@ STUDIP.domReady(function () {
             zIndex: 1
         });
     }
+
+    jQuery.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': STUDIP.CSRF_TOKEN.value
+        }
+    });
 });
 
 STUDIP.ready((event) => {

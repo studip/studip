@@ -220,13 +220,25 @@ class Seminar_Session
     function start()
     {
         $this->set_container();
-        session_set_cookie_params(
-            0,
-            implode('/', array_map('rawurlencode', explode('/', $this->cookie_path))),
-            $this->cookie_domain,
-            $this->cookie_secure,
-            $this->cookie_httponly
-        );
+
+        if (version_compare(phpversion(), '7.3', '>=')) {
+            session_set_cookie_params([
+                'lifetime' => 0,
+                'path'     => implode('/', array_map('rawurlencode', explode('/', $this->cookie_path))),
+                'domain'   => $this->cookie_domain,
+                'secure'   => $this->cookie_secure,
+                'httponly' => $this->cookie_httponly,
+                'samesite' => 'Strict',
+            ]);
+        } else {
+            session_set_cookie_params(
+                0,
+                implode('/', array_map('rawurlencode', explode('/', $this->cookie_path))) . '; samesite=strict',
+                $this->cookie_domain,
+                $this->cookie_secure,
+                $this->cookie_httponly
+            );
+        }
         session_cache_limiter("nocache");
         //check for illegal cookiename
         if (isset($_COOKIE[$this->name])) {

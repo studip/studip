@@ -22,12 +22,15 @@ class Studip extends Base
      */
     public static function detect($request_type = null)
     {
-        if (isset($GLOBALS['auth'])
-            && $GLOBALS['auth']->is_authenticated()
-            && $GLOBALS['user']->id !== 'nobody')
-        {
-            return new self(null, $GLOBALS['user']->id);
+        if (
+            !isset($GLOBALS['auth'])
+            || !$GLOBALS['auth']->is_authenticated()
+            || $GLOBALS['user']->id === 'nobody'
+            || !\CSRFProtection::verifyRequest()
+        ) {
+            return false;
         }
-        return false;
+
+        return new self(null, $GLOBALS['user']->id);
     }
 }

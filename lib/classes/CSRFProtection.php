@@ -42,6 +42,8 @@ class CSRFProtection
      */
     const TOKEN = 'security_token';
 
+    const AJAX_TOKEN = 'HTTP_X_CSRF_TOKEN';
+
 
     /**
      * This checks the request and throws an InvalidSecurityTokenException if
@@ -52,13 +54,13 @@ class CSRFProtection
      * @throws InvalidSecurityTokenException  The request is invalid as the
      *                                        security token does not match.
      */
-    static function verifyUnsafeRequest()
+    public static function verifyUnsafeRequest()
     {
         if (self::isSafeRequestMethod()) {
             throw new MethodNotAllowedException();
         }
 
-        if (!Request::isXhr() && !self::checkSecurityToken()) {
+        if (!self::checkSecurityToken()) {
             throw new InvalidSecurityTokenException();
         }
     }
@@ -77,7 +79,7 @@ class CSRFProtection
      *
      * @throws InvalidSecurityTokenException  request is invalid
      */
-    static function verifySecurityToken()
+    public static function verifySecurityToken()
     {
         if (!self::verifyRequest()) {
             throw new InvalidSecurityTokenException();
@@ -91,12 +93,9 @@ class CSRFProtection
      *
      * @returns boolean  returns true if the request is valid
      */
-    static function verifyRequest()
+    public static function verifyRequest()
     {
-        return
-            Request::isGet() ||
-            Request::isXhr() ||
-            self::checkSecurityToken();
+        return Request::isGet() || self::checkSecurityToken();
     }
 
     /**
@@ -105,9 +104,9 @@ class CSRFProtection
      *
      * @return boolean  true if equal
      */
-    static private function checkSecurityToken()
+    private static function checkSecurityToken()
     {
-        return isset($_POST[self::TOKEN]) && self::token() === $_POST[self::TOKEN]; 
+        return self::token() === ($_POST[self::TOKEN] ?? $_SERVER[self::AJAX_TOKEN] ?? null);
     }
 
     /**
@@ -117,7 +116,7 @@ class CSRFProtection
      * @return string  a base64 encoded string of 32 random bytes
      * @throws SessionRequiredException  there is no session to store the token in
      */
-    static function token()
+    public static function token()
     {
         // w/o a session, throw an exception
         if (session_id() === '') {
@@ -142,11 +141,12 @@ class CSRFProtection
      *
      * @return string  the HTML snippet containing the input element
      */
-    static function tokenTag()
+    public static function tokenTag()
     {
-        return sprintf('<input type="hidden" name="%s" value="%s">',
-                       self::TOKEN,
-                       self::token()
+        return sprintf(
+            '<input type="hidden" name="%s" value="%s">',
+            self::TOKEN,
+            self::token()
         );
     }
 
@@ -163,7 +163,7 @@ class CSRFProtection
      *
      * @param integer $count The number of characters (bytes) to return in the string.
      */
-    static private function randomBytes($count)
+    private static function randomBytes($count)
     {
         static $random_state, $bytes;
 
