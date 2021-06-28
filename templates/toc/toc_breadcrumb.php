@@ -43,11 +43,6 @@
     <div class="contentbar_info">
         <div class="textblock"><?= $toc_breadcrumb_info ?></div>
 
-        <a class="consuming_mode_trigger"
-           href="#"
-           title="<?= _("Konsummodus ein-/ausschalten") ?>">
-        </a>
-
         <!-- do not show if 0 entries -->
         <? if ($count > 0) : ?>
         <input type="checkbox" id="cb-toc"/>
@@ -60,9 +55,22 @@
 
         <?= $toc_entries ?>
 
+        <a class="consuming_mode_trigger"
+           href="#"
+           title="<?= _("Konsummodus ein-/ausschalten") ?>">
+        </a>
+
         <? if ($toc_breadcrumb_info) : ?>
             <?= $actionMenu->render() ?>
         <? endif ?>
     </div>
 
 </div>
+
+
+<script>
+    function toggleFullscreen() {
+
+    }
+
+</script>
