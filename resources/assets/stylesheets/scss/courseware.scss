@@ -112,8 +112,8 @@ r i b b o n
 }
 .cw-ribbon-sticky-bottom {
     position: fixed;
-    top: 116px;
-    height: 16px;
+    top: 112px;
+    height: 14px;
     width: calc(100% - 314px);
     background-color: $white;
     z-index: 39;
@@ -1114,6 +1114,8 @@ $icons: (
     key,
     knife,
     learnmodule,
+    lightbulb,
+    lightbulb2,
     link2,
     link3,
     link-extern,
@@ -1124,6 +1126,7 @@ $icons: (
     mail2,
     medal,
     metro,
+    microphone,
     module,
     network,
     notification,

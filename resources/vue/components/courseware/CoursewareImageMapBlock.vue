@@ -204,7 +204,9 @@ export default {
     },
     computed: {
         ...mapGetters({
-            courseware: 'courseware-structural-elements/all'
+            courseware: 'courseware-structural-elements/all',
+            fileRefById: 'file-refs/byId',
+            urlHelper: 'urlHelper',
         }),
         fileId() {
             return this.block?.attributes?.payload?.file_id;
@@ -221,23 +223,35 @@ export default {
         },
     },
     mounted() {
-        this.loadFileRefs(this.block.id).then((response) => {
-            this.file = response[0];
-            if(this.file !== undefined) {
-                this.currentFile = this.file;
-            }
-        });
         this.initCurrentData();
     },
     methods: {
         ...mapActions({
             updateBlock: 'updateBlockInContainer',
-            loadFileRefs: 'loadFileRefs'
+            loadFileRef: 'file-refs/loadById',
         }),
-        initCurrentData() {
+        async initCurrentData() {
             this.currentFileId = this.fileId;
             this.currentShapes = JSON.parse(JSON.stringify(this.shapes));
+            await this.loadFile();
             this.buildCanvas();
+        },
+        async loadFile() {
+            const id = this.currentFileId;
+            await this.loadFileRef({ id });
+            const fileRef = this.fileRefById({ id });
+
+            if (fileRef) {
+                this.updateCurrentFile({
+                    id: fileRef.id,
+                    name: fileRef.attributes.name,
+                    download_url: this.urlHelper.getURL(
+                        'sendfile.php',
+                        { type: 0, file_id: fileRef.id, file_name: fileRef.attributes.name },
+                        true
+                    ),
+                });
+            }
         },
         updateCurrentFile(file) {
             this.currentFile = file;

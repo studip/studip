@@ -132,7 +132,7 @@ export default {
             let iconColors = [];
 
             colors.forEach(color => {
-                if(color.icon && color.name !== 'white') {
+                if(color.icon && color.class !== 'white' && color.class !== 'studip-lightblue') {
                     iconColors.push(color);
                 }
             });
@@ -167,9 +167,6 @@ export default {
 
                 case 'yellow':
                     return 'status-yellow';
-
-                case 'lightblue':
-                    return 'lightblue';
 
                 case 'blue':
                     return 'clickable';

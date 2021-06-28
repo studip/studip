@@ -13,6 +13,7 @@
                 <video
                     v-if="currentURL"
                     :src="currentURL"
+                    :type="currentFile !== '' ? currentFile.mime_type : ''"
                     controls
                     :autoplay="currentAutoplay === 'enabled'"
                     @contextmenu="contextHandler"
@@ -74,7 +75,7 @@
 <script>
 import CoursewareDefaultBlock from './CoursewareDefaultBlock.vue';
 import CoursewareFileChooser from './CoursewareFileChooser.vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'courseware-video-block',
@@ -92,14 +93,18 @@ export default {
             currentSource: '',
             currentTitle: '',
             currentFile: {},
+            currentFileId: '',
             currentAspect: '',
             currentContextMenu: '',
             currentAutoplay: '',
             currentWebUrl: '',
-            file: null
         };
     },
     computed: {
+        ...mapGetters({
+            fileRefById: 'file-refs/byId',
+            urlHelper: 'urlHelper',
+        }),
         title() {
             return this.block?.attributes?.payload?.title;
         },
@@ -122,8 +127,8 @@ export default {
             return this.block?.attributes?.payload?.autoplay;
         },
         currentURL() {
-            if (this.currentSource === 'studip' && this.currentFile?.meta) {
-                return this.currentFile.meta['download-url'];
+            if (this.currentSource === 'studip' && this.currentFile) {
+                return this.currentFile.download_url;
             }
             if (this.currentSource === 'web') {
                 return this.currentWebUrl;
@@ -133,16 +138,12 @@ export default {
 
     },
     mounted() {
-        this.loadFileRefs(this.block.id).then((response) => {
-            this.file = response[0];
-            this.currentFile = this.file;
-        });
         this.initCurrentData();
     },
     methods: {
         ...mapActions({
             updateBlock: 'updateBlockInContainer',
-            loadFileRefs: 'loadFileRefs',
+            loadFileRef: 'file-refs/loadById',
             companionWarning: 'companionWarning',
         }),
         storeBlock() {
@@ -183,6 +184,25 @@ export default {
             this.currentAspect = this.aspect;
             this.currentContextMenu = this.contextMenu;
             this.currentAutoplay = this.autoplay;
+            this.loadFile();
+
+        },
+        async loadFile() {
+            const id = this.currentFileId;
+            await this.loadFileRef({ id });
+            const fileRef = this.fileRefById({ id });
+
+            if (fileRef) {
+                this.updateCurrentFile({
+                    id: fileRef.id,
+                    name: fileRef.attributes.name,
+                    download_url: this.urlHelper.getURL(
+                        'sendfile.php',
+                        { type: 0, file_id: fileRef.id, file_name: fileRef.attributes.name },
+                        true
+                    ),
+                });
+            }
         },
         updateCurrentFile(file) {
             this.currentFile = file;

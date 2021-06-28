@@ -86,14 +86,16 @@ export default {
                 if (this.isImage && !file.attributes['mime-type'].includes('image')) {
                     return false;
                 }
-                if (this.isVideo && !file.attributes['mime-type'].includes('video')) {
+                const videoConditions = ['video/mp4', 'video/ogg', 'video/webm'];
+                if (this.isVideo && !videoConditions.some(condition => file.attributes['mime-type'].includes(condition))) {
                     return false;
                 }
-                if (this.isAudio && !file.attributes['mime-type'].includes('audio')) {
+                const audioConditions = ['audio/wav', 'audio/ogg', 'audio/webm','audio/flac', 'audio/mpeg'];
+                if (this.isAudio && !audioConditions.some(condition => file.attributes['mime-type'].includes(condition)) ) {
                     return false;
                 }
-                const office = ['application/pdf']; //TODO enable more mime types
-                if (this.isDocument && !office.includes(file.attributes['mime-type'])) {
+                const officeConditions = ['application/pdf']; //TODO enable more mime types
+                if (this.isDocument && !officeConditions.some(condition => file.attributes['mime-type'].includes(condition)) ) {
                     return false;
                 }
 
