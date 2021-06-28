@@ -91,7 +91,7 @@ class Seminar_Register_Auth extends Seminar_Auth
         // auf doppelte Vergabe wird weiter unten getestet.
 
         if (!$validator->ValidatePassword(Request::get('password'))) {
-            $this->error_msg = $this->error_msg . _('Das Passwort ist zu kurz!') . '<br>';
+            $this->error_msg = $this->error_msg . _('Das Passwort ist zu kurz, zu lang oder enthält nicht erlaubte Zeichen!') . '<br>';
             return false;
         }
 
