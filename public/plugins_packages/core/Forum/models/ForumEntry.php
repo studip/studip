@@ -136,17 +136,6 @@ class ForumEntry  implements PrivacyObject
     }
 
     /**
-     * remove the [quote]-tags from the passed posting
-     *
-     * @param string $description the posting-content
-     * @return string the posting without [quote]-tags
-     */
-    public static function killQuotes($description)
-    {
-        return str_replace('[/quote]', '', preg_replace("/\[quote=.*\]/U", "", $description));
-    }
-
-    /**
      * Remove all quote blocks AND the quoted text from a forum post.
      *
      * @param String $string The string to remove the quote blocks from
@@ -564,7 +553,7 @@ class ForumEntry  implements PrivacyObject
                 // we throw away all formatting stuff, tags, etc, so we have just the important bit of information
                 $text = strip_tags($data['name']);
                 $text = ForumEntry::br2space($text);
-                $text = ForumEntry::killFormat(ForumEntry::killQuotes($text));
+                $text = ForumEntry::killFormat(ForumEntry::removeQuotes($text));
 
                 if (mb_strlen($text) > 42) {
                     $text = mb_substr($text, 0, 40) . '...';
