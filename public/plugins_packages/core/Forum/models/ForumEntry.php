@@ -144,9 +144,19 @@ class ForumEntry  implements PrivacyObject
     public static function removeQuotes($description)
     {
         if (Studip\Markup::isHtml($description)) {
-            $description = preg_replace('/<blockquote>.*<\/blockquote>/is', '', $description);
+            // remove all blockquote tags
+            $dom = new DOMDocument();
+            $dom->loadHtml($description);
+            $nodes = iterator_to_array($dom->getElementsByTagName('blockquote'));
+
+            foreach ($nodes as $node) {
+                $node->parentNode->removeChild($node);
+            }
+
+            return str_replace(array('<html><body>','</body></html>') , '' , $dom->saveHTML());
         } else {
-            $description = preg_replace('/\[quote(=.*)\].*\[\/quote\]/is', '', $description);
+            $description = preg_replace('/\[quote(=.*)\].*\[\/quote\]/isU', '', $description);
+            $description = str_replace('[/quote]', '', $description);
         }
         return $description;
     }
