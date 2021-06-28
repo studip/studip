@@ -73,6 +73,7 @@ const contentIcons = [
     'network',
     'notification',
     'notification2',
+    'opencast',
     'outer-space',
     'permalink',
     'person',
