@@ -152,12 +152,13 @@ section > .toc {
     > li a {
         display: inline-flex;
         padding: 5px 0px 5px 0px;
-        margin-left: 10px;
+        //margin-left: 10px;
         width: 100%;
     }
 
     li div {
         padding-left: 5px;
+        padding-right: 5px;
     }
 
     li div:hover {
