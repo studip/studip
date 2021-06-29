@@ -82,6 +82,9 @@ $consum_ribbon_width: calc(100% - 60px);
     #layout_container {
         overflow-x: hidden;
         position: relative;
+        #layout_content {
+            overflow: hidden;
+        }
     }
 }
 
@@ -395,7 +398,6 @@ ribbon end
 * * * * * * * * * */
 
 .cw-structural-element {
-    overflow: hidden;
 
     &.cw-structural-element-consumemode {
         position: fixed;
