@@ -3,6 +3,7 @@
 namespace JsonApi\Routes\Courseware;
 
 use JsonApi\Errors\AuthorizationFailedException;
+use JsonApi\Errors\UnprocessableEntityException;
 use JsonApi\JsonApiController;
 use JsonApi\Routes\ValidationTrait;
 use JsonApi\Schemas\Courseware\Container as ContainerSchema;

@@ -1,3 +1,4 @@
+import CoursewareDefaultBlock from './CoursewareDefaultBlock.vue';
 import CoursewareDefaultContainer from './CoursewareDefaultContainer.vue';
 import CoursewareBlockAdderArea from './CoursewareBlockAdderArea.vue';
 // blocks
@@ -25,6 +26,7 @@ import CoursewareTypewriterBlock from './CoursewareTypewriterBlock.vue';
 import CoursewareVideoBlock from './CoursewareVideoBlock.vue';
 
 const ContainerComponents = {
+    CoursewareDefaultBlock,
     CoursewareDefaultContainer,
     CoursewareBlockAdderArea,
     // blocks

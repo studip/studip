@@ -388,6 +388,7 @@
 </template>
 
 <script>
+import ContainerComponents from './container-components.js';
 import CoursewareStructuralElementPermissions from './CoursewareStructuralElementPermissions.vue';
 import CoursewareAccordionContainer from './CoursewareAccordionContainer.vue';
 import CoursewareCompanionBox from './CoursewareCompanionBox.vue';
@@ -474,6 +475,7 @@ export default {
             containerById: 'courseware-containers/byId',
             structuralElementById: 'courseware-structural-elements/byId',
             userIsTeacher: 'userIsTeacher',
+            pluginManager: 'pluginManager',
             showEditDialog: 'showStructuralElementEditDialog',
             showAddDialog: 'showStructuralElementAddDialog',
             showExportDialog: 'showStructuralElementExportDialog',
@@ -959,5 +961,10 @@ export default {
             this.currentElement.attributes['write-approval'] = approval;
         },
     },
+    created() {
+        this.pluginManager.registerComponentsLocally(this);
+    },
+    // this line provides all the components to courseware plugins
+    provide: () => ({ containerComponents: ContainerComponents }),
 };
 </script>
