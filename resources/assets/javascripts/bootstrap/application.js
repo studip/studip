@@ -92,9 +92,13 @@ STUDIP.domReady(function () {
     }
 
     jQuery.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': STUDIP.CSRF_TOKEN.value
-        }
+        beforeSend (jqXHR, settings) {
+            const requestUrl = new URL(settings.url, STUDIP.ABSOLUTE_URI_STUDIP);
+            const studipUrl = new URL(STUDIP.ABSOLUTE_URI_STUDIP);
+            if (requestUrl.hostname === studipUrl.hostname && requestUrl.protocol === studipUrl.protocol) {
+                jqXHR.setRequestHeader('X-CSRF-TOKEN', STUDIP.CSRF_TOKEN.value);
+            }
+        },
     });
 });
 
