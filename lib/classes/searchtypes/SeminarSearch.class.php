@@ -48,8 +48,8 @@ class SeminarSearch extends SearchType
          $search_helper->setParams(
              [
                  'quick_search' => $keyword,
-                 'qs_choose' => $contextual_data['search_sem_qs_choose'] ? $contextual_data['search_sem_qs_choose'] : 'all',
-                 'sem' => isset($contextual_data['search_sem_sem']) ? $contextual_data['search_sem_sem'] : 'all',
+                 'qs_choose' => $contextual_data['search_sem_qs_choose'] ?: 'all',
+                 'sem' => $contextual_data['search_sem_sem'] ?? 'all',
                  'category' => $contextual_data['search_sem_category'],
                  'scope_choose' => $contextual_data['search_sem_scope_choose'],
                  'range_choose' => $contextual_data['search_sem_range_choose']],
