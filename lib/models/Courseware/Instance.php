@@ -23,10 +23,13 @@ class Instance
             case 'user':
                 $root = StructuralElement::getCoursewareUser($range->getRangeId());
                 break;
+            default:
+                throw new \InvalidArgumentException('Only ranges of type "user" and "course" are currently supported.');
         }
 
+        // there is no courseware for this course
         if (!$root) {
-            throw new \InvalidArgumentException('Only ranges of type "user" and "course" are currently supported.');
+            return;
         }
 
         $instance = new self($root);
