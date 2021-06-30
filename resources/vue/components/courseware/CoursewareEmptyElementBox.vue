@@ -36,11 +36,13 @@ export default {
     methods: {
         addContainer() {
             this.$store.dispatch('coursewareViewMode', 'edit');
+            this.$store.dispatch('coursewareConsumeMode', false);
             this.$store.dispatch('coursewareContainerAdder', true);
             this.$store.dispatch('coursewareShowToolbar', true);
         },
         switchToEditView() {
             this.$store.dispatch('coursewareViewMode', 'edit');
+            this.$store.dispatch('coursewareConsumeMode', false);
         }
     }
 

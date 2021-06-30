@@ -116,6 +116,9 @@ export default {
                 containerId: this.container.id,
                 structuralElementId: this.container.relationships['structural-element'].data.id,
             });
+            if(Object.keys(this.$store.getters.blockAdder).length !== 0 && this.$store.getters.blockAdder.container.id === this.container.id) {
+                this.$store.dispatch('coursewareBlockAdder', {});
+            }
             this.showDeleteDialog = false;
         },
     },

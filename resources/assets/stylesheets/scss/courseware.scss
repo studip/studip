@@ -76,7 +76,7 @@ $media-buttons: (
 /* * * * * *
 r i b b o n
 * * * * * */
-$consum_ribbon_width: calc(100% - 60px);
+$consum_ribbon_width: calc(100% - 58px);
 #course-courseware-index,
 #contents-courseware-courseware {
     #layout_container {
@@ -99,8 +99,9 @@ $consum_ribbon_width: calc(100% - 60px);
 .cw-ribbon-consume-bottom {
     position: fixed;
     top: 74px;
-    height: 16px;
-    width: $consum_ribbon_width;
+    height: 8px;
+    left: 0;
+    width: calc(100% - 1em);
     background-color: $white;
     z-index: 40;
 }
@@ -116,20 +117,20 @@ $consum_ribbon_width: calc(100% - 60px);
 .cw-ribbon-sticky-bottom {
     position: fixed;
     top: 112px;
-    height: 14px;
+    height: 19px;
     width: calc(100% - 314px);
     background-color: $white;
     z-index: 39;
 }
 .cw-ribbon-sticky-spacer {
-    height: 92px;
+    height: 80px;
 }
 .cw-ribbon {
     display: flex;
     flex-wrap: wrap;
     height: auto;
     border: solid thin $dark-gray-color-30;
-    margin-bottom: 1em;
+    margin-bottom: 19px;
     padding: 1em;
     justify-content: space-between;
     background-color: $dark-gray-color-5;
@@ -144,6 +145,7 @@ $consum_ribbon_width: calc(100% - 60px);
     &.cw-ribbon-consume {
         width: $consum_ribbon_width;
         position: fixed;
+        margin-bottom: 0;
     }
 
     .cw-ribbon-wrapper-left {
@@ -292,13 +294,15 @@ $consum_ribbon_width: calc(100% - 60px);
         padding: 0;
         overflow-y: auto;
         overflow-x: hidden;
+        scrollbar-width: thin;
+        scrollbar-color: $base-color $white;
 
         .cw-ribbon-tool-content-nav {
             position: sticky;
             top: 0;
             background-color: $white;
             margin: 0 0 14px 0;
-            padding: 8px 0 0 0;
+            padding: 6px 0 0 0;
             color: $base-color;
             display: flex;
             border-bottom: solid thin $content-color-40;
@@ -309,7 +313,7 @@ $consum_ribbon_width: calc(100% - 60px);
                 height: 36px;
                 width: 24px;
                 min-width: 24px;
-                margin-right: 2em;
+                margin-right: 1em;
                 padding: 0 4px;
                 float: right;
 
@@ -378,6 +382,12 @@ $consum_ribbon_width: calc(100% - 60px);
 }
 
 .responsive-display {
+    .cw-ribbon-sticky-top, 
+    .cw-ribbon-sticky-bottom,
+    .cw-ribbon-wrapper-consume,
+    .cw-ribbon-consume-bottom { 
+        width: 100%;
+    }
     .cw-ribbon {
         &.cw-ribbon-sticky {
             width: calc(100% - 62px);
@@ -446,7 +456,7 @@ ribbon end
 
         &.cw-container-wrapper-consume {
             margin: 0 auto;
-            padding: 8em 1em 1em 1em;
+            padding: 6em 1em 1em 1em;
         }
     }
 
@@ -915,7 +925,7 @@ label[for="cw-keypoint-color"] {
 .cw-tree {
     ul {
         list-style: none;
-        padding-left: 2em;
+        padding-left: 1.25em;
         margin-bottom: 20px;
 
         &.cw-tree-chapter-list,
@@ -958,6 +968,7 @@ label[for="cw-keypoint-color"] {
         .cw-tree-item-link {
             display: inline-block;
             width: calc(100% - 14px);
+            text-align: justify;
 
             &:hover {
                 background-color: $content-color-20;

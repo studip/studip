@@ -101,12 +101,16 @@ export default {
     watch: {
         toolsActive(newState, oldState) {
             let view = this;
-            if(newState && !oldState) {
+            if(newState) {
                 this.showTools = true;
                 setTimeout(() => {view.unfold = true}, 10);
             } else {
                 this.unfold = false;
-                setTimeout(() => {view.showTools = false}, 800);
+                setTimeout(() => {
+                    if(!view.activeToolbar) {
+                        view.showTools = false;
+                    }
+                }, 800);
             }
         }
     }

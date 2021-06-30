@@ -63,6 +63,7 @@ export default {
                 blockType: 'text',
             });
             this.$store.dispatch('coursewareViewMode', 'edit');
+            this.$store.dispatch('coursewareConsumeMode', false);
             this.companionSuccess({
                 info: this.$gettext('Elemente für Ihren ersten Inhalt wurden angelegt'),
             });
