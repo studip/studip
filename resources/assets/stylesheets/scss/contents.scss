@@ -64,7 +64,6 @@
     }
 }
 
-//// Responsive displays
 @include media-breakpoint-small-down() {
     .content-items {
         grid-template-columns: 100%;
