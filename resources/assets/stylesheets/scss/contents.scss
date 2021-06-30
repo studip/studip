@@ -69,11 +69,6 @@
         grid-template-columns: 100%;
     }
 }
-@include media-breakpoint-tiny-down() {
-    .content-items {
-        grid-template-columns: 100%;
-    }
-}
 
 .cw-contents-overview-teaser {
     width: 782px;
