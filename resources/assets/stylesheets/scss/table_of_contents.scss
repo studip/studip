@@ -67,6 +67,7 @@ label[for=cb-toc], label[for=cb-fullscreen] {
 #toc {
     //padding: 10px;
     margin: 10px;
+    text-align: left;
 }
 
 #toc_header {
@@ -207,7 +208,7 @@ section > .toc {
 ul.breadcrumb {
     list-style: none;
     padding-left: 10px;
-    width: 70%;
+    width: 100%;
     display: inline-block;
 
     div {
@@ -258,7 +259,12 @@ ul.breadcrumb {
 }
 
 .contentbar .contentbar_title {
-    width: 70%;
+    min-width: 60%;
     display: flex;
     align-self: center;
 }
+
+#bc_username, #bc_version {
+    display: inline-block;
+}
+

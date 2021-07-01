@@ -152,13 +152,13 @@ class TableOfContents
         if ($this->toc) {
             $this->user = User::find($this->toc->user_id);
             if ($this->user) {
-                $editor = sprintf('<a href="%s">%s</a>',
+                $editor = sprintf('<a href="%s" id="bc_username">%s</a>',
                     URLHelper::getLink('dispatch.php/profile?username=' . $this->user->username),
                     htmlReady($this->user->getFullName()));
             } else {
                 $editor = _('unbekannt');
             }
-            $page_string = sprintf(_('<a %s> Version %s</a>, geändert von %s'),
+            $page_string = sprintf(_('<a %s id="bc_version"> Version %s</a>, geändert von %s'),
                 ' href="' . URLHelper::getLink('', ['keyword' => $this->toc->keyword, 'version' => $this->toc->version]) . '"',
                 $this->toc->version, $editor);
             $page_string .= '<br />';
