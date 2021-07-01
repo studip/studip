@@ -65,10 +65,3 @@
 
 </div>
 
-
-<script>
-    function toggleFullscreen() {
-
-    }
-
-</script>

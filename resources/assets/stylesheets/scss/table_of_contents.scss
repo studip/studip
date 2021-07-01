@@ -252,14 +252,18 @@ ul.breadcrumb {
 }
 
 .action-menu {
-    display: flex;
-    margin-top: 2px;
+    //display: flex;
+    //margin-top: 2px;
 }
 
 .contentbar .contentbar_info {
     align-self: start;
     align-items: start;
     gap: 10px;
+
+    .action-menu {
+        margin-top: 2px;
+    }
 }
 
 .contentbar .contentbar_title {
