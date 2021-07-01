@@ -71,7 +71,7 @@ label[for=cb-toc], label[for=cb-fullscreen] {
 }
 
 #toc_header {
-    height: 56px;
+    height: 58px;
     width: 540px;
     overflow: hidden;
     background-color: $white;
@@ -256,6 +256,7 @@ ul.breadcrumb {
 
 .contentbar .contentbar_info {
     align-self: start;
+    gap: 10px;
 }
 
 .contentbar .contentbar_title {
