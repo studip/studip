@@ -35,7 +35,7 @@
     <div class="contentbar_title">
         <a href="<?= URLHelper::getLink('wiki.php', ['keyword' => 'WikiWikiWeb'])?>"
            title="<?= _('Wiki-Startseite') ?>">
-            <?=Icon::create('wiki', 'clickable')->asImg(24, ['class' => 'text-bottom']) ?>
+            <?=Icon::create('wiki', 'clickable')->asImg(28, ['class' => 'text-bottom']) ?>
         </a>
         <ul class="breadcrumb"><?= $toc_breadcrumb_pages ?></ul>
     </div>
