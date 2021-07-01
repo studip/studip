@@ -43,14 +43,12 @@
     <div class="contentbar_info">
         <div class="textblock"><?= $toc_breadcrumb_info ?></div>
 
-        <!-- do not show if 0 entries -->
-        <? if ($count > 0) : ?>
-        <input type="checkbox" id="cb-toc"/>
-        <label for="cb-toc" class="check-box" title="<?= _('Inhaltsverzeichnis') ?>" >
-            <?= Icon::create('table-of-contents', 'clickable')->asImg(24) ?>
-        </label>
+        <? if (WikiPage::getStartPage(Context::getId())->children): ?>
+            <input type="checkbox" id="cb-toc"/>
+            <label for="cb-toc" class="check-box" title="<?= _('Inhaltsverzeichnis') ?>" >
+                <?= Icon::create('table-of-contents', 'clickable')->asImg(24) ?>
+            </label>
         <? endif ?>
-        <!-- -->
 
 
         <?= $toc_entries ?>
