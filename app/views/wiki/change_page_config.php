@@ -53,15 +53,11 @@
                 <p><?= _("Diese Wikiseite darf keine Vorgängerseite haben.") ?></p>
             <? else : ?>
             <select name="ancestor_select" id="ancestor_select">
-                <option value=""> <?= _('nicht im Inhaltsverzeichnis') ?> </option>
-                <option value="<?= 'WikiWikiWeb' ?>" <?= $this->keyword == $keyword ? 'selected="selected"' : '' ?> >
-                    <?= _('Wiki-Startseite')  ?>
-                    <? foreach ($wiki_page_names as $keyword): ?>
-                        <? if ($keyword != 'WikiWikiWeb') : ?>
-                            <option value="<?= htmlReady($keyword) ?>" <?= $this->keyword == $keyword ? 'selected="selected"' : '' ?> >
-                                <?= htmlReady($keyword) ?>
-                            </option>
-                        <? endif ?>
+            <option value=""> <?= _('keine Vorgängerseite') ?> </option>
+                <? foreach ($validKeywords as $validKeyword) : ?>
+                    <option value="<?= htmlReady($validKeyword) ?>" <?= $page->ancestor === $validKeyword ? 'selected="selected"' : '' ?> >
+                        <?= $validKeyword === 'WikiWikiWeb' ? _('Wiki-Startseite') : htmlReady($validKeyword) ?>
+                    </option>
                 <? endforeach ?>
             </select>
             <? endif ?>

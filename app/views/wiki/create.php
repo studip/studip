@@ -16,14 +16,9 @@
         <span class="required"><?= _('Vorgängerseite') ?></span>
         <select name="ancestor_select" id="ancestor_select">
             <option value=""> <?= _('nicht im Inhaltsverzeichnis') ?> </option>
-            <option value="<?= 'WikiWikiWeb' ?>" <?= $this->keyword == $keyword ? 'selected="selected"' : '' ?> >
-                <?= _('Wiki-Startseite')  ?>
-            <? foreach ($wiki_page_names as $keyword): ?>
-                <? if ($keyword != 'WikiWikiWeb') : ?>
+            <?php foreach ($wiki_page_names as $keyword) : ?>
                 <option value="<?= htmlReady($keyword) ?>" <?= $this->keyword == $keyword ? 'selected="selected"' : '' ?> >
-                    <?= htmlReady($keyword) ?>
-                </option>
-                <? endif ?>
+                <?= $keyword === 'WikiWikiWeb' ? _('Wiki-Startseite') : htmlReady($keyword) ?>
             <? endforeach ?>
         </select>
     </label>

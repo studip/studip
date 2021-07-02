@@ -116,7 +116,7 @@ class WikiController extends AuthenticatedController
         natcasesort($this->validKeywords);
         $wikistartpage = WikiPage::findLatestPage(Context::getId(), 'WikiWikiWeb');
         if ($wikistartpage) {
-            array_unshift($this->wiki_page_names, 'WikiWikiWeb');
+            array_unshift($this->validKeywords, 'WikiWikiWeb');
         }
 
         PageLayout::setTitle(_('Seiten-Einstellungen ändern'));
