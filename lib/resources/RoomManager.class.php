@@ -344,7 +344,6 @@ class RoomManager
                     'dozent'
                 );
 
-                $current_lang = getlocale();
                 foreach ($lecturers as $lecturer) {
                     //Send the message in the lecturer's preferred language:
                     setTempLanguage($lecturer->user->id);
