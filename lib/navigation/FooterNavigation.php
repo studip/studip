@@ -40,7 +40,7 @@ class FooterNavigation extends Navigation
 
         // Datenschutzerklärung
 
-        //Check if the privacy url is one of the Stud.IP pages:.
+        //Check if the privacy url is one of the Stud.IP pages:
         $privacy_url = Config::get()->PRIVACY_URL;
         if (is_internal_url($privacy_url)) {
             //It is a Stud.IP page. Add the cancel_login URL parameter.
