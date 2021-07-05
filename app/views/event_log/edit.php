@@ -40,6 +40,6 @@
             _('Abbrechen'),
             $controller->adminURL()
         ) ?>
-    </td>
+    </footer>
 
 </form>

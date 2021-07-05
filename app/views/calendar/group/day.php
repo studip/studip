@@ -32,7 +32,7 @@ SkipLinks::addIndex(_('Tagesansicht'), 'main_content', 100);
                 </div>
             </td>
         </tr>
-    </head>
+    </thead>
     <tbody>
         <tr>
             <td>

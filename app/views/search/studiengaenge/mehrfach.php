@@ -3,7 +3,9 @@
     <caption>
         <?= _('Studiengang') ?>: <?= htmlReady($studiengang->getDisplayName(ModuleManagementModel::DISPLAY_ABSCHLUSS)) ?>
         <? if (Config::get()->ENABLE_STUDYCOURSE_INFO_PAGE) : ?>
-            <a href="<?= $controller->url_for('search/studiengaenge/info', $studiengang->id)?>" data-dialog><?= Icon::create('infopage2', Icon::ROLE_CLICKABLE)->asImg(25) ?>
+            <a href="<?= $controller->url_for('search/studiengaenge/info', $studiengang->id)?>" data-dialog>
+                <?= Icon::create('infopage2')->asImg(25) ?>
+            </a>
         <? endif; ?>
     </caption>
     <thead>
