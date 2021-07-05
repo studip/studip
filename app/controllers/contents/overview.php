@@ -3,21 +3,6 @@
 class Contents_OverviewController extends AuthenticatedController
 {
     /**
-     * Callback function being called before an action is executed.
-     *
-     * @SuppressWarnings(PHPMD.CamelCaseMethodName)
-     * @SuppressWarnings(PHPMD.Superglobals)
-     */
-    public function before_filter(&$action, &$args)
-    {
-        parent::before_filter($action, $args);
-
-        PageLayout::setTitle(_('Inhalte'));
-
-        $this->user = $GLOBALS['user'];
-    }
-
-    /**
      * Entry point of the controller that displays the dashboard page of Stud.IP.
      *
      * @SuppressWarnings(PHPMD.CamelCaseMethodName)
@@ -26,8 +11,13 @@ class Contents_OverviewController extends AuthenticatedController
      */
     public function index_action()
     {
+        PageLayout::setTitle(_('Inhalte'));
         Navigation::activateItem('/contents/overview/index');
-
+        Helpbar::Get()->addPlainText(
+            _('Alle Inhalte an einem Ort.'),
+            _('Sie finden in diesem neuen Bereich Zugriff auf Ihre eigenen Inhalte: Courseware Lernmodule, Dateien und freie Lernmaterialien (OER), die Sie auch mit anderen Standorten austauschen können. Ihre Lehrveranstaltungen finden Sie am gewohnten Platz im Veranstalungsbereich.'),
+            Icon::create('info')
+        );
         $this->tiles = Navigation::getItem('/contents');
     }
 }

@@ -1,12 +1,3 @@
- <div class="teaserbox">
-    <header>
-        <?= _('Alle Inhalte an einem Ort.')?>
-    </header>
-    <p>
-        <?= _('Sie finden in diesem neuen Bereich Zugriff auf Ihre eigenen Inhalte: Courseware Lernmodule, Dateien und freie Lernmaterialien (OER), die Sie auch mit anderen Standorten austauschen können. Ihre Lehrveranstaltungen finden Sie am gewohnten Platz im ')?>
-        <a href="<?= URLHelper::getLink('dispatch.php/my_courses/') ?>"><?= _('Veranstaltungsbereich')?></a>.
-    </p>
-</div>
 <ul class="content-items">
     <? foreach ($tiles as $key => $navigation): ?>
         <? if ($navigation->isVisible() && $key !== 'overview'): ?>
