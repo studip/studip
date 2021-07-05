@@ -39,6 +39,15 @@ class FooterNavigation extends Navigation
         $this->addSubNavigation('siteinfo', new Navigation(_('Impressum'), 'dispatch.php/siteinfo/show?cancel_login=1'));
 
         // Datenschutzerklärung
-        $this->addSubNavigation('privacy', new Navigation(_('Datenschutz'), Config::get()->PRIVACY_URL));
+
+        //Check if the privacy url is one of the Stud.IP pages and if it
+        //has the parameter "cancel_login=1" in it.
+        $privacy_url = Config::get()->PRIVACY_URL;
+        if ((mb_strpos($privacy_url, 'cancel_login=1') === false) &&
+            mb_strpos($privacy_url, 'dispatch.php/siteinfo/show') !== false) {
+            //It is a Stud.IP page without the cancel_login URL parameter.
+            $privacy_url = URLHelper::getURL($privacy_url, ['cancel_login' => '1']);
+        }
+        $this->addSubNavigation('privacy', new Navigation(_('Datenschutz'), $privacy_url));
     }
 }
