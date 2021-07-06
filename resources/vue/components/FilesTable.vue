@@ -52,22 +52,34 @@
                     ></studip-proxy-checkbox>
                 </th>
                 <th @click="sort('mime_type')" :class="sortClasses('mime_type')">
-                    {{ $gettext('Typ') }}
+                    <a href="#" @click.prevent>
+                        {{ $gettext('Typ') }}
+                    </a>
                 </th>
                 <th @click="sort('name')" :class="sortClasses('name')">
-                    {{ $gettext('Name') }}
+                    <a href="#" @click.prevent>
+                        {{ $gettext('Name') }}
+                    </a>
                 </th>
                 <th @click="sort('size')" class="responsive-hidden" :class="sortClasses('size')">
-                    {{ $gettext('Größe') }}
+                    <a href="#" @click.prevent>
+                        {{ $gettext('Größe') }}
+                    </a>
                 </th>
                 <th v-if="showdownloads" @click="sort('downloads')" class="responsive-hidden" :class="sortClasses('downloads')">
-                    {{ $gettext('Downloads') }}
+                    <a href="#" @click.prevent>
+                        {{ $gettext('Downloads') }}
+                    </a>
                 </th>
                 <th class="responsive-hidden" @click="sort('author_name')" :class="sortClasses('author_name')">
-                    {{ $gettext('Autor/-in') }}
+                    <a href="#" @click.prevent>
+                        {{ $gettext('Autor/-in') }}
+                    </a>
                 </th>
                 <th class="responsive-hidden" @click="sort('chdate')" :class="sortClasses('chdate')">
-                    {{ $gettext('Datum') }}
+                    <a href="#" @click.prevent>
+                        {{ $gettext('Datum') }}
+                    </a>
                 </th>
                 <th v-if="topfolder.additionalColumns"
                     v-for="(name, index) in topfolder.additionalColumns"
@@ -75,7 +87,10 @@
                     @click="sort(index)"
                     class="responsive-hidden"
                     :class="sortClasses(index)">
-                    {{name}}
+                    <a href="#" @click.prevent>
+                        {{name}}
+                    </a>
+
                 </th>
                 <th data-sort="false">{{ $gettext('Aktionen') }}</th>
             </tr>
