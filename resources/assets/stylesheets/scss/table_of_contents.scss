@@ -47,7 +47,6 @@ label[for=cb-toc], label[for=cb-fullscreen] {
     background-color: $white;
 
     overflow-x: hidden;
-    overflow-y: scroll;
     min-height: 10%;
     max-height: 65%;
 
@@ -179,6 +178,7 @@ section > .toc {
 
     .toc .toc {
         list-style: disc;
+        margin-left: 4%;
     }
 
     .toc >li .selected {
