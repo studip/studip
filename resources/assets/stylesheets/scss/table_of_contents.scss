@@ -16,7 +16,6 @@ label {
 }
 
 label[for=cb-toc], label[for=cb-fullscreen] {
-    //margin-top: 6px;
 }
 
 
@@ -59,13 +58,13 @@ label[for=cb-toc], label[for=cb-fullscreen] {
 
 
     > section {
+        max-width: 100%;
         width: 520px;
         overflow: hidden;
     }
 }
 
 #toc {
-    //padding: 10px;
     margin: 10px;
     text-align: left;
 }
@@ -83,7 +82,7 @@ label[for=cb-toc], label[for=cb-fullscreen] {
     align-items: center;
 
     label {
-        margin-right: 10%;
+        margin-right: 5%;
     }
 }
 
@@ -100,17 +99,6 @@ label[for=cb-toc], label[for=cb-fullscreen] {
 #main_content {
     opacity: 1;
 
-}
-
-@media (max-width: 767px) {
-    #main_content header {
-        width:375px;
-    }
-
-    #toc {
-        max-width: 90%!important;
-        top: 130px!important;
-    }
 }
 
 /* Table of contents */
@@ -136,9 +124,14 @@ section > .toc {
     padding: 0;
     margin-left: 2%;
 
+    #chapter0 {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
     > li {
         font-size: 16px;
-        padding-top: 8px;
+        padding-top: 20px;
     }
 
     li#chap1 {
@@ -147,13 +140,12 @@ section > .toc {
 
         > div {
             border-bottom: 1px solid #E9E9E9;
+            margin-bottom: 5px;
         }
     }
 
     > li a {
         display: inline-flex;
-        padding: 5px 0px 5px 0px;
-        //margin-left: 10px;
         width: 100%;
     }
 
@@ -169,7 +161,7 @@ section > .toc {
     }
 
     li.active > div {
-        background-color: $base-color;
+        color: $black;
     }
 
     li.active > div:hover {
@@ -177,7 +169,7 @@ section > .toc {
     }
 
     li.active > div a {
-        color: $white;
+        color: $black;
     }
 
     .toc > li {
@@ -235,6 +227,16 @@ ul.breadcrumb {
 }
 
 @media (max-width: 767px) {
+
+    #main_content header {
+        width:375px;
+    }
+
+    #toc {
+        max-width: 94%!important;
+        top: 121px!important;
+    }
+
     ul.breadcrumb {
         list-style: none;
         font-size: 18px;
@@ -245,6 +247,10 @@ ul.breadcrumb {
     #toc_header {
         width: 90%;
     }
+
+    .consuming_mode .toc_overview {
+        top: 51px!important;
+    }
 }
 
 .wiki {
@@ -252,8 +258,7 @@ ul.breadcrumb {
 }
 
 .action-menu {
-    //display: flex;
-    //margin-top: 2px;
+
 }
 
 .contentbar .contentbar_info {
@@ -276,3 +281,6 @@ ul.breadcrumb {
     display: inline-block;
 }
 
+.consuming_mode .toc_overview {
+    top: 6px;
+}

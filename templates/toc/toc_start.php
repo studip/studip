@@ -1,6 +1,6 @@
 <ul class="toc">
     <li class="chapter <?= htmlReady($active) ?>">
-        <div>
+        <div id="chapter0">
             <a class="navigate" href="<?= URLHelper::getLink('wiki.php',
                                         ['keyword' => htmlReady($wikiwikiweb)]) ?>  ">
                 <?= ($active)
