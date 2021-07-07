@@ -20,9 +20,9 @@ class ContentsNavigation extends Navigation
      */
     public function __construct()
     {
-        parent::__construct(_('Inhalte'));
+        parent::__construct(_('Arbeitsplatz'));
 
-        $this->setImage(Icon::create('content', 'navigation', ['title' => _('Inhalte')]));
+        $this->setImage(Icon::create('content', 'navigation', ['title' => _('Mein Arbeitsplatz')]));
     }
 
     /**
