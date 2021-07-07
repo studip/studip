@@ -6,7 +6,7 @@
                     <header>
                         <div class="content-item-img-wrapper">
                             <? if ($navigation->getImage()): ?>
-                                <?= $navigation->getImage()->asImg(72, $navigation->getLinkAttributes()) ?>
+                                <?= $navigation->getImage()->asImg(64, $navigation->getLinkAttributes()) ?>
                             <? endif ?>
                         </div>
                         <?= htmlReady($navigation->getTitle()) ?>
