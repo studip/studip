@@ -66,6 +66,11 @@ class StudipNavigation extends Navigation
             $this->addSubNavigation('contents', new ContentsNavigation());
         }
 
+        // contents pages
+        if (Config::get()->OERCAMPUS_ENABLED && $perm && $perm->have_perm(Config::get()->OER_PUBLIC_STATUS)) {
+            $this->addSubNavigation('oer', new OERNavigation());
+        }
+
         if (is_object($user) && $user->id != 'nobody') {
             // internal message system
             $this->addSubNavigation('messaging', new MessagingNavigation());

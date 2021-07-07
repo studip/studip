@@ -13,8 +13,8 @@ class Oer_MymaterialController extends AuthenticatedController
 
     public function index_action()
     {
-        if (Navigation::hasItem("/contents/oer/mymaterial")) {
-            Navigation::activateItem("/contents/oer/mymaterial");
+        if (Navigation::hasItem("/oer/mymaterial")) {
+            Navigation::activateItem("/oer/mymaterial");
         }
         $this->materialien = OERMaterial::findMine();
         $this->buildSidebar();

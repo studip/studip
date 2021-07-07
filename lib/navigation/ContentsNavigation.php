@@ -90,27 +90,6 @@ class ContentsNavigation extends Navigation
 
         $this->addSubNavigation('files', $files);
 
-
-        if (Config::get()->OERCAMPUS_ENABLED && $perm && $perm->have_perm(Config::get()->OER_PUBLIC_STATUS)) {
-            $oer = new Navigation(Config::get()->OER_TITLE);
-            $oer->setDescription(_('Freies Wissen für freie Köpfe'));
-            $oer->setImage(Icon::create(Assets::image_path('oer-keyvisual.svg')));
-
-            $oer->addSubNavigation(
-                'market',
-                new Navigation(Config::get()->OER_TITLE, 'dispatch.php/oer/market')
-            );
-
-            if ($perm->have_perm('autor')) {
-                $oer->addSubNavigation(
-                    'mymaterial',
-                    new Navigation(_('Meine Materialien'), 'dispatch.php/oer/mymaterial')
-                );
-            }
-
-            $this->addSubNavigation('oer', $oer);
-        }
-
         // news
         $news = new Navigation(_('Ankündigungen'), 'dispatch.php/news/admin_news');
         $news->setImage(Icon::create('news'));
