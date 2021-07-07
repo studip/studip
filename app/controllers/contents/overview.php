@@ -11,7 +11,7 @@ class Contents_OverviewController extends AuthenticatedController
      */
     public function index_action()
     {
-        PageLayout::setTitle(_('Inhalte'));
+        PageLayout::setTitle(_('Mein Arbeitsplatz'));
         Navigation::activateItem('/contents/overview/index');
         Helpbar::Get()->addPlainText(
             _('Alle Inhalte an einem Ort.'),
