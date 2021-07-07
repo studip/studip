@@ -20,7 +20,7 @@ class IliasInterfaceModule extends CorePlugin implements StudipModule, SystemPlu
                     new Navigation(_('ILIAS-Schnittstelle'), 'dispatch.php/admin/ilias_interface'));
             }
             if (Seminar_Perm::get()->have_perm('tutor') || (Seminar_Perm::get()->have_perm('autor') && array_key_exists('show_tools_page', $ilias_interface_config) && $ilias_interface_config['show_tools_page'])) {
-                Navigation::addItem('/tools/my_ilias_accounts',
+                Navigation::addItem('/contents/my_ilias_accounts',
                     new Navigation(_('ILIAS'), 'dispatch.php/my_ilias_accounts'));
             }
         }

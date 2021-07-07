@@ -44,7 +44,7 @@ class MyIliasAccountsController extends AuthenticatedController
      */
     public function index_action()
     {
-        Navigation::activateItem('/tools/my_ilias_accounts');
+        Navigation::activateItem('/contents/my_ilias_accounts');
 
         PageLayout::setTitle(_("Meine Lernobjekte und ILIAS-Accounts"));
 
