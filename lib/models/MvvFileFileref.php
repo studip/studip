@@ -48,9 +48,6 @@ class MvvFileFileref extends ModuleManagementModel
     {
         if ($this->file_ref) {
             $filetype = $this->file_ref->getFileType();
-            if ($filetype instanceof URLFile) {
-                return $filetype->getDownloadURL();
-            }
             return $filetype->getFilename();
         }
     }

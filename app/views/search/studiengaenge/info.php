@@ -165,7 +165,7 @@
                         <? foreach ($files as $file) : ?>
                         <li>
                             <? if ($file['is_link']) : ?>
-                                <a href="<?= $file['url'] ?>" target="_blank"><?= htmlReady($file['name']) ?></a>
+                                <a href="<?= $file['metadata_url'] ?>" target="_blank"><?= htmlReady($file['name']) ?></a>
                             <? else : ?>
                             <?= htmlReady($file['name']) ?>
                             <a href="<?= $file['url'] ?>"><?= htmlReady($file['extension']) ?></a>

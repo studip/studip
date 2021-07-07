@@ -399,10 +399,15 @@ class Search_StudiengaengeController extends MVVController
                     }
                 }
                 if ($mvv_file_ref) {
-                    $this->all_documents[$file->category][$file->id]['name'] = $file->getDisplayName();
-                    $this->all_documents[$file->category][$file->id]['url'] = $mvv_file_ref->file_ref->download_url;
-                    $this->all_documents[$file->category][$file->id]['extension'] = $mvv_file_ref->file_ref->file->getExtension();
-                    $this->all_documents[$file->category][$file->id]['is_link'] = $mvv_file_ref->file_ref->is_link;
+                    $filetype = $mvv_file_ref->file_ref->getFileType();
+                    $this->all_documents[$file->category][$file->id] =
+                            [
+                                'name' => $file->getDisplayName(),
+                                'url'  => $mvv_file_ref->file_ref->getDownloadURL(),
+                                'metadata_url' => $mvv_file_ref->file_ref->file->metadata['url'],
+                                'extension' => $mvv_file_ref->file_ref->file->getExtension(),
+                                'is_link' => ($filetype instanceof URLFile)
+                            ];
                 }
             }
         }

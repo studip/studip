@@ -28,7 +28,7 @@
             </td>
             <td class="dont-hide">
             <? if ($mvv_file->getFiletypes()[0] === 'Link'): ?>
-                <a href="<?= htmlReady($mvv_file->getFilenames()[0]); ?>" target="_blank">
+                <a href="<?= htmlReady($mvv_file->file_refs[0]->file_ref->file->metadata['url']); ?>" target="_blank">
                     <?= Icon::create('link-extern')->asImg(['class' => 'text-bottom']) ?>
                     <?= htmlReady($mvv_file->getFilenames()[0]); ?>
                 </a>
