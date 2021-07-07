@@ -62,7 +62,7 @@ if ($GLOBALS['perm']->have_perm("autor")) {
         $abo ? _('Neuigkeiten abbestellen') : _('Neuigkeiten abonnieren'),
         $controller->url_for("oer/market/abo"),
         $abo ? Icon::create("rss+decline", Icon::ROLE_CLICKABLE) : Icon::create("rss", Icon::ROLE_CLICKABLE),
-        ['data-dialog' => "1"]
+        ['data-dialog' => "size=small"]
     );
     Sidebar::Get()->addWidget($actions);
 }
