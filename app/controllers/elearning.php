@@ -78,7 +78,7 @@ class ElearningController extends AuthenticatedController
     public function my_accounts_action()
     {
         global $connected_cms, $current_module,$messages;
-        Navigation::activateItem('/tools/my_elearning');
+        Navigation::activateItem('/contents/my_elearning');
 
         PageLayout::setTitle(_("Meine Lernmodule und Benutzer-Accounts"));
 

@@ -100,7 +100,7 @@ class ContentsNavigation extends Navigation
                 'market',
                 new Navigation(Config::get()->OER_TITLE, 'dispatch.php/oer/market')
             );
-    
+
             if ($perm->have_perm('autor')) {
                 $oer->addSubNavigation(
                     'mymaterial',
@@ -110,5 +110,58 @@ class ContentsNavigation extends Navigation
 
             $this->addSubNavigation('oer', $oer);
         }
+
+        // news
+        $news = new Navigation(_('Ankündigungen'), 'dispatch.php/news/admin_news');
+        $news->setImage(Icon::create('news'));
+        $news->setDescription('Extrablatt!!! Neuigkeiten für alle!');
+        $this->addSubNavigation('news', $news);
+
+        // votes and tests, evaluations
+        if (Config::get()->VOTE_ENABLE) {
+            $questionnaire = new Navigation(_('Fragebögen'), 'dispatch.php/questionnaire/overview');
+            $questionnaire->setImage(Icon::create('evaluation'));
+            $questionnaire->setDescription('Stellen Sie Fragen, um mehr oder weniger nützliche Antworten zu bekommen.');
+            $this->addSubNavigation('questionnaire', $questionnaire);
+
+            $sub_nav = new Navigation(
+                _('Übersicht'),
+                'dispatch.php/questionnaire/overview'
+            );
+            $questionnaire->addSubNavigation('overview', $sub_nav);
+
+            if ($GLOBALS['perm']->have_perm('admin')) {
+                $sub_nav = new Navigation(
+                    _('Fragebögen zuordnen'),
+                    'dispatch.php/questionnaire/assign'
+                );
+                $questionnaire->addSubNavigation('assign', $sub_nav);
+            }
+
+            $eval = new Navigation(_('Evaluationen'), 'admin_evaluation.php', ['rangeID' => $auth->auth['uname']]);
+            $eval->setImage(Icon::create('test'));
+            $eval->setDescription('Evaluationen. Eigentlich zu alt und morsch, um sie noch zu verwenden.');
+            $this->addSubNavigation('evaluation', $eval);
+        }
+
+        // elearning
+        if (Config::get()->ELEARNING_INTERFACE_ENABLE) {
+            $elearning = new Navigation(_('Lernmodule'), 'dispatch.php/elearning/my_accounts');
+            $elearning->setImage(Icon::create('learnmodule'));
+            $elearning->setDescription('E-Learning. Kennste? Das ist das mit den E-Mails.');
+            $this->addSubNavigation('my_elearning', $elearning);
+        }
+
+        if (!$GLOBALS['perm']->have_perm('root') && $GLOBALS['user']->getAuthenticatedUser()->hasRole('Hilfe-Administrator(in)')) {
+            $help = new Navigation(_('Hilfe'), 'dispatch.php/help_content/admin_overview');
+            $help->setImage(Icon::create('question-circle'));
+            $help->setDescription('Hilfe zur Selbsthilfe, für die, die das können.');
+            $this->addSubNavigation('help_admin', $help);
+            if (Config::get()->TOURS_ENABLE) {
+                $help->addSubNavigation('tour', new Navigation(_('Touren'), 'dispatch.php/tour/admin_overview'));
+            }
+            $help->addSubNavigation('help_content', new Navigation(_('Hilfe-Texte'), 'dispatch.php/help_content/admin_overview'));
+        }
+
     }
 }

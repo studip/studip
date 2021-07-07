@@ -93,6 +93,20 @@ class BrowseNavigation extends Navigation
                 }
             }
 
+            if ($perm->have_perm('admin') || ($perm->have_perm('dozent') && Config::get()->ALLOW_DOZENT_COURSESET_ADMIN)) {
+                $navigation = new Navigation(_('Anmeldesets'), 'dispatch.php/admission/courseset/index');
+                $this->addSubNavigation('coursesets', $navigation);
+                $navigation->addSubNavigation('sets', new Navigation(_('Anmeldesets verwalten'), 'dispatch.php/admission/courseset/index'));
+                $navigation->addSubNavigation('userlists', new Navigation(_('Personenlisten'), 'dispatch.php/admission/userlist/index'));
+                $navigation->addSubNavigation('restricted_courses', new Navigation(_('teilnahmebeschränkte Veranstaltungen'), 'dispatch.php/admission/restricted_courses'));
+            }
+
+            // export
+            if (Config::get()->EXPORT_ENABLE && $perm->have_perm('tutor') && !($perm->have_perm('admin'))) {
+                $navigation = new Navigation(_('Export'), 'export.php');
+                $this->addSubNavigation('export', $navigation);
+            }
+
         }
     }
 }

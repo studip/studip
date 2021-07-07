@@ -67,7 +67,7 @@ if ($view === 'eval_inst') {
 } else if (Context::getId() && $view == "eval_sem") {
     Navigation::activateItem('/course/admin/evaluation');
 } else {
-    Navigation::activateItem('/tools/evaluation');
+    Navigation::activateItem('/contents/evaluation');
 }
 
 if ((Context::getId()) && ($view == "eval_sem") || ($view == "eval_inst")) {

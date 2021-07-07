@@ -32,7 +32,7 @@ class Admission_CoursesetController extends AuthenticatedController
             if ($GLOBALS['perm']->have_perm('admin') || ($GLOBALS['perm']->have_perm('dozent') && Config::get()->ALLOW_DOZENT_COURSESET_ADMIN)) {
                 // We have access to institute-wide course sets, so all courses may be assigned.
                 $this->onlyOwnCourses = false;
-                Navigation::activateItem('/tools/coursesets/sets');
+                Navigation::activateItem('/browse/coursesets/sets');
             } else {
                 throw new AccessDeniedException();
             }

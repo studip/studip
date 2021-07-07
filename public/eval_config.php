@@ -56,7 +56,7 @@
     // Start of Output
     PageLayout::setTitle(_('Evaluations-Auswertung'));
     PageLayout::setHelpKeyword('Basis.Evaluationen');
-    Navigation::activateItem('/tools/evaluation');
+    Navigation::activateItem('/contents/evaluation');
 
     // Extract variables from request
     $eval_id     = Request::option('eval_id');

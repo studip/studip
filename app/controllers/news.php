@@ -483,7 +483,7 @@ class NewsController extends StudipController
         }
         PageLayout::setTitle(_('Meine Ankündigungen'));
         PageLayout::setHelpKeyword('Basis.News');
-        Navigation::activateItem('/tools/news');
+        Navigation::activateItem('/contents/news');
 
         if (Request::submitted('reset_filter')) {
             $area_type = 'all';

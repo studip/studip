@@ -98,10 +98,14 @@ class AdminNavigation extends Navigation
             $navigation->addSubNavigation('sem_tree', new Navigation(_('Veranstaltungshierarchie'), 'admin_sem_tree.php'));
         }
 
+        if (Config::get()->EXPORT_ENABLE) {
+            $export = new Navigation(_('Export'), 'export.php');
+            $navigation->addSubNavigation('export', $export);
+        }
+
         if ($perm->have_perm(Config::get()->LOCK_RULE_ADMIN_PERM ? Config::get()->LOCK_RULE_ADMIN_PERM : 'admin')) {
             $navigation->addSubNavigation('lock_rules', new Navigation(_('Sperrebenen'), 'dispatch.php/admin/lockrules'));
         }
-
 
         if ($perm->have_perm('root')) {
             if (Config::get()->SEMESTER_ADMINISTRATION_ENABLE) {
@@ -142,6 +146,7 @@ class AdminNavigation extends Navigation
                     )
                 );
             }
+
         }
         $this->addSubNavigation('locations', $navigation);
 

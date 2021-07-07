@@ -593,7 +593,7 @@ if ($evaluation = $statement->fetch(PDO::FETCH_ASSOC)) {
 
 
 PageLayout::setHelpKeyword("Basis.Evaluationen");
-Navigation::activateItem('/tools/evaluation');
+Navigation::activateItem('/contents/evaluation');
 PageLayout::setTitle(_("Evaluations-Auswertung"));
 
 if ($ausgabeformat == 2) {

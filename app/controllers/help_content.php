@@ -50,7 +50,7 @@ class HelpContentController extends AuthenticatedController
         if ($GLOBALS['perm']->have_perm('root')) {
             Navigation::activateItem('/admin/config/help_content');
         } else {
-            Navigation::activateItem('/tools/help_admin/help_content');
+            Navigation::activateItem('/contents/help_admin/help_content');
         }
 
         if (Request::get('help_content_filter') == 'set') {
@@ -89,7 +89,7 @@ class HelpContentController extends AuthenticatedController
         if ($GLOBALS['perm']->have_perm('root')) {
             Navigation::activateItem('/admin/config/help_content');
         } else {
-            Navigation::activateItem('/tools/help_admin/help_content');
+            Navigation::activateItem('/contents/help_admin/help_content');
         }
 
         // load help content

@@ -21,7 +21,7 @@ if (($o_mode != "direct") AND ($o_mode != "passthrough"))
 {
 // Start of Output
     PageLayout::setTitle($export_pagename);
-    Navigation::activateItem('/tools/export');
+    Navigation::activateItem($GLOBALS['perm']->have_perm('admin') ? '/admin/locations/export' : '/browse/export');
  ?>
 <?
     if (isset($export_error)) {

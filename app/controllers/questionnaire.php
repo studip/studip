@@ -9,8 +9,8 @@ class QuestionnaireController extends AuthenticatedController
     public function before_filter(&$action, &$args)
     {
         parent::before_filter($action, $args);
-        if ($action !== 'courseoverview' && Navigation::hasItem('/tools/questionnaire')) {
-            Navigation::activateItem('/tools/questionnaire');
+        if ($action !== 'courseoverview' && Navigation::hasItem('/contents/questionnaire')) {
+            Navigation::activateItem('/contents/questionnaire');
         }
         PageLayout::setTitle(_('Fragebögen'));
 
@@ -22,8 +22,8 @@ class QuestionnaireController extends AuthenticatedController
 
     public function overview_action()
     {
-        if (Navigation::hasItem('/tools/questionnaire/overview')) {
-            Navigation::activateItem('/tools/questionnaire/overview');
+        if (Navigation::hasItem('/contents/questionnaire/overview')) {
+            Navigation::activateItem('/contents/questionnaire/overview');
         }
 
         if (!$GLOBALS['perm']->have_perm('autor')) {
@@ -645,8 +645,8 @@ class QuestionnaireController extends AuthenticatedController
     {
         PageLayout::setTitle(_('Fragebögen zuordnen'));
 
-        if (Navigation::hasItem('/tools/questionnaire/assign')) {
-            Navigation::activateItem('/tools/questionnaire/assign');
+        if (Navigation::hasItem('/contents/questionnaire/assign')) {
+            Navigation::activateItem('/contents/questionnaire/assign');
         }
 
         if (!$GLOBALS['perm']->have_perm('admin')) {

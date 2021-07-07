@@ -183,7 +183,7 @@ class TourController extends AuthenticatedController
         if ($GLOBALS['perm']->have_perm('root')) {
             Navigation::activateItem('/admin/config/tour');
         } else {
-            Navigation::activateItem('/tools/help_admin/tour');
+            Navigation::activateItem('/contents/help_admin/tour');
         }
 
         if (Request::get('tour_filter') === 'set') {
@@ -552,7 +552,7 @@ class TourController extends AuthenticatedController
         if ($GLOBALS['perm']->have_perm('root')) {
             Navigation::activateItem('/admin/config/tour');
         } else {
-            Navigation::activateItem('/tools/help_admin/tour');
+            Navigation::activateItem('/contents/help_admin/tour');
         }
 
         // load help content
@@ -615,7 +615,7 @@ class TourController extends AuthenticatedController
         if ($GLOBALS['perm']->have_perm('root')) {
             Navigation::activateItem('/admin/config/tour');
         } else {
-            Navigation::activateItem('/tools/help_admin/tour');
+            Navigation::activateItem('/contents/help_admin/tour');
         }
 
         $this->tour = new HelpTour($tour_id);
@@ -660,7 +660,7 @@ class TourController extends AuthenticatedController
         if ($GLOBALS['perm']->have_perm('root')) {
             Navigation::activateItem('/admin/config/tour');
         } else {
-            Navigation::activateItem('/tools/help_admin/tour');
+            Navigation::activateItem('/contents/help_admin/tour');
         }
 
         $this->tour = new HelpTour($tour_id);

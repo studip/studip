@@ -23,7 +23,7 @@ class Userfilter_FieldController extends AuthenticatedController
     {
         parent::before_filter($action, $args);
         if ($GLOBALS['perm']->have_perm('admin') || ($GLOBALS['perm']->have_perm('dozent') && Config::get()->ALLOW_DOZENT_COURSESET_ADMIN)) {
-            Navigation::activateItem('/tools/coursesets');;
+            Navigation::activateItem('/browse/coursesets');;
         }
         PageLayout::setTitle(_('Bedingung'));
         PageLayout::addScript('studip-userfilter.js');
