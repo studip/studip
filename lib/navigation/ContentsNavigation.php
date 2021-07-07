@@ -45,7 +45,7 @@ class ContentsNavigation extends Navigation
 
         $courseware = new Navigation(_('Courseware'));
         $courseware->setDescription(_('Schöner lernen mit Stud.IP'));
-        $courseware->setImage(Icon::create(Assets::image_path('courseware-keyvisual.svg')));
+        $courseware->setImage(Icon::create('courseware'));
 
         $courseware->addSubNavigation(
             'projects',
@@ -73,7 +73,7 @@ class ContentsNavigation extends Navigation
 
         $files = new Navigation(_('Dateien'));
         $files->setDescription(_('Alle Dokumente an einem Ort'));
-        $files->setImage(Icon::create(Assets::image_path('files-keyvisual.svg')));
+        $files->setImage(Icon::create('files'));
 
         $files->addSubNavigation(
             'overview',

@@ -7,16 +7,16 @@
 }
 
 .content-items {
-    max-width: 782px;
     list-style: none;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
-    grid-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    grid-gap: 15px;
 
     .content-item {
         text-align: center;
-        border: solid thin $content-color-40;
+        background-color: $dark-gray-color-5;
+        border: solid thin $base-color;
         .content-item-link {
             display: block;
             padding: 10px;
@@ -29,6 +29,8 @@
         .content-item-description {
             color: black;
             margin-bottom: 16px;
+            margin-top: 16px;
+            text-align: left;
         }
         .content-item-img-wrapper {
             position: relative;
@@ -36,8 +38,6 @@
 
             img {
                 position: absolute;
-                width: auto;
-                height: auto;
                 max-width: 100%;
                 max-height: 100%;
                 top: 0;
