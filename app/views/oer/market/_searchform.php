@@ -48,71 +48,73 @@
                 <studip-icon shape="filter" :role="activeFilterPanel ? 'info_alt' : 'clickable'"></studip-icon>
             </button>
 
-            <button title="<?= _('Suche starten') ?>" @click.prevent="search">
+
+            <div v-if="activeFilterPanel" class="filterpanel">
+                <div>
+                    <h3><?= _('Kategorien') ?></h3>
+                    <ul class="clean">
+                        <li>
+                            <a href="<?= $controller->link_for("oer/market", ['category' => "audio"]) ?>" @click.prevent="category = 'audio'">
+                                <studip-icon v-if="category != 'audio'" shape="radiobutton-unchecked" role="clickable" size="16" class="text-bottom"></studip-icon>
+                                <studip-icon v-if="category == 'audio'" shape="radiobutton-checked" role="clickable" size="16" class="text-bottom"></studip-icon>
+                                <?= _('Audio') ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?= $controller->link_for("oer/market", ['category' => "video"]) ?>" @click.prevent="category = 'video'">
+                                <studip-icon v-if="category != 'video'" shape="radiobutton-unchecked" role="clickable" size="16" class="text-bottom"></studip-icon>
+                                <studip-icon v-if="category == 'video'" shape="radiobutton-checked" role="clickable" size="16" class="text-bottom"></studip-icon>
+                                <?= _('Video') ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?= $controller->link_for("oer/market", ['category' => "presentation"]) ?>" @click.prevent="category = 'presentation'">
+                                <studip-icon v-if="category != 'presentation'" shape="radiobutton-unchecked" role="clickable" size="16" class="text-bottom"></studip-icon>
+                                <studip-icon v-if="category == 'presentation'" shape="radiobutton-checked" role="clickable" size="16" class="text-bottom"></studip-icon>
+                                <?= _('Folien') ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?= $controller->link_for("oer/market", ['category' => "elearning"]) ?>" @click.prevent="category = 'elearning'">
+                                <studip-icon v-if="category != 'elearning'" shape="radiobutton-unchecked" role="clickable" size="16" class="text-bottom"></studip-icon>
+                                <studip-icon v-if="category == 'elearning'" shape="radiobutton-checked" role="clickable" size="16" class="text-bottom"></studip-icon>
+                                <?= _('Lernmodule') ?>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="<?= $controller->link_for("oer/market", ['get' => "all"]) ?>">
+                                <studip-icon shape="link-intern" role="clickable" size="16" class="text-bottom"></studip-icon>
+                                <?= _('Alles') ?>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="level_filter">
+                    <h3><?= _('Niveau') ?></h3>
+                    <div class="level_labels">
+                        <div><?= _('Kindergarten') ?></div>
+                        <div><?= _('Aktuelle Forschung') ?></div>
+                    </div>
+                    <div class="level_numbers">
+                        <? for ($i = 1; $i <= 12; $i++) : ?>
+                            <div><?= ($i < 10 ? "&nbsp;" : "").$i ?></div>
+                        <? endfor ?>
+                    </div>
+                    <div id="difficulty_slider"></div>
+
+                    <input type="hidden" id="difficulty" name="difficulty" value="">
+                </div>
+            </div>
+
+
+            <button title="<?= _('Suche starten') ?>" @click.prevent="search" @focus="hideFilterPanel">
                 <studip-icon shape="search" role="clickable"></studip-icon>
             </button>
         </div>
 
     </div>
 
-    <div v-if="activeFilterPanel" class="filterpanel">
-        <div>
-            <h3><?= _('Kategorien') ?></h3>
-            <ul class="clean">
-                <li>
-                    <a href="<?= $controller->link_for("oer/market", ['category' => "audio"]) ?>" @click.prevent="category = 'audio'">
-                        <studip-icon v-if="category != 'audio'" shape="radiobutton-unchecked" role="clickable" size="16" class="text-bottom"></studip-icon>
-                        <studip-icon v-if="category == 'audio'" shape="radiobutton-checked" role="clickable" size="16" class="text-bottom"></studip-icon>
-                        <?= _('Audio') ?>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= $controller->link_for("oer/market", ['category' => "video"]) ?>" @click.prevent="category = 'video'">
-                        <studip-icon v-if="category != 'video'" shape="radiobutton-unchecked" role="clickable" size="16" class="text-bottom"></studip-icon>
-                        <studip-icon v-if="category == 'video'" shape="radiobutton-checked" role="clickable" size="16" class="text-bottom"></studip-icon>
-                        <?= _('Video') ?>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= $controller->link_for("oer/market", ['category' => "presentation"]) ?>" @click.prevent="category = 'presentation'">
-                        <studip-icon v-if="category != 'presentation'" shape="radiobutton-unchecked" role="clickable" size="16" class="text-bottom"></studip-icon>
-                        <studip-icon v-if="category == 'presentation'" shape="radiobutton-checked" role="clickable" size="16" class="text-bottom"></studip-icon>
-                        <?= _('Folien') ?>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= $controller->link_for("oer/market", ['category' => "elearning"]) ?>" @click.prevent="category = 'elearning'">
-                        <studip-icon v-if="category != 'elearning'" shape="radiobutton-unchecked" role="clickable" size="16" class="text-bottom"></studip-icon>
-                        <studip-icon v-if="category == 'elearning'" shape="radiobutton-checked" role="clickable" size="16" class="text-bottom"></studip-icon>
-                        <?= _('Lernmodule') ?>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= $controller->link_for("oer/market", ['get' => "all"]) ?>">
-                        <studip-icon shape="link-intern" role="clickable" size="16" class="text-bottom"></studip-icon>
-                        <?= _('Alles') ?>
-                    </a>
-                </li>
-            </ul>
-        </div>
 
-        <div class="level_filter">
-            <h3><?= _('Niveau') ?></h3>
-            <div class="level_labels">
-                <div><?= _('Kindergarten') ?></div>
-                <div><?= _('Aktuelle Forschung') ?></div>
-            </div>
-            <div class="level_numbers">
-                <? for ($i = 1; $i <= 12; $i++) : ?>
-                    <div><?= ($i < 10 ? "&nbsp;" : "").$i ?></div>
-                <? endfor ?>
-            </div>
-            <div id="difficulty_slider"></div>
-
-            <input type="hidden" id="difficulty" name="difficulty" value="">
-        </div>
-
-    </div>
 </div>
 
 <div class="browser">
@@ -143,7 +145,7 @@
                    class="button"
                    :style="getTagStyle(tag.tag_hash)"
                    :title="tag.name"
-                   @click.prevent="browseTag(tag.tag_hash)">{{"#" + tag.name}}</a>
+                   @click.prevent="browseTag(tag.tag_hash, tag.name)">{{"#" + tag.name}}</a>
             </li>
         </ul>
     </div>

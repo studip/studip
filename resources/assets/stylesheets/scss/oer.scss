@@ -329,14 +329,14 @@ ul.reviews, ol.reviews {
         animation: oer-filter-panel-appears 200ms ease-out;
         border: thin solid $content-color-40;
         margin: 0px;
-        margin-top: 10px;
+        margin-top: 46px;
         height: 183px;
         display: flex;
         justify-content: space-around;
         align-items: top;
         font-size: 1.2em;
 
-        @include arrow-top-border(9px, white, 1px, $content-color-40, 10px);
+        @include arrow-top-border(9px, white, 1px, $content-color-40, 46px);
 
         &::before, &::after {
             right: 50px;
