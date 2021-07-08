@@ -95,11 +95,6 @@ class StudipNavigation extends Navigation
             $this->addSubNavigation('search', new SearchNavigation());
         }
 
-        // tools page
-        if (is_object($user) && $perm->have_perm('autor')) {
-            $this->addSubNavigation('tools', new ToolsNavigation());
-        }
-
         //Add the resource management icon, if that area is enabled
         //and the current user either has global admin permissions in the
         //room and resource management or if the the current user has
