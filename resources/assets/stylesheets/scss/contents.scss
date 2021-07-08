@@ -1,8 +1,32 @@
 .contents-widget {
     margin: 10px;
     .content-items {
-        width: 100%;
+        grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+        grid-gap: 5px;
         max-width: none;
+        width: 100%;
+
+        .content-item {
+            height: 100px;
+            .content-item-title {
+                color: $base-color;
+                display: inline-block;
+                font-size: 2rem;
+                width: 100px;
+            }
+            .content-item-img-wrapper {
+                display: inline-block;
+                float: right;
+                height: 36px;
+                width: 50px;
+            }
+            .content-item-description {
+                font-size: 12px;
+                margin: 0;
+                margin-top: 5px;
+                padding: 0;
+            }
+        }
     }
 }
 

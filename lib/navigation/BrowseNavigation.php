@@ -102,7 +102,7 @@ class BrowseNavigation extends Navigation
             }
 
             // export
-            if (Config::get()->EXPORT_ENABLE && $perm->have_perm('tutor') && !($perm->have_perm('admin'))) {
+            if (Config::get()->EXPORT_ENABLE) {
                 $navigation = new Navigation(_('Export'), 'export.php');
                 $this->addSubNavigation('export', $navigation);
             }

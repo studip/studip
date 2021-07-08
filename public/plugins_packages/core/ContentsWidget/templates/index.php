@@ -7,17 +7,17 @@
             <? if ($navigation->isVisible() && $key !== 'overview'): ?>
                 <li class="content-item content-item-courseware">
                     <a href="<?= URLHelper::getLink($navigation->getURL()) ?>" class="content-item-link">
-                        <header>
+                        <div class="content-item-title">
                             <?= htmlReady($navigation->getTitle()) ?>
-                        </header>
+                        </div>
+                        <div class="content-item-img-wrapper">
+                            <? if ($navigation->getImage()): ?>
+                                <?= $navigation->getImage()->asImg(32, $navigation->getLinkAttributes()) ?>
+                            <? endif ?>
+                        </div>
                         <p class="content-item-description">
                             <?= htmlReady($navigation->getDescription()) ?>
                         </p>
-                        <? if ($navigation->getImage()): ?>
-                            <div class="content-item-img-wrapper">
-                                <?= $navigation->getImage()->asImg(false, $navigation->getLinkAttributes()) ?>
-                            </div>
-                        <? endif ?>
                     </a>
                 </li>
             <? endif ?>
