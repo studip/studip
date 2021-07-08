@@ -133,11 +133,19 @@ class StartNavigation extends Navigation
 
             }
         }
+        // coursesets
+        if ($perm->have_perm('admin') || (Config::get()->ALLOW_DOZENT_COURSESET_ADMIN && $perm->have_perm('dozent'))) {
+            $navigation->addSubNavigation('coursesets', new Navigation(_('Anmeldesets'), 'dispatch.php/admission/courseset'));
+        }
+        // export
+        if (Config::get()->EXPORT_ENABLE && $perm->have_perm('tutor')) {
+            $navigation->addSubNavigation('export', new Navigation(_('Export'), 'export.php'));
+        }
 
         $this->addSubNavigation('my_courses', $navigation);
 
         // course administration
-       if ($perm->have_perm('admin')) {
+        if ($perm->have_perm('admin')) {
            $navigation = new Navigation(_('Verwaltung von Veranstaltungen'), 'dispatch.php/my_courses');
 
            if ($perm->have_perm($sem_create_perm)) {
@@ -222,6 +230,27 @@ class StartNavigation extends Navigation
             }
         }
 
+        // contents
+        $navigation = new Navigation(_('Mein Arbeitsplatz'), 'dispatch.php/contents/overview');
+        $navigation->addSubNavigation('courseware', new Navigation(_('Courseware'), 'dispatch.php/contents/courseware'));
+        $navigation->addSubNavigation('files', new Navigation(_('Dateien'), 'dispatch.php/files/overview'));
+
+        if (Config::get()->VOTE_ENABLE) {
+            $navigation->addSubNavigation('questionnaire', new Navigation(_('Ankündigungen'), 'dispatch.php/news/admin_news'));
+            $navigation->addSubNavigation('evaluation', new Navigation(_('Evaluationen'), 'admin_evaluation.php', ['rangeID' => $auth->auth['uname']]));
+        }
+
+        // elearning
+        if (Config::get()->ELEARNING_INTERFACE_ENABLE) {
+            $navigation->addSubNavigation('my_elearning', new Navigation(_('Lernmodule'), 'dispatch.php/elearning/my_accounts'));
+        }
+
+        if (!$GLOBALS['perm']->have_perm('root') && $GLOBALS['user']->getAuthenticatedUser()->hasRole('Hilfe-Administrator(in)')) {
+            $navigation->addSubNavigation(_('Hilfe'), 'dispatch.php/help_content/admin_overview');
+        }
+
+        $this->addSubNavigation('contents', $navigation);
+
         // messaging
         $navigation = new Navigation(_('Nachrichten'));
         $navigation->addSubNavigation('in', new Navigation(_('Posteingang'), 'dispatch.php/messages/overview'));
@@ -272,27 +301,6 @@ class StartNavigation extends Navigation
             $navigation->addSubNavigation('rooms', new Navigation(_('Räume suchen'), 'dispatch.php/resources/search/rooms'));
         }
         $this->addSubNavigation('search', $navigation);
-
-        // tools
-        $navigation = new Navigation(_('Tools'));
-        $navigation->addSubNavigation('news', new Navigation(_('Ankündigungen'), 'dispatch.php/news/admin_news'));
-
-        if (Config::get()->VOTE_ENABLE) {
-            $navigation->addSubNavigation('vote', new Navigation(_('Umfragen und Tests'), 'dispatch.php/questionnaire/overview'));
-            $navigation->addSubNavigation('evaluation',new Navigation(_('Evaluationen'), 'admin_evaluation.php', ['rangeID' => $username]));
-        }
-
-        // elearning
-        if (Config::get()->ELEARNING_INTERFACE_ENABLE) {
-            $navigation->addSubNavigation('elearning', new Navigation(_('Lernmodule'), 'dispatch.php/elearning/my_accounts'));
-        }
-
-        // export
-        if (Config::get()->EXPORT_ENABLE && $perm->have_perm('tutor')) {
-            $navigation->addSubNavigation('export', new Navigation(_('Export'), 'export.php'));
-        }
-
-        $this->addSubNavigation('tools', $navigation);
 
         //file overview
         $navigation = new Navigation(_('Dateien'), 'dispatch.php/files/overview');

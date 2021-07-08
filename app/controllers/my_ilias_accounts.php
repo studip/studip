@@ -46,7 +46,7 @@ class MyIliasAccountsController extends AuthenticatedController
     {
         Navigation::activateItem('/contents/my_ilias_accounts');
 
-        PageLayout::setTitle(_("Meine Lernobjekte und ILIAS-Accounts"));
+        PageLayout::setTitle(_('ILIAS-Schnittstelle'));
 
         $this->ilias_list = [];
         foreach (Config::get()->ILIAS_INTERFACE_SETTINGS as $ilias_index => $ilias_config) {
