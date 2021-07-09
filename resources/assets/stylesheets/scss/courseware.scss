@@ -317,8 +317,6 @@ $consum_ribbon_width: calc(100% - 58px);
     height: calc(100% - 32px);
     max-height: 760px;
     max-width: calc(100% - 28px);
-    scrollbar-width: thin;
-    scrollbar-color: $base-color $white;
     display: flex;
     flex-flow: row;
     transition: right 0.8s;
@@ -342,17 +340,15 @@ $consum_ribbon_width: calc(100% - 58px);
         width: 540px;
         background-color:$white;
         padding: 0;
-        overflow-y: auto;
-        overflow-x: hidden;
-        scrollbar-width: thin;
-        scrollbar-color: $base-color $white;
+        overflow: hidden;
+
 
         .cw-ribbon-tool-content-nav {
             position: sticky;
             top: 0;
             background-color: $white;
-            margin: 0 0 14px 0;
-            padding: 6px 0 0 0;
+            margin: 0;
+            padding: 8px 0 0 0;
             color: $base-color;
             display: flex;
             border-bottom: solid thin $content-color-40;
@@ -420,7 +416,12 @@ $consum_ribbon_width: calc(100% - 58px);
         }
 
         .cw-ribbon-tool {
-            padding: 0 8px;
+            padding: 14px 8px 6px 8px;
+            height: calc(100% - 64px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: $base-color $white;
         }
     }
 }
