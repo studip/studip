@@ -244,23 +244,6 @@ class MyCoursesController extends AuthenticatedController
         $this->render_pdf($doc, 'courseexport.pdf');
     }
 
-    public function set_open_group_action($id)
-    {
-        $_my_sem_open = $GLOBALS['user']->cfg->MY_COURSES_OPEN_GROUPS;
-        if (in_array($id, $_my_sem_open)) {
-            $_my_sem_open[] = array_diff($_my_sem_open, [$id]);
-        } else {
-            $_my_sem_open[] = $id;
-        }
-        $GLOBALS['user']->cfg->store('MY_COURSES_OPEN_GROUPS', $_my_sem_open);
-
-        if (Request::isXhr()) {
-            $this->render_json($_my_sem_open);
-        } else {
-            $this->redirect('my_courses/index');
-        }
-    }
-
     /**
      * Seminar group administration - cluster your seminars by colors or
      * change grouping mechanism
