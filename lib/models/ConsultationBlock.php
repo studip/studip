@@ -60,7 +60,7 @@ class ConsultationBlock extends SimpleORMap implements PrivacyObject
             if ($block->range instanceof User) {
                 return $block->range->getFullName() . ' <' . $block->range->email . '>';
             }
-            if ($block->range instanceof Course) {
+            if ($block->range instanceof Course || $block->range instanceof Institute) {
                 $display = $block->range->getFullName();
                 if ($block->teacher) {
                     $display .= ' (' . $block->teacher->getFullName() . ')';
