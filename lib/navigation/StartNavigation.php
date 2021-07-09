@@ -246,7 +246,7 @@ class StartNavigation extends Navigation
         }
 
         if (!$GLOBALS['perm']->have_perm('root') && $GLOBALS['user']->getAuthenticatedUser()->hasRole('Hilfe-Administrator(in)')) {
-            $navigation->addSubNavigation(_('Hilfe'), 'dispatch.php/help_content/admin_overview');
+            $navigation->addSubNavigation('help_content', new Navigation(_('Hilfe-Texte und Touren'), 'dispatch.php/help_content/admin_overview'));
         }
 
         $this->addSubNavigation('contents', $navigation);
