@@ -251,6 +251,9 @@ class StartNavigation extends Navigation
 
         $this->addSubNavigation('contents', $navigation);
 
+        // oer
+        $this->addSubNavigation('oer', new Navigation(_('OER Campus'), 'dispatch.php/oer/market'));
+
         // messaging
         $navigation = new Navigation(_('Nachrichten'));
         $navigation->addSubNavigation('in', new Navigation(_('Posteingang'), 'dispatch.php/messages/overview'));
@@ -301,10 +304,6 @@ class StartNavigation extends Navigation
             $navigation->addSubNavigation('rooms', new Navigation(_('Räume suchen'), 'dispatch.php/resources/search/rooms'));
         }
         $this->addSubNavigation('search', $navigation);
-
-        //file overview
-        $navigation = new Navigation(_('Dateien'), 'dispatch.php/files/overview');
-        $this->addSubNavigation('file_overview', $navigation);
 
         //mvv pages
         if (MVV::isVisible()) {
