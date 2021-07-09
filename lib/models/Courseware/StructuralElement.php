@@ -399,7 +399,7 @@ class StructuralElement extends \SimpleORMap
                 $coursemembers = $course->getMembersWithStatus('dozent'); //get studip perm
                 $user = $coursemembers[0]->user;
             }
-            $course->config->store('COURSEWARE_EDITING_PERMISSION', 'dozent'); //über default lösen
+            $course->config->store('COURSEWARE_EDITING_PERMISSION', 'tutor'); //über default lösen
             $course->config->store('COURSEWARE_SEQUENTIAL_PROGRESSION', 0);
         }
 
