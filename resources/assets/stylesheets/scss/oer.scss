@@ -366,6 +366,18 @@ ul.reviews, ol.reviews {
             }
         }
     }
+    .filterpanel_shadow {
+        position: absolute;
+        z-index: 0;
+        background-color: $dark-gray-color-45;
+        padding: 10px;
+        width: 819px;
+        animation: oer-filter-panel-appears 200ms ease-out;
+        margin: 0px;
+        margin-top: 49px;
+        margin-left: 3px;
+        height: 183px;
+    }
 
 
 
@@ -380,7 +392,7 @@ ul.reviews, ol.reviews {
     .browser {
         margin-top: 15px;
         padding: 10px;
-        background-color: $content-color-20;
+        background-color: $content-color-10;
         width: 840px;
         max-width: 840px;
         box-sizing: border-box;
@@ -390,7 +402,7 @@ ul.reviews, ol.reviews {
             justify-content: space-around;
             align-items: center;
             > :first-child {
-                width: 25%;
+                width: 50%;
                 padding-left: 20px;
             }
             > * {

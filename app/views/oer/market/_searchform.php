@@ -48,6 +48,7 @@
                 <studip-icon shape="filter" :role="activeFilterPanel ? 'info_alt' : 'clickable'"></studip-icon>
             </button>
 
+            <div v-if="activeFilterPanel" class="filterpanel_shadow"></div>
 
             <div v-if="activeFilterPanel" class="filterpanel">
                 <div>
@@ -120,7 +121,7 @@
 <div class="browser">
 
     <div v-if="browseMode === false" class="intro">
-        <img src="<?= Assets::image_path("oernds_oer_use_blue.svg") ?>" width="200px">
+        <img src="<?= Assets::image_path("oer-keyvisual.svg") ?>" width="300px">
         <div>
             <h3><?= _('Wertvolle Lernmaterialien entdecken!') ?></h3>
             <?= _('Neue und spannende Lernmaterialien zu finden, ist ganz einfach. Mit dem Entdeckermodus können Sie nach Schlagwörtern stöbern und durch Themengebiete surfen.') ?>
