@@ -51,9 +51,7 @@ class Course_ScmController extends AuthenticatedController
             throw new AccessDeniedException(_('Die freien Informationsseiten sind nicht aktiviert.'));
         }
 
-        if (!Context::get()) {
-            throw new CheckObjectException(_('Sie haben kein Objekt gewählt.'));
-        }
+        checkObject();
 
         $this->priviledged = $GLOBALS['perm']->have_studip_perm('tutor', Context::getId());
 
