@@ -205,6 +205,14 @@ ul.reviews, ol.reviews {
             color: $base-color;
             border-bottom: medium none;
             font-size: medium;
+            display: flex;
+            align-items: center;
+            img {
+                margin-right: 10px;
+            }
+            .title {
+                max-height: 34px;
+            }
         }
 
         overflow: hidden;
