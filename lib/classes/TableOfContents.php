@@ -137,7 +137,11 @@ class TableOfContents
         }
 
         if (isset($pages[2])) {
-            $bc_links .= '<div>&nbsp;/&nbsp;' . htmlReady($pages[2]);
+            if (isset($pages[1])) {
+                $bc_links .= '<div>&nbsp;/&nbsp;' . htmlReady($pages[2]);
+            } else {
+                $bc_links .= '<div>' . htmlReady($pages[2]);
+            }
         }
 
         return $bc_links;
