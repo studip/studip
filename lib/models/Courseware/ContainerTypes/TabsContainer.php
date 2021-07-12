@@ -14,17 +14,17 @@ use Opis\JsonSchema\Schema;
  */
 class TabsContainer extends ContainerType
 {
-    public function getType(): string
+    public static function getType(): string
     {
         return 'tabs';
     }
 
-    public function getTitle(): string
+    public static function getTitle(): string
     {
         return _('Tabs');
     }
 
-    public function getDescription(): string
+    public static function getDescription(): string
     {
         return _('Dieser Abschnitt verfügt über eine horizontale Navigation, '
                 . 'über die sich Gruppen von Blöcken erreichen lassen.');

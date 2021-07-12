@@ -14,17 +14,17 @@ use Opis\JsonSchema\Schema;
  */
 class AccordionContainer extends ContainerType
 {
-    public function getType(): string
+    public static function getType(): string
     {
         return 'accordion';
     }
 
-    public function getTitle(): string
+    public static function getTitle(): string
     {
         return _('Accordion');
     }
 
-    public function getDescription(): string
+    public static function getDescription(): string
     {
         return _('Mit diesem Abschnitt lassen sich Blöcke unter Überschriften gruppieren.');
     }

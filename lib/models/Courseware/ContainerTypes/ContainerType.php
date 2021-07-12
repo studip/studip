@@ -37,21 +37,21 @@ abstract class ContainerType
      *
      * @return string the short string describing this type
      */
-    abstract public function getType(): string;
+    abstract public static function getType(): string;
 
     /**
      * Returns the title of this type of containers suitable to display it to the user.
      *
      * @return string the title of this type of containers
      */
-    abstract public function getTitle(): string;
+    abstract public static function getTitle(): string;
 
     /**
      * Returns the description of this type of containers suitable to display it to the user.
      *
      * @return string the description of this type of containers
      */
-    abstract public function getDescription(): string;
+    abstract public static function getDescription(): string;
 
     /**
      * Adds a block id to payload of the container

@@ -14,17 +14,17 @@ use Opis\JsonSchema\Schema;
  */
 class ListContainer extends ContainerType
 {
-    public function getType(): string
+    public static function getType(): string
     {
         return 'list';
     }
 
-    public function getTitle(): string
+    public static function getTitle(): string
     {
         return _('Liste');
     }
 
-    public function getDescription(): string
+    public static function getDescription(): string
     {
         return _('In diesem Abschnitt werden Blöcke untereinander dargestellt.');
     }
