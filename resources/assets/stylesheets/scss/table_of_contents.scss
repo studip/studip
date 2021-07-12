@@ -260,6 +260,7 @@ ul.breadcrumb {
 }
 
 .contentbar .contentbar_info {
+    max-width: 70%;
     align-self: start;
     align-items: start;
     gap: 10px;
@@ -270,7 +271,7 @@ ul.breadcrumb {
 }
 
 .contentbar .contentbar_title {
-    min-width: 60%;
+    max-width: 60%;
     display: flex;
     align-self: center;
 }
