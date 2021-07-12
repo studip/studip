@@ -1,11 +1,5 @@
 import Quicksearch from '../../../vue/components/Quicksearch.vue';
 
-STUDIP.dialogReady(() => {
-    if (jQuery(".oer_search").length) {
-        STUDIP.OER.initSearch();
-    }
-});
-
 STUDIP.domReady(() => {
     if (jQuery(".oer_search").length) {
         STUDIP.OER.initSearch();
