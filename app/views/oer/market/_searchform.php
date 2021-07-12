@@ -124,7 +124,9 @@
         <img src="<?= Assets::image_path("oer-keyvisual.svg") ?>" width="300px">
         <div>
             <h3><?= _('Wertvolle Lernmaterialien entdecken!') ?></h3>
-            <?= _('Neue und spannende Lernmaterialien zu finden, ist ganz einfach. Mit dem Entdeckermodus können Sie nach Schlagwörtern stöbern und durch Themengebiete surfen.') ?>
+            <div class="responsive-hidden">
+                <?= _('Neue und spannende Lernmaterialien zu finden, ist ganz einfach. Mit dem Entdeckermodus können Sie nach Schlagwörtern stöbern und durch Themengebiete surfen.') ?>
+            </div>
 
             <div>
                 <?= \Studip\LinkButton::create(_('Zum Entdeckermodus'), "#", ['@click.prevent' => "browseMode=true"]) ?>

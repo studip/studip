@@ -326,6 +326,7 @@ ul.reviews, ol.reviews {
         background-color: white;
         padding: 10px;
         width: 819px;
+        max-width: calc(100% - 50px);
         animation: oer-filter-panel-appears 200ms ease-out;
         border: thin solid $content-color-40;
         margin: 0px;
@@ -346,7 +347,7 @@ ul.reviews, ol.reviews {
         }
 
         .level_filter {
-            width: 350px;
+            width: 300px;
             .level_labels {
                 display: flex;
                 justify-content: space-between;
@@ -372,6 +373,7 @@ ul.reviews, ol.reviews {
         background-color: $dark-gray-color-45;
         padding: 10px;
         width: 819px;
+        max-width: calc(100% - 50px);
         animation: oer-filter-panel-appears 200ms ease-out;
         margin: 0px;
         margin-top: 49px;
@@ -394,7 +396,7 @@ ul.reviews, ol.reviews {
         padding: 10px;
         background-color: $content-color-10;
         width: 840px;
-        max-width: 840px;
+        max-width: 100%;
         box-sizing: border-box;
         height: 200px;
         .intro {
@@ -406,7 +408,8 @@ ul.reviews, ol.reviews {
                 padding-left: 20px;
             }
             > * {
-                margin: 25px;
+                margin-left: 25px;
+                margin-right: 25px;
             }
         }
         h3 {
