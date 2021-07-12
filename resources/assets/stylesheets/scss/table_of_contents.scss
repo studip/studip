@@ -217,6 +217,7 @@ ul.breadcrumb {
         content: "/\00a0";
     }
 
+
 }
 
 #toc_bc_nav {
@@ -260,7 +261,8 @@ ul.breadcrumb {
 }
 
 .contentbar {
-    align-items: flex-start;
+    //align-items: flex-start;
+
 }
 
 .contentbar .contentbar_info {
@@ -277,7 +279,11 @@ ul.breadcrumb {
 .contentbar .contentbar_title {
     max-width: 60%;
     display: flex;
-    align-items: baseline;
+    //align-items: center;
+
+     > a {
+         align-self: flex-start;
+     }
 }
 
 #bc_username, #bc_version {
