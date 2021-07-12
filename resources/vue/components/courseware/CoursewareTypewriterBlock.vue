@@ -10,17 +10,14 @@
         >
             <template #content>
                 <div class="cw-typewriter-content">
-                    <transition-group tag="p" class="cw-typewriter" :class="[currentFont, currentSize]"  @enter="enter">
-                        <span
-                            v-show="startTyping"
-                            v-for="(letter, index) in letters"
-                            :key="index"
-                            class="cw-typewriter-letter"
-                            :class="[speedClasses[currentSpeed], { 'cw-typewriter-letter-fadein': typing }]"
-                            :data-index="index"
-                            >{{ letter }}</span
-                        >
-                    </transition-group>
+                    <vue-typer
+                        :text="currentText"
+                        initial-action="typing"
+                        :repeat="0"
+                        :type-delay="typeDelay"
+                        caret-animation="smooth"
+                        :class="[currentFont, currentSize]"
+                    ></vue-typer>
                 </div>
             </template>
             <template v-if="canEdit" #edit>
@@ -31,7 +28,7 @@
 
                 <label class="cw-typewriter-speed-label">
                     <translate>Geschwindigkeit</translate>
-                    <select v-model="currentSpeed" class="cw-typewriter-speed" name="cw-typewriter-speed">
+                    <select v-model="currentSpeed" class="cw-typewriter-speed" name="cw-typewriter-speed" @change="restartTyping">
                         <option value="0"><translate>Langsam</translate></option>
                         <option value="1"><translate>Normal</translate></option>
                         <option value="2"><translate>Schnell</translate></option>
@@ -55,9 +52,9 @@
                     <translate>Schriftgröße</translate>
                     <select v-model="currentSize" class="cw-typewriter-size" name="cw-typewriter-size">
                         <option value="size-default">100%</option>
-                        <option value="size-tall">150%</option>
-                        <option value="size-grande">200%</option>
-                        <option value="size-huge">400%</option>
+                        <option value="size-tall">125%</option>
+                        <option value="size-grande">150%</option>
+                        <option value="size-huge">200%</option>
                     </select>
                 </label>
             </template>
@@ -70,12 +67,14 @@
 
 <script>
 import CoursewareDefaultBlock from './CoursewareDefaultBlock.vue';
+import { VueTyper } from 'vue-typer';
 import { mapActions } from 'vuex';
 
 export default {
     name: 'courseware-typewriter-block',
     components: {
         CoursewareDefaultBlock,
+        VueTyper,
     },
     props: {
         block: Object,
@@ -86,28 +85,27 @@ export default {
         return {
             speeds: [200, 100, 50, 25],
             typing: false,
-            startTyping: false,
             speedClasses: [
                 'cw-typewriter-letter-fadein-slow',
                 'cw-typewriter-letter-fadein-normal',
                 'cw-typewriter-letter-fadein-fast',
                 'cw-typewriter-letter-fadein-veryfast',
             ],
-            currentText: '',
+            currentText: ' ',
             currentSpeed: '',
             currentFont: '',
             currentSize: '',
         };
     },
     computed: {
-        letters: function () {
-            return this.currentText.split('');
-        },
         text() {
             return this.block?.attributes?.payload?.text;
         },
         speed() {
             return this.block?.attributes?.payload?.speed;
+        },
+        typeDelay() {
+            return this.speeds[this.currentSpeed];
         },
         font() {
             return this.block?.attributes?.payload?.font;
@@ -118,11 +116,6 @@ export default {
     },
     mounted() {
         this.initCurrentData();
-        this.checkTypingStart();
-        window.addEventListener('scroll', this.checkTypingStart);
-    },
-    beforeDestroy() {
-        window.removeEventListener('scroll', this.checkTypingStart);
     },
     methods: {
         ...mapActions({
@@ -134,27 +127,12 @@ export default {
             this.currentFont = this.font;
             this.currentSize = this.size;
         },
-        enter(el, done) {
-            let view = this;
-            let index = el.dataset.index;
-            var delay = index * this.speeds[this.currentSpeed];
-            setTimeout(function () {
-                el.classList.add('cw-typewriter-letter-fadein');
-                // set typing true when all letters are typed
-                if (parseInt(index) === view.letters.length - 1) {
-                    view.typing = true;
-                }
-                done();
-            }, delay);
-        },
-        checkTypingStart() {
-            if (this.isScrolledIntoView(this.$el) && !this.typing) {
-                this.startTyping = true;
-            }
-        },
-        isScrolledIntoView(element) {
-            const rect = element.getBoundingClientRect();
-            return rect.top >= 0 && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight);
+        restartTyping() {
+            let text = this.currentText;
+            this.currentText = ' ';
+            this.$nextTick(()=> {
+                this.currentText = text;
+            });
         },
         closeEdit() {
             this.initCurrentData();
