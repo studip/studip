@@ -76,7 +76,7 @@ label[for=cb-toc], label[for=cb-fullscreen] {
     border-bottom: thin solid #d0d7e3;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    //align-items: center;
 
     label {
         margin-right: 5%;
@@ -200,7 +200,7 @@ ul.breadcrumb {
     padding-left: 10px;
     width: 100%;
     display: inline-block;
-    align-self: center;
+    //align-self: center;
 
     div {
         float: left;
@@ -259,10 +259,14 @@ ul.breadcrumb {
 
 }
 
+.contentbar {
+    align-items: flex-start;
+}
+
 .contentbar .contentbar_info {
     max-width: 70%;
-    align-self: start;
-    align-items: start;
+    //align-self: start;
+    //align-items: start;
     gap: 10px;
 
     .action-menu {
@@ -273,7 +277,7 @@ ul.breadcrumb {
 .contentbar .contentbar_title {
     max-width: 60%;
     display: flex;
-    align-self: center;
+    align-items: baseline;
 }
 
 #bc_username, #bc_version {

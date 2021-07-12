@@ -5,7 +5,6 @@
     min-height: 38px;
     padding: 9px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
     flex-wrap: nowrap;
 
@@ -22,7 +21,6 @@
     .contentbar_info {
         text-align: right;
         display: flex;
-        align-items: center;
         flex-wrap: nowrap;
         .consuming_mode_trigger:not(body.consuming_mode .consuming_mode_trigger) {
             position: relative;
