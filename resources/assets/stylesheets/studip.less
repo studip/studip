@@ -218,6 +218,14 @@ ul.clean, ol.clean {
 .center      { text-align: center; }
 .nodisplay   { display: none; }
 
+.bordered    {
+    border: 1px solid @content-color-40;
+    padding: 10px;
+}
+.bordered + .bordered {
+    border-top: none;
+}
+
 /* --- index.php anpassungen an den boxen zur vereinheitlichung ------------- */
 table.index_box {
     border-collapse: collapse;
