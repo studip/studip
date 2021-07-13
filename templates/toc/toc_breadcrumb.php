@@ -43,24 +43,26 @@
     <div class="contentbar_info">
         <div class="textblock"><?= $toc_breadcrumb_info ?></div>
 
-        <? if (WikiPage::getStartPage(Context::getId())->children): ?>
-            <input type="checkbox" id="cb-toc"/>
-            <label for="cb-toc" class="check-box" title="<?= _('Inhaltsverzeichnis') ?>" >
-                <?= Icon::create('table-of-contents', 'clickable')->asImg(24) ?>
-            </label>
-        <? endif ?>
+        <div style="display: contents">
+            <? if (WikiPage::getStartPage(Context::getId())->children): ?>
+                <input type="checkbox" id="cb-toc"/>
+                <label for="cb-toc" class="check-box" title="<?= _('Inhaltsverzeichnis') ?>" >
+                    <?= Icon::create('table-of-contents', 'clickable')->asImg(24) ?>
+                </label>
+            <? endif ?>
 
 
-        <?= $toc_entries ?>
+            <?= $toc_entries ?>
 
-        <a class="consuming_mode_trigger"
-           href="#"
-           title="<?= _("Konsummodus ein-/ausschalten") ?>">
-        </a>
+            <a class="consuming_mode_trigger"
+               href="#"
+               title="<?= _("Konsummodus ein-/ausschalten") ?>">
+            </a>
 
-        <? if ($toc_breadcrumb_info) : ?>
-            <?= $actionMenu->render() ?>
-        <? endif ?>
+            <? if ($toc_breadcrumb_info) : ?>
+                <?= $actionMenu->render() ?>
+            <? endif ?>
+        </div>
     </div>
 
 </div>
