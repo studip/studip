@@ -552,17 +552,8 @@ class Fullcalendar
                 if ($(renderInfo.view.context.calendar.el).hasClass('room-group-booking-plan')) {
                     var action = $(renderInfo.view.context.calendar.el).hasClass('semester-plan') ? 'semester' : 'booking';
                     var url = STUDIP.URLHelper.getURL(`dispatch.php/resources/room_planning/${action}_plan/${renderInfo.resource.id}`);
-
                     $(renderInfo.el).find('.fc-cell-text').html(
-                        $('<a>').attr('href', url).text(renderInfo.el.innerText).append(
-                            $('<img>').attr('src', STUDIP.ASSETS_URL + 'images/icons/blue/link-intern.svg')
-                                .addClass('text-bottom')
-                                .css({
-                                    width: 16,
-                                    height: 16,
-                                    margin: '0px 5px'
-                                })
-                        )
+                        $('<a>').attr('href', url).text(renderInfo.el.innerText)
                     );
                 } else if ($("*[data-fullcalendar='1']").hasClass('institute-plan') && renderInfo.resource.id > 0) {
                     var icon = '<img class="text-bottom icon-role-clickable icon-shape-edit" width="16" height="16" src="' + STUDIP.URLHelper.getURL('assets/images/icons/blue/edit.svg') + '" alt="edit">';
