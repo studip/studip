@@ -6,23 +6,25 @@
         $min_time = Config::get()->RESOURCES_BOOKING_PLAN_START_HOUR . ':00';
         $max_time = Config::get()->RESOURCES_BOOKING_PLAN_END_HOUR . ':00';
     } ?>
+
     <section id="booking_plan_header"
              class="studip-fullcalendar-header booking-plan-header"
              data-semester-begin="" data-semester-end="">
             <span id="booking-plan-header-resource-name-line">
                 <? if ($resource instanceof Room) : ?>
-                    <?= htmlReady($resource->name) ?>,
+                    <?= htmlReady($resource->name) ?>
                     <span id="booking-plan-header-seats">
-                        <?= htmlReady(sprintf(_('%d Sitzplätze'), $resource->seats)) ?>,
+                        <?= htmlReady(sprintf(_('%d Sitzplätze'), $resource->seats)) ?>
                     </span>
                 <? else : ?>
                     <?= htmlReady($resource->name) ?>
                 <? endif ?>
                 <span id="booking-plan-header-semrow">
                     <strong>
-                        <span id="booking-plan-header-semname"></span>,
-                        <?= _('Vorlesungswoche') ?>
-                        <span id="booking-plan-header-semweek"></span>
+                        <span id="booking-plan-header-semname"></span>
+                        <span id="booking-plan-header-semweek-part">
+                            <span id="booking-plan-header-semweek"></span>
+                        </span>
                     </strong>
                 </span>
             </span>

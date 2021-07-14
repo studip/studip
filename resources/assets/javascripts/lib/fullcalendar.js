@@ -535,11 +535,14 @@ class Fullcalendar
                     if (sem_start && (start.getTime() / 1000 < sem_start || start.getTime() / 1000 > sem_end)) {
                         sem_start = null;
                         sem_end = null;
-                    } else {
+                    } else if(sem_start) {
                         var sem_week = Math.floor((end.getTime() / 1000 - 10800 - sem_start) / (7 * 24 * 60 * 60)) + 1;
+                        $("#booking-plan-header-semweek-part").text("Vorlesungswoche".toLocaleString());
                         $('#booking-plan-header-semweek').text(sem_week);
                     }
-
+                    $('#booking-plan-header-calweek').text(start.getWeekNumber());
+                    $('#booking-plan-header-calbegin').text(start.toLocaleDateString('de-DE', {weekday: 'short'}) + ' ' + start.toLocaleDateString('de-DE'));
+                    $('#booking-plan-header-calend').text(end.toLocaleDateString('de-DE', {weekday: 'short'}) + ' ' + end.toLocaleDateString('de-DE'));
                     if (!sem_start || !sem_end) {
                         STUDIP.Resources.updateBookingPlanSemesterByView(activeRange);
                     }

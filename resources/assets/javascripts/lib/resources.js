@@ -731,17 +731,21 @@ class Resources
                             $("#booking-plan-header-semrow").show();
                             $("#booking-plan-header-semname").text(semester.title);
                             var sem_week = Math.floor((end.getTime()/1000 - 10800 - semester.seminars_begin) / 604800)+1;
+                            $("#booking-plan-header-semweek-part").text("Vorlesungswoche".toLocaleString());
                             $("#booking-plan-header-semweek").text(sem_week);
                         } else {
                             if (data.pagination && data.pagination.links && data.pagination.links.next != api_url) {
                                 semester = STUDIP.Resources.updateBookingPlanSemesterByView(activeRange, data.pagination.links.next);
                             } else {
-                                $("#booking-plan-header-semrow").hide();
                                 $(".booking-plan-header")
                                     .data('semester-begin', '')
                                     .data('semester-end', '');
                             }
                         }
+
+                        $('#booking-plan-header-calweek').text(start.getWeekNumber());
+                        $('#booking-plan-header-calbegin').text(start.toLocaleDateString('de-DE', {weekday: 'short'}) + ' ' + start.toLocaleDateString('de-DE'));
+                        $('#booking-plan-header-calend').text(end.toLocaleDateString('de-DE', {weekday: 'short'}) + ' ' + end.toLocaleDateString('de-DE'));
                     }
                 }
             }
