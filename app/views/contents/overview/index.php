@@ -3,17 +3,19 @@
         <? if ($navigation->isVisible() && $key !== 'overview'): ?>
             <li class="content-item content-item-courseware">
                 <a href="<?= URLHelper::getLink($navigation->getURL()) ?>" class="content-item-link">
-                    <header>
-                        <div class="content-item-img-wrapper">
-                            <? if ($navigation->getImage()): ?>
-                                <?= $navigation->getImage()->asImg(64, $navigation->getLinkAttributes()) ?>
-                            <? endif ?>
-                        </div>
-                        <?= htmlReady($navigation->getTitle()) ?>
-                    </header>
-                    <p class="content-item-description">
-                        <?= htmlReady($navigation->getDescription()) ?>
-                    </p>
+                    <div class="content-item-img-wrapper">
+                        <? if ($navigation->getImage()): ?>
+                            <?= $navigation->getImage()->asImg(64, $navigation->getLinkAttributes()) ?>
+                        <? endif ?>
+                    </div>
+                    <div class="content-item-text">
+                        <p class="content-item-title">
+                            <?= htmlReady($navigation->getTitle()) ?>
+                        </p>
+                        <p class="content-item-description">
+                            <?= htmlReady($navigation->getDescription()) ?>
+                        </p>
+                    </div>
                 </a>
             </li>
         <? endif ?>
