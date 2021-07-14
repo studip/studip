@@ -42,10 +42,12 @@ class CourseContext extends Context
 
             foreach ($course->tools as $tool) {
                 $studip_module = $tool->getStudipModule();
-                if (isset($module_provider[get_class($studip_module)])) {
-                    $this->addProvider('Studip\Activity\\'. $module_provider[get_class($studip_module)]);
-                } elseif ($studip_module instanceof ActivityProvider) {
-                    $this->provider[$studip_module->getPluginName()] = $studip_module;
+                if($studip_module) {
+                    if (isset($module_provider[get_class($studip_module)])) {
+                        $this->addProvider('Studip\Activity\\'. $module_provider[get_class($studip_module)]);
+                    } elseif ($studip_module instanceof ActivityProvider) {
+                        $this->provider[$studip_module->getPluginName()] = $studip_module;
+                    }
                 }
             }
             //news
