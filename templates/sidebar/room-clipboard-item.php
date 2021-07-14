@@ -35,7 +35,7 @@ if (!$item) {
                name="selected_clipboard_items[]"
                title="<?= _('Diesen Raum auswählen.') ?>"
                value="<?= htmlReady($item['id']) ?>"
-               id="<?= htmlReady($checkbox_id) ?>"
+               <?= $checkbox_id ? sprintf('id="%s"', htmlReady($checkbox_id)) : ''?>
                <?= in_array($item['id'], $selected_clipboard_items)
                  ? 'checked="checked"'
                  : (!$selected_clipboard_items

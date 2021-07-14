@@ -293,15 +293,18 @@ const Clipboard = {
         }
 
         var new_item_node = jQuery(template).clone();
+        var checkbox_id = "item_" + clipboard_id + "_" + response_data['range_type'] + "_" + response_data['range_id'];
+
         //Set some HTML attributes of the template:
         jQuery(new_item_node).attr('data-range_id', response_data['range_id']);
+        jQuery(new_item_node).attr('id', checkbox_id);
         jQuery(new_item_node).removeClass('clipboard-item-template');
         jQuery(new_item_node).removeClass('invisible');
 
         var name_label = jQuery(new_item_node).find('label');
         jQuery(name_label).text(response_data['name']);
-        var id_field = jQuery(new_item_node).find('input.item-id');
-        jQuery(id_field).val(response_data['item_id']);
+        var id_field = jQuery(new_item_node).find("input[name='selected_clipboard_items[]']");
+        jQuery(id_field).val(checkbox_id);
 
         var new_item_html = jQuery('<div></div>').append(new_item_node).html();
         //Replace RANGE_ID with an escaped real range-ID:
