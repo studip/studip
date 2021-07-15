@@ -8,6 +8,13 @@
           data-dialog="<?= $no_reload ? 'size=auto' : 'reload-on-close' ?>">
         <input type="hidden" name="origin_url"
                value="<?= htmlReady($origin_url) ?>">
+        <? if ($resources) : ?>
+            <? foreach ($resources as $resource): ?>
+                <input type="hidden" name="resource_ids[]"
+                       value="<?= htmlReady($resource->id) ?>">
+            <? endforeach ?>
+        <? endif ?>
+        <input type="hidden"
         <?= CSRFProtection::tokenTag() ?>
         <? if ($show_booking_type_selection): ?>
             <div class="fieldset-row">

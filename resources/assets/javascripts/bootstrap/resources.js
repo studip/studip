@@ -953,12 +953,20 @@ STUDIP.domReady(function() {
                     'tr.clipboard-item:not(.clipboard-item-template)'
                 );
 
-                for (item of items) {
-                    var id = jQuery(item).data('range_id');
-                    //Check if id is an md5 sum:
-                    if (id.match(/[0-9a-f]{32}/)) {
-                        ids.push(id);
+                for (var item of items) {
+                    var input = jQuery(item).find("input[name='selected_clipboard_items[]']:checked")[0];
+                    if (input) {
+                        var id = jQuery(item).data('range_id');
+                        //Check if id is an md5 sum:
+                        if (id.match(/[0-9a-f]{32}/)) {
+                            ids.push(id);
+                        }
                     }
+                }
+                if (ids.length == items.length) {
+                    //All items are selected. No need to use the Range-IDs, we
+                    //can use the clipboard-ID instead.
+                    action_needs_items = false;
                 }
             }
 

@@ -34,7 +34,7 @@ class RoomClipboardWidget extends ClipboardWidget
             Icon::create('link-intern'),
             ['class' => 'room-clipboard-group-action',
              'data-show_in_dialog' => 'size=auto',
-             'data-needs_items'=> '0']
+             'data-needs_items'=> '1']
         );
 
         if (ResourceManager::userHasGlobalPermission(User::findCurrent(), 'admin')) {

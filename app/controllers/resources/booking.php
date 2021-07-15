@@ -1449,11 +1449,18 @@ class Resources_BookingController extends AuthenticatedController
         if (!$resource_id) {
             $resource_id = Request::option('ressource_id');
         }
+        $resource_ids = Request::getArray('resource_ids');
 
         $this->resources = [];
         $this->resource_or_clipboard_id = $resource_id;
 
-        if (strpos($resource_id, 'clipboard_') !== false) {
+        if ($resource_ids) {
+            //$resource_ids contains the IDs of several resources.
+            $resources = Resource::findMany($resource_ids);
+            foreach ($resources as $resource) {
+                $this->resources[] = $resource->getDerivedClassInstance();
+            }
+        } elseif (strpos($resource_id, 'clipboard_') !== false) {
             //A clipboard has been selected:
             //Get all resources from it:
             $clipboard_id = substr($resource_id, 10);
