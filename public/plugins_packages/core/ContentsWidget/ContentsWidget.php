@@ -11,7 +11,7 @@ class ContentsWidget extends StudIPPlugin implements PortalPlugin
 {
     public function getPluginName()
     {
-        return _('Meine Inhalte');
+        return _('Mein Arbeitsplatz');
     }
 
     public function getPortalTemplate()
