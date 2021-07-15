@@ -51,7 +51,6 @@
                 </label>
             <? endif ?>
 
-
             <?= $toc_entries ?>
 
             <a class="consuming_mode_trigger"

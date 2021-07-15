@@ -24,10 +24,10 @@ label[for=cb-toc], label[for=cb-fullscreen] {
     display: none;
 }
 
-#cb-toc:checked + .check-box + #cb-toc-close + article.toc_overview {
+#cb-toc:checked + .check-box + #cb-toc-close + article.toc_overview, button#toc-button:hover article.toc_overview {
     visibility: visible;
     width: 540px;
-
+    overflow: hidden;
 }
 
 #cb-toc-close:checked article.toc_overview {
@@ -44,7 +44,7 @@ label[for=cb-toc], label[for=cb-fullscreen] {
     top: 176px;
     background-color: $white;
     min-height: 10%;
-    max-height: 630px;
+    max-height: 100%;
     border: 1px solid #d0d7e3;
     margin-bottom: 10px;
     -webkit-box-shadow: 2px 2px #ccc;
@@ -76,7 +76,7 @@ label[for=cb-toc], label[for=cb-fullscreen] {
     align-items: center;
 
     label {
-        margin-right: 5%;
+        margin-right: 3%;
     }
 }
 
@@ -197,7 +197,6 @@ ul.breadcrumb {
     padding-left: 10px;
     width: 100%;
     display: inline-block;
-    //align-self: center;
 
     div {
         float: left;
@@ -234,7 +233,6 @@ ul.breadcrumb {
 
     #toc {
         max-width: 94%!important;
-        top: 121px!important;
     }
 
     ul.breadcrumb {
@@ -291,4 +289,21 @@ ul.breadcrumb {
 
 .consuming_mode .toc_overview {
     top: 6px;
+}
+
+
+#toc-button {
+    background-image: url(../images/icons/blue/table-of-contents.svg);
+    background-size: 24px;
+
+    height: 24px;
+    width: 24px;
+    margin: 0 .5em;
+    border: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 24px;
+    cursor: pointer;
+    outline: none;
 }
